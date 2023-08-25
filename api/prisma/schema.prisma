@@ -1,0 +1,172 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UF {
+  AC
+  AL
+  AM
+  AP
+  BA
+  CE
+  DF
+  ES
+  GO
+  MA
+  MG
+  MS
+  MT
+  PA
+  PB
+  PE
+  PI
+  PR
+  RJ
+  RN
+  RO
+  RR
+  RS
+  SC
+  SE
+  SP
+  TO
+}
+
+model Rig {
+  id           String       @id @default(uuid()) @db.Uuid
+  name         String
+  state        UF
+  users        UserRig[]
+  efficiencies Efficiency[]
+
+  @@map("rigs")
+}
+
+enum AccessLevel {
+  ADM
+  USER
+
+  @@map("access_level")
+}
+
+model User {
+  id          String      @id @default(uuid()) @db.Uuid
+  name        String
+  email       String
+  password    String
+  accessLevel AccessLevel @map("access_level")
+
+  rigs         UserRig[]
+  efficiencies Efficiency[]
+
+  @@map("users")
+}
+
+model UserRig {
+  userId String @map("user_id") @db.Uuid
+  rigId  String @map("rig_id") @db.Uuid
+
+  user User @relation(fields: [userId], references: [id])
+  rig  Rig  @relation(fields: [rigId], references: [id])
+
+  @@id([userId, rigId])
+  @@map("users_rigs")
+}
+
+model Efficiency {
+  id             String   @id @default(uuid()) @db.Uuid
+  date           DateTime
+  availableHours Float    @map("available_hours")
+  rigId          String   @map("rig_id") @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
+
+  rig            Rig              @relation(fields: [rigId], references: [id])
+  user           User             @relation(fields: [userId], references: [id])
+  periods        Period[]
+  fluidRatio     FluidRatio[]
+  equipmentRatio EquipmentRatio[]
+
+  @@map("efficiencies")
+}
+
+enum PeriodType {
+  GLOSS
+  REPAIR
+  DTM
+  WORKING
+
+  @@map("period_type")
+}
+
+enum PeriodClassification {
+  WORKING
+  LABOR
+  PROCESS
+  LOGISTICS
+  SECURITY
+  RIG_CAR
+  MAST
+  RIG_WINCH
+  RIG_TRANSMISSION
+  UCI
+  MUD_TANK
+  TRAILER
+  MUD_BOMB
+  PIPE_RACK
+  BOP
+  CHOKE_MANIFOLD
+  HOSES
+  HYDRAULIC_WRENCH
+  HANDLING_TOOLS
+  LT20
+  BT20AND50
+  GT50
+  OTHERS
+}
+
+model Period {
+  id             String               @id @default(uuid()) @db.Uuid
+  startHour      DateTime             @map("start_hour")
+  endHour        DateTime             @map("end_hour")
+  classification PeriodClassification
+  description    String?
+  type           PeriodType
+  efficiencyId   String               @map("efficiency_id") @db.Uuid
+
+  efficiency Efficiency @relation(fields: [efficiencyId], references: [id], onDelete: Cascade)
+
+  @@map("periods")
+}
+
+enum Interval {
+  LT20
+  BT20AND50
+  GT50
+}
+
+model FluidRatio {
+  id           String   @id @default(uuid()) @db.Uuid
+  ratio        Interval
+  efficiencyId String   @map("efficiency_id") @db.Uuid
+
+  efficiency Efficiency @relation(fields: [efficiencyId], references: [id], onDelete: Cascade)
+
+  @@map("fluid_ratio")
+}
+
+model EquipmentRatio {
+  id           String     @id @default(uuid()) @db.Uuid
+  ratio        Interval
+  efficiencyId String     @map("efficiency_id") @db.Uuid
+  efficiency   Efficiency @relation(fields: [efficiencyId], references: [id], onDelete: Cascade)
+
+  @@map("equipment_ratio")
+}
