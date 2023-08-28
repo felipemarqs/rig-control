@@ -1,19 +1,47 @@
-import { ConflictException, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/signup.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { hash } from 'bcryptjs';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { SignupDto } from './dto/signup.dto';
+import { compare, hash } from 'bcryptjs';
 import { UsersRepository } from 'src/shared/database/repositories/users.repositories';
 import { UsersRigRepository } from 'src/shared/database/repositories/usersRig.repositories';
+import { SigninDto } from './dto/signin.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersRepo: UsersRepository,
     private readonly usersRigRepo: UsersRigRepository,
+    private readonly jwtService: JwtService,
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
-    const { name, email, password, accessLevel, rigId } = createUserDto;
+  async signin(signinDto: SigninDto) {
+    const { email, password } = signinDto;
+
+    const user = await this.usersRepo.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('Usuário não encontrado!');
+    }
+
+    const isPasswordValid = await compare(password, user.password);
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Credenciais inválidas!');
+    }
+
+    const accessToken = await this.generateAccessToken(user.id);
+
+    return { accessToken };
+  }
+
+  async signup(signUpDto: SignupDto) {
+    const { name, email, password, accessLevel, rigId } = signUpDto;
 
     const isEmailTaken = await this.usersRepo.findUnique({
       where: { email },
@@ -44,22 +72,14 @@ export class AuthService {
       });
     }
 
-    return user;
+    const accessToken = await this.generateAccessToken(user.id);
+
+    return {
+      accessToken,
+    };
   }
 
-  findAll() {
-    return `This action returns all users`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  private async generateAccessToken(userId: string) {
+    return await this.jwtService.signAsync({ sub: userId });
   }
 }

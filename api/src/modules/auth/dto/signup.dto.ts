@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import { AccessLevel } from '../entities/AccessLevel';
 
-export class CreateUserDto {
+export class SignupDto {
   @IsString({ message: 'O nome precisa ser uma String!' })
   @IsNotEmpty({ message: 'O nome é obrigatório!' })
   name: string;

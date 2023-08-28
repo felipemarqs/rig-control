@@ -1,34 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete} from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from './dto/signup.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { SignupDto } from './dto/signup.dto';
+import { SigninDto } from './dto/signin.dto';
+import { IsPublic } from 'src/shared/decorators/IsPublic';
 
 @Controller('auth')
+@IsPublic()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('signup')
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.authService.create(createUserDto);
+  create(@Body() signupDto: SignupDto) {
+    return this.authService.signup(signupDto);
   }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.authService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+  @Post('signin')
+  authenticate(@Body() signinDto: SigninDto) {
+    return this.authService.signin(signinDto);
   }
 }
