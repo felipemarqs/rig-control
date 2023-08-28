@@ -1,26 +1,42 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/signup.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaService } from 'src/shared/database/prisma.service';
+import { hash } from 'bcryptjs';
+import { UsersRepository } from 'src/shared/database/repositories/users.repositories';
+import { UsersRigRepository } from 'src/shared/database/repositories/usersRig.repositories';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly usersRepo: UsersRepository,
+    private readonly usersRigRepo: UsersRigRepository,
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     const { name, email, password, accessLevel, rigId } = createUserDto;
 
-    const user = await this.prismaService.user.create({
+    const isEmailTaken = await this.usersRepo.findUnique({
+      where: { email },
+      select: { id: true },
+    });
+
+    if (isEmailTaken) {
+      throw new ConflictException('Email já cadastrado!');
+    }
+
+    const hashedPassword = await hash(password, 10);
+
+    const user = await this.usersRepo.create({
       data: {
         name,
         email,
         accessLevel,
-        password,
+        password: hashedPassword,
       },
     });
 
     if (rigId) {
-      await this.prismaService.userRig.create({
+      await this.usersRigRepo.create({
         data: {
           userId: user.id,
           rigId,
