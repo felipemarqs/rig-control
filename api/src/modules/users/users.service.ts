@@ -13,7 +13,11 @@ export class UsersService {
         name: true,
         email: true,
         accessLevel: true,
-        rigs: true,
+        rigs: {
+          select: {
+            rigId: true,
+          },
+        },
       },
     });
 

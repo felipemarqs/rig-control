@@ -42,7 +42,7 @@ enum UF {
 
 model Rig {
   id           String       @id @default(uuid()) @db.Uuid
-  name         String
+  name         String       @unique
   state        UF
   users        UserRig[]
   efficiencies Efficiency[]
