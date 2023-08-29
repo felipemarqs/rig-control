@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { UF } from '../entities/UF';
 
 export class CreateRigDto {
@@ -10,4 +10,7 @@ export class CreateRigDto {
   @IsNotEmpty()
   @IsEnum(UF)
   state: UF;
+
+  @IsBoolean()
+  isActive: boolean;
 }

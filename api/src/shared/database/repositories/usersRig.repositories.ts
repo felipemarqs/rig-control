@@ -6,7 +6,11 @@ import { PrismaService } from '../prisma.service';
 export class UsersRigRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  create(createDto: Prisma.UserRigCreateArgs) {
-    return this.prismaService.userRig.create(createDto);
+  async create(createDto: Prisma.UserRigCreateArgs) {
+    return await this.prismaService.userRig.create(createDto);
+  }
+
+  async findFirst(findFirstDto: Prisma.UserRigFindFirstArgs) {
+    return await this.prismaService.userRig.findFirst(findFirstDto);
   }
 }

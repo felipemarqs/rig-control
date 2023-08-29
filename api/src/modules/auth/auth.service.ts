@@ -9,6 +9,7 @@ import { UsersRepository } from 'src/shared/database/repositories/users.reposito
 import { UsersRigRepository } from 'src/shared/database/repositories/usersRig.repositories';
 import { SigninDto } from './dto/signin.dto';
 import { JwtService } from '@nestjs/jwt';
+import { RigsRepository } from 'src/shared/database/repositories/rigs.repositories';
 
 @Injectable()
 export class AuthService {
@@ -16,6 +17,7 @@ export class AuthService {
     private readonly usersRepo: UsersRepository,
     private readonly usersRigRepo: UsersRigRepository,
     private readonly jwtService: JwtService,
+    private readonly rigsRepo: RigsRepository,
   ) {}
 
   async signin(signinDto: SigninDto) {
@@ -50,6 +52,16 @@ export class AuthService {
 
     if (isEmailTaken) {
       throw new ConflictException('Email já cadastrado!');
+    }
+
+    if (rigId) {
+      const rigExists = await this.rigsRepo.findUnique({
+        where: { id: rigId },
+      });
+
+      if (!rigExists) {
+        throw new ConflictException('Sonda não encontrada!');
+      }
     }
 
     const hashedPassword = await hash(password, 10);

@@ -43,6 +43,7 @@ enum UF {
 model Rig {
   id           String       @id @default(uuid()) @db.Uuid
   name         String       @unique
+  isActive     Boolean      @default(true)
   state        UF
   users        UserRig[]
   efficiencies Efficiency[]
@@ -74,8 +75,8 @@ model UserRig {
   userId String @map("user_id") @db.Uuid
   rigId  String @map("rig_id") @db.Uuid
 
-  user User @relation(fields: [userId], references: [id])
-  rig  Rig  @relation(fields: [rigId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rig  Rig  @relation(fields: [rigId], references: [id], onDelete: Cascade)
 
   @@id([userId, rigId])
   @@map("users_rigs")

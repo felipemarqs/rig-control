@@ -7,6 +7,10 @@ export class RigsRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(createDto: Prisma.RigCreateArgs) {
-    return this.prismaService.rig.create(createDto);
+    return await this.prismaService.rig.create(createDto);
+  }
+
+  async findUnique(findUniqueDto: Prisma.RigFindUniqueArgs) {
+    return await this.prismaService.rig.findUnique(findUniqueDto);
   }
 }
