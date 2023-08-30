@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersRepository } from 'src/shared/database/repositories/users.repositories';
 
 @Injectable()
@@ -20,6 +20,10 @@ export class UsersService {
         },
       },
     });
+
+   if (!user) {
+    throw new UnauthorizedException("Usuário não encontrado!")
+   }
 
     return user;
   }
