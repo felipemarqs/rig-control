@@ -1,11 +1,13 @@
 import {Link} from "react-router-dom";
 import {Input} from "../../components/Input";
 import {Button} from "../../components/Button";
+import {useLoginController} from "./useLoginController";
 
 export const Login = () => {
+  const {handleSubmit, register, errors, isLoading} = useLoginController();
   return (
     //Container
-    <div className="bg-secondary-500 h-[95%] w-[90%]  max-w-[1000px] rounded-2xl lg:w-[40%] lg:h-4/5 text-center">
+    <div className="bg-secondary-500 h-[95%] w-[90%]  max-w-[1000px] min-h-full mb-12  rounded-2xl lg:w-[40%] text-center">
       {/* Image Container */}
       <div
         className="w-full h-[300px] flex flex-col justify-between bg-cover bg-center bg-sonda-mar rounded-2xl"
@@ -24,12 +26,26 @@ export const Login = () => {
       <h1 className="font-bold text-white text-4xl">Login</h1>
 
       {/* Form Container */}
-      <form className="mt-12 flex flex-col  gap-6 px-3 lg:px-12">
-        <Input type="email" placeholder="E-mail" name="email" />
-        <Input type="password" placeholder="Senha" name="password" />
+      <form
+        className="mt-12 flex flex-col  gap-6 px-3 lg:px-12"
+        onSubmit={handleSubmit}
+      >
+        <Input
+          type="email"
+          placeholder="E-mail"
+          error={errors.email?.message}
+          {...register("email")}
+        />
+
+        <Input
+          type="password"
+          placeholder="Senha"
+          {...register("password")}
+          error={errors.password?.message}
+        />
 
         <div className="w-1/2 mx-auto">
-          <Button type="submit" className="mt-2">
+          <Button type="submit" className="mt-2" isLoading={isLoading}>
             Fazer Login
           </Button>
         </div>
