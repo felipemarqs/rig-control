@@ -7,6 +7,7 @@ import { CreateEfficiencyDto } from './dto/create-efficiency.dto';
 import { UpdateEfficiencyDto } from './dto/update-efficiency.dto';
 import { EfficienciesRepository } from 'src/shared/database/repositories/efficiencies.repositories';
 import { UsersRigRepository } from 'src/shared/database/repositories/usersRig.repositories';
+import { isAfter, isBefore } from 'date-fns';
 
 @Injectable()
 export class EfficienciesService {
@@ -14,6 +15,12 @@ export class EfficienciesService {
     private readonly efficiencyRepo: EfficienciesRepository,
     private readonly userRigsRepo: UsersRigRepository,
   ) {}
+
+  private isTimeValid(startHour: string, endHour: string): boolean {
+    const startTime = new Date(startHour);
+    const endTime = new Date(endHour);
+    return isBefore(startTime, endTime);
+  }
 
   async create(createEfficiencyDto: CreateEfficiencyDto, userId: string) {
     const { rigId, date, availableHours, periods, fluidRatio, equipmentRatio } =
@@ -35,6 +42,30 @@ export class EfficienciesService {
 
     if (efficiencyAlreadyExists) {
       throw new ConflictException('Data já preenchida!');
+    }
+
+    for (let i = 0; i < periods.length; i++) {
+      const currentPeriod = periods[i];
+
+      if (i > 0) {
+        const previousPeriod = periods[i - 1];
+        if (
+          isAfter(
+            new Date(currentPeriod.startHour),
+            new Date(previousPeriod.endHour),
+          )
+        ) {
+          throw new ConflictException(
+            'Horários de período se sobrepõem ou são inválidos.',
+          );
+        }
+      }
+
+      if (!this.isTimeValid(currentPeriod.startHour, currentPeriod.endHour)) {
+        throw new ConflictException(
+          'Horário inválido. A hora de início deve ser antes da hora final.',
+        );
+      }
     }
 
     const efficiencyData = {

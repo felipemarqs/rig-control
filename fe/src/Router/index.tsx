@@ -1,9 +1,11 @@
-import {Routes, Route, BrowserRouter} from "react-router-dom";
-import {AuthGuard} from "./AuthGuard";
-import {Login} from "../view/pages/Login";
-import {Dashboard} from "../view/pages/Dashboard";
-import {Register} from "../view/pages/Register";
-import {AuthLayout} from "../view/Layouts/AuthLayout";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { AuthGuard } from "./AuthGuard";
+import { Login } from "../view/pages/Login";
+import { Dashboard } from "../view/pages/Dashboard";
+import { Register } from "../view/pages/Register";
+import { AuthLayout } from "../view/Layouts/AuthLayout";
+import { MainLayout } from "../view/Layouts/MainLayout/index";
+import { Form } from "../view/pages/Form";
 
 export const Router = () => {
   return (
@@ -17,7 +19,11 @@ export const Router = () => {
         </Route>
 
         <Route element={<AuthGuard isPrivate={true} />}>
-          <Route path="/" element={<Dashboard />} />
+          <Route element={<MainLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/form" element={<Form />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

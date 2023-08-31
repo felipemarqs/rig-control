@@ -3,6 +3,10 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      gridTemplateColumns: {
+        // Simple 16 column grid
+        16: "repeat(16, minmax(0, 1fr))",
+      },
       backgroundImage: {
         "sonda-mar": "url(/src/assets/images/sonda_mar.png)",
         logo: "url(/src/assets/images/logo.png)",

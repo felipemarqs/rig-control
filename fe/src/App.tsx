@@ -1,8 +1,9 @@
-import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
-import {Router} from "./Router";
-import {Toaster} from "react-hot-toast";
-import {AuthProvider} from "./app/contexts/AuthContext";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Router } from "./Router";
+import { Toaster } from "react-hot-toast";
+import { AuthProvider } from "./app/contexts/AuthContext";
+
+import { SidebarProvider } from "./app/contexts/SidebarContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -17,11 +18,13 @@ export const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <Router />
+        <SidebarProvider>
+          <Router />
 
-        <Toaster position="bottom-center" reverseOrder={false} />
+          <Toaster position="bottom-center" reverseOrder={false} />
+        </SidebarProvider>
       </AuthProvider>
-      <ReactQueryDevtools/>
+      {/* <ReactQueryDevtools/> */}
     </QueryClientProvider>
   );
 };
