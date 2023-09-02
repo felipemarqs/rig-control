@@ -2,9 +2,11 @@ import {MoreVertical, ChevronLast, ChevronFirst} from "lucide-react";
 import React from "react";
 import whiteLogo from "../../assets/images/white-logo.png";
 import {useSidebarContext} from "../../app/contexts/SidebarContext";
+import {useAuth} from "../../app/hooks/useAuth";
 
 export default function Sidebar({children}: {children: React.ReactNode}) {
   const {expanded, toggleVisibility} = useSidebarContext();
+  const {signout, user} = useAuth();
 
   return (
     <aside className="h-screen">
@@ -34,12 +36,16 @@ export default function Sidebar({children}: {children: React.ReactNode}) {
           `}
           >
             <div className="leading-4">
-              <h4 className="text-white font-semibold">John Doe</h4>
-              <span className="text-xs  text-white">SONDA 116</span>
+              <h4 className="text-white font-semibold">{user?.name}</h4>
+              <span className="text-xs  text-white">
+                {user?.rigs[0].rig.name}
+              </span>
             </div>
           </div>
 
-          <MoreVertical size={20} />
+          <button onClick={() => signout()}>
+            <MoreVertical size={20} />
+          </button>
         </div>
       </nav>
     </aside>

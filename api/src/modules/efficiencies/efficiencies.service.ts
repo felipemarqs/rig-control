@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateEfficiencyDto } from './dto/create-efficiency.dto';
@@ -8,12 +9,14 @@ import { UpdateEfficiencyDto } from './dto/update-efficiency.dto';
 import { EfficienciesRepository } from 'src/shared/database/repositories/efficiencies.repositories';
 import { UsersRigRepository } from 'src/shared/database/repositories/usersRig.repositories';
 import { isAfter, isBefore } from 'date-fns';
+import { RigsRepository } from 'src/shared/database/repositories/rigs.repositories';
 
 @Injectable()
 export class EfficienciesService {
   constructor(
     private readonly efficiencyRepo: EfficienciesRepository,
     private readonly userRigsRepo: UsersRigRepository,
+    private readonly rigsRepo: RigsRepository,
   ) {}
 
   private isTimeValid(startHour: string, endHour: string): boolean {
@@ -103,8 +106,34 @@ export class EfficienciesService {
     return efficiency;
   }
 
-  findAll() {
-    return `This action returns all efficiencies`;
+  async findAllByRigId(filters: {
+    rigId: string;
+    startDate: string;
+    endDate: string;
+  }) {
+    const rigExists = await this.rigsRepo.findUnique({
+      where: {
+        id: filters.rigId,
+      },
+    });
+
+    if (!rigExists) {
+      throw new NotFoundException('Sonda não encontrada');
+    }
+    const efficiencies = await this.efficiencyRepo.findMany({
+      where: {
+        rigId: filters.rigId,
+        date: {
+          gte: new Date(filters.startDate),
+          lte: new Date(filters.endDate),
+        },
+      },
+      orderBy: {
+        date: 'asc',
+      },
+    });
+
+    return efficiencies;
   }
 
   findOne(id: number) {

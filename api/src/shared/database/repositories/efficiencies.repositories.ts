@@ -10,6 +10,10 @@ export class EfficienciesRepository {
     return this.prismaService.efficiency.create(createDto);
   }
 
+  async findMany(findAllDto: Prisma.EfficiencyFindManyArgs) {
+    return this.prismaService.efficiency.findMany(findAllDto);
+  }
+
   findUnique(findUniqueDto: Prisma.EfficiencyFindUniqueArgs) {
     return this.prismaService.efficiency.findUnique(findUniqueDto);
   }

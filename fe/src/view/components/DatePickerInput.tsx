@@ -1,13 +1,14 @@
-import {cn} from "../../app/utils/cn";
-import {useState} from "react";
-import {formatDate} from "../../app/utils/formatDate";
-import {Popover} from "./Popover";
-import {DatePicker} from "./DatePicker";
-import {ErrorContainer} from "./ErrorContainer";
+import { cn } from "../../app/utils/cn";
+import { useState } from "react";
+import { formatDate } from "../../app/utils/formatDate";
+import { Popover } from "./Popover";
+import { DatePicker } from "./DatePicker";
+import { ErrorContainer } from "./ErrorContainer";
 
 interface DatePickerInputProps {
   error?: string;
   className?: string;
+  placeholder?: string;
   value?: Date;
   onChange?(date: Date): void;
 }
@@ -15,6 +16,7 @@ export const DatePickerInput = ({
   error,
   className,
   value,
+  placeholder,
   onChange,
 }: DatePickerInputProps) => {
   const [selectedDate, setSelectedDate] = useState(value ?? new Date());
@@ -37,7 +39,8 @@ export const DatePickerInput = ({
             )}
           >
             <span className="absolute text-gray-700 text-xs left-[13px] top-2 pointer-events-none">
-              Data
+              {!placeholder && <>Data</>}
+              {placeholder && placeholder}
             </span>
 
             <span>{formatDate(selectedDate)}</span>

@@ -28,6 +28,9 @@ export const Form = () => {
     remainingMinutes,
     isFormValid,
     handleDescription,
+    handleSubmit,
+    cleanFields,
+    isLoading,
   } = useFormController();
 
   const isPending = remainingMinutes !== 0;
@@ -49,22 +52,31 @@ export const Form = () => {
         {!isPending && <span> Horários Preenchidos!</span>}
       </div>
 
+      {/*   {!date && (
+        <div
+          className={cn(
+            "fixed top-96 right-5 bg-redAccent-500  text-white p-4 z-50 rounded-lg"
+          )}
+        >
+          <span>Selecione uma data!!</span>
+        </div>
+      )}
+ */}
       <div className="w-full  flex  justify-center ">
         <div className=" max-h-[90vh] overflow-y-scroll w-[70%] min-w-[700px] max-w-[800px]  bg-primary-500 p-4 rounded-xl  ">
-          <div className={cn(" flex items-center justify-center gap-2")}>
+          <div
+            className={cn(" flex items-center flex-col justify-center gap-2")}
+          >
+            <header className="my-6">
+              <h1 className="text-white text-2xl">
+                Boletim Diário de Ocorrência
+              </h1>
+            </header>
             <DatePickerInput
+              error={!date ? "Selecione uma data!" : undefined}
               value={date}
               onChange={(value) => handleDateChange(value)}
             />
-            {!date && (
-              <div
-                className={cn(
-                  " bg-redAccent-500  text-white p-4 z-50 rounded-lg"
-                )}
-              >
-                <span> Selecione uma data!! </span>
-              </div>
-            )}
           </div>
           {periods.map(
             ({
@@ -79,45 +91,20 @@ export const Form = () => {
             }) => (
               <React.Fragment key={id}>
                 <div className="flex justify-center flex-col items-center border py-4 border-white my-4 ">
-                  <div className="flex justify-between p-4 h-[75px]  w-[90%]">
-                    <div className="w-[33%]">
-                      <Select
-                        placeholder="Tipo"
-                        value={type}
-                        onChange={(value) => handlePeriodType(id, value)}
-                        options={periodTypes.map(({id, type}) => {
-                          return {
-                            value: id,
-                            label: type,
-                          };
-                        })}
-                      />
-                    </div>
-
-                    <div className="w-[33%]">
-                      {type && (
-                        <Select
-                          onChange={(value) =>
-                            handlePeriodClassification(id, value)
-                          }
-                          placeholder="Classificação"
-                          value={classification}
-                          options={getPeriodClassification(type)}
-                        />
-                      )}
-                    </div>
-                  </div>
                   <div className="flex justify-between p-4 h-[75px] w-[90%] ">
-                    <div className="flex justify-between items-center gap-1  ">
+                    <div className="flex justify-between flex-col items-center gap-1">
                       <span className="text-white text-xs tracking-[-0.5px]">
                         Horário Inicial:
                       </span>
                       <TimePicker
-                        className="text-black"
+                        className="bg-gray-200 border rounded-md px-2 py-1 text-gray-800"
                         style={{
                           color: "black",
                         }}
-                        popupStyle={{color: "#1c7b7b"}}
+                        popupStyle={{
+                          backgroundColor: "red", // Altere a cor de fundo do popup conforme desejado
+                          borderColor: "red", // Altere a cor da borda do popup conforme desejado
+                        }}
                         defaultValue={dayjs(startHour, format)}
                         onChange={(time, timeString) =>
                           handleStartHourChange(time, timeString, id)
@@ -158,7 +145,7 @@ export const Form = () => {
                     </div>
 
                     {}
-                    <div className="flex justify-between items-center gap-1  ">
+                    <div className="flex justify-between flex-col  items-center gap-1  ">
                       <span className="text-white text-xs tracking-[-0.5px]">
                         Horário Final:
                       </span>
@@ -197,24 +184,41 @@ export const Form = () => {
                     </div>
                   </div>
 
-                  <div className="flex justify-between p-4 h-[75px] w-[90%] ">
-                    <div className="flex justify-between items-center w-full gap-1">
-                      <span className="text-white text-xs tracking-[-0.5px]">
-                        Descrição:
-                      </span>
-                      <TextArea
-                        maxLength={100}
-                        style={{height: 50, resize: "vertical", border: "none"}}
-                        value={description}
-                        onChange={(e) => handleDescription(id, e.target.value)}
-                        placeholder="Descrição"
+                  <div className="flex justify-between p-4 h-[75px]  w-[90%]">
+                    <div className="w-[33%]">
+                      <Select
+                        error={!type ? "Obrigatório" : ""}
+                        placeholder="Tipo"
+                        value={type}
+                        onChange={(value) => handlePeriodType(id, value)}
+                        options={periodTypes.map(({id, type}) => {
+                          return {
+                            value: id,
+                            label: type,
+                          };
+                        })}
                       />
+                    </div>
+
+                    <div className="w-[33%]">
+                      {type && (
+                        <Select
+                          error={!classification ? "Obrigatório" : ""}
+                          onChange={(value) =>
+                            handlePeriodClassification(id, value)
+                          }
+                          placeholder="Classificação"
+                          value={classification}
+                          options={getPeriodClassification(type)}
+                        />
+                      )}
                     </div>
                   </div>
 
                   <div className="flex justify-between p-4 h-[75px]  w-[90%]">
                     <div className="w-[33%]">
                       <Select
+                        error={!fluidRatio ? "Obrigatório" : ""}
                         placeholder="Movimentação de Fluido"
                         value={fluidRatio}
                         onChange={(value) => handleFluidRatio(id, value)}
@@ -224,6 +228,7 @@ export const Form = () => {
 
                     <div className="w-[33%]">
                       <Select
+                        error={!equipmentRatio ? "Obrigatório" : ""}
                         placeholder="Movimentação de Equip."
                         value={equipmentRatio}
                         onChange={(value) => handleEquipmentRatio(id, value)}
@@ -231,17 +236,39 @@ export const Form = () => {
                       />
                     </div>
                   </div>
+                  <div className="flex justify-between p-4 h-[75px] w-[90%] ">
+                    <div className="flex justify-between items-center w-full gap-1">
+                      <TextArea
+                        maxLength={100}
+                        style={{
+                          height: 50,
+                          resize: "vertical",
+                          border: "none",
+                        }}
+                        value={description}
+                        onChange={(e) => handleDescription(id, e.target.value)}
+                        placeholder="Descrição"
+                      />
+                    </div>
+                  </div>
 
-                  {periods.length > 1 && (
-                    <div className="flex justify-end w-[90%] px-4">
+                  <div className="flex justify-between w-[90%] px-4">
+                    <Button
+                      className="bg-redAccent-500 w-[35%] h-[31px] rounded-lg"
+                      onClick={() => cleanFields(id)}
+                    >
+                      <span className="text-sm">Limpar Campos</span>
+                    </Button>
+
+                    {periods.length > 1 && (
                       <Button
                         className="bg-redAccent-500 w-[35%] h-[31px] rounded-lg"
                         onClick={() => handleDeletePeriod(id)}
                       >
                         <span className="text-sm">Remover Periodo</span>
                       </Button>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
 
                 <hr />
@@ -260,9 +287,9 @@ export const Form = () => {
 
           <div className="flex justify-center mt-6 ">
             <Button
-              disabled={!isFormValid}
+              disabled={!isFormValid || isLoading}
               className="bg-secondary-500 w-2/3 "
-              onClick={() => console.log(periods)}
+              onClick={() => handleSubmit(periods)}
             >
               Enviar dados
             </Button>

@@ -15,15 +15,22 @@ export class UsersService {
         accessLevel: true,
         rigs: {
           select: {
-            rigId: true,
+            rig: {
+              select: {
+                id: true,
+                name: true,
+                state: true,
+                isActive: true,
+              },
+            },
           },
         },
       },
     });
 
-   if (!user) {
-    throw new UnauthorizedException("Usuário não encontrado!")
-   }
+    if (!user) {
+      throw new UnauthorizedException('Usuário não encontrado!');
+    }
 
     return user;
   }

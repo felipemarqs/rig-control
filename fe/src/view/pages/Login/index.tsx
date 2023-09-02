@@ -7,7 +7,7 @@ export const Login = () => {
   const {handleSubmit, register, errors, isLoading} = useLoginController();
   return (
     //Container
-    <div className="bg-secondary-500 h-[95%] w-[90%]  max-w-[1000px] min-h-full mb-12  rounded-2xl lg:w-[40%] text-center">
+    <div className="bg-secondary-500  w-[90%]  max-w-[1000px] min-h-full mb-12  rounded-2xl lg:w-[40%] text-center">
       {/* Image Container */}
       <div
         className="w-full h-[300px] flex flex-col justify-between bg-cover bg-center bg-sonda-mar rounded-2xl"
