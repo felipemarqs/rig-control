@@ -41,12 +41,14 @@ enum UF {
 }
 
 model Rig {
-  id           String       @id @default(uuid()) @db.Uuid
-  name         String       @unique
-  isActive     Boolean      @default(true)
-  state        UF
-  users        UserRig[]
-  efficiencies Efficiency[]
+  id                   String                 @id @default(uuid()) @db.Uuid
+  name                 String                 @unique
+  isActive             Boolean                @default(true)
+  state                UF
+  users                UserRig[]
+  efficiencies         Efficiency[]
+  BillingConfiguration BillingConfiguration[]
+  Billing              Billing[]
 
   @@map("rigs")
 }
@@ -94,6 +96,7 @@ model Efficiency {
   periods        Period[]
   fluidRatio     FluidRatio[]
   equipmentRatio EquipmentRatio[]
+  Billing        Billing[]
 
   @@map("efficiencies")
 }
@@ -170,4 +173,50 @@ model EquipmentRatio {
   efficiency   Efficiency @relation(fields: [efficiencyId], references: [id], onDelete: Cascade)
 
   @@map("equipment_ratio")
+}
+
+model BillingConfiguration {
+  id                         String @id @default(uuid()) @db.Uuid
+  rigId                      String @map("rig_id") @db.Uuid
+  availableHourTax           Float  @map("available_hour_tax")
+  glossHourTax               Float  @map("gloss_hour_tax")
+  dtmLt20Tax                 Float  @map("dtm_lt_20_tax")
+  dtmBt20And50Tax            Float  @map("dtm_bt_20_and_50_tax")
+  dtmGt50Tax                 Float  @map("dtm_gt_50_tax")
+  fluidRatioLt20Tax          Float  @map("fluid_ratio_lt_20_tax")
+  fluidRatioBt20And50Tax     Float  @map("fluid_ratio_bt_20_and_50_tax")
+  fluidRatioGt50Tax          Float  @map("fluid_ratio_gt_50_tax")
+  equipmentRatioLt20Tax      Float  @map("equipment_ratio_lt_20_tax")
+  equipmentRatioBt20And50Tax Float  @map("equipment_ratio_bt_20_and_50_tax")
+  equipmentRatioGt50Tax      Float  @map("equipment_ratio_gt_50_tax")
+  readjustment               Float
+  mobilization               Float
+
+  rig Rig @relation(fields: [rigId], references: [id])
+
+  @@map("billing_configurations")
+}
+
+model Billing {
+  id                       String   @id @default(uuid()) @db.Uuid
+  rigId                    String   @map("rig_id") @db.Uuid
+  efficiencyId             String   @map("efficiency_id") @db.Uuid
+  availableHourAmount      Float    @map("available_hour_amount")
+  glossHourAmount          Float    @map("gloss_hour_amount")
+  dtmLt20Amount            Float    @map("dtm_lt_20_amount")
+  dtmBt20And50Amount       Float    @map("dtm_bt_20_and_50_amount")
+  dtmGt50Amount            Float    @map("dtm_gt_50_amount")
+  fluidLt20Amount          Float    @map("fluid_lt_20_amount")
+  fluidBt20And50Amount     Float    @map("fluid_bt_20_and_50_amount")
+  fluidGt50Amount          Float    @map("fluid_gt_50_amount")
+  equipmentLt20Amount      Float    @map("equipment_lt_20_amount")
+  equipmentBt20And50Amount Float    @map("equipment_bt_20_and_50_amount")
+  equipmentGt50Amount      Float    @map("equipment_gt_50_amount")
+  date                     DateTime
+  total                    Float
+
+  rig        Rig        @relation(fields: [rigId], references: [id], onDelete: Cascade)
+  efficiency Efficiency @relation(fields: [efficiencyId], references: [id], onDelete: Cascade)
+
+  @@map("billings")
 }

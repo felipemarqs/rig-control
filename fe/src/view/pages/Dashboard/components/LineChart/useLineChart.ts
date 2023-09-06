@@ -1,5 +1,5 @@
-import { useDashboard } from "../../DashboardContext/useDashboard";
-import { Efficiency } from "../../entities/Efficiency";
+import {useDashboard} from "../../DashboardContext/useDashboard";
+import {Efficiency} from "../../entities/Efficiency";
 
 interface OutputData {
   id: string;
@@ -8,7 +8,7 @@ interface OutputData {
 }
 
 export const useLineChart = () => {
-  const { eficiencies, selectedRig } = useDashboard();
+  const {efficiencies, user} = useDashboard();
 
   let data: [
     {
@@ -18,14 +18,14 @@ export const useLineChart = () => {
     }
   ] = [
     {
-      id: selectedRig,
+      id: user?.rigs[0].rig.name!,
       color: "#1c7b7b",
       data: [],
     },
   ];
 
-  const formatEfficiencyToLineChart = (eficiencies: Efficiency[]) => {
-    eficiencies.forEach(({ availableHours, id, date }) => {
+  const formatEfficiencyToLineChart = (efficiencies: Efficiency[]) => {
+    efficiencies.forEach(({availableHours, id, date}) => {
       const formattedDate = `${new Date(date)
         .getDate()
         .toString()
@@ -33,15 +33,17 @@ export const useLineChart = () => {
         .toString()
         .padStart(2, "0")}`;
 
+      const availableHoursPercentage = (availableHours * 100) / 24;
+
       data[0].data.push({
         id: id,
         x: formattedDate,
-        y: availableHours,
+        y: Number(availableHoursPercentage.toFixed(2)),
       });
     });
   };
 
-  formatEfficiencyToLineChart(eficiencies);
+  formatEfficiencyToLineChart(efficiencies);
 
-  return { data };
+  return {data};
 };

@@ -1,33 +1,38 @@
-import { ResponsiveLine } from "@nivo/line";
-import { useLineChart } from "./useLineChart";
+import {ResponsiveLine} from "@nivo/line";
+import {useLineChart} from "./useLineChart";
+import {useNavigate} from "react-router-dom";
 
 export const LineChart = () => {
-  const { data } = useLineChart();
-
+  const {data} = useLineChart();
+  const navigate = useNavigate();
   return (
     <ResponsiveLine
       data={data}
-      margin={{ top: 30, right: 50, bottom: 30, left: 60 }}
+      margin={{top: 30, right: 50, bottom: 30, left: 60}}
       animate={true}
       enableSlices={"x"}
       yScale={{
         type: "linear",
         stacked: true,
         min: 0,
-        max: 24,
+        max: 100,
       }}
       pointLabel={(e) => {
         //if (e.y === 100) return "";
-        return e.y + "Hrs";
+        return e.y + "%";
       }}
+      // @ts-ignore
+      onClick={(e) => navigate(`/details/${e.points[0].data.id}`)}
       lineWidth={3}
       curve="linear"
+      enablePointLabel={true}
       colors={["#1c7b7b", "#774dd7"]}
       enableGridX={false}
       pointSize={12}
       pointColor="white"
       pointBorderWidth={2}
-      pointBorderColor={{ from: "serieColor" }}
+      pointBorderColor={{from: "serieColor"}}
+      yFormat=" >-.2f"
       layers={[
         "grid",
         "markers",
@@ -38,6 +43,7 @@ export const LineChart = () => {
         "points",
         "legends",
       ]}
+      useMesh={true}
       theme={{
         axis: {
           domain: {

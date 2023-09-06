@@ -15,7 +15,6 @@ import { EfficienciesService } from './efficiencies.service';
 import { CreateEfficiencyDto } from './dto/create-efficiency.dto';
 import { UpdateEfficiencyDto } from './dto/update-efficiency.dto';
 import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
-import { OptionalParseUUIDPipe } from 'src/shared/pipes/OptionalParseUUIDPipe';
 
 @Controller('efficiencies')
 export class EfficienciesController {

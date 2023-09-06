@@ -1,25 +1,23 @@
-import { Outlet } from "react-router-dom";
+import {Outlet} from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
-import { SidebarItem } from "../../components/SidebarItem";
+import {SidebarItem} from "../../components/SidebarItem";
 import {
   BarChart3,
   LayoutDashboard,
-  LifeBuoy,
-  Receipt,
-  Settings,
   UserCircle,
-  UserCircle2,
-  AlarmClockOffIcon,
   FileText,
+  CircleDollarSignIcon,
 } from "lucide-react";
 
-import { useSidebarContext } from "../../../app/contexts/SidebarContext";
+import {useSidebarContext} from "../../../app/contexts/SidebarContext";
+import {useAuth} from "../../../app/hooks/useAuth";
 
 export const MainLayout = () => {
   //const {activeItem,handleNavItemChange} = useMainLayout()
-  const { active } = useSidebarContext();
+  const {active} = useSidebarContext();
+  const {isUserAdm} = useAuth();
   return (
-    <div className="flex">
+    <div className="flex w-screen h-screen">
       <Sidebar>
         <SidebarItem
           icon={<LayoutDashboard size={20} />}
@@ -28,19 +26,14 @@ export const MainLayout = () => {
           isActive={active === "Dashboard"}
         />
 
-        <SidebarItem
-          icon={<BarChart3 size={20} />}
-          text="Statistics"
-          urlText="statistics"
-          isActive={active === "Statistics"}
-        />
-
-        <SidebarItem
-          icon={<UserCircle size={20} />}
-          text="Users"
-          urlText="users"
-          isActive={active === "Users"}
-        />
+        {isUserAdm && (
+          <SidebarItem
+            icon={<CircleDollarSignIcon size={20} />}
+            text="Dashboard Faturamento"
+            urlText="invoicing-dashboard"
+            isActive={active === "Dashboard Faturamento"}
+          />
+        )}
 
         <SidebarItem
           icon={<FileText size={20} />}
@@ -50,22 +43,20 @@ export const MainLayout = () => {
         />
 
         <SidebarItem
-          icon={<Receipt size={20} />}
-          text="Inventário"
-          urlText="inventory"
+          icon={<BarChart3 size={20} />}
+          text="Listar Ocorrências"
+          urlText="list"
+          isActive={active === "Listar Ocorrências"}
         />
 
-        <SidebarItem
-          icon={<Settings size={20} />}
-          text="Carros"
-          urlText="cars"
-        />
-
-        <SidebarItem
-          icon={<LifeBuoy size={20} />}
-          text="Faturamento"
-          urlText="invoicing"
-        />
+        {isUserAdm && (
+          <SidebarItem
+            icon={<UserCircle size={20} />}
+            text="Cadastrar Sonda"
+            urlText="rig"
+            isActive={active === "Cadastrar Sonda"}
+          />
+        )}
       </Sidebar>
       <Outlet />
     </div>

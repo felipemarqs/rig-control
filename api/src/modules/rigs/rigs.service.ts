@@ -23,4 +23,8 @@ export class RigsService {
       },
     });
   }
+
+  async findAll() {
+    return this.rigsRepo.findAll();
+  }
 }

@@ -1,4 +1,5 @@
-import { httpClient } from "../httpClient";
+import {PersistanceEfficiency} from "../../entities/PersistanceEfficiency";
+import {httpClient} from "../httpClient";
 
 export type EfficienciesFilters = {
   rigId: string;
@@ -6,8 +7,10 @@ export type EfficienciesFilters = {
   endDate: string;
 };
 
+type EfficienciesResponse = Array<PersistanceEfficiency>;
+
 export const getAll = async (filters: EfficienciesFilters) => {
-  const { data } = await httpClient.get(`/efficiencies/`, {
+  const {data} = await httpClient.get<EfficienciesResponse>(`/efficiencies/`, {
     params: filters,
   });
 

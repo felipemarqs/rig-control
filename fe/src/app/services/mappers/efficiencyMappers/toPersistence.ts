@@ -1,13 +1,13 @@
 import dayjs from "dayjs";
-import { DomainEfficiency } from "../../../entities/DomainEfficiency";
-import { PersistanceEfficiency } from "../../../entities/PersistanceEfficiency";
-import { differenceInMinutes, parse } from "date-fns";
+import {DomainEfficiency} from "../../../entities/DomainEfficiency";
+import {PersistanceEfficiency} from "../../../entities/PersistanceEfficiency";
+import {differenceInMinutes, parse} from "date-fns";
 
 export const toPersistence = (domainEfficiency: DomainEfficiency) => {
   let totalAvailableHours = 0;
 
   const periodsArray = domainEfficiency.periods.map(
-    ({ startHour, endHour, classification, type, description }) => {
+    ({startHour, endHour, classification, type, description}) => {
       const [startHourString, startMinuteString] = startHour.split(":");
       const [endHourString, endMinuteString] = endHour.split(":");
 
@@ -40,13 +40,13 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
   const toPersistenceObj: PersistanceEfficiency = {
     date: domainEfficiency.date,
     availableHours: Number(totalAvailableHours.toFixed(2)),
-    rigId: domainEfficiency.rigId,
+    rigId: domainEfficiency.rigId!,
     periods: periodsArray,
     equipmentRatio: [],
     fluidRatio: [],
   };
 
-  domainEfficiency.periods.forEach(({ equipmentRatio, fluidRatio }) => {
+  domainEfficiency.periods.forEach(({equipmentRatio, fluidRatio}) => {
     if (equipmentRatio) {
       toPersistenceObj.equipmentRatio.push({
         ratio: equipmentRatio,
@@ -60,7 +60,7 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
     }
   });
 
-  return { toPersistenceObj };
+  return {toPersistenceObj};
 };
 
 /* export class PeriodDto {

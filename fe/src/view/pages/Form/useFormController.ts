@@ -70,9 +70,7 @@ export const useFormController = () => {
       navigate("/dashboard", {replace: true});
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
-      console.log(error.response.data.message);
     }
-    console.log(toPersistenceObj);
   };
 
   /*  <[{id:string, startHour:string,endHour:string,type: 'WORKING' | 'REPAIR' | '', classification: string}]> */

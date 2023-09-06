@@ -101,10 +101,7 @@ export const Form = () => {
                         style={{
                           color: "black",
                         }}
-                        popupStyle={{
-                          backgroundColor: "red", // Altere a cor de fundo do popup conforme desejado
-                          borderColor: "red", // Altere a cor da borda do popup conforme desejado
-                        }}
+                        popupClassName="custom-timepicker-popup"
                         defaultValue={dayjs(startHour, format)}
                         onChange={(time, timeString) =>
                           handleStartHourChange(time, timeString, id)
@@ -218,7 +215,6 @@ export const Form = () => {
                   <div className="flex justify-between p-4 h-[75px]  w-[90%]">
                     <div className="w-[33%]">
                       <Select
-                        error={!fluidRatio ? "Obrigatório" : ""}
                         placeholder="Movimentação de Fluido"
                         value={fluidRatio}
                         onChange={(value) => handleFluidRatio(id, value)}
@@ -228,7 +224,6 @@ export const Form = () => {
 
                     <div className="w-[33%]">
                       <Select
-                        error={!equipmentRatio ? "Obrigatório" : ""}
                         placeholder="Movimentação de Equip."
                         value={equipmentRatio}
                         onChange={(value) => handleEquipmentRatio(id, value)}

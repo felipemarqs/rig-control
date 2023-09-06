@@ -1,11 +1,13 @@
-import { Routes, Route, BrowserRouter } from "react-router-dom";
-import { AuthGuard } from "./AuthGuard";
-import { Login } from "../view/pages/Login";
-import { Dashboard } from "../view/pages/Dashboard";
-import { Register } from "../view/pages/Register";
-import { AuthLayout } from "../view/Layouts/AuthLayout";
-import { MainLayout } from "../view/Layouts/MainLayout/index";
-import { Form } from "../view/pages/Form";
+import {Routes, Route, BrowserRouter} from "react-router-dom";
+import {AuthGuard} from "./AuthGuard";
+import {Login} from "../view/pages/Login";
+import {Dashboard} from "../view/pages/Dashboard";
+import {Register} from "../view/pages/Register";
+import {AuthLayout} from "../view/Layouts/AuthLayout";
+import {MainLayout} from "../view/Layouts/MainLayout/index";
+import {Form} from "../view/pages/Form";
+import {List} from "../view/pages/List";
+import { BillingDashboard } from "../view/pages/BillingDashboard";
 
 export const Router = () => {
   return (
@@ -23,6 +25,8 @@ export const Router = () => {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/" element={<Dashboard />} />
             <Route path="/form" element={<Form />} />
+            <Route path="/list" element={<List />} />
+            <Route path="/invoicing-dashboard" element={<BillingDashboard />} />
           </Route>
         </Route>
       </Routes>
