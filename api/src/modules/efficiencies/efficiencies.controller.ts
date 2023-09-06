@@ -49,9 +49,22 @@ export class EfficienciesController {
     });
   }
 
+  @Get(':efficiencyId')
+  findById(@Param('efficiencyId', ParseUUIDPipe) efficiencyId: string) {
+    return this.efficienciesService.findById(efficiencyId);
+  }
+
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':efficiencyId')
   remove(@Param('efficiencyId', ParseUUIDPipe) efficiencyId: string) {
     return this.efficienciesService.remove(efficiencyId);
+  }
+
+  @Post('/test')
+  createTest(
+    @ActiveUserId() userId: string,
+    @Body() createEfficiencyDto: CreateEfficiencyDto,
+  ) {
+    return this.efficienciesService.create(createEfficiencyDto, userId);
   }
 }

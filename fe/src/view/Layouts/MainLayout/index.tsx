@@ -7,6 +7,7 @@ import {
   UserCircle,
   FileText,
   CircleDollarSignIcon,
+  CircleDollarSign,
 } from "lucide-react";
 
 import {useSidebarContext} from "../../../app/contexts/SidebarContext";
@@ -29,9 +30,18 @@ export const MainLayout = () => {
         {isUserAdm && (
           <SidebarItem
             icon={<CircleDollarSignIcon size={20} />}
-            text="Dashboard Faturamento"
+            text="Dashboard de Fat."
             urlText="invoicing-dashboard"
-            isActive={active === "Dashboard Faturamento"}
+            isActive={active === "Dashboard de Fat."}
+          />
+        )}
+
+        {isUserAdm && (
+          <SidebarItem
+            icon={<CircleDollarSign size={20} />}
+            text="Listagem de Fat."
+            urlText="invoicing-list"
+            isActive={active === "Listagem de Fat."}
           />
         )}
 

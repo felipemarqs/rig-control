@@ -310,6 +310,38 @@ export class EfficienciesService {
     return `This action updates a #${id} efficiency`;
   }
 
+  async findById(efficiencyId: string) {
+    const efficiency = await this.efficiencyRepo.findUnique({
+      where: {
+        id: efficiencyId,
+      },
+      select: {
+        id: true,
+        date: true,
+        availableHours: true,
+        rigId: true,
+        userId: true,
+        periods: {
+          select: {
+            id: true,
+            startHour: true,
+            endHour: true,
+            classification: true,
+            description: true,
+            type: true,
+          },
+          orderBy: { startHour: 'asc' },
+        },
+      },
+    });
+
+    if (!efficiency) {
+      throw new NotFoundException('Efficiencia não encontrada!');
+    }
+
+    return efficiency;
+  }
+
   async remove(efficiencyId: string) {
     await this.efficiencyRepo.delete({ where: { id: efficiencyId } });
     return null;

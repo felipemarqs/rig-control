@@ -37,14 +37,14 @@ export const Form = () => {
 
   const format = "HH:mm";
   return (
-    <div className="w-full min-w-[1000px]">
+    <div className="w-full lg:min-w-[1000px]">
       <Header
         title="FORMULÁRIO"
         subtitle="Submissão dos dados de eficiência da sonda."
       />
       <div
         className={cn(
-          "fixed top-5 right-5 bg-redAccent-500  text-white p-4 z-50 rounded-lg",
+          "fixed  bg-redAccent-500  text-sm text-white p-1 lg:p-4 z-50 rounded-lg top-5 right-5",
           !isPending && "bg-secondary-500"
         )}
       >
@@ -62,8 +62,8 @@ export const Form = () => {
         </div>
       )}
  */}
-      <div className="w-full  flex  justify-center ">
-        <div className=" max-h-[90vh] overflow-y-scroll w-[70%] min-w-[700px] max-w-[800px]  bg-primary-500 p-4 rounded-xl  ">
+      <div className="w-full  flex  lg:justify-center ">
+        <div className=" max-h-[90vh] overflow-y-scroll w-[70%] flex-grow max-w-[800px]  bg-primary-500 p-4 rounded-xl lg:min-w-[700px] ">
           <div
             className={cn(" flex items-center flex-col justify-center gap-2")}
           >
@@ -197,7 +197,7 @@ export const Form = () => {
                       />
                     </div>
 
-                    <div className="w-[33%]">
+                    <div className="w-1/2 lg:w-[33%]">
                       {type && (
                         <Select
                           error={!classification ? "Obrigatório" : ""}
@@ -213,7 +213,7 @@ export const Form = () => {
                   </div>
 
                   <div className="flex justify-between p-4 h-[75px]  w-[90%]">
-                    <div className="w-[33%]">
+                    <div className="w-full   lg:w-[33%]">
                       <Select
                         placeholder="Movimentação de Fluido"
                         value={fluidRatio}
@@ -222,7 +222,7 @@ export const Form = () => {
                       />
                     </div>
 
-                    <div className="w-[33%]">
+                    <div className="w-full   lg:w-[33%]">
                       <Select
                         placeholder="Movimentação de Equip."
                         value={equipmentRatio}
@@ -273,7 +273,7 @@ export const Form = () => {
 
           <div className="flex justify-end mt-4 ">
             <Button
-              className="bg-secondary-500 w-1/3 h-7"
+              className="bg-secondary-500 w-1/3 h-7 text-sm"
               onClick={() => addPeriod()}
             >
               Adicionar período

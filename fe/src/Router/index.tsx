@@ -7,7 +7,8 @@ import {AuthLayout} from "../view/Layouts/AuthLayout";
 import {MainLayout} from "../view/Layouts/MainLayout/index";
 import {Form} from "../view/pages/Form";
 import {List} from "../view/pages/List";
-import { BillingDashboard } from "../view/pages/BillingDashboard";
+import {BillingDashboard} from "../view/pages/BillingDashboard";
+import {ListBilling} from "../view/pages/BillingList";
 
 export const Router = () => {
   return (
@@ -27,6 +28,7 @@ export const Router = () => {
             <Route path="/form" element={<Form />} />
             <Route path="/list" element={<List />} />
             <Route path="/invoicing-dashboard" element={<BillingDashboard />} />
+            <Route path="/invoicing-list" element={<ListBilling />} />
           </Route>
         </Route>
       </Routes>

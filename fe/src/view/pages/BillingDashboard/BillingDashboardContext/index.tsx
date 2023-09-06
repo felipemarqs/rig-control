@@ -1,34 +1,20 @@
-import {createContext, useState} from "react";
+import {createContext, useMemo, useState} from "react";
 import React from "react";
-import {useAuth} from "../../../../app/hooks/useAuth";
-import {User} from "../../../../app/entities/User";
 import {startOfMonth, endOfMonth, format} from "date-fns";
-import {useRigs} from "../../../../app/hooks/useRigs";
-import {Rig} from "../../../../app/entities/Rig";
 import {useBillings} from "../../../../app/hooks/useBillings";
 import {BillingResponse} from "../../../../app/services/billingServices/getAll";
+import {formatCurrency} from "../../../../app/utils/formatCurrency";
 
 interface BillingDashboardContextValue {
-  selectedRig: string;
-  handleChangeRig(rigId: string): void;
   handleStartDateChange(date: Date): void;
   handleEndDateChange(date: Date): void;
   selectedEndDate: string;
   selectedStartDate: string;
   handleApplyFilters(): void;
-  user: User | undefined;
-  signout(): void;
-  rigs:
-    | Rig[]
-    | {
-        id: string;
-        name: string;
-        isActive: boolean;
-        state: string;
-      }[];
   billings: Array<BillingResponse>;
   isFetchingBillings: boolean;
   isEmpty: boolean;
+  totalAmount: number | string;
 }
 
 export const BillingDashboardContext = createContext(
@@ -40,25 +26,6 @@ export const BillingDashboardProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const {user, signout} = useAuth();
-
-  const isUserAdm = user?.accessLevel === "ADM";
-
-  const {rigs, isFetchingRigs, refetchRigs} = useRigs(isUserAdm);
-
-  const userRig = [
-    {
-      id: user?.rigs[0].rig.id!,
-      name: user?.rigs[0].rig.name!,
-      isActive: user?.rigs[0].rig.isAtive!,
-      state: user?.rigs[0].rig.state!,
-    },
-  ];
-
-  const [selectedRig, setSelectedRig] = useState<string>(() => {
-    return isUserAdm ? "" : user?.rigs[0].rig.id!;
-  });
-
   // Obtenha a data atual
   const currentDate = new Date();
 
@@ -90,13 +57,18 @@ export const BillingDashboardProvider = ({
   const {billings, isFetchingBillings, refetchBillings} = useBillings(filters);
   const isEmpty: boolean = billings.length === 0;
 
+  const totalAmount = useMemo(() => {
+    let totalBillings = 0;
+
+    billings.forEach(({total}) => {
+      totalBillings += total;
+    });
+
+    return formatCurrency(totalBillings);
+  }, [billings]);
+
   const handleApplyFilters = () => {
     refetchBillings();
-  };
-
-  const handleChangeRig = (rigId: string) => {
-    setSelectedRig(rigId);
-    setFilters((prevState) => ({...prevState, rigId: rigId}));
   };
 
   const handleStartDateChange = (date: Date) => {
@@ -118,19 +90,15 @@ export const BillingDashboardProvider = ({
   return (
     <BillingDashboardContext.Provider
       value={{
-        selectedRig,
-        handleChangeRig,
         selectedStartDate,
         selectedEndDate,
         handleStartDateChange,
         handleEndDateChange,
         handleApplyFilters,
         isFetchingBillings,
-        user,
-        rigs: isUserAdm ? rigs : userRig,
-        signout,
         billings,
         isEmpty,
+        totalAmount,
       }}
     >
       {children}

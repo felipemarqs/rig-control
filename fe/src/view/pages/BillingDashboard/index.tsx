@@ -1,8 +1,6 @@
-import {BaggageClaim, Truck} from "lucide-react";
 import {Button} from "../../components/Button";
 import {DatePickerInput} from "../../components/DatePickerInput";
 import {Header} from "../../components/Header";
-import {Select} from "../../components/Select";
 import {
   BillingDashboardContext,
   BillingDashboardProvider,
@@ -18,23 +16,21 @@ export const BillingDashboard = () => {
       <BillingDashboardContext.Consumer>
         {({
           isEmpty,
-          selectedRig,
-          rigs,
-          handleChangeRig,
           selectedStartDate,
           handleStartDateChange,
           handleEndDateChange,
           selectedEndDate,
           handleApplyFilters,
           isFetchingBillings,
+          totalAmount,
         }) => (
           <div className="w-full h-full overflow-y-scroll">
             <Header
               title="DASHBOARD DE FATURAMENTO"
-              subtitle="Página de visualização do faturamento geral"
+              subtitle="Página de visualização da previsão do faturamento geral"
             />
             <div className="w-full flex justify-end gap-4 px-4">
-              <div className="w-[123px]">
+              {/*  <div className="w-[123px]">
                 <Select
                   error={""}
                   placeholder="Sonda"
@@ -45,7 +41,7 @@ export const BillingDashboard = () => {
                     label: name,
                   }))}
                 />
-              </div>
+              </div> */}
 
               <div>
                 <DatePickerInput
@@ -79,23 +75,25 @@ export const BillingDashboard = () => {
                   <>
                     <div className="stat">
                       <div className="stat-figure text-white">
-                        <div
+                        {/*  <div
                           className="radial-progress text-primary-500"
                           style={{"--value": 70} as any} // @ts-ignore
                         >
                           {70 || 0}%
-                        </div>
+                        </div> */}
                       </div>
                       <div className="stat-title  text-primary-500">
-                        Horas Disp.
+                        Fat. Total
                       </div>
-                      <div className="stat-value  text-primary-500">25Hrs</div>
+                      <div className="stat-value  text-primary-500">
+                        {totalAmount}
+                      </div>
                       <div className="stat-desc  text-primary-500">
-                        Total de horas faturadas pela sonda
+                        Total de faturamento no período.
                       </div>
                     </div>
 
-                    <div className="stat">
+                    {/*    <div className="stat">
                       <div className="stat-figure text-red">
                         <div className="stat-figure text-white">
                           <div
@@ -143,7 +141,7 @@ export const BillingDashboard = () => {
                       <div className="stat-desc text-primary-500">
                         Total de movimentações no mês
                       </div>
-                    </div>
+                    </div> */}
                   </>
                 )}
               </div>

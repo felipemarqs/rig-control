@@ -22,14 +22,17 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
 
       const startDateWithTime = dayjs()
         .hour(Number(startHourString))
-        .minute(Number(startMinuteString));
+        .minute(Number(startMinuteString))
+        .format();
+
       const endDateWithTime = dayjs()
         .hour(Number(endHourString))
-        .minute(Number(endMinuteString));
+        .minute(Number(endMinuteString))
+        .format();
 
       return {
-        startHour: startDateWithTime.toISOString(),
-        endHour: endDateWithTime.toISOString(),
+        startHour: startDateWithTime.replace(/-03:00$/, "-00:00"),
+        endHour: endDateWithTime.replace(/-03:00$/, "-00:00"),
         classification: classification,
         description: description,
         type: type,

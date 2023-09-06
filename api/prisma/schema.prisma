@@ -139,7 +139,7 @@ enum PeriodClassification {
 model Period {
   id             String               @id @default(uuid()) @db.Uuid
   startHour      DateTime             @map("start_hour")
-  endHour        DateTime             @map("end_hour")
+  endHour        DateTime             @map("end_hour") @db.Timestamptz
   classification PeriodClassification
   description    String?
   type           PeriodType
