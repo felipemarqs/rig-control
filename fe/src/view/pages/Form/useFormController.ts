@@ -1,15 +1,15 @@
-import {Dayjs} from "dayjs";
-import {useCallback, useEffect, useState} from "react";
-import {v4 as uuidv4} from "uuid";
-import {parse, differenceInMinutes} from "date-fns";
-import {useAuth} from "../../../app/hooks/useAuth";
-import {efficiencyMappers} from "../../../app/services/mappers/efficiencyMappers";
-import {useMutation} from "@tanstack/react-query";
-import {efficienciesService} from "../../../app/services/efficienciesService";
-import {customColorToast} from "../../../app/utils/customColorToast";
-import {AxiosError} from "axios";
-import {treatAxiosError} from "../../../app/utils/treatAxiosError";
-import {useNavigate} from "react-router-dom";
+import { Dayjs } from "dayjs";
+import { useCallback, useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { parse, differenceInMinutes } from "date-fns";
+import { useAuth } from "../../../app/hooks/useAuth";
+import { efficiencyMappers } from "../../../app/services/mappers/efficiencyMappers";
+import { useMutation } from "@tanstack/react-query";
+import { efficienciesService } from "../../../app/services/efficienciesService";
+import { customColorToast } from "../../../app/utils/customColorToast";
+import { AxiosError } from "axios";
+import { treatAxiosError } from "../../../app/utils/treatAxiosError";
+import { useNavigate } from "react-router-dom";
 
 export const useFormController = () => {
   type Periods = {
@@ -23,7 +23,7 @@ export const useFormController = () => {
     description: string;
   }[];
 
-  const {user} = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [date, setDate] = useState<Date>();
   const [remainingMinutes, setRemainingMinutes] = useState<number>();
@@ -40,15 +40,18 @@ export const useFormController = () => {
     },
   ]);
 
-  const {isLoading, mutateAsync} = useMutation(efficienciesService.create);
+  const { isLoading, mutateAsync } = useMutation(efficienciesService.create);
 
   const handleSubmit = async (periods: Periods) => {
-    const {toPersistenceObj} = efficiencyMappers.toPersistance({
+    const { toPersistenceObj } = efficiencyMappers.toPersistance({
       rigId: user?.rigs[0].rig.id,
       date: date ?? new Date(),
       availableHours: 24,
       periods: periods,
     });
+
+    console.log(JSON.stringify(toPersistenceObj, null, 2));
+    return;
 
     try {
       await mutateAsync(toPersistenceObj);
@@ -67,7 +70,7 @@ export const useFormController = () => {
         },
       ]);
 
-      navigate("/dashboard", {replace: true});
+      navigate("/dashboard", { replace: true });
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
     }
@@ -80,7 +83,7 @@ export const useFormController = () => {
     id: string
   ) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, startHour: timeString} : period;
+      return period.id === id ? { ...period, startHour: timeString } : period;
     });
 
     setPeriods(newPeriods);
@@ -92,7 +95,7 @@ export const useFormController = () => {
     id: string
   ) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, endHour: timeString} : period;
+      return period.id === id ? { ...period, endHour: timeString } : period;
     });
 
     setPeriods(newPeriods);
@@ -101,7 +104,7 @@ export const useFormController = () => {
   const handlePeriodType = (id: string, type: string) => {
     const newPeriods = periods.map((period) => {
       return period.id === id
-        ? {...period, type: type, classification: ""}
+        ? { ...period, type: type, classification: "" }
         : period;
     });
 
@@ -111,7 +114,7 @@ export const useFormController = () => {
   const handlePeriodClassification = (id: string, classification: string) => {
     const newPeriods = periods.map((period) => {
       return period.id === id
-        ? {...period, classification: classification}
+        ? { ...period, classification: classification }
         : period;
     });
 
@@ -120,7 +123,7 @@ export const useFormController = () => {
 
   const handleFluidRatio = (id: string, ratio: string | never) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, fluidRatio: ratio} : period;
+      return period.id === id ? { ...period, fluidRatio: ratio } : period;
     });
 
     setPeriods(newPeriods);
@@ -128,7 +131,7 @@ export const useFormController = () => {
 
   const handleEquipmentRatio = (id: string, ratio: string | never) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, equipmentRatio: ratio} : period;
+      return period.id === id ? { ...period, equipmentRatio: ratio } : period;
     });
 
     setPeriods(newPeriods);
@@ -179,7 +182,7 @@ export const useFormController = () => {
 
   const handleDescription = (id: string, text: string) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, description: text} : period;
+      return period.id === id ? { ...period, description: text } : period;
     });
 
     setPeriods(newPeriods);

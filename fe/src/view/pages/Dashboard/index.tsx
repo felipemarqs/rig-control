@@ -1,13 +1,13 @@
-import {BaggageClaim, Truck} from "lucide-react";
-import {Button} from "../../components/Button";
-import {DatePickerInput} from "../../components/DatePickerInput";
-import {Header} from "../../components/Header";
-import {NotFound} from "../../components/NotFound";
-import {Select} from "../../components/Select";
-import {Spinner} from "../../components/Spinner";
-import {DashboardContext, DashboardProvider} from "./DashboardContext";
-import {LineChart} from "./components/LineChart";
-import {ListEfficienciesDataGrid} from "../../components/ListEfficienciesDataGrid";
+import { BaggageClaim, Truck } from "lucide-react";
+import { Button } from "../../components/Button";
+import { DatePickerInput } from "../../components/DatePickerInput";
+import { Header } from "../../components/Header";
+import { NotFound } from "../../components/NotFound";
+import { Select } from "../../components/Select";
+import { Spinner } from "../../components/Spinner";
+import { DashboardContext, DashboardProvider } from "./DashboardContext";
+import { LineChart } from "./components/LineChart";
+import { ListEfficienciesDataGrid } from "../../components/ListEfficienciesDataGrid";
 
 export const Dashboard = () => {
   return (
@@ -42,7 +42,7 @@ export const Dashboard = () => {
                   placeholder="Sonda"
                   value={selectedRig}
                   onChange={(value) => handleChangeRig(value)}
-                  options={rigs.map(({id, name}) => ({
+                  options={rigs.map(({ id, name }) => ({
                     value: id,
                     label: name,
                   }))}
@@ -83,7 +83,7 @@ export const Dashboard = () => {
                       <div className="stat-figure text-white">
                         <div
                           className="radial-progress text-primary-500"
-                          style={{"--value": availableHoursPercentage} as any}
+                          style={{ "--value": availableHoursPercentage } as any}
                         >
                           {availableHoursPercentage || 0}%
                         </div>
@@ -105,7 +105,7 @@ export const Dashboard = () => {
                           <div
                             className="radial-progress text-redAccent-500"
                             style={
-                              {"--value": unavailableHoursPercentage} as any
+                              { "--value": unavailableHoursPercentage } as any
                             }
                           >
                             {unavailableHoursPercentage || 0}%
@@ -161,7 +161,7 @@ export const Dashboard = () => {
               </div>
             </div>
 
-            <div className="min-w-[1050px]  mx-auto max-w-[715px] bg-gray-400 p-4 rounded-md">
+            <div className="min-w-[1500px]  mx-auto max-w-[715px] bg-gray-400 p-4 rounded-md">
               {isEmpty && (
                 <>
                   {isFetchingEfficiencies && (

@@ -3,41 +3,66 @@ import {
   GridColDef,
   GridRenderCellParams,
   GridToolbar,
+  GridValueGetterParams,
 } from "@mui/x-data-grid";
 
 import { NotFound } from "../../../../components/NotFound";
 
 import { formatCurrency } from "../../../../../app/utils/formatCurrency";
-import { BillingResponse } from "../../../../../app/services/billingServices/getAll";
+import { translateType } from "../../../../../app/utils/translateType";
+import { EfficienciesResponse } from "../../../../../app/services/efficienciesService/getById";
+import { formatIsoStringToHours } from "../../../../../app/utils/formatIsoStringToHours";
+import { translateClassification } from "../../../../../app/utils/translateClassification";
+import { Button } from "../../../../components/Button";
 
-interface ListBillingDataGridProps {
-  data: BillingResponse[];
+interface ListPeriodsDataGridProps {
+  data: EfficienciesResponse;
+  openDetailModal(description: string): void;
 }
 
-export const ListBillingDataGrid = ({ data }: ListBillingDataGridProps) => {
+export const PeriodsDataGrid = ({
+  data,
+  openDetailModal,
+}: ListPeriodsDataGridProps) => {
+  console.log(data);
+
   const columns: GridColDef[] = [
     {
-      field: "taxa",
-      headerName: "Taxa",
+      field: "startHour",
+      headerName: "Hora Inicial",
       flex: 0.7,
       headerAlign: "center",
       align: "center",
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-white font-semibold  py-2 px-6 rounded-sm">
-              {params.value}
+            <div className="text-white font-semibold bg-primary-500 py-1 px-6 rounded-sm">
+              {formatIsoStringToHours(params.value)}
             </div>
           </div>
         );
       },
     },
-  ];
+    {
+      field: "endHour",
+      headerName: "Hora Final",
+      flex: 0.6,
+      headerAlign: "center",
+      align: "center",
 
-  data.forEach(({ rigname }) => {
-    columns.push({
-      field: rigname,
-      headerName: rigname,
+      renderCell(params: GridRenderCellParams) {
+        return (
+          <div className="w-full flex justify-center items-center">
+            <div className="text-white  font-semibold bg-primary-500 py-1 px-6 rounded-sm">
+              {formatIsoStringToHours(params.value)}
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      field: "type",
+      headerName: "Tipo",
       flex: 0.6,
       headerAlign: "center",
       align: "center",
@@ -45,57 +70,48 @@ export const ListBillingDataGrid = ({ data }: ListBillingDataGridProps) => {
         return (
           <div className="w-full flex justify-center items-center">
             <div className="text-white  bg-primary-500 py-1 px-6 rounded-sm">
-              {formatCurrency(params.value)}
+              {translateType(params.value)}
             </div>
           </div>
         );
       },
-    });
-  });
-
-  const rigNames = Array.from(new Set(data.map((item) => item.rigname)));
-
-  const taxaNames = [
-    "availablehouramount",
-    "glosshouramount",
-    "dtmlt20amount",
-    "dtmbt20and50amount",
-    "dtmgt50amount",
-    "fluidlt20amount",
-    "fluidbt20and50amount",
-    "fluidgt50amount",
-    "equipmentlt20amount",
-    "equipmentbt20and50amount",
-    "equipmentgt50amount",
+    },
+    {
+      field: "classification",
+      headerName: "Classificação",
+      flex: 0.6,
+      headerAlign: "center",
+      align: "center",
+      renderCell(params: GridRenderCellParams) {
+        return (
+          <div className="w-full flex justify-center items-center">
+            <div className="text-white  bg-primary-500 py-1 px-6 rounded-sm">
+              {translateClassification(params.value)}
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      field: "description",
+      headerName: "Descrição",
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+      renderCell(params: GridRenderCellParams) {
+        return (
+          <div className="w-full flex justify-center items-center">
+            <Button
+              className="bg-secondary-500 rounded-md h-[25px]"
+              onClick={() => openDetailModal(params.value)}
+            >
+              Ver Detalhes
+            </Button>
+          </div>
+        );
+      },
+    },
   ];
-
-  const taxaTranslation: Record<string, string> = {
-    availablehouramount: "Horas Disponíveis",
-    glosshouramount: "Horas Glosa",
-    dtmlt20amount: "DTM < 20",
-    dtmbt20and50amount: "DTM 20-50",
-    dtmgt50amount: "DTM > 50",
-    fluidlt20amount: "Taxa de Fluido < 20",
-    fluidbt20and50amount: "Taxa de Fluido 20-50",
-    fluidgt50amount: "Taxa de Fluido > 50",
-    equipmentlt20amount: "Taxa de Equipamento < 20",
-    equipmentbt20and50amount: "Taxa de Equipamento 20-50",
-    equipmentgt50amount: "Taxa de Equipamento > 50",
-  };
-
-  // Criar a tabela com as taxas como linhas e sondas como colunas
-
-  const tableData = taxaNames.map((taxa) => {
-    const rowData: any = {
-      id: `${taxa}-total`,
-      taxa: taxaTranslation[taxa] || taxa,
-    };
-    rigNames.forEach((rigname) => {
-      const rigData: any = data.find((item) => item.rigname === rigname);
-      rowData[rigname] = rigData ? rigData[taxa] : 0;
-    });
-    return rowData;
-  });
 
   const NotFoundDataGrid = () => {
     return (
@@ -110,7 +126,7 @@ export const ListBillingDataGrid = ({ data }: ListBillingDataGridProps) => {
 
   return (
     <DataGrid
-      rows={tableData}
+      rows={data.periods}
       localeText={{
         toolbarFilters: "Filtros",
         toolbarFiltersLabel: "Show filters",

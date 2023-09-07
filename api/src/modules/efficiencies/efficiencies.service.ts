@@ -321,8 +321,14 @@ export class EfficienciesService {
         availableHours: true,
         rigId: true,
         userId: true,
+        user: {
+          select: {
+            name: true,
+          },
+        },
         periods: {
           select: {
+            efficiencyId: true,
             id: true,
             startHour: true,
             endHour: true,
@@ -332,6 +338,8 @@ export class EfficienciesService {
           },
           orderBy: { startHour: 'asc' },
         },
+        equipmentRatio: { select: { ratio: true } },
+        fluidRatio: { select: { ratio: true } },
       },
     });
 

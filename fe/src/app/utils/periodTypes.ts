@@ -1,5 +1,9 @@
 export const periodTypes = [
   {
+    id: "WORKING",
+    type: "Operando",
+  },
+  {
     id: "GLOSS",
     type: "Glosa",
   },
@@ -10,9 +14,5 @@ export const periodTypes = [
   {
     id: "DTM",
     type: "DTM",
-  },
-  {
-    id: "WORKING",
-    type: "Operando",
   },
 ];
