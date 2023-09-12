@@ -6,14 +6,14 @@ import {
   GridValueGetterParams,
 } from "@mui/x-data-grid";
 
-import { NotFound } from "../../../../components/NotFound";
+import {NotFound} from "../../../../components/NotFound";
 
-import { formatCurrency } from "../../../../../app/utils/formatCurrency";
-import { translateType } from "../../../../../app/utils/translateType";
-import { EfficienciesResponse } from "../../../../../app/services/efficienciesService/getById";
-import { formatIsoStringToHours } from "../../../../../app/utils/formatIsoStringToHours";
-import { translateClassification } from "../../../../../app/utils/translateClassification";
-import { Button } from "../../../../components/Button";
+import {formatCurrency} from "../../../../../app/utils/formatCurrency";
+import {translateType} from "../../../../../app/utils/translateType";
+import {EfficienciesResponse} from "../../../../../app/services/efficienciesService/getById";
+import {formatIsoStringToHours} from "../../../../../app/utils/formatIsoStringToHours";
+import {translateClassification} from "../../../../../app/utils/translateClassification";
+import {Button} from "../../../../components/Button";
 
 interface ListPeriodsDataGridProps {
   data: EfficienciesResponse;
@@ -24,8 +24,6 @@ export const PeriodsDataGrid = ({
   data,
   openDetailModal,
 }: ListPeriodsDataGridProps) => {
-  console.log(data);
-
   const columns: GridColDef[] = [
     {
       field: "startHour",

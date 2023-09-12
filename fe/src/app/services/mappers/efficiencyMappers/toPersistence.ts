@@ -4,7 +4,7 @@ import {PersistanceEfficiency} from "../../../entities/PersistanceEfficiency";
 import {differenceInMinutes, parse} from "date-fns";
 
 export const toPersistence = (domainEfficiency: DomainEfficiency) => {
-  let totalAvailableHours = 0;
+  let totalAvailableHours = 0.02;
 
   const periodsArray = domainEfficiency.periods.map(
     ({startHour, endHour, classification, type, description}) => {

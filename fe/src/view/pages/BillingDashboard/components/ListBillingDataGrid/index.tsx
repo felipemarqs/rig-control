@@ -20,6 +20,7 @@ export const ListBillingDataGrid = () => {
   return (
     <DataGrid
       rows={data}
+      density="compact"
       localeText={{
         toolbarFilters: "Filtros",
         toolbarFiltersLabel: "Show filters",

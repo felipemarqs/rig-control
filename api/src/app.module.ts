@@ -7,6 +7,7 @@ import { AuthGuard } from './modules/auth/auth.guard';
 import { RigsModule } from './modules/rigs/rigs.module';
 import { EfficienciesModule } from './modules/efficiencies/efficiencies.module';
 import { BillingsModule } from './modules/billings/billings.module';
+import { BillingsConfigurationModule } from './modules/billings-configuration/billings-configuration.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { BillingsModule } from './modules/billings/billings.module';
     RigsModule,
     EfficienciesModule,
     BillingsModule,
+    BillingsConfigurationModule,
   ],
   controllers: [],
   providers: [

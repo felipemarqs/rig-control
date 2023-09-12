@@ -22,7 +22,15 @@ export class BillingConfigurationsRepository {
     );
   }
 
-  async findAll() {
-    return await this.prismaService.billingConfiguration.findMany();
+  async findAll(findManyDto: Prisma.BillingConfigurationFindManyArgs) {
+    return await this.prismaService.billingConfiguration.findMany(findManyDto);
+  }
+
+  async update(
+    updateBillingsConfigurationDto: Prisma.BillingConfigurationUpdateArgs,
+  ) {
+    return await this.prismaService.billingConfiguration.update(
+      updateBillingsConfigurationDto,
+    );
   }
 }

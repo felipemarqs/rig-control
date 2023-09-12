@@ -37,7 +37,7 @@ export const Form = () => {
 
   const format = "HH:mm";
   return (
-    <div className="w-full lg:min-w-[1000px]">
+    <div className="w-full h-full lg:min-w-[1000px]">
       <Header
         title="FORMULÁRIO"
         subtitle="Submissão dos dados de eficiência da sonda."
@@ -62,7 +62,7 @@ export const Form = () => {
         </div>
       )}
  */}
-      <div className="w-full  flex  lg:justify-center ">
+      <div className="w-full h-[80vh]  flex  lg:justify-center ">
         <div className=" max-h-[90vh] overflow-y-scroll w-[70%] flex-grow max-w-[800px]  bg-primary-500 p-4 rounded-xl lg:min-w-[700px] ">
           <div
             className={cn(" flex items-center flex-col justify-center gap-2")}

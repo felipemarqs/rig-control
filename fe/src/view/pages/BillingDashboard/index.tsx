@@ -9,6 +9,13 @@ import {Spinner} from "../../components/Spinner";
 import {NotFound} from "../../components/NotFound";
 import {BarChart} from "./components/BarChart";
 import {ListBillingDataGrid} from "./components/ListBillingDataGrid";
+import {Swiper, SwiperSlide} from "swiper/react";
+import {RigCard} from "./components/RigCard/RigCard";
+import {RigsSliderNavigation} from "./components/RigCard/RigsSliderNavigation";
+import {cn} from "../../../app/utils/cn";
+import {EditRigModal} from "./modals/EditRigModal";
+import {RigBillingConfigCard} from "./components/RigBillingConfigCard/RigBillingConfigCard";
+import {EditConfigModal} from "./modals/EditConfigModal";
 
 export const BillingDashboard = () => {
   return (
@@ -23,6 +30,14 @@ export const BillingDashboard = () => {
           handleApplyFilters,
           isFetchingBillings,
           totalAmount,
+          billings,
+          setSliderState,
+          sliderState,
+          setConfigSliderState,
+          configSliderState,
+          rigBeingEdited,
+          configs,
+          configBeingEdited,
         }) => (
           <div className="w-full h-full overflow-y-scroll">
             <Header
@@ -92,62 +107,12 @@ export const BillingDashboard = () => {
                         Total de faturamento no período.
                       </div>
                     </div>
-
-                    {/*    <div className="stat">
-                      <div className="stat-figure text-red">
-                        <div className="stat-figure text-white">
-                          <div
-                            className="radial-progress text-redAccent-500"
-                            style={{"--value": 19} as any}
-                          >
-                            19%
-                          </div>
-                        </div>
-                      </div>
-                      <div className="stat-title text-redAccent-500">
-                        Horas Indisp.
-                      </div>
-                      <div className="stat-value text-redAccent-500">23Hrs</div>
-                      <div className="stat-desc text-redAccent-500">
-                        Total de não horas faturadas pela sonda
-                      </div>
-                    </div>
-
-                    <div className="stat">
-                      <div className="stat-figure text-primary-500">
-                        <div className="w-16 rounded-full">
-                          <div className="w-16 h-16 flex items-center justify-center rounded-full bg-white">
-                            <Truck size={50} />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="stat-value text-primary-500">3</div>
-                      <div className="stat-title text-primary-500">DTMs</div>
-                      <div className="stat-desc text-primary-500">
-                        Total de DTMs no mês
-                      </div>
-                    </div>
-
-                    <div className="stat">
-                      <div className="stat-figure text-primary-500">
-                        <div className="w-16 h-16 flex items-center justify-center rounded-full bg-white">
-                          <BaggageClaim size={50} />
-                        </div>
-                      </div>
-                      <div className="stat-value text-primary-500">23</div>
-                      <div className="stat-title text-primary-500">
-                        Movimentações
-                      </div>
-                      <div className="stat-desc text-primary-500">
-                        Total de movimentações no mês
-                      </div>
-                    </div> */}
                   </>
                 )}
               </div>
             </div>
 
-            <div className="min-w-[1050px]  mx-auto max-w-[715px] bg-gray-400 p-4 rounded-md">
+            <div className="min-w-[1200px]  mx-auto max-w-[715px] bg-gray-400 p-4 rounded-md">
               {isEmpty && (
                 <>
                   {isFetchingBillings && (
@@ -168,18 +133,100 @@ export const BillingDashboard = () => {
 
               {!isEmpty && (
                 <div className="grid grid-cols-12 auto-rows-[120px] gap-3">
-                  <div className=" col-start-2 col-span-10 row-span-3 flex justify-center bg-gray-200 rounded-lg items-center">
+                  <div className="col-span-8 row-span-3 flex justify-center bg-gray-200 rounded-lg items-center">
                     {isFetchingBillings && <Spinner />}
                     {!isFetchingBillings && <BarChart />}
                   </div>
 
-                  <div className="col-start-2 col-span-10  row-span-3 flex justify-center bg-gray-200 rounded-lg items-center">
+                  <div
+                    className={cn(
+                      " col-span-4 row-span-3 flex justify-center bg-primary-500 rounded-lg items-center p-4"
+                    )}
+                  >
+                    {isFetchingBillings && <Spinner />}
+                    {!isFetchingBillings && (
+                      <>
+                        <Swiper
+                          spaceBetween={16}
+                          slidesPerView={billings.length === 1 ? 1 : 1.2}
+                          onSlideChange={(swiper) => {
+                            setSliderState({
+                              isBeginning: swiper.isBeginning,
+                              isEnd: swiper.isEnd,
+                            });
+                          }}
+                        >
+                          <div
+                            className="flex items-center justify-between mb-2"
+                            slot="container-start"
+                          >
+                            <strong className="text-white tracking-[-1px] text-sm">
+                              Sondas Cadastradas no sistema:
+                            </strong>
+                            <RigsSliderNavigation
+                              isBeginning={sliderState.isBeginning}
+                              isEnd={sliderState.isEnd}
+                            />
+                          </div>
+                          {billings.map((billing) => (
+                            <SwiperSlide key={billing.rigid}>
+                              <RigCard data={billing} />
+                            </SwiperSlide>
+                          ))}
+                        </Swiper>
+                      </>
+                    )}
+                  </div>
+
+                  <div
+                    className={cn(
+                      " col-span-12 row-span-5 flex justify-center bg-primary-500 rounded-lg items-center p-4"
+                    )}
+                  >
+                    {isFetchingBillings && <Spinner />}
+                    {!isFetchingBillings && (
+                      <>
+                        <Swiper
+                          spaceBetween={16}
+                          slidesPerView={billings.length === 1 ? 1 : 3}
+                          onSlideChange={(swiper) => {
+                            setConfigSliderState({
+                              isBeginning: swiper.isBeginning,
+                              isEnd: swiper.isEnd,
+                            });
+                          }}
+                        >
+                          <div
+                            className="flex items-center justify-between mb-2"
+                            slot="container-start"
+                          >
+                            <strong className="text-white tracking-[-1px] text-sm">
+                              Valores para cálculo de previsão:
+                            </strong>
+                            <RigsSliderNavigation
+                              isBeginning={configSliderState.isBeginning}
+                              isEnd={configSliderState.isEnd}
+                            />
+                          </div>
+                          {configs.map((config) => (
+                            <SwiperSlide key={config.id}>
+                              <RigBillingConfigCard data={config} />
+                            </SwiperSlide>
+                          ))}
+                        </Swiper>
+                      </>
+                    )}
+                  </div>
+
+                  <div className="col-span-12  row-span-4 flex justify-center bg-gray-200 rounded-lg items-center">
                     {isFetchingBillings && <Spinner />}
                     {!isFetchingBillings && <ListBillingDataGrid />}
                   </div>
                 </div>
               )}
             </div>
+            {rigBeingEdited && <EditRigModal />}
+            {configBeingEdited && <EditConfigModal />}
           </div>
         )}
       </BillingDashboardContext.Consumer>
