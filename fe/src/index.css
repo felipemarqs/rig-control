@@ -1,3 +1,21 @@
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html,
+body,
+#root,
+.app {
+  font-family: "Sora", sans-serif;
+}
+.ant-btn.ant-btn-primary {
+  background-color: #1c7b7b; /* Substitua pela cor desejada */
+  color: white; /* Defina a cor do texto para torná-lo visível na cor de fundo */
+}
+
+.ant-btn.ant-btn-primary:hover,
+.ant-btn.ant-btn-primary:focus {
+  background-color: #155e5e; /* Cor de fundo quando hover ou foco */
+  /* Outros estilos desejados */
+}

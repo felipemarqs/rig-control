@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get } from '@nestjs/common';
 import { RigsService } from './rigs.service';
 import { CreateRigDto } from './dto/create-rig.dto';
 
@@ -9,5 +9,10 @@ export class RigsController {
   @Post()
   create(@Body() createRigDto: CreateRigDto) {
     return this.rigsService.create(createRigDto);
+  }
+
+  @Get()
+  findAll() {
+    return this.rigsService.findAll();
   }
 }

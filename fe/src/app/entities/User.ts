@@ -3,9 +3,12 @@ export interface User {
   name: string;
   email: string;
   accessLevel: "USER" | "ADM";
-  rigs: [
-    {
-      rigId: string;
-    }
-  ];
+  rigs: {
+    rig: {
+      id: string;
+      name: string;
+      state?: string;
+      isAtive?: boolean;
+    };
+  }[];
 }

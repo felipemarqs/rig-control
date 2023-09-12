@@ -13,4 +13,8 @@ export class RigsRepository {
   async findUnique(findUniqueDto: Prisma.RigFindUniqueArgs) {
     return await this.prismaService.rig.findUnique(findUniqueDto);
   }
+
+  async findAll() {
+    return await this.prismaService.rig.findMany();
+  }
 }

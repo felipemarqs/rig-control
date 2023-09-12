@@ -1,13 +1,13 @@
-import {useForm} from "react-hook-form";
-import {z} from "zod";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {authService} from "../../../app/services/authService";
-import {useMutation} from "@tanstack/react-query";
-import {SigninParams} from "../../../app/services/authService/signin";
-import {customColorToast} from "../../../app/utils/customColorToast";
-import {AxiosError} from "axios";
-import {treatAxiosError} from "../../../app/utils/treatAxiosError";
-import {useAuth} from "../../../app/hooks/useAuth";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { authService } from "../../../app/services/authService";
+import { useMutation } from "@tanstack/react-query";
+import { SigninParams } from "../../../app/services/authService/signin";
+import { customColorToast } from "../../../app/utils/customColorToast";
+import { AxiosError } from "axios";
+import { treatAxiosError } from "../../../app/utils/treatAxiosError";
+import { useAuth } from "../../../app/hooks/useAuth";
 
 const schema = z.object({
   email: z
@@ -31,23 +31,23 @@ export const useLoginController = () => {
   const {
     handleSubmit: hookFormHandleSubmit,
     register,
-    formState: {errors},
+    formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
-  const {isLoading, mutateAsync} = useMutation({
+  const { isLoading, mutateAsync } = useMutation({
     mutationKey: ["signin"],
     mutationFn: async (data: SigninParams) => {
       return await authService.signin(data);
     },
   });
 
-  const {signin} = useAuth();
+  const { signin } = useAuth();
   const handleSubmit = hookFormHandleSubmit(async (data) => {
     //API Call
     try {
-      const {accessToken} = await mutateAsync(data);
+      const { accessToken } = await mutateAsync(data);
       signin(accessToken);
 
       customColorToast("Logado com sucesso!", "#1c7b7b", "success");

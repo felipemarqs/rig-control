@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersRepository } from 'src/shared/database/repositories/users.repositories';
 
 @Injectable()
@@ -15,11 +15,22 @@ export class UsersService {
         accessLevel: true,
         rigs: {
           select: {
-            rigId: true,
+            rig: {
+              select: {
+                id: true,
+                name: true,
+                state: true,
+                isActive: true,
+              },
+            },
           },
         },
       },
     });
+
+    if (!user) {
+      throw new UnauthorizedException('Usuário não encontrado!');
+    }
 
     return user;
   }

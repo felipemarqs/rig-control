@@ -9,6 +9,7 @@ import {
   ParseUUIDPipe,
   HttpCode,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { EfficienciesService } from './efficiencies.service';
 import { CreateEfficiencyDto } from './dto/create-efficiency.dto';
@@ -27,16 +28,6 @@ export class EfficienciesController {
     return this.efficienciesService.create(createEfficiencyDto, userId);
   }
 
-  @Get()
-  findAll() {
-    return this.efficienciesService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.efficienciesService.findOne(+id);
-  }
-
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -45,9 +36,35 @@ export class EfficienciesController {
     return this.efficienciesService.update(+id, updateEfficiencyDto);
   }
 
+  @Get()
+  findAll(
+    @Query('rigId', ParseUUIDPipe) rigId: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    return this.efficienciesService.findAllByRigId({
+      rigId,
+      startDate,
+      endDate,
+    });
+  }
+
+  @Get(':efficiencyId')
+  findById(@Param('efficiencyId', ParseUUIDPipe) efficiencyId: string) {
+    return this.efficienciesService.findById(efficiencyId);
+  }
+
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':efficiencyId')
   remove(@Param('efficiencyId', ParseUUIDPipe) efficiencyId: string) {
     return this.efficienciesService.remove(efficiencyId);
+  }
+
+  @Post('/test')
+  createTest(
+    @ActiveUserId() userId: string,
+    @Body() createEfficiencyDto: CreateEfficiencyDto,
+  ) {
+    return this.efficienciesService.create(createEfficiencyDto, userId);
   }
 }
