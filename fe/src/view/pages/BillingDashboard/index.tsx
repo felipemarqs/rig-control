@@ -16,6 +16,7 @@ import {cn} from "../../../app/utils/cn";
 import {EditRigModal} from "./modals/EditRigModal";
 import {RigBillingConfigCard} from "./components/RigBillingConfigCard/RigBillingConfigCard";
 import {EditConfigModal} from "./modals/EditConfigModal";
+import "swiper/css";
 
 export const BillingDashboard = () => {
   return (
