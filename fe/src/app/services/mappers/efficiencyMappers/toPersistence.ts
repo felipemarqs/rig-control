@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import {DomainEfficiency} from "../../../entities/DomainEfficiency";
-import {PersistanceEfficiency} from "../../../entities/PersistanceEfficiency";
 import {differenceInMinutes, parse} from "date-fns";
+import {ToPersistanceEfficiency} from "../../../entities/PersistanceEfficiency";
 
 export const toPersistence = (domainEfficiency: DomainEfficiency) => {
   let totalAvailableHours = 0.02;
@@ -40,7 +40,7 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
     }
   );
 
-  const toPersistenceObj: PersistanceEfficiency = {
+  const toPersistenceObj: ToPersistanceEfficiency = {
     date: domainEfficiency.date,
     availableHours: Number(totalAvailableHours.toFixed(2)),
     rigId: domainEfficiency.rigId!,

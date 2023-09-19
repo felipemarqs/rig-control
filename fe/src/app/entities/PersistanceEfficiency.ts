@@ -13,9 +13,28 @@ export type PersistanceEfficiency = {
     efficiencyId: string;
     startHour: string;
     endHour: string;
-    type: "WORKING" | "GLOSS" | "REPAIR" | "DTM";
+    type: string;
     classification: string;
     description: string;
+  }[];
+  equipmentRatio: {
+    ratio: string;
+  }[];
+  fluidRatio: {
+    ratio: string;
+  }[];
+};
+
+export type ToPersistanceEfficiency = {
+  availableHours: number;
+  date: string | Date;
+  rigId: string;
+  periods: {
+    startHour: string;
+    endHour: string;
+    type: string;
+    classification: string;
+    description: string | undefined;
   }[];
   equipmentRatio: {
     ratio: string;

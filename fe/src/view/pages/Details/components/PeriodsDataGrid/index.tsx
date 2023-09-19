@@ -3,12 +3,9 @@ import {
   GridColDef,
   GridRenderCellParams,
   GridToolbar,
-  GridValueGetterParams,
 } from "@mui/x-data-grid";
 
 import {NotFound} from "../../../../components/NotFound";
-
-import {formatCurrency} from "../../../../../app/utils/formatCurrency";
 import {translateType} from "../../../../../app/utils/translateType";
 import {EfficienciesResponse} from "../../../../../app/services/efficienciesService/getById";
 import {formatIsoStringToHours} from "../../../../../app/utils/formatIsoStringToHours";

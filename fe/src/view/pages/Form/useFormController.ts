@@ -79,6 +79,7 @@ export const useFormController = () => {
     timeString: string,
     id: string
   ) => {
+    console.log(time);
     const newPeriods = periods.map((period) => {
       return period.id === id ? {...period, startHour: timeString} : period;
     });
@@ -91,6 +92,7 @@ export const useFormController = () => {
     timeString: string,
     id: string
   ) => {
+    console.log(time);
     const newPeriods = periods.map((period) => {
       return period.id === id ? {...period, endHour: timeString} : period;
     });

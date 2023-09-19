@@ -10,7 +10,6 @@ import {List} from "../view/pages/List";
 import {BillingDashboard} from "../view/pages/BillingDashboard";
 import {ListBilling} from "../view/pages/BillingList";
 import {Details} from "../view/pages/Details";
-import {RigsDashboard} from "../view/pages/RigsDashboard";
 
 export const Router = () => {
   return (
@@ -32,7 +31,6 @@ export const Router = () => {
             <Route path="/invoicing-dashboard" element={<BillingDashboard />} />
             <Route path="/invoicing-list" element={<ListBilling />} />
             <Route path="/details/:efficiencyId" element={<Details />} />
-            <Route path="/rig" element={<RigsDashboard />} />
           </Route>
         </Route>
       </Routes>

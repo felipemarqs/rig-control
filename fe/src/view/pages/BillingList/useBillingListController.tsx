@@ -3,8 +3,6 @@ import {useState} from "react";
 import {endOfMonth, format, startOfMonth} from "date-fns";
 
 import {useBillings} from "../../../app/hooks/useBillings";
-import {GridColDef, GridRenderCellParams} from "@mui/x-data-grid";
-import {formatCurrency} from "../../../app/utils/formatCurrency";
 
 export const useBillingListController = () => {
   // Obtenha a data atual
