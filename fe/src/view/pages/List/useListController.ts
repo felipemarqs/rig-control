@@ -9,7 +9,7 @@ export const useListController = () => {
 
   const isUserAdm = user?.accessLevel === "ADM";
 
-  const {rigs, isFetchingRigs, refetchRigs} = useRigs(isUserAdm);
+  const {rigs} = useRigs(isUserAdm);
 
   const userRig = [{id: user?.rigs[0].rig.id, name: user?.rigs[0].rig.name}];
 

@@ -1,5 +1,4 @@
-import { createContext, useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {createContext, useContext, useState} from "react";
 
 interface SidebarContextValues {
   expanded: boolean;
@@ -12,11 +11,7 @@ export const SidebarContext = createContext({} as SidebarContextValues);
 
 export const useSidebarContext = () => useContext(SidebarContext);
 
-export const SidebarProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const SidebarProvider = ({children}: {children: React.ReactNode}) => {
   const [expanded, setExpanded] = useState(true);
   const [active, setActive] = useState<string>("Dashboard");
 
@@ -29,7 +24,7 @@ export const SidebarProvider = ({
   };
   return (
     <SidebarContext.Provider
-      value={{ expanded, toggleVisibility, handleToggleNavItem, active }}
+      value={{expanded, toggleVisibility, handleToggleNavItem, active}}
     >
       {children}
     </SidebarContext.Provider>

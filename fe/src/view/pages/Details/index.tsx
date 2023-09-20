@@ -1,12 +1,12 @@
-import { Header } from "../../components/Header";
-import { Spinner } from "../../components/Spinner";
-import { DetailsModal } from "./components/DetailsModal";
-import { PeriodsDataGrid } from "./components/PeriodsDataGrid";
-import { useDetailsController } from "./useDetailsController";
-import { useParams } from "react-router-dom";
+import {Header} from "../../components/Header";
+import {Spinner} from "../../components/Spinner";
+import {DetailsModal} from "./components/DetailsModal";
+import {PeriodsDataGrid} from "./components/PeriodsDataGrid";
+import {useDetailsController} from "./useDetailsController";
+import {useParams} from "react-router-dom";
 
 export const Details = () => {
-  const { efficiencyId } = useParams();
+  const {efficiencyId} = useParams();
 
   const {
     isFetchingEfficiency,
@@ -32,15 +32,17 @@ export const Details = () => {
           </div>
         )}
 
-        {!isFetchingEfficiency && (
-          <div className="w-[70vw] h-[70vh] bg-primary-200 p-2 rounded-md flex justify-center items-center">
-            {/* <ListEfficienciesDataGrid data={efficiencies} isDashboard={false} /> */}
-            <PeriodsDataGrid
-              data={efficiency}
-              openDetailModal={openDetailModal}
-            />
-          </div>
-        )}
+        {!isFetchingEfficiency &&
+          efficiency &&
+          !(efficiency instanceof Array) && (
+            <div className="w-[70vw] h-[70vh] bg-primary-200 p-2 rounded-md flex justify-center items-center">
+              {/* <ListEfficienciesDataGrid data={efficiencies} isDashboard={false} /> */}
+              <PeriodsDataGrid
+                data={efficiency}
+                openDetailModal={openDetailModal}
+              />
+            </div>
+          )}
       </div>
     </div>
   );

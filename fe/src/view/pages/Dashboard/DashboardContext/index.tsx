@@ -44,7 +44,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
 
   const isUserAdm = user?.accessLevel === "ADM";
 
-  const {rigs, isFetchingRigs, refetchRigs} = useRigs(isUserAdm);
+  const {rigs} = useRigs(isUserAdm);
 
   const userRig = [
     {

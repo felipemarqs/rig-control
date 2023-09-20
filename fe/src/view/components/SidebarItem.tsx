@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
-import { useSidebarContext } from "../../app/contexts/SidebarContext";
-import { Link, useNavigate } from "react-router-dom";
+import {ReactNode} from "react";
+import {useSidebarContext} from "../../app/contexts/SidebarContext";
+import {useNavigate} from "react-router-dom";
 
 interface SidebarItemProps {
   icon: ReactNode; // Tipo definido como ReactNode
@@ -17,7 +17,7 @@ export function SidebarItem({
   alert,
   urlText,
 }: SidebarItemProps) {
-  const { expanded, handleToggleNavItem } = useSidebarContext();
+  const {expanded, handleToggleNavItem} = useSidebarContext();
 
   const navigate = useNavigate();
 
