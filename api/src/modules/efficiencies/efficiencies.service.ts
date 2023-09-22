@@ -22,6 +22,7 @@ export class EfficienciesService {
     private readonly rigsRepo: RigsRepository,
     private readonly billingConfigRepo: BillingConfigurationsRepository,
     private readonly billingRepo: BillingRepository,
+    private readonly prisma: PrismaClient,
   ) {}
 
   private isTimeValid(startHour: string, endHour: string): boolean {
@@ -353,5 +354,24 @@ export class EfficienciesService {
   async remove(efficiencyId: string) {
     await this.efficiencyRepo.delete({ where: { id: efficiencyId } });
     return null;
+  }
+
+  async getAverage(rigId: string) {
+    //const rigId = '073168f7-b634-466d-aaee-a7968a39e2b1';
+    //Mudar para params depois
+    const ano = 2023;
+
+    const results = await this.prisma.$queryRaw`
+    SELECT
+      TO_CHAR(date, 'YYYY-MM') AS month,
+      AVG(available_hours) AS avg
+    FROM efficiencies
+    WHERE rig_id = ${rigId}::UUID
+      AND EXTRACT(YEAR FROM date) = ${ano}
+    GROUP BY month
+    ORDER BY month;
+  `;
+    console.log(results);
+    return results;
   }
 }

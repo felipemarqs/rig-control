@@ -7,6 +7,8 @@ import {startOfMonth, endOfMonth, format} from "date-fns";
 import {useRigs} from "../../../../app/hooks/useRigs";
 import {Rig} from "../../../../app/entities/Rig";
 import {Efficiency} from "../entities/Efficiency";
+import {useEfficiencyAverage} from "../../../../app/hooks/useEfficiencyAverage";
+import {AverageResponse} from "../../../../app/services/efficienciesService/getAverage";
 
 interface DashboardContextValue {
   selectedRig: string;
@@ -35,6 +37,8 @@ interface DashboardContextValue {
   unavailableHoursPercentage: number;
   totalDtms: number;
   totalMovimentations: number;
+  isFetchingAverage: boolean;
+  average: AverageResponse;
 }
 
 export const DashboardContext = createContext({} as DashboardContextValue);
@@ -101,10 +105,17 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   const {efficiencies, isFetchingEfficiencies, refetchEffciencies} =
     useEfficiencies(filters);
 
+  const {average, refetchAverage, isFetchingAverage} = useEfficiencyAverage(
+    filters.rigId
+  );
+
+  console.log("Average", average);
+
   const isEmpty: boolean = efficiencies.length === 0;
 
   const handleApplyFilters = () => {
     refetchEffciencies();
+    refetchAverage();
   };
 
   const handleChangeRig = (rigId: string) => {
@@ -173,6 +184,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         handleApplyFilters,
         efficiencies,
         isFetchingEfficiencies,
+        isFetchingAverage,
         user,
         rigs: isUserAdm ? rigs : userRig,
         signout,
@@ -183,6 +195,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         unavailableHoursPercentage,
         totalDtms,
         totalMovimentations,
+        average,
       }}
     >
       {children}

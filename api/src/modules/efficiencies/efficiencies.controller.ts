@@ -67,4 +67,10 @@ export class EfficienciesController {
   ) {
     return this.efficienciesService.create(createEfficiencyDto, userId);
   }
+
+  @Get('/average/:rigId')
+  getAverage(@Param('rigId') rigId: string) {
+    console.log('results');
+    return this.efficienciesService.getAverage(rigId);
+  }
 }

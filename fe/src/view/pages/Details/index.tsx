@@ -1,5 +1,7 @@
+import {Button} from "../../components/Button";
 import {Header} from "../../components/Header";
 import {Spinner} from "../../components/Spinner";
+import {DeleteModal} from "./components/DeleteModal";
 import {DetailsModal} from "./components/DetailsModal";
 import {PeriodsDataGrid} from "./components/PeriodsDataGrid";
 import {useDetailsController} from "./useDetailsController";
@@ -15,6 +17,11 @@ export const Details = () => {
     closeDetailModal,
     openDetailModal,
     modalDescription,
+    closeDeleteModal,
+    handleDeleteEfficiency,
+    isDeleteModalOpen,
+    isLoadingRemoveEfficiency,
+    openDeleteModal,
   } = useDetailsController(efficiencyId!);
 
   return (
@@ -25,7 +32,16 @@ export const Details = () => {
         open={isDetailModalOpen}
         description={modalDescription}
       />
-      <div className="w-full h-full  mx-5 mt-5 max-w-[1400px] flex justify-center  ">
+
+      <DeleteModal
+        title=" Tem certeza que deseja excluir esse registro?"
+        description="Essa ação NÃO poderá ser desfeita."
+        open={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+        onConfirm={handleDeleteEfficiency}
+        isLoading={isLoadingRemoveEfficiency}
+      />
+      <div className="w-full h-full  mx-5 mt-5 max-w-[1400px] flex justify-start items-center gap-4 flex-col">
         {isFetchingEfficiency && (
           <div className="w-[70vw] h-[70vh] bg-primary-500 p-2 rounded-md flex justify-center items-center">
             <Spinner className="h-12 w-12" />
@@ -43,6 +59,9 @@ export const Details = () => {
               />
             </div>
           )}
+        <Button onClick={openDeleteModal} className="bg-redAccent-500">
+          Deletar Registro
+        </Button>
       </div>
     </div>
   );
