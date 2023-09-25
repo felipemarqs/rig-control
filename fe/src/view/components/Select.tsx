@@ -46,7 +46,7 @@ export const Select = ({
         <RadixSelect.Root value={value} onValueChange={handleSelect}>
           <RadixSelect.Trigger
             className={cn(
-              "bg-white rounded-lg w-full border border-gray-500 px-3 h-[42px]  text-gray-800    focus:border-gray-800 transition-all outline-none text-left relative pt-4",
+              "bg-white rounded-lg w-full border border-gray-500 px-3 h-[52px]  text-gray-800    focus:border-gray-800 transition-all outline-none text-left relative pt-4",
               error && "!border-red-900",
               className
             )}

@@ -31,6 +31,7 @@ export const Form = () => {
     handleSubmit,
     cleanFields,
     isLoading,
+    userRig,
   } = useFormController();
 
   const isPending = remainingMinutes !== 0;
@@ -67,10 +68,13 @@ export const Form = () => {
           <div
             className={cn(" flex items-center flex-col justify-center gap-2")}
           >
-            <header className="my-6">
+            <header className="my-6 flex flex-col items-center justify-center">
               <h1 className="text-white text-2xl">
                 Boletim Diário de Ocorrência
               </h1>
+              <span className="text-white text-sm font-semibold">
+                {userRig?.name}
+              </span>
             </header>
             <DatePickerInput
               error={!date ? "Selecione uma data!" : undefined}

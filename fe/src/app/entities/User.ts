@@ -9,6 +9,10 @@ export interface User {
       name: string;
       state?: string;
       isAtive?: boolean;
+      contract: {
+        id: string;
+        name: string;
+      };
     };
   }[];
 }

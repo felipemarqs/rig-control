@@ -21,6 +21,7 @@ export class UsersService {
                 name: true,
                 state: true,
                 isActive: true,
+                contract: true,
               },
             },
           },

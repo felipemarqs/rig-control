@@ -84,6 +84,7 @@ export class EfficienciesService {
     const efficiencyData = {
       date,
       availableHours,
+      dtmHours: 0,
       rigId,
       userId,
       periods: {
@@ -108,10 +109,6 @@ export class EfficienciesService {
         },
       };
     }
-
-    const efficiency = await this.efficiencyRepo.create({
-      data: efficiencyData,
-    });
 
     //criando valores de faturamento
     // Talvez mudar isso aqui de lugar
@@ -234,8 +231,32 @@ export class EfficienciesService {
         equipmentGt50Amount) *
       rigBillingConfiguration.readjustment;
 
+    efficiencyData['dtmHours'] =
+      dtmLt20TotalHours + dtmGt50TotalHours + dtmBt20And50TotalHours;
+
+    const efficiency = await this.efficiencyRepo.create({
+      data: efficiencyData,
+    });
+
     await this.billingRepo.create({
       data: {
+        bobRentAmount: 0, //Temporário
+        demobilizationAmount: 0, //Temporário
+        dtmHourAmount: 0, //Temporário
+        extraTrailerAmount: 0, //Temporário
+        generatorFuelAmount: 0, //Temporário
+        mixTankDemobilizationAmmount: 0, //Temporário
+        mixTankDtmAmmount: 0, //Temporário
+        mixTankHourRentAmount: 0, //Temporário
+        mixTankMobilizationAmmount: 0, //Temporário
+        mixTankMonthRentAmount: 0, //Temporário
+        mixTankOperatorAmmount: 0, //Temporário
+        mobilizationAmount: 0, //Temporário
+        powerSwivelAmount: 0, //Temporário
+        suckingTruckAmount: 0, //Temporário
+        transportationAmount: 0, //Temporário
+        truckCartRentAmount: 0, //Temporário
+        truckKmAmount: 0, //Temporário
         availableHourAmount,
         glossHourAmount,
         dtmLt20Amount,

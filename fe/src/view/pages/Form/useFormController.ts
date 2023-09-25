@@ -207,6 +207,8 @@ export const useFormController = () => {
 
   const isFormValid = remainingMinutes === 0 && date;
 
+  const userRig = user?.rigs[0].rig;
+
   return {
     date,
     handleDateChange,
@@ -225,5 +227,6 @@ export const useFormController = () => {
     handleSubmit,
     cleanFields,
     isLoading,
+    userRig,
   };
 };
