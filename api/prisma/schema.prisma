@@ -214,10 +214,13 @@ model BillingConfiguration {
   mixTankMobilizationTax     Float? @default(0) @map("mix_tank_mobilization_tax")
   mixTankDemobilizationTax   Float? @default(0) @map("mix_tank_demobilization_tax")
   suckingTruckTax            Float? @default(0) @map("sucking_truck_tax")
-  readjustment               Float
-  mobilization               Float? @default(0)
-  demobilization             Float? @default(0)
-  rig                        Rig    @relation(fields: [rigId], references: [id], onDelete: Cascade)
+  truckTankTax               Float? @default(0) @map("truck_tank_tax")
+  munckTax                   Float? @default(0) @map("munck_truck_tax")
+
+  readjustment   Float
+  mobilization   Float? @default(0)
+  demobilization Float? @default(0)
+  rig            Rig    @relation(fields: [rigId], references: [id], onDelete: Cascade)
 
   @@map("billing_configurations")
 }

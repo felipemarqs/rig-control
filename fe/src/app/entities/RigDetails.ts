@@ -34,4 +34,6 @@ export type RigDetails = {
   transportationTax: number;
   truckCartRentTax: number;
   truckKmTax: number;
+  munckTax: number;
+  truckTankTax: number;
 };
