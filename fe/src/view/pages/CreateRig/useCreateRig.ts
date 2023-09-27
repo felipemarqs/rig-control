@@ -116,6 +116,10 @@ const schema = z.object({
     z.string().nonempty("Saldo é obrigatório"),
     z.number(),
   ]),
+  christmasTreeDisassemblyTax: z.union([
+    z.string().nonempty("Saldo é obrigatório"),
+    z.number(),
+  ]),
   contractId: z.string().nonempty("Contrato é obrigatório"),
   munckTax: z.union([z.string().nonempty("Saldo é obrigatório"), z.number()]),
 });
@@ -143,8 +147,6 @@ export const useCreateRig = () => {
     useContracts(isUserAdm);
 
   const handleSubmit = hookFormHandleSubmit(async (data) => {
-    console.log(data);
-    console.log(errors);
     try {
       await mutateAsync({
         ...data,
@@ -243,12 +245,16 @@ export const useCreateRig = () => {
         truckTankTax:
           currencyStringToNumber(data.truckTankTax as string) ??
           (data.truckTankTax as number),
+        christmasTreeDisassemblyTax:
+          currencyStringToNumber(data.christmasTreeDisassemblyTax as string) ??
+          (data.christmasTreeDisassemblyTax as number),
       });
 
       customColorToast("Sonda cadastrada com Sucesso!", "#1c7b7b", "success");
       reset();
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
+      console.log(error);
     }
   });
 
@@ -259,5 +265,6 @@ export const useCreateRig = () => {
     handleSubmit,
     contracts,
     isFetchingContracts,
+    isLoading,
   };
 };

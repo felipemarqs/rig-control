@@ -2,8 +2,9 @@ import {Header} from "../../components/Header";
 
 import {cn} from "../../../app/utils/cn";
 import {PeriodsFormContainer} from "./components/PeriodsFormContainer";
-import {BraskemFormContainer} from "./components/BraskemForm/BraskemFormContainer";
+import {BraskemFormContainer} from "./components/BraskemForm";
 import {FormContext, FormProvider} from "./components/FormContext";
+import {TresRFormContainer} from "./components/TresRForm";
 
 export const Form = () => {
   return (
@@ -28,7 +29,8 @@ export const Form = () => {
             <div className="w-full h-[87vh] p-4  flex gap-2 ">
               <PeriodsFormContainer />
               <div className="flex-1">
-                <BraskemFormContainer />
+                {/* <BraskemFormContainer /> */}
+                <TresRFormContainer />
               </div>
             </div>
           </div>

@@ -9,7 +9,8 @@ import {useCreateRig} from "./useCreateRig";
 import {Button} from "../../components/Button";
 
 export const CreateRig = () => {
-  const {control, errors, register, handleSubmit, contracts} = useCreateRig();
+  const {control, errors, register, handleSubmit, contracts, isLoading} =
+    useCreateRig();
   return (
     <div className="w-full h-full overflow-y-scroll">
       <Header
@@ -59,6 +60,7 @@ export const CreateRig = () => {
                     render={({field: {onChange, value}}) => (
                       <Select
                         value={value}
+                        error={errors.contractId?.message}
                         placeholder="Contrato"
                         onChange={onChange}
                         options={contracts.map(({id, name}) => ({
@@ -607,6 +609,27 @@ export const CreateRig = () => {
                   />
                 </TaxInput>
               </div>
+
+              <div className="w-full">
+                <TaxInput
+                  title="Taxa de Desmon. Árvore de Natal"
+                  label="R$"
+                  styles="bg-white w-full px-4 rounded-lg border-2 h-[52px]"
+                >
+                  <Controller
+                    defaultValue="0"
+                    control={control}
+                    name="christmasTreeDisassemblyTax"
+                    render={({field: {onChange, value}}) => (
+                      <InputCurrency
+                        onChange={onChange}
+                        value={value}
+                        error={errors.christmasTreeDisassemblyTax?.message}
+                      />
+                    )}
+                  />
+                </TaxInput>
+              </div>
             </div>
 
             <div className=" col-span-12 lg:col-span-6 row-span-4 w-full p-4 rounded-lg border-2 bg-gray-300 flex flex-col lg:gap-2 ">
@@ -765,7 +788,9 @@ export const CreateRig = () => {
             </div>
 
             <div className=" col-span-12  row-span-1 w-full p-4 rounded-lg  flex flex-col lg:gap-2 lg:col-span-8 lg:col-start-3 ">
-              <Button>Cadastrar Sonda</Button>
+              <Button type="submit" isLoading={isLoading}>
+                Enviar
+              </Button>
             </div>
           </div>
 

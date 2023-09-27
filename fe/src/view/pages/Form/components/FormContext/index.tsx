@@ -10,6 +10,7 @@ import {AxiosError} from "axios";
 import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
 import {Dayjs} from "dayjs";
 import {parse, differenceInMinutes} from "date-fns";
+import formatTime from "../../../../../app/utils/formatTime";
 
 interface FormContextValue {
   date: Date | undefined;
@@ -36,21 +37,38 @@ interface FormContextValue {
   isFormValid: boolean;
   isPending: boolean;
   handleMixTankCheckBox(): void;
-  isMixTankSelected: boolean;
   handleMixTankOperatorsCheckBox(): void;
-  isMixTankOperatorsSelected: boolean;
-  isMixTankMonthSelected: boolean;
-  handleMixTankMonthCheckBox(): void;
-  isFuelGeneratorSelected: boolean;
   handleFuelGeneratorCheckBox(): void;
   handleMobilizationCheckbox(): void;
-  isMobilizationSelected: boolean;
-  isDemobilizationSelected: boolean;
+  handleMixTankMonthCheckBox(): void;
   handleDemobilizationCheckbox(): void;
-  isTankMixMobilizationSelected: boolean;
-  isTankMixDemobilizationSelected: boolean;
   handleTankMixMobilizationCheckbox(): void;
   handleTankMixDemobilizationCheckbox(): void;
+  handleTankMixDTMCheckbox(): void;
+  handleTruckCartCheckbox(): void;
+  handleTruckTankCheckbox(): void;
+  handleTransportationCheckbox(): void;
+  handleMunckCheckbox(): void;
+
+  isMixTankSelected: boolean;
+  isMixTankOperatorsSelected: boolean;
+  isMixTankMonthSelected: boolean;
+  isFuelGeneratorSelected: boolean;
+  isMobilizationSelected: boolean;
+  isDemobilizationSelected: boolean;
+  isTankMixMobilizationSelected: boolean;
+  isTankMixDemobilizationSelected: boolean;
+  isTankMixDTMSelected: boolean;
+  bobRentHours: string;
+  isTruckCartSelected: boolean;
+  isTruckTankSelected: boolean;
+  isMunckSelected: boolean;
+  isTransportationSelected: boolean;
+  handleBobRentHours(time: Dayjs | null, timeString: string): void;
+  handleChristmasTreeDisassemblyHours(
+    time: Dayjs | null,
+    timeString: string
+  ): void;
 }
 
 type Periods = {
@@ -92,6 +110,17 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
       date: date ?? new Date(),
       availableHours: 24,
       periods: periods,
+      isMixTankSelected,
+      isMixTankOperatorsSelected,
+      isMixTankMonthSelected,
+      isFuelGeneratorSelected,
+      isMobilizationSelected,
+      isDemobilizationSelected,
+      isTankMixMobilizationSelected,
+      isTankMixDemobilizationSelected,
+      isTankMixDTMSelected,
+      bobRentHours,
+      christmasTreeDisassemblyHours,
     });
 
     try {
@@ -310,16 +339,59 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     setIsDemobilizationSelected((prevState) => !prevState);
   }, []);
 
-  console.log({
-    isTankMixMobilizationSelected,
-    isTankMixDemobilizationSelected,
-    isMobilizationSelected,
-    isDemobilizationSelected,
-    isFuelGeneratorSelected,
-    isMixTankOperatorsSelected,
-    isMixTankMonthSelected,
-    isMixTankSelected,
-  });
+  const [isTankMixDTMSelected, setIsTankMixDTMSelected] = useState(false);
+
+  const handleTankMixDTMCheckbox = useCallback(() => {
+    setIsTankMixDTMSelected((prevState) => !prevState);
+  }, []);
+
+  const [bobRentHours, setBobRentHours] = useState<string>("");
+
+  const handleBobRentHours = useCallback(
+    (time: Dayjs | null, timeString: string) => {
+      setBobRentHours(timeString);
+    },
+    []
+  );
+
+  const [christmasTreeDisassemblyHours, setChristmasTreeDisassemblyHours] =
+    useState<string>("");
+
+  const handleChristmasTreeDisassemblyHours = useCallback(
+    (time: Dayjs | null, timeString: string) => {
+      setChristmasTreeDisassemblyHours(timeString);
+    },
+    []
+  );
+
+  //===========================================
+
+  // 3R - 76
+
+  const [isTruckCartSelected, setIsTruckCartSelected] = useState(false);
+
+  const handleTruckCartCheckbox = useCallback(() => {
+    setIsTruckCartSelected((prevState) => !prevState);
+  }, []);
+
+  const [isTruckTankSelected, setIsTruckTankSelected] = useState(false);
+
+  const handleTruckTankCheckbox = useCallback(() => {
+    setIsTruckTankSelected((prevState) => !prevState);
+  }, []);
+
+  const [isMunckSelected, setIsMunckSelected] = useState(false);
+
+  const handleMunckCheckbox = useCallback(() => {
+    setIsMunckSelected((prevState) => !prevState);
+  }, []);
+
+  const [isTransportationSelected, setIsTransportationSelected] =
+    useState(false);
+
+  const handleTransportationCheckbox = useCallback(() => {
+    setIsTransportationSelected((prevState) => !prevState);
+  }, []);
 
   return (
     <FormContext.Provider
@@ -359,6 +431,19 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         isTankMixDemobilizationSelected,
         handleTankMixMobilizationCheckbox,
         handleTankMixDemobilizationCheckbox,
+        handleTankMixDTMCheckbox,
+        isTankMixDTMSelected,
+        bobRentHours,
+        handleBobRentHours,
+        handleChristmasTreeDisassemblyHours,
+        isTruckCartSelected,
+        handleTruckCartCheckbox,
+        isTruckTankSelected,
+        handleTruckTankCheckbox,
+        isMunckSelected,
+        handleMunckCheckbox,
+        isTransportationSelected,
+        handleTransportationCheckbox,
       }}
     >
       {children}

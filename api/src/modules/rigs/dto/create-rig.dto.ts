@@ -168,4 +168,9 @@ export class CreateRigDto {
   @IsOptional()
   @IsNotEmpty()
   demobilization: number;
+
+  @IsNumber()
+  @IsOptional()
+  @IsNotEmpty()
+  christmasTreeDisassemblyTax: number;
 }

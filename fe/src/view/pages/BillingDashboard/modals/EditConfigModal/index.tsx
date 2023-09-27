@@ -96,6 +96,21 @@ export const EditConfigModal = () => {
               />
             </TaxInput>
 
+            <TaxInput title="DTM (hora)" label="R$">
+              <Controller
+                defaultValue="0"
+                control={control}
+                name="dtmHourTax"
+                render={({field: {onChange, value}}) => (
+                  <InputCurrency
+                    onChange={onChange}
+                    value={value}
+                    error={errors.dtmHourTax?.message}
+                  />
+                )}
+              />
+            </TaxInput>
+
             <TaxInput title="Taxa Equip. < 20" label="R$">
               <Controller
                 control={control}
@@ -194,6 +209,36 @@ export const EditConfigModal = () => {
               />
             </TaxInput>
 
+            <TaxInput title="Desmobilização" label="R$">
+              <Controller
+                defaultValue="0"
+                control={control}
+                name="demobilization"
+                render={({field: {onChange, value}}) => (
+                  <InputCurrency
+                    onChange={onChange}
+                    value={value}
+                    error={errors.demobilization?.message}
+                  />
+                )}
+              />
+            </TaxInput>
+
+            <TaxInput title="Taxa de Transporte" label="R$">
+              <Controller
+                defaultValue="0"
+                control={control}
+                name="transportationTax"
+                render={({field: {onChange, value}}) => (
+                  <InputCurrency
+                    onChange={onChange}
+                    value={value}
+                    error={errors.transportationTax?.message}
+                  />
+                )}
+              />
+            </TaxInput>
+
             <div className="flex items-center justify-between gap-2 h-10 border m-1 ">
               <span className="text-gray-800  mr-10">Reajuste</span>
 
@@ -217,113 +262,241 @@ export const EditConfigModal = () => {
           </div>
 
           <div className="w-full">
-            <TaxInput title="Fluid. > 50" label="R$">
+            <TaxInput title=" Loc Caminhão + Carreta / Mensal" label="R$">
               <Controller
+                defaultValue="0"
                 control={control}
-                name="fluidRatioGt50Tax"
+                name="truckCartRentTax"
                 render={({field: {onChange, value}}) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
-                    error={errors.fluidRatioGt50Tax?.message}
+                    error={errors.truckCartRentTax?.message}
                   />
                 )}
               />
             </TaxInput>
 
-            <TaxInput title="Fluid. > 50" label="R$">
+            <TaxInput title="Taxa Loc Caminhão + Tanque / Mensal" label="R$">
               <Controller
+                defaultValue="0"
                 control={control}
-                name="fluidRatioGt50Tax"
+                name="truckTankTax"
                 render={({field: {onChange, value}}) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
-                    error={errors.fluidRatioGt50Tax?.message}
+                    error={errors.truckTankTax?.message}
                   />
                 )}
               />
             </TaxInput>
 
-            <TaxInput title="Fluid. > 50" label="R$">
+            <TaxInput title="Taxa Km Caminhão / km" label="R$">
               <Controller
+                defaultValue="0"
                 control={control}
-                name="fluidRatioGt50Tax"
+                name="truckKmTax"
                 render={({field: {onChange, value}}) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
-                    error={errors.fluidRatioGt50Tax?.message}
+                    error={errors.truckKmTax?.message}
                   />
                 )}
               />
             </TaxInput>
 
-            <TaxInput title="Fluid. > 50" label="R$">
+            <TaxInput title="Taxa BOP 7 1/16 x 5000 PSI / hora" label="R$">
               <Controller
+                defaultValue="0"
                 control={control}
-                name="fluidRatioGt50Tax"
+                name="bobRentTax"
                 render={({field: {onChange, value}}) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
-                    error={errors.fluidRatioGt50Tax?.message}
+                    error={errors.bobRentTax?.message}
                   />
                 )}
               />
             </TaxInput>
 
-            <TaxInput title="Fluid. > 50" label="R$">
+            <TaxInput title="Taxa combustível gerador / diária" label="R$">
               <Controller
+                defaultValue="0"
                 control={control}
-                name="fluidRatioGt50Tax"
+                name="generatorFuelTax"
                 render={({field: {onChange, value}}) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
-                    error={errors.fluidRatioGt50Tax?.message}
+                    error={errors.generatorFuelTax?.message}
                   />
                 )}
               />
             </TaxInput>
 
-            <TaxInput title="Fluid. > 50" label="R$">
+            <TaxInput title="Taxa de Trailer Extra" label="R$">
               <Controller
+                defaultValue="0"
                 control={control}
-                name="fluidRatioGt50Tax"
+                name="extraTrailerTax"
                 render={({field: {onChange, value}}) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
-                    error={errors.fluidRatioGt50Tax?.message}
+                    error={errors.extraTrailerTax?.message}
                   />
                 )}
               />
             </TaxInput>
 
-            <TaxInput title="Fluid. > 50" label="R$">
+            <TaxInput title="Taxa de Power Swivel" label="R$">
               <Controller
+                defaultValue="0"
                 control={control}
-                name="fluidRatioGt50Tax"
+                name="powerSwivelTax"
                 render={({field: {onChange, value}}) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
-                    error={errors.fluidRatioGt50Tax?.message}
+                    error={errors.powerSwivelTax?.message}
                   />
                 )}
               />
             </TaxInput>
 
-            <TaxInput title="Fluid. > 50" label="R$">
+            <TaxInput title="Taxa de Caminhão Sugador / diária" label="R$">
               <Controller
+                defaultValue="0"
                 control={control}
-                name="fluidRatioGt50Tax"
+                name="suckingTruckTax"
                 render={({field: {onChange, value}}) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
-                    error={errors.fluidRatioGt50Tax?.message}
+                    error={errors.suckingTruckTax?.message}
+                  />
+                )}
+              />
+            </TaxInput>
+
+            <TaxInput title="Taxa de Locação de Munck" label="R$">
+              <Controller
+                defaultValue="0"
+                control={control}
+                name="munckTax"
+                render={({field: {onChange, value}}) => (
+                  <InputCurrency
+                    onChange={onChange}
+                    value={value}
+                    error={errors.munckTax?.message}
+                  />
+                )}
+              />
+            </TaxInput>
+
+            <TaxInput title="Taxa Loc. Tanque Mix / mensal" label="R$">
+              <Controller
+                defaultValue="0"
+                control={control}
+                name="mixTankMonthRentTax"
+                render={({field: {onChange, value}}) => (
+                  <InputCurrency
+                    onChange={onChange}
+                    value={value}
+                    error={errors.mixTankMonthRentTax?.message}
+                  />
+                )}
+              />
+            </TaxInput>
+
+            <TaxInput title="Taxa Loc. Tanque Mix / Hora" label="R$">
+              <Controller
+                defaultValue="0"
+                control={control}
+                name="mixTankHourRentTax"
+                render={({field: {onChange, value}}) => (
+                  <InputCurrency
+                    onChange={onChange}
+                    value={value}
+                    error={errors.mixTankHourRentTax?.message}
+                  />
+                )}
+              />
+            </TaxInput>
+
+            <TaxInput title="Taxa de Mobilização Tanque Mix" label="R$">
+              <Controller
+                defaultValue="0"
+                control={control}
+                name="mixTankMobilizationTax"
+                render={({field: {onChange, value}}) => (
+                  <InputCurrency
+                    onChange={onChange}
+                    value={value}
+                    error={errors.mixTankMobilizationTax?.message}
+                  />
+                )}
+              />
+            </TaxInput>
+
+            <TaxInput title="Taxa de Desmobilização Tanque Mix" label="R$">
+              <Controller
+                defaultValue="0"
+                control={control}
+                name="mixTankDemobilizationTax"
+                render={({field: {onChange, value}}) => (
+                  <InputCurrency
+                    onChange={onChange}
+                    value={value}
+                    error={errors.mixTankDemobilizationTax?.message}
+                  />
+                )}
+              />
+            </TaxInput>
+
+            <TaxInput title="Taxa de DTM Tanque Mix" label="R$">
+              <Controller
+                defaultValue="0"
+                control={control}
+                name="mixTankDtmTax"
+                render={({field: {onChange, value}}) => (
+                  <InputCurrency
+                    onChange={onChange}
+                    value={value}
+                    error={errors.mixTankDtmTax?.message}
+                  />
+                )}
+              />
+            </TaxInput>
+
+            <TaxInput title="Taxa de Operadores Tanque Mix / Diária" label="R$">
+              <Controller
+                defaultValue="0"
+                control={control}
+                name="mixTankOperatorTax"
+                render={({field: {onChange, value}}) => (
+                  <InputCurrency
+                    onChange={onChange}
+                    value={value}
+                    error={errors.mixTankOperatorTax?.message}
+                  />
+                )}
+              />
+            </TaxInput>
+
+            <TaxInput title="Taxa Árvore de Natal" label="R$">
+              <Controller
+                defaultValue="0"
+                control={control}
+                name="christmasTreeDisassemblyTax"
+                render={({field: {onChange, value}}) => (
+                  <InputCurrency
+                    onChange={onChange}
+                    value={value}
+                    error={errors.christmasTreeDisassemblyTax?.message}
                   />
                 )}
               />

@@ -36,4 +36,5 @@ export type RigDetails = {
   truckKmTax: number;
   munckTax: number;
   truckTankTax: number;
+  christmasTreeDisassemblyTax: number;
 };

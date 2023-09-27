@@ -12,4 +12,15 @@ export interface DomainEfficiency {
     fluidRatio: string;
     equipmentRatio: string;
   }[];
+  christmasTreeDisassemblyHours?: string;
+  isMixTankSelected?: boolean;
+  isMixTankOperatorsSelected?: boolean;
+  isMixTankMonthSelected?: boolean;
+  isFuelGeneratorSelected?: boolean;
+  isMobilizationSelected?: boolean;
+  isDemobilizationSelected?: boolean;
+  isTankMixMobilizationSelected?: boolean;
+  isTankMixDemobilizationSelected?: boolean;
+  isTankMixDTMSelected?: boolean;
+  bobRentHours?: string;
 }
