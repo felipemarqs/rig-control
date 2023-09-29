@@ -52,5 +52,14 @@ export type ToPersistanceEfficiency = {
   isTankMixMobilizationSelected?: boolean;
   isTankMixDemobilizationSelected?: boolean;
   isTankMixDTMSelected?: boolean;
+  isTruckCartSelected?: boolean;
+  isTruckTankSelected?: boolean;
+  isMunckSelected?: boolean;
+  isTransportationSelected?: boolean;
   bobRentHours?: number;
+  truckKm?: number;
+  isExtraTrailerSelected?: boolean;
+  isPowerSwivelSelected?: boolean;
+  mobilizationPlace?: string;
+  isSuckingTruckSelected?: boolean;
 };

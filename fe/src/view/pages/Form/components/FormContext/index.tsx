@@ -10,7 +10,6 @@ import {AxiosError} from "axios";
 import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
 import {Dayjs} from "dayjs";
 import {parse, differenceInMinutes} from "date-fns";
-import formatTime from "../../../../../app/utils/formatTime";
 
 interface FormContextValue {
   date: Date | undefined;
@@ -49,7 +48,14 @@ interface FormContextValue {
   handleTruckTankCheckbox(): void;
   handleTransportationCheckbox(): void;
   handleMunckCheckbox(): void;
-
+  handleTruckKmChange(number: number): void;
+  handleExtraTrailerCheckbox(): void;
+  handlePowerSwivelCheckbox(): void;
+  handleMobilizationPlace(value: string): void;
+  handleSuckingTruckCheckbox(): void;
+  isSuckingTruckSelected: boolean;
+  mobilizationPlace: string;
+  isPowerSwivelSelected: boolean;
   isMixTankSelected: boolean;
   isMixTankOperatorsSelected: boolean;
   isMixTankMonthSelected: boolean;
@@ -64,6 +70,8 @@ interface FormContextValue {
   isTruckTankSelected: boolean;
   isMunckSelected: boolean;
   isTransportationSelected: boolean;
+  truckKm: number;
+  isExtraTrailerSelected: boolean;
   handleBobRentHours(time: Dayjs | null, timeString: string): void;
   handleChristmasTreeDisassemblyHours(
     time: Dayjs | null,
@@ -86,6 +94,7 @@ export const FormContext = createContext({} as FormContextValue);
 
 export const FormProvider = ({children}: {children: React.ReactNode}) => {
   const {user} = useAuth();
+  console.log("User", user);
   const navigate = useNavigate();
   const [date, setDate] = useState<Date>();
   const [remainingMinutes, setRemainingMinutes] = useState<number>();
@@ -121,6 +130,15 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
       isTankMixDTMSelected,
       bobRentHours,
       christmasTreeDisassemblyHours,
+      isTruckCartSelected,
+      isTruckTankSelected,
+      isMunckSelected,
+      isTransportationSelected,
+      truckKm,
+      isExtraTrailerSelected,
+      isPowerSwivelSelected,
+      mobilizationPlace,
+      isSuckingTruckSelected,
     });
 
     try {
@@ -330,6 +348,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleMobilizationCheckbox = useCallback(() => {
     setIsMobilizationSelected((prevState) => !prevState);
+    setMobilizationPlace("");
   }, []);
 
   const [isDemobilizationSelected, setIsDemobilizationSelected] =
@@ -393,6 +412,36 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     setIsTransportationSelected((prevState) => !prevState);
   }, []);
 
+  const [truckKm, setTruckKm] = useState(0);
+
+  const handleTruckKmChange = (number: number) => {
+    setTruckKm(number);
+  };
+
+  const [isExtraTrailerSelected, setIsExtraTrailerSelected] = useState(false);
+
+  const handleExtraTrailerCheckbox = useCallback(() => {
+    setIsExtraTrailerSelected((prevState) => !prevState);
+  }, []);
+
+  const [isPowerSwivelSelected, setIsPowerSwivelSelected] = useState(false);
+
+  const handlePowerSwivelCheckbox = useCallback(() => {
+    setIsPowerSwivelSelected((prevState) => !prevState);
+  }, []);
+
+  const [mobilizationPlace, setMobilizationPlace] = useState("");
+
+  const handleMobilizationPlace = (value: string) => {
+    setMobilizationPlace(value);
+  };
+
+  const [isSuckingTruckSelected, setIsSuckingTruckSelected] = useState(false);
+
+  const handleSuckingTruckCheckbox = useCallback(() => {
+    setIsSuckingTruckSelected((prevState) => !prevState);
+  }, []);
+
   return (
     <FormContext.Provider
       value={{
@@ -444,6 +493,16 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         handleMunckCheckbox,
         isTransportationSelected,
         handleTransportationCheckbox,
+        handleTruckKmChange,
+        truckKm,
+        handleExtraTrailerCheckbox,
+        isExtraTrailerSelected,
+        isPowerSwivelSelected,
+        handlePowerSwivelCheckbox,
+        mobilizationPlace,
+        handleMobilizationPlace,
+        isSuckingTruckSelected,
+        handleSuckingTruckCheckbox,
       }}
     >
       {children}

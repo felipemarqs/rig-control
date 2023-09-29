@@ -5,12 +5,14 @@ import {PeriodsFormContainer} from "./components/PeriodsFormContainer";
 import {BraskemFormContainer} from "./components/BraskemForm";
 import {FormContext, FormProvider} from "./components/FormContext";
 import {TresRFormContainer} from "./components/TresRForm";
+import {OrigemContainer} from "./components/OrigemForm";
+import {CarmoEnergyContainer} from "./components/CarmoEnergyForm";
 
 export const Form = () => {
   return (
     <FormProvider>
       <FormContext.Consumer>
-        {({isPending, remainingMinutes}) => (
+        {({isPending, remainingMinutes, userRig}) => (
           <div className="w-full h-full lg:min-w-[1000px]">
             <Header
               title=" Boletim Diário de Ocorrência"
@@ -26,12 +28,16 @@ export const Form = () => {
               {!isPending && <span> Horários Preenchidos!</span>}
             </div>
 
-            <div className="w-full h-[87vh] p-4  flex gap-2 ">
+            <div className="w-full h-[87vh] p-4  justify-center flex gap-2 ">
               <PeriodsFormContainer />
-              <div className="flex-1">
-                {/* <BraskemFormContainer /> */}
-                <TresRFormContainer />
-              </div>
+
+              {userRig.contract.name === "Petrobrás" && <></>}
+
+              {userRig.contract.name === "Braskem" && <BraskemFormContainer />}
+
+              {/*  <TresRFormContainer /> */}
+              {/* <OrigemContainer /> */}
+              {/*   <CarmoEnergyContainer /> */}
             </div>
           </div>
         )}

@@ -10,10 +10,10 @@ export class ContractRepository {
     return await this.prismaService.contract.create(createDto);
   }
 
-  /* async findUnique(findUniqueDto: Prisma.BillingFindUniqueArgs) {
-    return await this.prismaService.billing.findUnique(findUniqueDto);
+  async findUnique(findUniqueDto: Prisma.ContractFindUniqueArgs) {
+    return await this.prismaService.contract.findUnique(findUniqueDto);
   }
-
+  /* 
   async findFisrt(findUniqueDto: Prisma.BillingFindFirstArgs) {
     return await this.prismaService.billing.findFirst(findUniqueDto);
   }

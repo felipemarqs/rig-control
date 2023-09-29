@@ -32,8 +32,35 @@ export class EfficienciesService {
   }
 
   async create(createEfficiencyDto: CreateEfficiencyDto, userId: string) {
-    const { rigId, date, availableHours, periods, fluidRatio, equipmentRatio } =
-      createEfficiencyDto;
+    console.log(createEfficiencyDto);
+    const {
+      rigId,
+      date,
+      availableHours,
+      periods,
+      fluidRatio,
+      equipmentRatio,
+      isMixTankSelected,
+      isMixTankOperatorsSelected,
+      isMixTankMonthSelected,
+      isFuelGeneratorSelected,
+      isMobilizationSelected,
+      isDemobilizationSelected,
+      isTankMixMobilizationSelected,
+      isTankMixDemobilizationSelected,
+      isTankMixDTMSelected,
+      bobRentHours,
+      christmasTreeDisassemblyHours,
+      isTruckCartSelected,
+      isTruckTankSelected,
+      isMunckSelected,
+      isTransportationSelected,
+      truckKm,
+      isExtraTrailerSelected,
+      isPowerSwivelSelected,
+      mobilizationPlace,
+      isSuckingTruckSelected,
+    } = createEfficiencyDto;
 
     const rigBelongsToUser = await this.userRigsRepo.findFirst({
       where: { userId, rigId },
@@ -124,6 +151,25 @@ export class EfficienciesService {
     let equipmentLt20TotalAmmount = 0;
     let equipmentBt20And50TotalAmmount = 0;
     let equipmentGt50TotalAmmount = 0;
+    let mobilizationTotalAmount = 0;
+    let demobilizationTotalAmount = 0;
+    let extraTrailerTotalAmount = 0;
+    let powerSwivelTotalAmount = 0;
+    let truckCartRentTotalAmount = 0;
+    let transportationTotalAmount = 0;
+    let truckKmTotalAmount = 0;
+    let bobRentTotalAmount = 0;
+    let truckTankTotalAmount = 0;
+    let munckTotalAmount = 0;
+    let mixTankMonthRentTotalAmount = 0;
+    let mixTankHourRentTotalAmount = 0;
+    let generatorFuelTotalAmount = 0;
+    let mixTankOperatorTotalAmount = 0;
+    let mixTankDTMTotalAmount = 0;
+    let mixTankMobilizationTotalAmount = 0;
+    let mixTankDemobilizationTotalAmount = 0;
+    let suckingTruckTotalAmount = 0;
+    let christmasTreeDisassemblyTotalAmount = 0;
 
     periods.forEach(({ type, startHour, endHour, classification }) => {
       const horaInicial = new Date(startHour);
@@ -210,6 +256,7 @@ export class EfficienciesService {
 
     const equipmentLt20Amount =
       equipmentLt20TotalAmmount * rigBillingConfiguration.equipmentRatioLt20Tax;
+
     const equipmentBt20And50Amount =
       equipmentBt20And50TotalAmmount *
       rigBillingConfiguration.equipmentRatioBt20And50Tax;
@@ -217,8 +264,82 @@ export class EfficienciesService {
     const equipmentGt50Amount =
       equipmentGt50TotalAmmount * rigBillingConfiguration.equipmentRatioGt50Tax;
 
+    const dtmHourAmount =
+      (dtmLt20TotalHours + dtmBt20And50TotalHours + dtmGt50TotalHours) *
+      rigBillingConfiguration.dtmHourTax;
+
+    const christmasTreeDisassemblyAmount =
+      christmasTreeDisassemblyHours *
+      rigBillingConfiguration.christmasTreeDisassemblyTax;
+
+    if (isTankMixDemobilizationSelected) {
+      mixTankDemobilizationTotalAmount =
+        rigBillingConfiguration.mixTankDemobilizationTax;
+    }
+
+    if (isTankMixMobilizationSelected) {
+      mixTankMobilizationTotalAmount =
+        rigBillingConfiguration.mixTankMobilizationTax;
+    }
+
+    if (isTankMixDTMSelected) {
+      mixTankDTMTotalAmount = rigBillingConfiguration.mixTankDtmTax;
+    }
+
+    if (isMixTankOperatorsSelected) {
+      mixTankOperatorTotalAmount = rigBillingConfiguration.mixTankOperatorTax;
+    }
+    if (isMixTankMonthSelected) {
+      mixTankMonthRentTotalAmount = rigBillingConfiguration.mixTankMonthRentTax;
+    }
+
+    if (isMixTankSelected) {
+      mixTankHourRentTotalAmount = rigBillingConfiguration.mixTankHourRentTax;
+    }
+
+    if (isFuelGeneratorSelected) {
+      generatorFuelTotalAmount = rigBillingConfiguration.generatorFuelTax;
+    }
+
+    if (isMunckSelected) {
+      munckTotalAmount = rigBillingConfiguration.munckTax;
+    }
+
+    if (isTruckTankSelected) {
+      truckTankTotalAmount = rigBillingConfiguration.truckTankTax;
+    }
+
+    if (isMobilizationSelected) {
+      mobilizationTotalAmount = rigBillingConfiguration.mobilization;
+    }
+
+    if (isDemobilizationSelected) {
+      demobilizationTotalAmount = rigBillingConfiguration.demobilization;
+    }
+
+    if (isExtraTrailerSelected) {
+      extraTrailerTotalAmount = rigBillingConfiguration.extraTrailerTax;
+    }
+
+    if (isPowerSwivelSelected) {
+      powerSwivelTotalAmount = rigBillingConfiguration.powerSwivelTax;
+    }
+
+    if (isSuckingTruckSelected) {
+      suckingTruckTotalAmount = rigBillingConfiguration.suckingTruckTax;
+    }
+
+    if (isTransportationSelected) {
+      transportationTotalAmount = rigBillingConfiguration.transportationTax;
+    }
+
+    if (isTruckCartSelected) {
+      truckCartRentTotalAmount = rigBillingConfiguration.truckCartRentTax;
+    }
+
     const totalAmmount =
       (availableHourAmount +
+        dtmHourAmount +
         glossHourAmount +
         dtmLt20Amount +
         dtmBt20And50Amount +
@@ -238,25 +359,32 @@ export class EfficienciesService {
       data: efficiencyData,
     });
 
+    bobRentTotalAmount = rigBillingConfiguration.bobRentTax * bobRentHours;
+
+    truckKmTotalAmount = rigBillingConfiguration.truckKmTax * truckKm;
+
     await this.billingRepo.create({
       data: {
-        bobRentAmount: 0, //Temporário
-        demobilizationAmount: 0, //Temporário
-        dtmHourAmount: 0, //Temporário
-        extraTrailerAmount: 0, //Temporário
-        generatorFuelAmount: 0, //Temporário
-        mixTankDemobilizationAmmount: 0, //Temporário
-        mixTankDtmAmmount: 0, //Temporário
-        mixTankHourRentAmount: 0, //Temporário
-        mixTankMobilizationAmmount: 0, //Temporário
-        mixTankMonthRentAmount: 0, //Temporário
-        mixTankOperatorAmmount: 0, //Temporário
-        mobilizationAmount: 0, //Temporário
-        powerSwivelAmount: 0, //Temporário
-        suckingTruckAmount: 0, //Temporário
-        transportationAmount: 0, //Temporário
-        truckCartRentAmount: 0, //Temporário
-        truckKmAmount: 0, //Temporário
+        christmasTreeDisassemblyAmount,
+        mixTankDemobilizationAmount: mixTankDemobilizationTotalAmount,
+        mixTankDtmAmount: mixTankDTMTotalAmount,
+        mixTankMobilizationAmount: mixTankMobilizationTotalAmount,
+        mixTankOperatorAmount: mixTankOperatorTotalAmount,
+        munckAmount: munckTotalAmount,
+        truckTankAmount: truckTankTotalAmount,
+        bobRentAmount: bobRentTotalAmount, //Temporário
+        demobilizationAmount: demobilizationTotalAmount, //Temporário
+        dtmHourAmount,
+        extraTrailerAmount: extraTrailerTotalAmount, //Temporário
+        generatorFuelAmount: generatorFuelTotalAmount, //Temporário //Temporário
+        mixTankHourRentAmount: mixTankHourRentTotalAmount, //Temporário
+        mixTankMonthRentAmount: mixTankMonthRentTotalAmount, //Temporário
+        mobilizationAmount: mobilizationTotalAmount, //Temporário
+        powerSwivelAmount: powerSwivelTotalAmount, //Temporário
+        suckingTruckAmount: suckingTruckTotalAmount, //Temporário
+        transportationAmount: transportationTotalAmount, //Temporário
+        truckCartRentAmount: truckCartRentTotalAmount, //Temporário
+        truckKmAmount: truckKmTotalAmount, //Temporário
         availableHourAmount,
         glossHourAmount,
         dtmLt20Amount,

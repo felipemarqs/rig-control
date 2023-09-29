@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateContractDto } from './dto/create-contract.dto';
 import { UpdateContractDto } from './dto/update-contract.dto';
 import { ContractRepository } from 'src/shared/database/repositories/contract.repositories';
@@ -7,7 +7,14 @@ import { ContractRepository } from 'src/shared/database/repositories/contract.re
 export class ContractsService {
   constructor(private readonly contractsRepo: ContractRepository) {}
 
-  create(createContractDto: CreateContractDto) {
+  async create(createContractDto: CreateContractDto) {
+    const contract = await this.contractsRepo.findUnique({
+      where: { name: createContractDto.name },
+    });
+
+    if (contract) {
+      throw new ConflictException('Contrato já existe');
+    }
     return this.contractsRepo.create({ data: createContractDto });
   }
 

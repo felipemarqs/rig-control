@@ -22,7 +22,6 @@ export const BraskemFormContainer = () => {
     handleTankMixDemobilizationCheckbox,
     isTankMixDTMSelected,
     handleTankMixDTMCheckbox,
-    bobRentHours,
     handleBobRentHours,
     handleChristmasTreeDisassemblyHours,
   } = useForm();

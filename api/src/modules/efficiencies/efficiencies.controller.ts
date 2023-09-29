@@ -70,7 +70,6 @@ export class EfficienciesController {
 
   @Get('/average/:rigId')
   getAverage(@Param('rigId') rigId: string) {
-    console.log('results');
     return this.efficienciesService.getAverage(rigId);
   }
 }
