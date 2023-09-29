@@ -80,12 +80,10 @@ export class CreateEfficiencyDto {
   isTankMixDTMSelected: boolean;
 
   @IsOptional()
-  @IsInt()
   @Min(0)
   bobRentHours: number;
 
   @IsOptional()
-  @IsInt()
   @Min(0)
   christmasTreeDisassemblyHours: number;
 
@@ -106,7 +104,6 @@ export class CreateEfficiencyDto {
   isTransportationSelected: boolean;
 
   @IsOptional()
-  @IsInt()
   @Min(0)
   truckKm: number;
 
