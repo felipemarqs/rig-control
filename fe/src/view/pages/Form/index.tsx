@@ -35,9 +35,13 @@ export const Form = () => {
 
               {userRig.contract.name === "Braskem" && <BraskemFormContainer />}
 
-              {/*  <TresRFormContainer /> */}
-              {/* <OrigemContainer /> */}
-              {/*   <CarmoEnergyContainer /> */}
+              {userRig.contract.name === "3R" && <TresRFormContainer />}
+
+              {userRig.contract.name === "Origem" && <OrigemContainer />}
+
+              {userRig.contract.name === "Carmo Energy" && (
+                <CarmoEnergyContainer />
+              )}
             </div>
           </div>
         )}

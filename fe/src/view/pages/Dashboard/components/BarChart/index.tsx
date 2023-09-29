@@ -1,5 +1,4 @@
 import {ResponsiveBar} from "@nivo/bar";
-import {formatCurrency} from "../../../../../app/utils/formatCurrency";
 import {useBarChart} from "./useBarChart";
 
 export const BarChart = () => {

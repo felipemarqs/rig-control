@@ -1,21 +1,8 @@
 import Checkbox from "../../../../components/CheckBox";
 import {useForm} from "../FormContext/useForm";
-import {Input} from "../../../../components/Input";
 
 export const OrigemContainer = () => {
   const {
-    isTruckCartSelected,
-    handleTruckCartCheckbox,
-    isTruckTankSelected,
-    handleTruckTankCheckbox,
-    isMunckSelected,
-    handleMunckCheckbox,
-    isTransportationSelected,
-    handleTransportationCheckbox,
-    truckKm,
-    handleTruckKmChange,
-    isMobilizationSelected,
-    handleMobilizationCheckbox,
     isExtraTrailerSelected,
     handleExtraTrailerCheckbox,
     isPowerSwivelSelected,

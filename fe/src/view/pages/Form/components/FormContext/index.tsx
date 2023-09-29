@@ -368,6 +368,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleBobRentHours = useCallback(
     (time: Dayjs | null, timeString: string) => {
+      console.log(time);
       setBobRentHours(timeString);
     },
     []
@@ -378,6 +379,8 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleChristmasTreeDisassemblyHours = useCallback(
     (time: Dayjs | null, timeString: string) => {
+      console.log(time);
+
       setChristmasTreeDisassemblyHours(timeString);
     },
     []

@@ -1,4 +1,3 @@
-import {useCallback, useState} from "react";
 import {UF} from "../../../app/entities/Rig";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
@@ -127,7 +126,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export const useCreateRig = () => {
-  const {user, signout} = useAuth();
+  const {user} = useAuth();
 
   const isUserAdm = user?.accessLevel === "ADM";
 
@@ -143,8 +142,7 @@ export const useCreateRig = () => {
 
   const {isLoading, mutateAsync} = useMutation(rigsService.create);
 
-  const {contracts, isFetchingContracts, refetchContracts} =
-    useContracts(isUserAdm);
+  const {contracts, isFetchingContracts} = useContracts(isUserAdm);
 
   const handleSubmit = hookFormHandleSubmit(async (data) => {
     try {
