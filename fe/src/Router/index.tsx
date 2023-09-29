@@ -10,6 +10,7 @@ import {List} from "../view/pages/List";
 import {BillingDashboard} from "../view/pages/BillingDashboard";
 import {ListBilling} from "../view/pages/BillingList";
 import {Details} from "../view/pages/Details";
+import {CreateRig} from "../view/pages/CreateRig";
 
 export const Router = () => {
   return (
@@ -31,6 +32,7 @@ export const Router = () => {
             <Route path="/invoicing-dashboard" element={<BillingDashboard />} />
             <Route path="/invoicing-list" element={<ListBilling />} />
             <Route path="/details/:efficiencyId" element={<Details />} />
+            <Route path="/rig" element={<CreateRig />} />
           </Route>
         </Route>
       </Routes>

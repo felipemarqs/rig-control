@@ -1,0 +1,61 @@
+import Checkbox from "../../../../components/CheckBox";
+import {useForm} from "../FormContext/useForm";
+import {Select} from "../../../../components/Select";
+
+export const CarmoEnergyContainer = () => {
+  const {
+    isMobilizationSelected,
+    handleMobilizationCheckbox,
+    mobilizationPlace,
+    handleMobilizationPlace,
+    isSuckingTruckSelected,
+    handleSuckingTruckCheckbox,
+  } = useForm();
+
+  return (
+    <div className=" max-h-[90vh] overflow-y-scroll flex-1 max-w-[800px]  bg-primary-500 p-4 rounded-xl">
+      <div className="border p-4 rounded-xl flex flex-col gap-2">
+        <div className="flex gap-2 items-center justify-center">
+          <div className="flex-1">
+            <Checkbox
+              checked={isMobilizationSelected}
+              id="mobilization"
+              handleChecked={handleMobilizationCheckbox}
+            >
+              Mobilização
+            </Checkbox>
+          </div>
+
+          <div className="flex-1">
+            <Select
+              disabled={!isMobilizationSelected}
+              placeholder="Em"
+              value={mobilizationPlace}
+              onChange={(value) => handleMobilizationPlace(value)}
+              options={[
+                {
+                  value: "Aracaju",
+                  label: "Aracaju",
+                },
+                {
+                  value: "Bahia",
+                  label: "Bahia",
+                },
+              ]}
+            />
+          </div>
+        </div>
+
+        <div>
+          <Checkbox
+            checked={isSuckingTruckSelected}
+            id="suckingTruck"
+            handleChecked={handleSuckingTruckCheckbox}
+          >
+            Caminhão Sugador
+          </Checkbox>
+        </div>
+      </div>
+    </div>
+  );
+};

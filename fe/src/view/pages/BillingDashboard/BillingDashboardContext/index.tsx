@@ -129,7 +129,7 @@ export const BillingDashboardProvider = ({
   const handleOpenEditConfigModal = useCallback(
     (data: BillingConfigResponse) => {
       setConfigBeingEdited(data);
-
+      console.log("cnfig being edited", data);
       setIsEditConfigModalOpen(true);
     },
     []

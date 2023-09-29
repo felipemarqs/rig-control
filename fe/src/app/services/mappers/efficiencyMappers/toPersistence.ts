@@ -2,9 +2,20 @@ import dayjs from "dayjs";
 import {DomainEfficiency} from "../../../entities/DomainEfficiency";
 import {differenceInMinutes, parse} from "date-fns";
 import {ToPersistanceEfficiency} from "../../../entities/PersistanceEfficiency";
+import {getTotalHoursFromTimeString} from "../../../utils/getTotalHoursFromTimeString";
 
 export const toPersistence = (domainEfficiency: DomainEfficiency) => {
   let totalAvailableHours = 0.02;
+
+  console.log("atual domais", domainEfficiency);
+
+  const christmasTreeDisassemblyHours = getTotalHoursFromTimeString(
+    domainEfficiency.christmasTreeDisassemblyHours
+  );
+
+  const bobRentHours = getTotalHoursFromTimeString(
+    domainEfficiency.bobRentHours
+  );
 
   const periodsArray = domainEfficiency.periods.map(
     ({startHour, endHour, classification, type, description}) => {
@@ -47,6 +58,26 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
     periods: periodsArray,
     equipmentRatio: [],
     fluidRatio: [],
+    christmasTreeDisassemblyHours,
+    bobRentHours,
+    isMixTankSelected: domainEfficiency.isMixTankSelected,
+    isMixTankOperatorsSelected: domainEfficiency.isMixTankOperatorsSelected,
+    isMixTankMonthSelected: domainEfficiency.isMixTankMonthSelected,
+    isFuelGeneratorSelected: domainEfficiency.isFuelGeneratorSelected,
+    isMobilizationSelected: domainEfficiency.isMobilizationSelected,
+    isDemobilizationSelected: domainEfficiency.isDemobilizationSelected,
+    isTankMixMobilizationSelected:
+      domainEfficiency.isTankMixMobilizationSelected,
+    isTankMixDemobilizationSelected:
+      domainEfficiency.isTankMixDemobilizationSelected,
+    isTankMixDTMSelected: domainEfficiency.isTankMixDTMSelected,
+    isTruckCartSelected: domainEfficiency.isTruckCartSelected,
+    isTruckTankSelected: domainEfficiency.isTruckTankSelected,
+    isMunckSelected: domainEfficiency.isMunckSelected,
+    isTransportationSelected: domainEfficiency.isTransportationSelected,
+    truckKm: domainEfficiency.truckKm,
+    isExtraTrailerSelected: domainEfficiency.isExtraTrailerSelected,
+    isPowerSwivelSelected: domainEfficiency.isPowerSwivelSelected,
   };
 
   domainEfficiency.periods.forEach(({equipmentRatio, fluidRatio}) => {
@@ -62,6 +93,9 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
       });
     }
   });
+
+  console.log("toPersistenceObj", toPersistenceObj);
+  //return;
 
   return {toPersistenceObj};
 };

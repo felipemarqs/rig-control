@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom";
-import { Input } from "../../components/Input";
-import { Button } from "../../components/Button";
-import { useLoginController } from "./useLoginController";
+import {Link} from "react-router-dom";
+import {Input} from "../../components/Input";
+import {Button} from "../../components/Button";
+import {useLoginController} from "./useLoginController";
 
 export const Login = () => {
-  const { handleSubmit, register, errors, isLoading } = useLoginController();
+  const {handleSubmit, register, errors, isLoading} = useLoginController();
   return (
     //Container
     <div className="bg-secondary-500  w-[90%]  max-w-[1000px] min-h-full mb-12  rounded-2xl lg:w-[40%] text-center">
@@ -45,7 +45,7 @@ export const Login = () => {
         />
 
         <div className="w-1/2 mx-auto">
-          <Button type="submit" className="mt-2" isLoading={isLoading}>
+          <Button type="submit" className="mt-2 w-full" isLoading={isLoading}>
             Fazer Login
           </Button>
         </div>

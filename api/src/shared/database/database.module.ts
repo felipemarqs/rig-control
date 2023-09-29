@@ -6,6 +6,7 @@ import { RigsRepository } from './repositories/rigs.repositories';
 import { EfficienciesRepository } from './repositories/efficiencies.repositories';
 import { BillingConfigurationsRepository } from './repositories/billingConfiguration.repositories';
 import { BillingRepository } from './repositories/billing.repositories';
+import { ContractRepository } from './repositories/contract.repositories';
 
 @Global()
 @Module({
@@ -17,6 +18,7 @@ import { BillingRepository } from './repositories/billing.repositories';
     EfficienciesRepository,
     BillingConfigurationsRepository,
     BillingRepository,
+    ContractRepository,
   ],
   exports: [
     UsersRepository,
@@ -25,6 +27,7 @@ import { BillingRepository } from './repositories/billing.repositories';
     EfficienciesRepository,
     BillingConfigurationsRepository,
     BillingRepository,
+    ContractRepository,
   ],
 })
 export class DatabaseModule {}

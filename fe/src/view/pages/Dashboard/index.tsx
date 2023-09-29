@@ -9,6 +9,7 @@ import {DashboardContext, DashboardProvider} from "./DashboardContext";
 import {LineChart} from "./components/LineChart";
 import {ListEfficienciesDataGrid} from "../../components/ListEfficienciesDataGrid";
 import {cn} from "../../../app/utils/cn";
+import {BarChart} from "./components/BarChart";
 
 export const Dashboard = () => {
   return (
@@ -33,6 +34,7 @@ export const Dashboard = () => {
           totalDtms,
           totalMovimentations,
           efficiencies,
+          isFetchingAverage,
         }) => (
           <div className="w-full h-full overflow-y-scroll">
             <Header title="DASHBOARD" subtitle="Página de início do usuário" />
@@ -197,6 +199,15 @@ export const Dashboard = () => {
                     {isFetchingEfficiencies && <Spinner />}
                     {!isFetchingEfficiencies && <LineChart />}
                   </div>*/}
+
+                  <div className="col-start-2 col-span-10 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center">
+                    {isFetchingAverage && <Spinner />}
+                    {!isFetchingAverage && (
+                      <div className="w-full h-full">
+                        <BarChart />
+                      </div>
+                    )}
+                  </div>
 
                   <div className="col-start-2 col-span-10 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center">
                     {isFetchingEfficiencies && <Spinner />}

@@ -22,6 +22,7 @@ export class EfficienciesService {
     private readonly rigsRepo: RigsRepository,
     private readonly billingConfigRepo: BillingConfigurationsRepository,
     private readonly billingRepo: BillingRepository,
+    private readonly prisma: PrismaClient,
   ) {}
 
   private isTimeValid(startHour: string, endHour: string): boolean {
@@ -31,8 +32,35 @@ export class EfficienciesService {
   }
 
   async create(createEfficiencyDto: CreateEfficiencyDto, userId: string) {
-    const { rigId, date, availableHours, periods, fluidRatio, equipmentRatio } =
-      createEfficiencyDto;
+    console.log(createEfficiencyDto);
+    const {
+      rigId,
+      date,
+      availableHours,
+      periods,
+      fluidRatio,
+      equipmentRatio,
+      isMixTankSelected,
+      isMixTankOperatorsSelected,
+      isMixTankMonthSelected,
+      isFuelGeneratorSelected,
+      isMobilizationSelected,
+      isDemobilizationSelected,
+      isTankMixMobilizationSelected,
+      isTankMixDemobilizationSelected,
+      isTankMixDTMSelected,
+      bobRentHours,
+      christmasTreeDisassemblyHours,
+      isTruckCartSelected,
+      isTruckTankSelected,
+      isMunckSelected,
+      isTransportationSelected,
+      truckKm,
+      isExtraTrailerSelected,
+      isPowerSwivelSelected,
+      mobilizationPlace,
+      isSuckingTruckSelected,
+    } = createEfficiencyDto;
 
     const rigBelongsToUser = await this.userRigsRepo.findFirst({
       where: { userId, rigId },
@@ -83,6 +111,7 @@ export class EfficienciesService {
     const efficiencyData = {
       date,
       availableHours,
+      dtmHours: 0,
       rigId,
       userId,
       periods: {
@@ -108,10 +137,6 @@ export class EfficienciesService {
       };
     }
 
-    const efficiency = await this.efficiencyRepo.create({
-      data: efficiencyData,
-    });
-
     //criando valores de faturamento
     // Talvez mudar isso aqui de lugar
 
@@ -126,6 +151,25 @@ export class EfficienciesService {
     let equipmentLt20TotalAmmount = 0;
     let equipmentBt20And50TotalAmmount = 0;
     let equipmentGt50TotalAmmount = 0;
+    let mobilizationTotalAmount = 0;
+    let demobilizationTotalAmount = 0;
+    let extraTrailerTotalAmount = 0;
+    let powerSwivelTotalAmount = 0;
+    let truckCartRentTotalAmount = 0;
+    let transportationTotalAmount = 0;
+    let truckKmTotalAmount = 0;
+    let bobRentTotalAmount = 0;
+    let truckTankTotalAmount = 0;
+    let munckTotalAmount = 0;
+    let mixTankMonthRentTotalAmount = 0;
+    let mixTankHourRentTotalAmount = 0;
+    let generatorFuelTotalAmount = 0;
+    let mixTankOperatorTotalAmount = 0;
+    let mixTankDTMTotalAmount = 0;
+    let mixTankMobilizationTotalAmount = 0;
+    let mixTankDemobilizationTotalAmount = 0;
+    let suckingTruckTotalAmount = 0;
+    let christmasTreeDisassemblyTotalAmount = 0;
 
     periods.forEach(({ type, startHour, endHour, classification }) => {
       const horaInicial = new Date(startHour);
@@ -212,6 +256,7 @@ export class EfficienciesService {
 
     const equipmentLt20Amount =
       equipmentLt20TotalAmmount * rigBillingConfiguration.equipmentRatioLt20Tax;
+
     const equipmentBt20And50Amount =
       equipmentBt20And50TotalAmmount *
       rigBillingConfiguration.equipmentRatioBt20And50Tax;
@@ -219,8 +264,82 @@ export class EfficienciesService {
     const equipmentGt50Amount =
       equipmentGt50TotalAmmount * rigBillingConfiguration.equipmentRatioGt50Tax;
 
+    const dtmHourAmount =
+      (dtmLt20TotalHours + dtmBt20And50TotalHours + dtmGt50TotalHours) *
+      rigBillingConfiguration.dtmHourTax;
+
+    const christmasTreeDisassemblyAmount =
+      christmasTreeDisassemblyHours *
+      rigBillingConfiguration.christmasTreeDisassemblyTax;
+
+    if (isTankMixDemobilizationSelected) {
+      mixTankDemobilizationTotalAmount =
+        rigBillingConfiguration.mixTankDemobilizationTax;
+    }
+
+    if (isTankMixMobilizationSelected) {
+      mixTankMobilizationTotalAmount =
+        rigBillingConfiguration.mixTankMobilizationTax;
+    }
+
+    if (isTankMixDTMSelected) {
+      mixTankDTMTotalAmount = rigBillingConfiguration.mixTankDtmTax;
+    }
+
+    if (isMixTankOperatorsSelected) {
+      mixTankOperatorTotalAmount = rigBillingConfiguration.mixTankOperatorTax;
+    }
+    if (isMixTankMonthSelected) {
+      mixTankMonthRentTotalAmount = rigBillingConfiguration.mixTankMonthRentTax;
+    }
+
+    if (isMixTankSelected) {
+      mixTankHourRentTotalAmount = rigBillingConfiguration.mixTankHourRentTax;
+    }
+
+    if (isFuelGeneratorSelected) {
+      generatorFuelTotalAmount = rigBillingConfiguration.generatorFuelTax;
+    }
+
+    if (isMunckSelected) {
+      munckTotalAmount = rigBillingConfiguration.munckTax;
+    }
+
+    if (isTruckTankSelected) {
+      truckTankTotalAmount = rigBillingConfiguration.truckTankTax;
+    }
+
+    if (isMobilizationSelected) {
+      mobilizationTotalAmount = rigBillingConfiguration.mobilization;
+    }
+
+    if (isDemobilizationSelected) {
+      demobilizationTotalAmount = rigBillingConfiguration.demobilization;
+    }
+
+    if (isExtraTrailerSelected) {
+      extraTrailerTotalAmount = rigBillingConfiguration.extraTrailerTax;
+    }
+
+    if (isPowerSwivelSelected) {
+      powerSwivelTotalAmount = rigBillingConfiguration.powerSwivelTax;
+    }
+
+    if (isSuckingTruckSelected) {
+      suckingTruckTotalAmount = rigBillingConfiguration.suckingTruckTax;
+    }
+
+    if (isTransportationSelected) {
+      transportationTotalAmount = rigBillingConfiguration.transportationTax;
+    }
+
+    if (isTruckCartSelected) {
+      truckCartRentTotalAmount = rigBillingConfiguration.truckCartRentTax;
+    }
+
     const totalAmmount =
       (availableHourAmount +
+        dtmHourAmount +
         glossHourAmount +
         dtmLt20Amount +
         dtmBt20And50Amount +
@@ -233,8 +352,39 @@ export class EfficienciesService {
         equipmentGt50Amount) *
       rigBillingConfiguration.readjustment;
 
+    efficiencyData['dtmHours'] =
+      dtmLt20TotalHours + dtmGt50TotalHours + dtmBt20And50TotalHours;
+
+    const efficiency = await this.efficiencyRepo.create({
+      data: efficiencyData,
+    });
+
+    bobRentTotalAmount = rigBillingConfiguration.bobRentTax * bobRentHours;
+
+    truckKmTotalAmount = rigBillingConfiguration.truckKmTax * truckKm;
+
     await this.billingRepo.create({
       data: {
+        christmasTreeDisassemblyAmount,
+        mixTankDemobilizationAmount: mixTankDemobilizationTotalAmount,
+        mixTankDtmAmount: mixTankDTMTotalAmount,
+        mixTankMobilizationAmount: mixTankMobilizationTotalAmount,
+        mixTankOperatorAmount: mixTankOperatorTotalAmount,
+        munckAmount: munckTotalAmount,
+        truckTankAmount: truckTankTotalAmount,
+        bobRentAmount: bobRentTotalAmount, //Temporário
+        demobilizationAmount: demobilizationTotalAmount, //Temporário
+        dtmHourAmount,
+        extraTrailerAmount: extraTrailerTotalAmount, //Temporário
+        generatorFuelAmount: generatorFuelTotalAmount, //Temporário //Temporário
+        mixTankHourRentAmount: mixTankHourRentTotalAmount, //Temporário
+        mixTankMonthRentAmount: mixTankMonthRentTotalAmount, //Temporário
+        mobilizationAmount: mobilizationTotalAmount, //Temporário
+        powerSwivelAmount: powerSwivelTotalAmount, //Temporário
+        suckingTruckAmount: suckingTruckTotalAmount, //Temporário
+        transportationAmount: transportationTotalAmount, //Temporário
+        truckCartRentAmount: truckCartRentTotalAmount, //Temporário
+        truckKmAmount: truckKmTotalAmount, //Temporário
         availableHourAmount,
         glossHourAmount,
         dtmLt20Amount,
@@ -353,5 +503,24 @@ export class EfficienciesService {
   async remove(efficiencyId: string) {
     await this.efficiencyRepo.delete({ where: { id: efficiencyId } });
     return null;
+  }
+
+  async getAverage(rigId: string) {
+    //const rigId = '073168f7-b634-466d-aaee-a7968a39e2b1';
+    //Mudar para params depois
+    const ano = 2023;
+
+    const results = await this.prisma.$queryRaw`
+    SELECT
+      TO_CHAR(date, 'YYYY-MM') AS month,
+      AVG(available_hours) AS avg
+    FROM efficiencies
+    WHERE rig_id = ${rigId}::UUID
+      AND EXTRACT(YEAR FROM date) = ${ano}
+    GROUP BY month
+    ORDER BY month;
+  `;
+    console.log(results);
+    return results;
   }
 }

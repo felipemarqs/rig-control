@@ -42,4 +42,24 @@ export type ToPersistanceEfficiency = {
   fluidRatio: {
     ratio: string;
   }[];
+  christmasTreeDisassemblyHours?: number;
+  isMixTankSelected?: boolean;
+  isMixTankOperatorsSelected?: boolean;
+  isMixTankMonthSelected?: boolean;
+  isFuelGeneratorSelected?: boolean;
+  isMobilizationSelected?: boolean;
+  isDemobilizationSelected?: boolean;
+  isTankMixMobilizationSelected?: boolean;
+  isTankMixDemobilizationSelected?: boolean;
+  isTankMixDTMSelected?: boolean;
+  isTruckCartSelected?: boolean;
+  isTruckTankSelected?: boolean;
+  isMunckSelected?: boolean;
+  isTransportationSelected?: boolean;
+  bobRentHours?: number;
+  truckKm?: number;
+  isExtraTrailerSelected?: boolean;
+  isPowerSwivelSelected?: boolean;
+  mobilizationPlace?: string;
+  isSuckingTruckSelected?: boolean;
 };
