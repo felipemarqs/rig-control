@@ -4,7 +4,7 @@ import {useNavigate} from "react-router-dom";
 import {v4 as uuidv4} from "uuid";
 import {efficiencyMappers} from "../../../../../app/services/mappers/efficiencyMappers";
 import {customColorToast} from "../../../../../app/utils/customColorToast";
-import {useMutation} from "@tanstack/react-query";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {efficienciesService} from "../../../../../app/services/efficienciesService";
 import {AxiosError} from "axios";
 import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
@@ -112,6 +112,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   ]);
 
   const {isLoading, mutateAsync} = useMutation(efficienciesService.create);
+  const queryClient = useQueryClient();
 
   const handleSubmit = async (periods: Periods) => {
     const {toPersistenceObj} = efficiencyMappers.toPersistance({
@@ -157,6 +158,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
           description: "",
         },
       ]);
+      queryClient.invalidateQueries({queryKey: ["efficiencies", "average"]});
 
       navigate("/dashboard", {replace: true});
     } catch (error: any | typeof AxiosError) {

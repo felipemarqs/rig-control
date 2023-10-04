@@ -7,7 +7,6 @@ import {
   UserCircle,
   FileText,
   CircleDollarSignIcon,
-  CircleDollarSign,
 } from "lucide-react";
 
 import {useSidebarContext} from "../../../app/contexts/SidebarContext";
@@ -30,18 +29,9 @@ export const MainLayout = () => {
         {isUserAdm && (
           <SidebarItem
             icon={<CircleDollarSignIcon size={20} />}
-            text="Dashboard de Fat."
+            text="Faturamento"
             urlText="invoicing-dashboard"
-            isActive={active === "Dashboard de Fat."}
-          />
-        )}
-
-        {isUserAdm && (
-          <SidebarItem
-            icon={<CircleDollarSign size={20} />}
-            text="Listagem de Fat."
-            urlText="invoicing-list"
-            isActive={active === "Listagem de Fat."}
+            isActive={active === "Faturamento"}
           />
         )}
 
@@ -54,9 +44,9 @@ export const MainLayout = () => {
 
         <SidebarItem
           icon={<BarChart3 size={20} />}
-          text="Listar Ocorrências"
+          text="Ocorrências"
           urlText="list"
-          isActive={active === "Listar Ocorrências"}
+          isActive={active === "Ocorrências"}
         />
 
         {isUserAdm && (
@@ -65,6 +55,24 @@ export const MainLayout = () => {
             text="Cadastrar Sonda"
             urlText="rig"
             isActive={active === "Cadastrar Sonda"}
+          />
+        )}
+
+        {isUserAdm && (
+          <SidebarItem
+            icon={<UserCircle size={20} />}
+            text="Cadastrar Contrato"
+            urlText="contracts"
+            isActive={active === "Cadastrar Contrato"}
+          />
+        )}
+
+        {isUserAdm && (
+          <SidebarItem
+            icon={<UserCircle size={20} />}
+            text="Usuários"
+            urlText="users"
+            isActive={active === "Usuários"}
           />
         )}
       </Sidebar>

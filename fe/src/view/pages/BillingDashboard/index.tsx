@@ -190,7 +190,7 @@ export const BillingDashboard = () => {
                       <>
                         <Swiper
                           spaceBetween={16}
-                          slidesPerView={configs.length <= 2 ? 1 : 3.1}
+                          slidesPerView={configs.length <= 1 ? 1 : 2.1}
                           onSlideChange={(swiper) => {
                             setConfigSliderState({
                               isBeginning: swiper.isBeginning,

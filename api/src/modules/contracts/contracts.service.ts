@@ -18,8 +18,14 @@ export class ContractsService {
     return this.contractsRepo.create({ data: createContractDto });
   }
 
-  findAll() {
-    return this.contractsRepo.findAll();
+  async findAll() {
+    return await this.contractsRepo.findAll({
+      select: {
+        id: true,
+        name: true,
+        rigs: true,
+      },
+    });
   }
 
   findOne(id: number) {

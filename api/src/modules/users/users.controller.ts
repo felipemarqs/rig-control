@@ -10,4 +10,9 @@ export class UsersController {
   me(@ActiveUserId() userId: string) {
     return this.usersService.getUserById(userId);
   }
+
+  /*  @Get()
+  findAll() {
+    return this.usersService.findAll();
+  } */
 }

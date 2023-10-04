@@ -11,6 +11,8 @@ import {BillingDashboard} from "../view/pages/BillingDashboard";
 import {ListBilling} from "../view/pages/BillingList";
 import {Details} from "../view/pages/Details";
 import {CreateRig} from "../view/pages/CreateRig";
+import {CreateContract} from "../view/pages/CreateContract";
+import {Contract} from "../view/pages/Contract";
 
 export const Router = () => {
   return (
@@ -33,6 +35,8 @@ export const Router = () => {
             <Route path="/invoicing-list" element={<ListBilling />} />
             <Route path="/details/:efficiencyId" element={<Details />} />
             <Route path="/rig" element={<CreateRig />} />
+            <Route path="/createContract" element={<CreateContract />} />,
+            <Route path="/contracts" element={<Contract />} />
           </Route>
         </Route>
       </Routes>

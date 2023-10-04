@@ -19,7 +19,7 @@ export class ContractRepository {
   }
 */
 
-  async findAll() {
-    return await this.prismaService.contract.findMany();
+  async findAll(findAllDto: Prisma.ContractFindManyArgs) {
+    return await this.prismaService.contract.findMany(findAllDto);
   }
 }
