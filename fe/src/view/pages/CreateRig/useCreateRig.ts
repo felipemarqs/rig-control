@@ -3,7 +3,7 @@ import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {rigsService} from "../../../app/services/rigsService";
-import {useMutation} from "@tanstack/react-query";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {useContracts} from "../../../app/hooks/useContracts";
 import {useAuth} from "../../../app/hooks/useAuth";
 import {currencyStringToNumber} from "../../../app/utils/currencyStringToNumber";
@@ -127,6 +127,7 @@ type FormData = z.infer<typeof schema>;
 
 export const useCreateRig = () => {
   const {user} = useAuth();
+  const queryClient = useQueryClient();
 
   const isUserAdm = user?.accessLevel === "ADM";
 
@@ -247,7 +248,7 @@ export const useCreateRig = () => {
           currencyStringToNumber(data.christmasTreeDisassemblyTax as string) ??
           (data.christmasTreeDisassemblyTax as number),
       });
-
+      queryClient.invalidateQueries({queryKey: ["contracts", "rigs"]});
       customColorToast("Sonda cadastrada com Sucesso!", "#1c7b7b", "success");
       reset();
     } catch (error: any | typeof AxiosError) {

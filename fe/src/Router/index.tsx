@@ -13,6 +13,10 @@ import {Details} from "../view/pages/Details";
 import {CreateRig} from "../view/pages/CreateRig";
 import {CreateContract} from "../view/pages/CreateContract";
 import {Contract} from "../view/pages/Contract";
+import {ListUsers} from "../view/pages/ListUsers";
+import {CreateUser} from "../view/pages/CreateUser";
+import {UpdateUser} from "../view/pages/UpdateUser";
+import {UpdateUserRigs} from "../view/pages/UpdateUserRigs";
 
 export const Router = () => {
   return (
@@ -35,8 +39,12 @@ export const Router = () => {
             <Route path="/invoicing-list" element={<ListBilling />} />
             <Route path="/details/:efficiencyId" element={<Details />} />
             <Route path="/rig" element={<CreateRig />} />
-            <Route path="/createContract" element={<CreateContract />} />,
+            <Route path="/create-contract" element={<CreateContract />} />
             <Route path="/contracts" element={<Contract />} />
+            <Route path="/users" element={<ListUsers />} />
+            <Route path="/create-user" element={<CreateUser />} />
+            <Route path="/users/:id" element={<UpdateUser />} />
+            <Route path="/users/update-rigs/:id" element={<UpdateUserRigs />} />
           </Route>
         </Route>
       </Routes>

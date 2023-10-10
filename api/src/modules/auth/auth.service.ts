@@ -10,7 +10,7 @@ import { UsersRigRepository } from 'src/shared/database/repositories/usersRig.re
 import { SigninDto } from './dto/signin.dto';
 import { JwtService } from '@nestjs/jwt';
 import { RigsRepository } from 'src/shared/database/repositories/rigs.repositories';
-import { ContractRepository } from 'src/shared/database/repositories/contract.repositories';
+import { UsersContractRepository } from 'src/shared/database/repositories/usersContract.repositories';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +19,7 @@ export class AuthService {
     private readonly usersRigRepo: UsersRigRepository,
     private readonly jwtService: JwtService,
     private readonly rigsRepo: RigsRepository,
-    private readonly contractRepo: ContractRepository,
+    private readonly usersContractRepo: UsersContractRepository,
   ) {}
 
   async signin(signinDto: SigninDto) {
@@ -76,6 +76,15 @@ export class AuthService {
         password: hashedPassword,
       },
     });
+
+    if (contractId) {
+      await this.usersContractRepo.create({
+        data: {
+          userId: user.id,
+          contractId,
+        },
+      });
+    }
 
     if (rigId) {
       await this.usersRigRepo.create({

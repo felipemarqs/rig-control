@@ -3,12 +3,14 @@ import {ChevronDownIcon, ChevronUpIcon} from "@radix-ui/react-icons";
 import {cn} from "../../app/utils/cn";
 import {useState} from "react";
 import {ErrorContainer} from "./ErrorContainer";
+import {Spinner} from "./Spinner";
 
 interface SelectProps {
   className?: string;
   error?: string;
   placeholder?: string;
   disabled?: boolean;
+  isLoading?: boolean;
   options: {
     value: string;
     label: string;
@@ -25,6 +27,7 @@ export const Select = ({
   onChange,
   value,
   disabled,
+  isLoading,
 }: SelectProps) => {
   const [selectedValue, setSelectedValue] = useState(value);
 
@@ -57,7 +60,14 @@ export const Select = ({
               className
             )}
           >
-            <RadixSelect.Value />
+            {!isLoading && <RadixSelect.Value />}
+            {isLoading && (
+              <div className="flex items-center justify-center">
+                <Spinner className="h-6 w-6" />
+              </div>
+            )}
+
+            {/*  <RadixSelect.Value /> */}
 
             <RadixSelect.Icon className="absolute right-3 top-1/2 -translate-y-1/2">
               <ChevronDownIcon className="w-6 h-6 text-gray-800 " />

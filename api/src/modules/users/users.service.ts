@@ -1,9 +1,19 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { ContractRepository } from 'src/shared/database/repositories/contract.repositories';
 import { UsersRepository } from 'src/shared/database/repositories/users.repositories';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { hash } from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly usersRepo: UsersRepository) {}
+  constructor(
+    private readonly usersRepo: UsersRepository,
+    private readonly contractsRepo: ContractRepository,
+  ) {}
 
   async getUserById(userId: string) {
     const user = await this.usersRepo.findUnique({
@@ -34,5 +44,63 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  async findAll(filters: { contractId?: string }) {
+    let whereClause = {};
+
+    if (filters.contractId) {
+      const contractExists = await this.contractsRepo.findUnique({
+        where: { id: filters.contractId },
+      });
+
+      if (!contractExists) {
+        throw new NotFoundException('Contrato não encontrado');
+      }
+
+      whereClause = {
+        contract: {
+          some: {
+            contractId: filters.contractId,
+          },
+        },
+      };
+    }
+
+    const users = await this.usersRepo.findAll({
+      select: {
+        id: true,
+        name: true,
+        contract: true,
+        rigs: {
+          select: {
+            rig: {
+              select: {
+                id: true,
+                name: true,
+                state: true,
+                isActive: true,
+                contract: true,
+              },
+            },
+          },
+        },
+        accessLevel: true,
+        email: true,
+      },
+      where: whereClause,
+    });
+
+    return users;
+  }
+
+  async update(userId: string, updateUserDto: UpdateUserDto) {
+    const { name, email, password, accessLevel } = updateUserDto;
+    const hashedPassword = await hash(password, 10);
+
+    return this.usersRepo.update({
+      where: { id: userId },
+      data: { name, email, password: hashedPassword, accessLevel },
+    });
   }
 }

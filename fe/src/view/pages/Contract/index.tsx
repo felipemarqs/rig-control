@@ -5,20 +5,16 @@ import {useContract} from "./useContract";
 
 export const Contract = () => {
   const {contracts, isFetchingContracts, navigate} = useContract();
-  //createContract
-  console.log("contracts:", contracts);
+  //createContractconsole.log("contracts:", contracts);
   return (
     <div className="w-full h-full overflow-y-scroll">
       <Header
         title="CADASTRO"
-        subtitle="Cadastro de sondas e suas configurações"
+        subtitle="Listagem de todos os contratos cadastrados no sistema"
       />
 
       <div className="w-full h-full ">
         <div className="border border-b-2">
-          <h1 className="text-xl text-primary-500 pl-8">
-            Contratos Cadastrados:
-          </h1>
           {isFetchingContracts && (
             <div className="flex justify-center items-center h-1/2">
               <Spinner />
@@ -27,14 +23,14 @@ export const Contract = () => {
           {!isFetchingContracts && (
             <div className="p-8 flex flex-col h-full gap-4 lg:items-center">
               <div
-                onClick={() => navigate("/createContract")}
+                onClick={() => navigate("/create-contract")}
                 className="p-4 bg-white rounded-2xl shadow-[0_1px_2px] flex  h-20 gap-4 justify-center items-center border-l-4  border-primary-500 lg:w-3/4 cursor-pointer"
               >
                 <div className="h-11 w-11 rounded-full border-2 border-dashed border-gray-600 flex justify-center items-center">
                   <PlusIcon className="w-6 h-6 text-gray-600" />
                 </div>
                 <span className="font-medium tracking-[-0.5px] block text-center  text-gray-600">
-                  Cadastre um novo contrato
+                  Adicionar Contrato
                 </span>
               </div>
               {contracts.map((contract) => (
@@ -57,7 +53,10 @@ export const Contract = () => {
                     </span>
                     <div className="flex gap-2">
                       {contract.rigs.map((rig) => (
-                        <span className="text-gray-600 tracking-[-0.5] font-medium block border-r-2 pr-2">
+                        <span
+                          key={rig.id}
+                          className="text-gray-600 tracking-[-0.5] font-medium block border-r-2 pr-2"
+                        >
                           {rig.name}
                         </span>
                       ))}

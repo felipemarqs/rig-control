@@ -1,12 +1,15 @@
-import {MoreVertical, ChevronLast, ChevronFirst} from "lucide-react";
+import {ChevronLast, ChevronFirst} from "lucide-react";
 import React from "react";
 import whiteLogo from "../../assets/images/white-logo.png";
 import {useSidebarContext} from "../../app/contexts/SidebarContext";
 import {useAuth} from "../../app/hooks/useAuth";
+import {Button} from "./Button";
+import {useNavigate} from "react-router-dom";
 
 export default function Sidebar({children}: {children: React.ReactNode}) {
   const {expanded, toggleVisibility} = useSidebarContext();
   const {signout, user} = useAuth();
+  const navigate = useNavigate();
 
   return (
     <aside className="h-screen">
@@ -31,8 +34,11 @@ export default function Sidebar({children}: {children: React.ReactNode}) {
 
         <div className="border-t flex justify-between items-center p-3">
           <div
+            onClick={() => navigate(`/users/${user?.id}`)}
             className={`
-              overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}
+              overflow-hidden cursor-pointer transition-all ${
+                expanded ? "w-52 ml-3" : "w-0"
+              }
           `}
           >
             <div className="leading-4">
@@ -43,9 +49,9 @@ export default function Sidebar({children}: {children: React.ReactNode}) {
             </div>
           </div>
 
-          <button onClick={() => signout()}>
-            <MoreVertical size={20} />
-          </button>
+          <Button className="p-2 bg-primary-600" onClick={() => signout()}>
+            Sair
+          </Button>
         </div>
       </nav>
     </aside>

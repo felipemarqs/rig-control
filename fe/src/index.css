@@ -8,6 +8,7 @@ body,
 #root,
 .app {
   font-family: "Sora", sans-serif;
+  box-sizing: border-box;
 }
 .ant-btn.ant-btn-primary {
   background-color: #1c7b7b; /* Substitua pela cor desejada */

@@ -13,11 +13,14 @@ export class ContractRepository {
   async findUnique(findUniqueDto: Prisma.ContractFindUniqueArgs) {
     return await this.prismaService.contract.findUnique(findUniqueDto);
   }
-  /* 
-  async findFisrt(findUniqueDto: Prisma.BillingFindFirstArgs) {
-    return await this.prismaService.billing.findFirst(findUniqueDto);
+
+  async findFirst(findUniqueDto: Prisma.ContractFindUniqueArgs) {
+    return await this.prismaService.contract.findFirst(findUniqueDto);
   }
-*/
+
+  async findRigs(findManyDto: Prisma.ContractFindManyArgs) {
+    return await this.prismaService.contract.findMany(findManyDto);
+  }
 
   async findAll(findAllDto: Prisma.ContractFindManyArgs) {
     return await this.prismaService.contract.findMany(findAllDto);
