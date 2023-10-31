@@ -13,4 +13,8 @@ export class UsersContractRepository {
   async findFirst(findFirstDto: Prisma.UserContractFindFirstArgs) {
     return await this.prismaService.userContract.findFirst(findFirstDto);
   }
+
+  async createMany(createManyDto: Prisma.UserContractCreateManyArgs) {
+    return await this.prismaService.userContract.createMany(createManyDto);
+  }
 }

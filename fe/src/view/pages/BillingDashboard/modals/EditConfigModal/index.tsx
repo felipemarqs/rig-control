@@ -19,7 +19,7 @@ export const EditConfigModal = () => {
 
   return (
     <ConfigModal
-      title="Configuração Sonda"
+      title="Editar Valores de Calculo de Faturamento da Sonda"
       open={isEditConfigModalOpen}
       onClose={handleCloseEditConfigModal}
     >
@@ -504,9 +504,11 @@ export const EditConfigModal = () => {
           </div>
         </div>
 
-        <Button type="submit" isLoading={isLoading}>
-          Enviar
-        </Button>
+        <div className="w-full flex justify-center mt-1">
+          <Button type="submit" isLoading={isLoading}>
+            Atualizar Métricas
+          </Button>
+        </div>
       </form>
     </ConfigModal>
   );

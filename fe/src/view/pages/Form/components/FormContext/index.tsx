@@ -13,6 +13,7 @@ import {parse, differenceInMinutes} from "date-fns";
 
 interface FormContextValue {
   date: Date | undefined;
+  well: string;
   remainingMinutes: number | undefined;
   periods: Periods;
   isLoading: boolean;
@@ -53,6 +54,7 @@ interface FormContextValue {
   handlePowerSwivelCheckbox(): void;
   handleMobilizationPlace(value: string): void;
   handleSuckingTruckCheckbox(): void;
+  handleWellChange(value: string): void;
   isSuckingTruckSelected: boolean;
   mobilizationPlace: string;
   isPowerSwivelSelected: boolean;
@@ -97,6 +99,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   console.log("User", user);
   const navigate = useNavigate();
   const [date, setDate] = useState<Date>();
+  const [well, setWell] = useState<string>("");
   const [remainingMinutes, setRemainingMinutes] = useState<number>();
   const [periods, setPeriods] = useState([
     {
@@ -118,6 +121,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     const {toPersistenceObj} = efficiencyMappers.toPersistance({
       rigId: user?.rigs[0].rig.id,
       date: date ?? new Date(),
+      well,
       availableHours: 24,
       periods: periods,
       isMixTankSelected,
@@ -447,6 +451,10 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     setIsSuckingTruckSelected((prevState) => !prevState);
   }, []);
 
+  const handleWellChange = useCallback((value: any) => {
+    setWell(value);
+  }, []);
+
   return (
     <FormContext.Provider
       value={{
@@ -508,6 +516,8 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         handleMobilizationPlace,
         isSuckingTruckSelected,
         handleSuckingTruckCheckbox,
+        well,
+        handleWellChange,
       }}
     >
       {children}

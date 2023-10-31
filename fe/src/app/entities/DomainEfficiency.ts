@@ -1,6 +1,7 @@
 export interface DomainEfficiency {
   rigId: string | undefined;
   date: string | Date;
+  well: string;
   availableHours: number;
   periods: {
     id: string;

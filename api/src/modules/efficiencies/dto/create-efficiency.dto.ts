@@ -2,7 +2,6 @@ import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsDateString,
-  IsInt,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -23,6 +22,10 @@ export class CreateEfficiencyDto {
   @IsNumber()
   @IsNotEmpty()
   availableHours: number;
+
+  @IsString()
+  @IsNotEmpty()
+  well: string;
 
   @IsUUID()
   @IsNotEmpty()

@@ -110,6 +110,7 @@ model UserContract {
 model Efficiency {
   id             String           @id @default(uuid()) @db.Uuid
   date           DateTime
+  well           String
   availableHours Float            @map("available_hours")
   dtmHours       Float            @map("dtm_hours")
   rigId          String           @map("rig_id") @db.Uuid

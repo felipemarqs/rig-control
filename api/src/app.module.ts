@@ -10,6 +10,8 @@ import { BillingsModule } from './modules/billings/billings.module';
 import { BillingsConfigurationModule } from './modules/billings-configuration/billings-configuration.module';
 import { ContractsModule } from './modules/contracts/contracts.module';
 
+import { UsersRigModule } from './modules/users-rig/users-rig.module';
+
 @Module({
   imports: [
     AuthModule,
@@ -20,6 +22,7 @@ import { ContractsModule } from './modules/contracts/contracts.module';
     BillingsModule,
     BillingsConfigurationModule,
     ContractsModule,
+    UsersRigModule,
   ],
   controllers: [],
   providers: [

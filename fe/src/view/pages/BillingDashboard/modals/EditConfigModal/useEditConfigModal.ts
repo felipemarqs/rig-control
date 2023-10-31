@@ -174,7 +174,6 @@ export const useEditConfigModal = () => {
     },
   });
 
-  console.log(errors);
   const handleSubmit = hookFormHandleSubmit(async (data) => {
     try {
       await mutateAsyncUpdateConfig({

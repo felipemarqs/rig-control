@@ -29,6 +29,7 @@ export type ToPersistanceEfficiency = {
   availableHours: number;
   date: string | Date;
   rigId: string;
+  well: string;
   periods: {
     startHour: string;
     endHour: string;

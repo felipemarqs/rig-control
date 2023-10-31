@@ -5,14 +5,22 @@ import {useSidebarContext} from "../../app/contexts/SidebarContext";
 import {useAuth} from "../../app/hooks/useAuth";
 import {Button} from "./Button";
 import {useNavigate} from "react-router-dom";
+import {cn} from "../../app/utils/cn";
 
 export default function Sidebar({children}: {children: React.ReactNode}) {
-  const {expanded, toggleVisibility} = useSidebarContext();
+  const {
+    expanded,
+    toggleVisibility,
+    windowWidth,
+    toggleHiddenVisibility,
+    hidden,
+  } = useSidebarContext();
   const {signout, user} = useAuth();
   const navigate = useNavigate();
+  console.log("hidden", hidden);
 
   return (
-    <aside className="h-screen">
+    <aside className={cn("h-screen", hidden && "hidden")}>
       <nav className="h-full  flex flex-col bg-primary-500 border-r shadow-sm">
         <div className="p-4 pb-2 flex justify-between items-center">
           <img
@@ -23,7 +31,9 @@ export default function Sidebar({children}: {children: React.ReactNode}) {
             alt=""
           />
           <button
-            onClick={() => toggleVisibility()}
+            onClick={() =>
+              windowWidth > 1300 ? toggleVisibility() : toggleHiddenVisibility()
+            }
             className="p-1.5 rounded-lg bg-primary-500 text-white hover:bg-primary-300"
           >
             {expanded ? <ChevronFirst /> : <ChevronLast />}

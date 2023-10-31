@@ -3,6 +3,12 @@ import {useAuth} from "../../../app/hooks/useAuth";
 import {useUsers} from "../../../app/hooks/useUsers";
 
 import {useContracts} from "../../../app/hooks/useContracts";
+import {useMutation} from "@tanstack/react-query";
+import {usersService} from "../../../app/services/usersService";
+import {customColorToast} from "../../../app/utils/customColorToast";
+import {useNavigate} from "react-router-dom";
+import {treatAxiosError} from "../../../app/utils/treatAxiosError";
+import {AxiosError} from "axios";
 
 interface Rig {
   id: string;
@@ -12,7 +18,7 @@ interface Rig {
 
 export const useUpdateUserRigs = (id: string) => {
   const {user} = useAuth();
-
+  const navigate = useNavigate();
   const [filters] = useState({contractId: ""});
 
   const [userRigs, setUserRigs] = useState<Array<Rig>>([]);
@@ -22,6 +28,10 @@ export const useUpdateUserRigs = (id: string) => {
   const {contracts, isFetchingContracts} = useContracts(isUserAdm);
 
   const {users, isFetchingUsers} = useUsers(filters);
+
+  const {isLoading: isLoadingUpdateRigs, mutateAsync} = useMutation(
+    usersService.updateRigs
+  );
 
   const userBeingEdited = useMemo(() => {
     return users.find((user) => user.id === id);
@@ -72,6 +82,24 @@ export const useUpdateUserRigs = (id: string) => {
     setAvailableRigs((prev) => [...prev, rig]);
   };
 
+  const handleSubmit = async () => {
+    const rigsToPersistence = userRigs.map(({id}) => id);
+    const userId = userBeingEdited?.id!;
+    /*     console.log("userRigs: ", userRigs);
+    console.log("userId: ", userId);
+    console.log("rigsToPersistence: ", rigsToPersistence); */
+    const body = {userId, rigs: rigsToPersistence};
+    try {
+      await mutateAsync(body);
+      navigate("/users");
+      customColorToast("Sondas editadas com sucesso!", "#1c7b7b", "success");
+    } catch (error: any | typeof AxiosError) {
+      treatAxiosError(error);
+      console.log(error);
+    }
+    console.log("body: ", JSON.stringify(body));
+  };
+
   return {
     user,
     isLoading: isFetchingUsers || isFetchingContracts,
@@ -80,5 +108,7 @@ export const useUpdateUserRigs = (id: string) => {
     availableRigs,
     handleLinkRig,
     handleUnlinkRig,
+    handleSubmit,
+    isLoadingUpdateRigs,
   };
 };

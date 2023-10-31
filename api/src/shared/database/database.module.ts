@@ -8,6 +8,7 @@ import { BillingConfigurationsRepository } from './repositories/billingConfigura
 import { BillingRepository } from './repositories/billing.repositories';
 import { ContractRepository } from './repositories/contract.repositories';
 import { UsersContractRepository } from './repositories/usersContract.repositories';
+import { PrismaClient } from '@prisma/client';
 
 @Global()
 @Module({
@@ -21,8 +22,10 @@ import { UsersContractRepository } from './repositories/usersContract.repositori
     BillingRepository,
     ContractRepository,
     UsersContractRepository,
+    PrismaClient,
   ],
   exports: [
+    PrismaService,
     UsersRepository,
     UsersRigRepository,
     RigsRepository,

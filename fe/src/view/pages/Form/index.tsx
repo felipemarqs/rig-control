@@ -28,7 +28,7 @@ export const Form = () => {
               {!isPending && <span> Horários Preenchidos!</span>}
             </div>
 
-            <div className="w-full h-[87vh] p-4  justify-center flex gap-2 ">
+            <div className="w-full h-[80vh]  overflow-y-auto  flex-col-reverse justify-center flex gap-2  lg:h-[87vh] lg:flex-row lg:p-4">
               <PeriodsFormContainer />
 
               {userRig.contract.name === "Petrobrás" && <></>}

@@ -22,6 +22,8 @@ export const useDetailsController = (efficiencyId: string) => {
     mutateAsync: mutateAsyncRemoveEfficiency,
   } = useMutation(efficienciesService.remove);
 
+  console.log("modalDescription", modalDescription);
+
   const handleDeleteEfficiency = async () => {
     try {
       await mutateAsyncRemoveEfficiency(efficiencyId);
@@ -39,7 +41,8 @@ export const useDetailsController = (efficiencyId: string) => {
     setIsDetailModalOpen(false);
   };
 
-  const openDetailModal = () => {
+  const openDetailModal = (description: string) => {
+    setModalDescription(description.length > 0 ? description : "Sem Descrição");
     setIsDetailModalOpen(true);
   };
 

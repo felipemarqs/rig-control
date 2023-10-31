@@ -10,6 +10,7 @@ import {getPeriodClassification} from "../../../../app/utils/periodClassificatio
 import {Button} from "../../../components/Button";
 import TextArea from "antd/es/input/TextArea";
 import {useForm} from "./FormContext/useForm";
+import {Input} from "../../../components/Input";
 
 export const PeriodsFormContainer = () => {
   const {
@@ -29,16 +30,27 @@ export const PeriodsFormContainer = () => {
     handleSubmit,
     cleanFields,
     isLoading,
+    well,
+    handleWellChange,
   } = useForm();
 
   const format = "HH:mm";
   return (
-    <div className=" max-h-[90vh] overflow-y-scroll flex-1 max-w-[800px]  bg-primary-500 p-4 rounded-xl">
-      <div className={cn(" flex items-center flex-col justify-center gap-2")}>
+    <div className=" max-h-[90vh] overflow-y-scroll flex-1 max-w-[800px]  bg-primary-500 lg:p-4 rounded-xl">
+      <div className={cn(" flex items-center justify-center gap-2")}>
         <DatePickerInput
           error={!date ? "Selecione uma data!" : undefined}
           value={date}
           onChange={(value) => handleDateChange(value)}
+        />
+
+        <Input
+          onChange={(value) => handleWellChange(value.target.value)}
+          name="well"
+          error={well.length === 0 ? "Obrigatório" : ""}
+          placeholder="Poço"
+          labelStyles="text-black"
+          className="border-1 text-black border-black bg-white hover:bg-white"
         />
       </div>
       {periods.map(
@@ -196,7 +208,7 @@ export const PeriodsFormContainer = () => {
               <div className="flex justify-between p-4  w-[90%] ">
                 <div className="flex justify-between items-center w-full gap-1">
                   <TextArea
-                    maxLength={100}
+                    maxLength={1000}
                     style={{
                       height: 50,
                       resize: "vertical",
@@ -235,7 +247,7 @@ export const PeriodsFormContainer = () => {
 
       <div className="flex justify-end mt-4 ">
         <Button
-          className="bg-secondary-500 w-1/3 h-7 text-sm"
+          className="bg-secondary-500 w-full lg:w-1/3 h-7 text-sm"
           onClick={() => addPeriod()}
         >
           Adicionar período

@@ -129,13 +129,14 @@ export const BillingDashboardProvider = ({
   const handleOpenEditConfigModal = useCallback(
     (data: BillingConfigResponse) => {
       setConfigBeingEdited(data);
-      console.log("cnfig being edited", data);
       setIsEditConfigModalOpen(true);
     },
     []
   );
 
   const {billings, isFetchingBillings, refetchBillings} = useBillings(filters);
+  console.log("billings", billings);
+
   const {configs, isFetchingConfig} = useConfigBillings();
 
   const isEmpty: boolean = billings.length === 0;

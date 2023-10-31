@@ -36,6 +36,7 @@ export class EfficienciesService {
     const {
       rigId,
       date,
+      well,
       availableHours,
       periods,
       fluidRatio,
@@ -110,6 +111,7 @@ export class EfficienciesService {
 
     const efficiencyData = {
       date,
+      well,
       availableHours,
       dtmHours: 0,
       rigId,
@@ -510,17 +512,6 @@ export class EfficienciesService {
     //Mudar para params depois
     const ano = 2023;
 
-    const results = await this.prisma.$queryRaw`
-    SELECT
-      TO_CHAR(date, 'YYYY-MM') AS month,
-      AVG(available_hours) AS avg
-    FROM efficiencies
-    WHERE rig_id = ${rigId}::UUID
-      AND EXTRACT(YEAR FROM date) = ${ano}
-    GROUP BY month
-    ORDER BY month;
-  `;
-    console.log(results);
-    return results;
+    return await this.efficiencyRepo.getAverage(rigId);
   }
 }

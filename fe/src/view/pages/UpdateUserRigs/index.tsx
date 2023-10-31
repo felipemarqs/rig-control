@@ -3,6 +3,8 @@ import {cn} from "../../../app/utils/cn";
 import {Header} from "../../components/Header";
 import {useUpdateUserRigs} from "./useUpdateUserRigs";
 import {Spinner} from "../../components/Spinner";
+import {Button} from "../../components/Button";
+import emptyState from "../../../assets/icons/emptyState.svg";
 
 export const UpdateUserRigs = () => {
   const {id} = useParams();
@@ -12,7 +14,9 @@ export const UpdateUserRigs = () => {
     availableRigs,
     userRigs,
     handleLinkRig,
+    handleSubmit,
     handleUnlinkRig,
+    isLoadingUpdateRigs,
   } = useUpdateUserRigs(id!);
 
   return (
@@ -31,24 +35,38 @@ export const UpdateUserRigs = () => {
             {" "}
             <div className="bg-primary-500 h-full rounded-md p-4 lg:w-1/2">
               <span className="text-white tracking-[-0.5] mb-14 font-medium block">
-                Sondas vinculadas ao usuário {userBeingEdited?.name}
+                Sondas vinculadas à: {userBeingEdited?.name}
               </span>
               <div className="flex flex-wrap gap-2">
-                {userRigs.map(({id, name, isActive}) => (
-                  <div
-                    key={id}
-                    onClick={() => handleUnlinkRig(id)}
-                    className="p-4 bg-white cursor-pointer rounded-2xl shadow-[0_1px_2px] flex w-1/3 justify-between items-center border-l-4  border-secondary-500 lg:w-2/3"
-                  >
-                    <span className="text-gray-800">{name}</span>
-                    <span
-                      className={cn(
-                        "w-5 h-5 bg-secondary-500 rounded-full",
-                        isActive === false && "bg-redAccent-500"
-                      )}
-                    ></span>
+                {userRigs.length === 0 && (
+                  <div className="w-full h-full flex justify-center items-center flex-col">
+                    <img src={emptyState} />
+                    <h2 className="text-primary-500 mt-1 flex-1">
+                      <span className="text-white tracking-[-0.5] mb-14 font-medium block">
+                        O usuário deve estar vinculado a, no mínimo, uma sonda.
+                      </span>
+                    </h2>
                   </div>
-                ))}
+                )}
+                {userRigs.length > 0 && (
+                  <>
+                    {userRigs.map(({id, name, isActive}) => (
+                      <div
+                        key={id}
+                        onClick={() => handleUnlinkRig(id)}
+                        className="p-4 bg-white cursor-pointer rounded-2xl shadow-[0_1px_2px] flex w-1/3 justify-between items-center border-l-4  border-secondary-500 lg:w-1/2"
+                      >
+                        <span className="text-gray-800">{name}</span>
+                        <span
+                          className={cn(
+                            "w-5 h-5 bg-secondary-500 rounded-full",
+                            isActive === false && "bg-redAccent-500"
+                          )}
+                        ></span>
+                      </div>
+                    ))}
+                  </>
+                )}
               </div>
             </div>
             <div className="bg-primary-500 h-full rounded-md p-4 lg:w-1/2">
@@ -57,7 +75,15 @@ export const UpdateUserRigs = () => {
               </span>
               <div className="flex flex-wrap gap-2">
                 {availableRigs.length === 0 && (
-                  <span>Usuario cadastrado em todas as sondas do contrato</span>
+                  <div className="w-full h-full flex justify-center items-center flex-col">
+                    <img src={emptyState} />
+                    <h2 className="text-primary-500 mt-1 flex-1">
+                      <span className="text-white tracking-[-0.5] mb-14 font-medium block">
+                        O usuário está cadastrado em todas as sondas associadas
+                        ao contrato.
+                      </span>
+                    </h2>
+                  </div>
                 )}
                 {availableRigs.length > 0 && (
                   <>
@@ -65,7 +91,7 @@ export const UpdateUserRigs = () => {
                       <div
                         key={id}
                         onClick={() => handleLinkRig(id)}
-                        className="p-4 bg-white cursor-pointer rounded-2xl shadow-[0_1px_2px] flex w-1/3 justify-between items-center border-l-4  border-secondary-500 lg:w-2/3"
+                        className="p-4 bg-white cursor-pointer rounded-2xl shadow-[0_1px_2px] flex w-1/3 justify-between items-center border-l-4  border-secondary-500 lg:w-1/2"
                       >
                         <span className="text-gray-800">{name}</span>
                         <span
@@ -81,6 +107,16 @@ export const UpdateUserRigs = () => {
             </div>
           </>
         )}
+      </div>
+      <div className="w-full mt-4 flex justify-center">
+        <Button
+          onClick={() => handleSubmit()}
+          isLoading={isLoading || isLoadingUpdateRigs}
+          className="w-1/2"
+          disabled={userRigs.length === 0 ? true : false || isLoadingUpdateRigs}
+        >
+          Enviar
+        </Button>
       </div>
     </div>
   );
