@@ -32,6 +32,9 @@ export const PeriodsFormContainer = () => {
     isLoading,
     well,
     handleWellChange,
+    selectedRig,
+    handleChangeRig,
+    usersRigs,
   } = useForm();
 
   const format = "HH:mm";
@@ -52,6 +55,19 @@ export const PeriodsFormContainer = () => {
           labelStyles="text-black"
           className="border-1 text-black border-black bg-white hover:bg-white"
         />
+
+        <div className="w-[123px]">
+          <Select
+            error={""}
+            placeholder="Sonda"
+            value={selectedRig}
+            onChange={(value) => handleChangeRig(value)}
+            options={usersRigs.map(({id, name}) => ({
+              value: id,
+              label: name,
+            }))}
+          />
+        </div>
       </div>
       {periods.map(
         ({

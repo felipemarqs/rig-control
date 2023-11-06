@@ -67,6 +67,7 @@ model Contract {
 enum AccessLevel {
   ADM
   USER
+  VIEWER
 
   @@map("access_level")
 }
@@ -78,9 +79,10 @@ model User {
   password    String
   accessLevel AccessLevel @map("access_level")
 
-  rigs         UserRig[]
-  contract     UserContract[]
-  efficiencies Efficiency[]
+  rigs            UserRig[]
+  contract        UserContract[]
+  efficiencies    Efficiency[]
+  DeletionRequest DeletionRequest[]
 
   @@map("users")
 }
@@ -108,19 +110,20 @@ model UserContract {
 }
 
 model Efficiency {
-  id             String           @id @default(uuid()) @db.Uuid
-  date           DateTime
-  well           String
-  availableHours Float            @map("available_hours")
-  dtmHours       Float            @map("dtm_hours")
-  rigId          String           @map("rig_id") @db.Uuid
-  userId         String           @map("user_id") @db.Uuid
-  rig            Rig              @relation(fields: [rigId], references: [id], onDelete: Cascade)
-  user           User             @relation(fields: [userId], references: [id])
-  periods        Period[]
-  fluidRatio     FluidRatio[]
-  equipmentRatio EquipmentRatio[]
-  Billing        Billing[]
+  id              String            @id @default(uuid()) @db.Uuid
+  date            DateTime
+  well            String
+  availableHours  Float             @map("available_hours")
+  dtmHours        Float             @map("dtm_hours")
+  rigId           String            @map("rig_id") @db.Uuid
+  userId          String            @map("user_id") @db.Uuid
+  rig             Rig               @relation(fields: [rigId], references: [id], onDelete: Cascade)
+  user            User              @relation(fields: [userId], references: [id])
+  periods         Period[]
+  fluidRatio      FluidRatio[]
+  equipmentRatio  EquipmentRatio[]
+  Billing         Billing[]
+  DeletionRequest DeletionRequest[]
 
   @@map("efficiencies")
 }
@@ -289,4 +292,21 @@ model Billing {
   efficiency Efficiency @relation(fields: [efficiencyId], references: [id], onDelete: Cascade)
 
   @@map("billings")
+}
+
+enum RequestStatus {
+  PENDING
+  FINISHED
+  REJECTED
+}
+
+model DeletionRequest {
+  id           String        @id @default(uuid()) @db.Uuid
+  userId       String        @map("user_id") @db.Uuid
+  efficiencyId String        @map("efficiency_id") @db.Uuid
+  reason       String
+  status       RequestStatus @default(PENDING)
+  createdAt    DateTime      @default(now())
+  efficiency   Efficiency    @relation(fields: [efficiencyId], references: [id])
+  user         User          @relation(fields: [userId], references: [id])
 }

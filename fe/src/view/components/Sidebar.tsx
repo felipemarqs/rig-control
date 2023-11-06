@@ -8,19 +8,13 @@ import {useNavigate} from "react-router-dom";
 import {cn} from "../../app/utils/cn";
 
 export default function Sidebar({children}: {children: React.ReactNode}) {
-  const {
-    expanded,
-    toggleVisibility,
-    windowWidth,
-    toggleHiddenVisibility,
-    hidden,
-  } = useSidebarContext();
+  const {expanded, toggleVisibility, windowWidth, toggleHiddenVisibility} =
+    useSidebarContext();
   const {signout, user} = useAuth();
   const navigate = useNavigate();
-  console.log("hidden", hidden);
 
   return (
-    <aside className={cn("h-screen", hidden && "hidden")}>
+    <aside className={cn("h-screen" /* hidden && "hidden" */)}>
       <nav className="h-full  flex flex-col bg-primary-500 border-r shadow-sm">
         <div className="p-4 pb-2 flex justify-between items-center">
           <img

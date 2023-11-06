@@ -435,6 +435,7 @@ export class EfficienciesService {
       },
       select: {
         id: true,
+        well: true,
         rigId: true,
         userId: true,
         date: true,
@@ -510,8 +511,8 @@ export class EfficienciesService {
   async getAverage(rigId: string) {
     //const rigId = '073168f7-b634-466d-aaee-a7968a39e2b1';
     //Mudar para params depois
-    const ano = 2023;
+    const year = new Date().getFullYear();
 
-    return await this.efficiencyRepo.getAverage(rigId);
+    return await this.efficiencyRepo.getAverage(rigId, year);
   }
 }

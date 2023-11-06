@@ -17,19 +17,19 @@ export class EfficienciesRepository {
     return await this.prismaService.efficiency.findMany(findAllDto);
   }
 
-  findUnique(findUniqueDto: Prisma.EfficiencyFindUniqueArgs) {
-    return this.prismaService.efficiency.findUnique(findUniqueDto);
+  async findUnique(findUniqueDto: Prisma.EfficiencyFindUniqueArgs) {
+    return await this.prismaService.efficiency.findUnique(findUniqueDto);
   }
 
-  findFirst(findFirstDto: Prisma.EfficiencyFindFirstArgs) {
-    return this.prismaService.efficiency.findFirst(findFirstDto);
+  async findFirst(findFirstDto: Prisma.EfficiencyFindFirstArgs) {
+    return await this.prismaService.efficiency.findFirst(findFirstDto);
   }
 
-  delete(deleteDto: Prisma.EfficiencyDeleteArgs) {
-    return this.prismaService.efficiency.delete(deleteDto);
+  async delete(deleteDto: Prisma.EfficiencyDeleteArgs) {
+    return await this.prismaService.efficiency.delete(deleteDto);
   }
 
-  async getAverage(rigId: string) {
+  async getAverage(rigId: string, year: number) {
     const efficiencyAverageByRig = await this.prisma.$queryRaw`
     SELECT
       e.rig_id AS rigId,
@@ -46,14 +46,13 @@ export class EfficienciesRepository {
 
     console.log(efficiencyAverageByRig);
 
-    const ano = 2023;
     return await this.prisma.$queryRaw`
     SELECT
       TO_CHAR(date, 'YYYY-MM') AS month,
       AVG(available_hours) AS avg
     FROM efficiencies
     WHERE rig_id = ${rigId}::UUID
-      AND EXTRACT(YEAR FROM date) = ${ano}
+      AND EXTRACT(YEAR FROM date) = ${year}
     GROUP BY month
     ORDER BY month;
   `;

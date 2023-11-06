@@ -22,6 +22,7 @@ export const Details = () => {
     isDeleteModalOpen,
     isLoadingRemoveEfficiency,
     openDeleteModal,
+    isUserAdm,
   } = useDetailsController(efficiencyId!);
 
   return (
@@ -59,9 +60,17 @@ export const Details = () => {
               />
             </div>
           )}
-        <Button onClick={openDeleteModal} className="bg-redAccent-500">
-          Deletar Registro
-        </Button>
+        {isUserAdm && (
+          <Button onClick={openDeleteModal} className="bg-redAccent-500">
+            Deletar Registro
+          </Button>
+        )}
+
+        {!isUserAdm && (
+          <Button onClick={openDeleteModal} className="bg-redAccent-500">
+            Solicitar Exclusão
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ export type Efficiency = {
   availableHours: number;
   date: string | Date;
   id: string;
+  well: string;
   rigId: string;
   userId: string;
   user: {name: string};

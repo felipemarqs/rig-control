@@ -11,6 +11,7 @@ import { BillingsConfigurationModule } from './modules/billings-configuration/bi
 import { ContractsModule } from './modules/contracts/contracts.module';
 
 import { UsersRigModule } from './modules/users-rig/users-rig.module';
+import { DeletionRequestsModule } from './modules/deletion-requests/deletion-requests.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { UsersRigModule } from './modules/users-rig/users-rig.module';
     BillingsConfigurationModule,
     ContractsModule,
     UsersRigModule,
+    DeletionRequestsModule,
   ],
   controllers: [],
   providers: [

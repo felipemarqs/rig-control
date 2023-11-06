@@ -8,7 +8,7 @@ export const UpdateUser = () => {
 
   return (
     <div className="w-full h-full overflow-y-scroll">
-      <Header title="CADASTRO" subtitle="Cadastro de usuários" />
+      <Header title="USUÁRIO" subtitle="Editar Dados" />
 
       <div className="w-full h-full ">
         <form className="p-4" onSubmit={handleSubmit}>
@@ -49,7 +49,7 @@ export const UpdateUser = () => {
               <div className="flex gap-1"></div>
             </div>
             <Button type="submit" isLoading={isLoading}>
-              Enviar
+              Atualizar
             </Button>
           </div>
         </form>

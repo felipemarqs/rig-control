@@ -15,7 +15,7 @@ import {useAuth} from "../../../app/hooks/useAuth";
 export const MainLayout = () => {
   //const {activeItem,handleNavItemChange} = useMainLayout()
   const {active} = useSidebarContext();
-  const {isUserAdm} = useAuth();
+  const {isUserAdm, userAccessLevel} = useAuth();
   return (
     <div className="flex w-screen h-screen">
       <Sidebar>
@@ -35,12 +35,14 @@ export const MainLayout = () => {
           />
         )}
 
-        <SidebarItem
-          icon={<FileText size={20} />}
-          text="Formulário"
-          urlText="form"
-          isActive={active === "Formulário"}
-        />
+        {userAccessLevel !== "VIEWER" && (
+          <SidebarItem
+            icon={<FileText size={20} />}
+            text="Formulário"
+            urlText="form"
+            isActive={active === "Formulário"}
+          />
+        )}
 
         <SidebarItem
           icon={<BarChart3 size={20} />}
@@ -52,23 +54,24 @@ export const MainLayout = () => {
         {isUserAdm && (
           <SidebarItem
             icon={<UserCircle size={20} />}
-            text="Cadastrar Sonda"
+            text="Sonda"
             urlText="rig"
-            isActive={active === "Cadastrar Sonda"}
+            isActive={active === "Sonda"}
           />
         )}
 
         {isUserAdm && (
           <SidebarItem
             icon={<UserCircle size={20} />}
-            text="Cadastrar Contrato"
+            text="Contrato"
             urlText="contracts"
-            isActive={active === "Cadastrar Contrato"}
+            isActive={active === "Contrato"}
           />
         )}
 
         {isUserAdm && (
           <SidebarItem
+            alert
             icon={<UserCircle size={20} />}
             text="Usuários"
             urlText="users"

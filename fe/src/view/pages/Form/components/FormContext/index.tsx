@@ -36,6 +36,8 @@ interface FormContextValue {
   cleanFields(id: string): void;
   isFormValid: boolean;
   isPending: boolean;
+  selectedRig: string;
+  handleChangeRig(rigId: string): void;
   handleMixTankCheckBox(): void;
   handleMixTankOperatorsCheckBox(): void;
   handleFuelGeneratorCheckBox(): void;
@@ -56,6 +58,7 @@ interface FormContextValue {
   handleSuckingTruckCheckbox(): void;
   handleWellChange(value: string): void;
   isSuckingTruckSelected: boolean;
+  usersRigs: {id: string; name: string}[];
   mobilizationPlace: string;
   isPowerSwivelSelected: boolean;
   isMixTankSelected: boolean;
@@ -96,10 +99,14 @@ export const FormContext = createContext({} as FormContextValue);
 
 export const FormProvider = ({children}: {children: React.ReactNode}) => {
   const {user} = useAuth();
+  const isUserAdm = user?.accessLevel === "ADM";
   console.log("User", user);
   const navigate = useNavigate();
   const [date, setDate] = useState<Date>();
   const [well, setWell] = useState<string>("");
+  const [selectedRig, setSelectedRig] = useState<string>(() => {
+    return isUserAdm ? "" : user?.rigs[0].rig.id!;
+  });
   const [remainingMinutes, setRemainingMinutes] = useState<number>();
   const [periods, setPeriods] = useState([
     {
@@ -119,7 +126,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleSubmit = async (periods: Periods) => {
     const {toPersistenceObj} = efficiencyMappers.toPersistance({
-      rigId: user?.rigs[0].rig.id,
+      rigId: selectedRig,
       date: date ?? new Date(),
       well,
       availableHours: 24,
@@ -284,6 +291,10 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     setPeriods(newPeriods);
   };
 
+  const handleChangeRig = (rigId: string) => {
+    setSelectedRig(rigId);
+  };
+
   const calculateTotalMinutes = useCallback(() => {
     let totalMinutes = 0;
 
@@ -305,7 +316,15 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   const isFormValid = Boolean(remainingMinutes === 0 && date);
   const isPending = remainingMinutes !== 0;
 
-  const userRig = user?.rigs[0].rig;
+  const userRig = user?.rigs[0].rig!;
+
+  const usersRigs =
+    user?.rigs.map(({rig: {id, name}}) => {
+      return {
+        id,
+        name,
+      };
+    }) || [];
 
   //Configurações de formulário adicionais
 
@@ -459,6 +478,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     <FormContext.Provider
       value={{
         date,
+        handleChangeRig,
         handleDateChange,
         handleStartHourChange,
         handleDeletePeriod,
@@ -476,6 +496,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         cleanFields,
         isLoading,
         userRig,
+        usersRigs,
         isPending,
         handleMixTankCheckBox,
         isMixTankSelected,
@@ -518,6 +539,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         handleSuckingTruckCheckbox,
         well,
         handleWellChange,
+        selectedRig,
       }}
     >
       {children}

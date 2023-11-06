@@ -7,6 +7,8 @@ import {Link} from "react-router-dom";
 export const ListUsers = () => {
   const {users, isFetchingUsers, navigate} = useListUsers();
 
+  console.log("users", users);
+
   return (
     <div className="w-full h-full overflow-y-scroll">
       <Header
@@ -76,7 +78,7 @@ export const ListUsers = () => {
                   </div>
 
                   <div className="flex justify-between  w-full">
-                    <div className="flex flex-col">
+                    <div className="flex flex-col w-1/2">
                       <span className="text-gray-800 tracking-[-0.5] font-medium block">
                         Email
                       </span>
@@ -85,13 +87,24 @@ export const ListUsers = () => {
                       </span>
                     </div>
 
-                    <div className="flex flex-col w-1/2 ">
-                      <span className="text-gray-800 tracking-[-0.5] font-medium block">
-                        Contrato
-                      </span>
-                      <span className="text-gray-600 tracking-[-0.5] font-medium block">
-                        {user.rigs[0].rig.contract.name}
-                      </span>
+                    <div className="w-1/2 flex justify-between">
+                      <div className="flex flex-col ">
+                        <span className="text-gray-800 tracking-[-0.5] font-medium block">
+                          Contrato
+                        </span>
+                        <span className="text-gray-600 tracking-[-0.5] font-medium block">
+                          {user.rigs[0].rig.contract.name}
+                        </span>
+                      </div>
+
+                      <div className="flex flex-col ">
+                        <span className="text-gray-800 tracking-[-0.5] font-medium block">
+                          Nível de Acesso
+                        </span>
+                        <span className="text-gray-600 tracking-[-0.5] font-medium block">
+                          {user.accessLevel}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>

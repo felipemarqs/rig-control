@@ -1,13 +1,15 @@
-import {UF} from "./Rig";
+import {Rig} from "./Rig";
+import {User} from "./User";
 
 export type PersistanceEfficiency = {
   availableHours: number;
   date: string | Date;
   id: string;
+  well: string;
   rigId: string;
   userId: string;
-  user: {name: string};
-  rig: {name: string; state: UF};
+  user: Partial<User>;
+  rig: Partial<Rig>;
   periods: {
     id: string;
     efficiencyId: string;

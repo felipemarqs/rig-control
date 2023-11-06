@@ -1,10 +1,11 @@
+import {AccessLevel} from "./AccessLevel";
 import {Contract} from "./Contract";
 
 export interface User {
   id: string;
   name: string;
   email: string;
-  accessLevel: "USER" | "ADM";
+  accessLevel: AccessLevel;
   contract?: Array<Contract>;
   rigs: {
     rig: {

@@ -6,10 +6,12 @@ import {User} from "../entities/User";
 import {treatAxiosError} from "../utils/treatAxiosError";
 import {AxiosError} from "axios";
 import {PageLoader} from "../../view/components/PageLoader";
+import {AccessLevel} from "../entities/AccessLevel";
 
 interface AuthContextValue {
   signedIn: boolean;
   isUserAdm: boolean;
+  userAccessLevel: AccessLevel;
   user: User | undefined;
   signin(accessToken: string): void;
   signout(): void;
@@ -47,6 +49,8 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
 
   const isUserAdm = data?.accessLevel === "ADM" ? true : false;
 
+  const userAccessLevel = data?.accessLevel!;
+
   useEffect(() => {
     if (isError) {
       treatAxiosError((error as Error) || AxiosError);
@@ -62,6 +66,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
         signout,
         user: data,
         isUserAdm,
+        userAccessLevel,
       }}
     >
       {true && <PageLoader isLoading={isFetching} />}

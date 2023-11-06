@@ -9,6 +9,7 @@ import { BillingRepository } from './repositories/billing.repositories';
 import { ContractRepository } from './repositories/contract.repositories';
 import { UsersContractRepository } from './repositories/usersContract.repositories';
 import { PrismaClient } from '@prisma/client';
+import { DeletionRequestRepository } from './repositories/deletionRequests.repositories';
 
 @Global()
 @Module({
@@ -23,6 +24,7 @@ import { PrismaClient } from '@prisma/client';
     ContractRepository,
     UsersContractRepository,
     PrismaClient,
+    DeletionRequestRepository,
   ],
   exports: [
     PrismaService,
@@ -34,6 +36,7 @@ import { PrismaClient } from '@prisma/client';
     BillingRepository,
     ContractRepository,
     UsersContractRepository,
+    DeletionRequestRepository,
   ],
 })
 export class DatabaseModule {}

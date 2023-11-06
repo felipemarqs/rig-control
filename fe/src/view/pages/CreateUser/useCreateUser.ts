@@ -16,7 +16,7 @@ import {useEffect} from "react";
 const schema = z.object({
   name: z.string().nonempty("Nome é obrigatório"),
   email: z.string().nonempty("Email é obrigatório"),
-  accessLevel: z.enum(["ADM", "USER"]),
+  accessLevel: z.enum(["ADM", "USER", "VIEWER"]),
   rigId: z.string().nonempty("Sonda é obrigatório"),
   contractId: z.string().nonempty("Contrato é obrigatório"),
 });
