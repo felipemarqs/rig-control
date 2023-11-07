@@ -4,7 +4,7 @@ import {useState} from "react";
 
 export const useListUsers = () => {
   const navigate = useNavigate();
-  const [filters, setFilters] = useState({contractId: ""});
+  const [filters] = useState({contractId: ""});
 
   const {users, isFetchingUsers} = useUsers(filters);
 

@@ -307,6 +307,6 @@ model DeletionRequest {
   reason       String
   status       RequestStatus @default(PENDING)
   createdAt    DateTime      @default(now())
-  efficiency   Efficiency    @relation(fields: [efficiencyId], references: [id])
+  efficiency   Efficiency    @relation(fields: [efficiencyId], references: [id], onDelete: Cascade)
   user         User          @relation(fields: [userId], references: [id])
 }
