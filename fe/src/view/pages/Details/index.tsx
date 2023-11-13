@@ -80,7 +80,7 @@ export const Details = () => {
                 </Button>
               )}
 
-              {isUserAdm && (
+              {!isUserAdm && (
                 <Button
                   onClick={openDeletionRequestModal}
                   className="bg-redAccent-500"

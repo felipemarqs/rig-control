@@ -7,11 +7,13 @@ import {
   Param,
   Delete,
   Put,
+  Query,
 } from '@nestjs/common';
 import { DeletionRequestsService } from './deletion-requests.service';
 import { CreateDeletionRequestDto } from './dto/create-deletion-request.dto';
 import { UpdateDeletionRequestDto } from './dto/update-deletion-request.dto';
 import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
+import { RequestStatus } from './entities/deletion-request.entity';
 
 @Controller('deletion-request')
 export class DeletionRequestsController {
@@ -31,8 +33,8 @@ export class DeletionRequestsController {
   }
 
   @Get()
-  findAll() {
-    return this.deletionRequestsService.findAll();
+  findAll(@Query('status') status?: RequestStatus) {
+    return this.deletionRequestsService.findAll({ status });
   }
 
   @Get(':id')

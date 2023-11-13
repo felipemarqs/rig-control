@@ -1,11 +1,11 @@
-import {PlusIcon} from "@radix-ui/react-icons";
-import {Header} from "../../components/Header";
-import {Spinner} from "../../components/Spinner";
-import {useListUsers} from "./useListUsers";
-import {Link} from "react-router-dom";
+import { PlusIcon } from "@radix-ui/react-icons";
+import { Header } from "../../components/Header";
+import { Spinner } from "../../components/Spinner";
+import { useListUsers } from "./useListUsers";
+import { Link } from "react-router-dom";
 
 export const ListUsers = () => {
-  const {users, isFetchingUsers, navigate} = useListUsers();
+  const { users, isFetchingUsers, navigate } = useListUsers();
 
   console.log("users", users);
 
@@ -67,12 +67,14 @@ export const ListUsers = () => {
                             {rig.rig.name}
                           </span>
                         ))}
-                        <Link
-                          className="text-primary-500 tracking-[-0.5] underline font-semibold"
-                          to={`/users/update-rigs/${user.id}`}
-                        >
-                          Editar Sondas
-                        </Link>
+                        {user.accessLevel !== "ADM" && (
+                          <Link
+                            className="text-primary-500 tracking-[-0.5] underline font-semibold"
+                            to={`/users/update-rigs/${user.id}`}
+                          >
+                            Editar Sondas
+                          </Link>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -93,7 +95,9 @@ export const ListUsers = () => {
                           Contrato
                         </span>
                         <span className="text-gray-600 tracking-[-0.5] font-medium block">
-                          {user.rigs[0].rig.contract.name}
+                          {user.accessLevel === "ADM" && "ADM"}
+                          {user.accessLevel !== "ADM" &&
+                            user.rigs[0].rig.contract.name}
                         </span>
                       </div>
 

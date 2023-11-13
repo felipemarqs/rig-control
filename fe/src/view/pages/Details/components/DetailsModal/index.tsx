@@ -12,7 +12,7 @@ export const DetailsModal = ({
 }: DetailsModalProps) => {
   return (
     <Modal title="Detalhes" onClose={onClose} open={open}>
-      <p className="text-black">{description}</p>
+      <p className="text-gray-700 break-words">{description}</p>
     </Modal>
   );
 };

@@ -17,6 +17,7 @@ import {ListUsers} from "../view/pages/ListUsers";
 import {CreateUser} from "../view/pages/CreateUser";
 import {UpdateUser} from "../view/pages/UpdateUser";
 import {UpdateUserRigs} from "../view/pages/UpdateUserRigs";
+import {DeletionRequests} from "../view/pages/DeletionRequests";
 
 export const Router = () => {
   return (
@@ -45,6 +46,7 @@ export const Router = () => {
             <Route path="/create-user" element={<CreateUser />} />
             <Route path="/users/:id" element={<UpdateUser />} />
             <Route path="/users/update-rigs/:id" element={<UpdateUserRigs />} />
+            <Route path="/deletion-requests" element={<DeletionRequests />} />
           </Route>
         </Route>
       </Routes>

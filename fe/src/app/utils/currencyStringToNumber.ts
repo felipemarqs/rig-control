@@ -3,5 +3,6 @@ export const currencyStringToNumber = (value: string) => {
     return;
   }
   const sanitizedString = value.replace(/\./g, "").replace(",", ".");
+  console.log("sanitizedString", sanitizedString);
   return Number(sanitizedString);
 };

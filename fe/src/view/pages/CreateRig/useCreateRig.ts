@@ -1,15 +1,15 @@
-import {UF} from "../../../app/entities/Rig";
-import {z} from "zod";
-import {useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {rigsService} from "../../../app/services/rigsService";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {useContracts} from "../../../app/hooks/useContracts";
-import {useAuth} from "../../../app/hooks/useAuth";
-import {currencyStringToNumber} from "../../../app/utils/currencyStringToNumber";
-import {treatAxiosError} from "../../../app/utils/treatAxiosError";
-import {AxiosError} from "axios";
-import {customColorToast} from "../../../app/utils/customColorToast";
+import { UF } from "../../../app/entities/Rig";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { rigsService } from "../../../app/services/rigsService";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useContracts } from "../../../app/hooks/useContracts";
+import { useAuth } from "../../../app/hooks/useAuth";
+import { currencyStringToNumber } from "../../../app/utils/currencyStringToNumber";
+import { treatAxiosError } from "../../../app/utils/treatAxiosError";
+import { AxiosError } from "axios";
+import { customColorToast } from "../../../app/utils/customColorToast";
 
 const schema = z.object({
   name: z.string().nonempty("Nome é obrigatório"),
@@ -126,7 +126,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export const useCreateRig = () => {
-  const {user} = useAuth();
+  const { user } = useAuth();
   const queryClient = useQueryClient();
 
   const isUserAdm = user?.accessLevel === "ADM";
@@ -136,14 +136,14 @@ export const useCreateRig = () => {
     register,
     control,
     reset,
-    formState: {errors},
+    formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
-  const {isLoading, mutateAsync} = useMutation(rigsService.create);
+  const { isLoading, mutateAsync } = useMutation(rigsService.create);
 
-  const {contracts, isFetchingContracts} = useContracts(isUserAdm);
+  const { contracts, isFetchingContracts } = useContracts(isUserAdm);
 
   const handleSubmit = hookFormHandleSubmit(async (data) => {
     try {
@@ -187,9 +187,7 @@ export const useCreateRig = () => {
         mobilization:
           currencyStringToNumber(data.mobilization as string) ??
           (data.mobilization as number),
-        readjustment:
-          currencyStringToNumber(data.readjustment as string) ??
-          (data.readjustment as number),
+        readjustment: Number(data.readjustment),
         bobRentTax:
           currencyStringToNumber(data.bobRentTax as string) ??
           (data.bobRentTax as number),
@@ -248,7 +246,7 @@ export const useCreateRig = () => {
           currencyStringToNumber(data.christmasTreeDisassemblyTax as string) ??
           (data.christmasTreeDisassemblyTax as number),
       });
-      queryClient.invalidateQueries({queryKey: ["contracts", "rigs"]});
+      queryClient.invalidateQueries({ queryKey: ["contracts", "rigs"] });
       customColorToast("Sonda cadastrada com Sucesso!", "#1c7b7b", "success");
       reset();
     } catch (error: any | typeof AxiosError) {

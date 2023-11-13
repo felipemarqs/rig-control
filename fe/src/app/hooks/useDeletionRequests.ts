@@ -1,14 +1,15 @@
 import {useQuery} from "@tanstack/react-query";
 import {deletionRequestsServices} from "../services/deletionRequestsServices";
+import {deletionRequestFilters} from "../services/deletionRequestsServices/getAll";
 
-export const useDeletionRequests = () => {
+export const useDeletionRequests = (filters: deletionRequestFilters) => {
   const {data, isFetching, refetch} = useQuery({
     queryKey: ["deletion-requests"],
-    queryFn: () => deletionRequestsServices.getAll(),
+    queryFn: () => deletionRequestsServices.getAll(filters),
   });
 
   return {
-    rigs: data ?? [],
+    deletionRequests: data ?? [],
     isFetchingDeletionsRequests: isFetching,
     refetchDeletionsRequests: refetch,
   };

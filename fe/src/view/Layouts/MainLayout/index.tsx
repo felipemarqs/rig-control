@@ -7,6 +7,9 @@ import {
   UserCircle,
   FileText,
   CircleDollarSignIcon,
+  ArchiveX,
+  Building2,
+  Construction,
 } from "lucide-react";
 
 import {useSidebarContext} from "../../../app/contexts/SidebarContext";
@@ -53,7 +56,7 @@ export const MainLayout = () => {
 
         {isUserAdm && (
           <SidebarItem
-            icon={<UserCircle size={20} />}
+            icon={<Construction size={20} />}
             text="Sonda"
             urlText="rig"
             isActive={active === "Sonda"}
@@ -62,7 +65,7 @@ export const MainLayout = () => {
 
         {isUserAdm && (
           <SidebarItem
-            icon={<UserCircle size={20} />}
+            icon={<Building2 size={20} />}
             text="Contrato"
             urlText="contracts"
             isActive={active === "Contrato"}
@@ -71,11 +74,20 @@ export const MainLayout = () => {
 
         {isUserAdm && (
           <SidebarItem
-            alert
             icon={<UserCircle size={20} />}
             text="Usuários"
             urlText="users"
             isActive={active === "Usuários"}
+          />
+        )}
+
+        {isUserAdm && (
+          <SidebarItem
+            alert
+            icon={<ArchiveX size={20} />}
+            text="Deleção"
+            urlText="deletion-requests"
+            isActive={active === "Deleção"}
           />
         )}
       </Sidebar>

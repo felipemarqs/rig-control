@@ -3,9 +3,16 @@ import {httpClient} from "../httpClient";
 
 export type DeletionRequestsResponse = Array<DeletionRequest>;
 
-export const getAll = async () => {
+export interface deletionRequestFilters {
+  status?: string;
+}
+
+export const getAll = async (filters: deletionRequestFilters) => {
   const {data} = await httpClient.get<DeletionRequestsResponse>(
-    `/deletion-request/`
+    `/deletion-request/`,
+    {
+      params: filters,
+    }
   );
 
   return data;

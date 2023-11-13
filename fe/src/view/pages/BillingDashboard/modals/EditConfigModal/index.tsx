@@ -1,10 +1,10 @@
-import {Controller} from "react-hook-form";
-import {useEditConfigModal} from "./useEditConfigModal";
-import {InputCurrency} from "../../../../components/InputCurrency";
-import {Button} from "../../../../components/Button";
-import {Input} from "../../../../components/Input";
-import {ConfigModal} from "../../components/ConfigModal";
-import {TaxInput} from "../../../../components/TaxInput";
+import { Controller } from "react-hook-form";
+import { useEditConfigModal } from "./useEditConfigModal";
+import { InputCurrency } from "../../../../components/InputCurrency";
+import { Button } from "../../../../components/Button";
+import { Input } from "../../../../components/Input";
+import { ConfigModal } from "../../components/ConfigModal";
+import { TaxInput } from "../../../../components/TaxInput";
 
 export const EditConfigModal = () => {
   const {
@@ -30,7 +30,7 @@ export const EditConfigModal = () => {
               <Controller
                 control={control}
                 name="availableHourTax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -44,7 +44,7 @@ export const EditConfigModal = () => {
               <Controller
                 control={control}
                 name="glossHourTax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -58,7 +58,7 @@ export const EditConfigModal = () => {
               <Controller
                 control={control}
                 name="dtmLt20Tax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -72,7 +72,7 @@ export const EditConfigModal = () => {
               <Controller
                 control={control}
                 name="dtmBt20And50Tax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -86,7 +86,7 @@ export const EditConfigModal = () => {
               <Controller
                 control={control}
                 name="dtmGt50Tax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -101,7 +101,7 @@ export const EditConfigModal = () => {
                 defaultValue="0"
                 control={control}
                 name="dtmHourTax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -115,7 +115,7 @@ export const EditConfigModal = () => {
               <Controller
                 control={control}
                 name="equipmentRatioLt20Tax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -129,7 +129,7 @@ export const EditConfigModal = () => {
               <Controller
                 control={control}
                 name="equipmentRatioBt20And50Tax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -143,7 +143,7 @@ export const EditConfigModal = () => {
               <Controller
                 control={control}
                 name="equipmentRatioGt50Tax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -157,7 +157,7 @@ export const EditConfigModal = () => {
               <Controller
                 control={control}
                 name="fluidRatioLt20Tax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -171,7 +171,7 @@ export const EditConfigModal = () => {
               <Controller
                 control={control}
                 name="fluidRatioBt20And50Tax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -185,7 +185,7 @@ export const EditConfigModal = () => {
               <Controller
                 control={control}
                 name="fluidRatioGt50Tax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -199,7 +199,7 @@ export const EditConfigModal = () => {
               <Controller
                 control={control}
                 name="mobilization"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -214,7 +214,7 @@ export const EditConfigModal = () => {
                 defaultValue="0"
                 control={control}
                 name="demobilization"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -229,7 +229,7 @@ export const EditConfigModal = () => {
                 defaultValue="0"
                 control={control}
                 name="transportationTax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -267,7 +267,7 @@ export const EditConfigModal = () => {
                 defaultValue="0"
                 control={control}
                 name="truckCartRentTax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -282,7 +282,7 @@ export const EditConfigModal = () => {
                 defaultValue="0"
                 control={control}
                 name="truckTankTax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -297,7 +297,7 @@ export const EditConfigModal = () => {
                 defaultValue="0"
                 control={control}
                 name="truckKmTax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -312,7 +312,7 @@ export const EditConfigModal = () => {
                 defaultValue="0"
                 control={control}
                 name="bobRentTax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -327,7 +327,7 @@ export const EditConfigModal = () => {
                 defaultValue="0"
                 control={control}
                 name="generatorFuelTax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -342,7 +342,7 @@ export const EditConfigModal = () => {
                 defaultValue="0"
                 control={control}
                 name="extraTrailerTax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -357,7 +357,7 @@ export const EditConfigModal = () => {
                 defaultValue="0"
                 control={control}
                 name="powerSwivelTax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -372,7 +372,7 @@ export const EditConfigModal = () => {
                 defaultValue="0"
                 control={control}
                 name="suckingTruckTax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -387,7 +387,7 @@ export const EditConfigModal = () => {
                 defaultValue="0"
                 control={control}
                 name="munckTax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -402,7 +402,7 @@ export const EditConfigModal = () => {
                 defaultValue="0"
                 control={control}
                 name="mixTankMonthRentTax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -417,7 +417,7 @@ export const EditConfigModal = () => {
                 defaultValue="0"
                 control={control}
                 name="mixTankHourRentTax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -432,7 +432,7 @@ export const EditConfigModal = () => {
                 defaultValue="0"
                 control={control}
                 name="mixTankMobilizationTax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -447,7 +447,7 @@ export const EditConfigModal = () => {
                 defaultValue="0"
                 control={control}
                 name="mixTankDemobilizationTax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -462,7 +462,7 @@ export const EditConfigModal = () => {
                 defaultValue="0"
                 control={control}
                 name="mixTankDtmTax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -477,7 +477,7 @@ export const EditConfigModal = () => {
                 defaultValue="0"
                 control={control}
                 name="mixTankOperatorTax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}
@@ -492,7 +492,7 @@ export const EditConfigModal = () => {
                 defaultValue="0"
                 control={control}
                 name="christmasTreeDisassemblyTax"
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <InputCurrency
                     onChange={onChange}
                     value={value}

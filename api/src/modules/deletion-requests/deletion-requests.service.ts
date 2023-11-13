@@ -33,13 +33,22 @@ export class DeletionRequestsService {
     });
   }
 
-  async findAll() {
+  async findAll(filters: { status: RequestStatus }) {
+    let whereClause = {};
+
+    if (filters.status) {
+      whereClause = {
+        status: filters.status,
+      };
+    }
+
     const requests = await this.deletionRequestRepo.findMany({
       select: {
         id: true,
         user: {
           select: {
             id: true,
+            name: true,
             email: true,
             accessLevel: true,
           },
@@ -55,13 +64,12 @@ export class DeletionRequestsService {
         status: true,
         createdAt: true,
       },
+      where: whereClause,
     });
 
-    const pendingRequests = requests.filter(
-      (request) => request.status === RequestStatus.PENDING,
-    );
+    console.log(requests);
 
-    return pendingRequests;
+    return requests;
   }
 
   findOne(id: number) {
@@ -72,6 +80,7 @@ export class DeletionRequestsService {
     deletionRequestId: string,
     updateDeletionRequestDto: UpdateDeletionRequestDto,
   ) {
+    const {} = updateDeletionRequestDto;
     return await this.deletionRequestRepo.update({
       where: { id: deletionRequestId },
       data: updateDeletionRequestDto,
