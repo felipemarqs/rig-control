@@ -44,8 +44,6 @@ export class EfficienciesRepository {
       e.rig_id, r.name;
   `;
 
-    console.log(efficiencyAverageByRig);
-
     return await this.prisma.$queryRaw`
     SELECT
       TO_CHAR(date, 'YYYY-MM') AS month,

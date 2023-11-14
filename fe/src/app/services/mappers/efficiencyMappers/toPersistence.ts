@@ -7,8 +7,6 @@ import {getTotalHoursFromTimeString} from "../../../utils/getTotalHoursFromTimeS
 export const toPersistence = (domainEfficiency: DomainEfficiency) => {
   let totalAvailableHours = 0;
 
-  console.log("atual domais", domainEfficiency);
-
   const christmasTreeDisassemblyHours = getTotalHoursFromTimeString(
     domainEfficiency.christmasTreeDisassemblyHours
   );
@@ -92,6 +90,7 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
     truckKm: domainEfficiency.truckKm,
     isExtraTrailerSelected: domainEfficiency.isExtraTrailerSelected,
     isPowerSwivelSelected: domainEfficiency.isPowerSwivelSelected,
+    isSuckingTruckSelected: domainEfficiency.isSuckingTruckSelected,
   };
 
   domainEfficiency.periods.forEach(({equipmentRatio, fluidRatio}) => {
@@ -107,8 +106,6 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
       });
     }
   });
-
-  console.log("toPersistenceObj", toPersistenceObj);
 
   return {toPersistenceObj};
 };

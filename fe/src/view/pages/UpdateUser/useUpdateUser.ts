@@ -24,7 +24,6 @@ type FormData = z.infer<typeof schema>;
 export const useUpdateUser = () => {
   const navigate = useNavigate();
   const {user} = useAuth();
-  console.log("user", user);
 
   const {
     handleSubmit: hookFormHandleSubmit,

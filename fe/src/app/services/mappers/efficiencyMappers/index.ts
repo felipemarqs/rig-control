@@ -1,5 +1,5 @@
-import { toPersistence } from "./toPersistence";
+import {toPersistence} from "./toPersistence";
 
 export const efficiencyMappers = {
-    toPersistance: toPersistence
-}
+  toPersistance: toPersistence,
+};

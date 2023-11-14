@@ -51,7 +51,6 @@ export class ContractsService {
     });
 
     const [res] = rigs;
-    console.log(res['rigs']);
 
     return res['rigs'];
   }

@@ -67,8 +67,6 @@ export class DeletionRequestsService {
       where: whereClause,
     });
 
-    console.log(requests);
-
     return requests;
   }
 

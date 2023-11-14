@@ -85,9 +85,7 @@ export const useUpdateUserRigs = (id: string) => {
   const handleSubmit = async () => {
     const rigsToPersistence = userRigs.map(({id}) => id);
     const userId = userBeingEdited?.id!;
-    /*     console.log("userRigs: ", userRigs);
-    console.log("userId: ", userId);
-    console.log("rigsToPersistence: ", rigsToPersistence); */
+
     const body = {userId, rigs: rigsToPersistence};
     try {
       await mutateAsync(body);
@@ -97,7 +95,6 @@ export const useUpdateUserRigs = (id: string) => {
       treatAxiosError(error);
       console.log(error);
     }
-    console.log("body: ", JSON.stringify(body));
   };
 
   return {

@@ -35,7 +35,6 @@ export class EfficienciesService {
   }
 
   async create(createEfficiencyDto: CreateEfficiencyDto, userId: string) {
-    console.log(createEfficiencyDto);
     const {
       rigId,
       date,
@@ -119,12 +118,54 @@ export class EfficienciesService {
       dtmHours: 0,
       rigId,
       userId,
+      christmasTreeDisassemblyHours: christmasTreeDisassemblyHours,
+      bobRentHours: bobRentHours,
+      hasDemobilization: isDemobilizationSelected,
+      hasExtraTrailer: isExtraTrailerSelected,
+      hasGeneratorFuel: isFuelGeneratorSelected,
+      hasMixTankDemobilization: isTankMixDemobilizationSelected,
+      hasMixTankDtm: isTankMixDTMSelected,
+      hasMixTankHourRent: isMixTankSelected,
+      hasMixTankMobilization: isTankMixMobilizationSelected,
+      hasMixTankMonthRent: isMixTankMonthSelected,
+      hasMixTankOperator: isMixTankOperatorsSelected,
+      hasMunck: isMunckSelected,
+      hasPowerSwivel: isPowerSwivelSelected,
+      hasSuckingTruck: isSuckingTruckSelected,
+      hasTransportation: isTransportationSelected,
+      hasTruckCartRent: isTruckCartSelected,
+      hasTruckTank: isTruckTankSelected,
+      truckKmHours: truckKm,
       periods: {
         createMany: {
           data: periods,
         },
       },
     };
+
+    const efficiencytes = await this.efficiencyRepo.create({
+      data: {
+        ...efficiencyData,
+        christmasTreeDisassemblyHours: christmasTreeDisassemblyHours,
+        bobRentHours: bobRentHours,
+        hasDemobilization: isDemobilizationSelected,
+        hasExtraTrailer: isExtraTrailerSelected,
+        hasGeneratorFuel: isFuelGeneratorSelected,
+        hasMixTankDemobilization: isTankMixDemobilizationSelected,
+        hasMixTankDtm: isTankMixDTMSelected,
+        hasMixTankHourRent: isMixTankSelected,
+        hasMixTankMobilization: isTankMixMobilizationSelected,
+        hasMixTankMonthRent: isMixTankMonthSelected,
+        hasMixTankOperator: isMixTankOperatorsSelected,
+        hasMunck: isMunckSelected,
+        hasPowerSwivel: isPowerSwivelSelected,
+        hasSuckingTruck: isSuckingTruckSelected,
+        hasTransportation: isTransportationSelected,
+        hasTruckCartRent: isTruckCartSelected,
+        hasTruckTank: isTruckTankSelected,
+        truckKmHours: truckKm,
+      },
+    });
 
     if (equipmentRatio?.length > 0) {
       efficiencyData['equipmentRatio'] = {
@@ -184,11 +225,9 @@ export class EfficienciesService {
       const horaFinal = new Date(endHour);
 
       const getDiffInMinutes = (horaFinal: Date, horaInicial: Date) => {
-        const isoEndDate = horaFinal.toISOString().split('T')[0];
+        //Refact
+        //GetISOHour ---
         const isoHour = horaFinal.toISOString().split('T')[1];
-
-        console.log('horaFinal', horaFinal);
-        console.log('horaInicial', horaInicial);
 
         let endDate = horaFinal;
         if (isoHour.slice(0, 5) === '23:59') {
@@ -198,8 +237,6 @@ export class EfficienciesService {
         return differenceInMinutes(endDate, horaInicial);
       };
       const diffInMinutes = getDiffInMinutes(horaFinal, horaInicial);
-
-      console.log('diffInMinutes', diffInMinutes);
 
       if (type === 'DTM') {
         if (classification === 'LT20') {
@@ -288,12 +325,6 @@ export class EfficienciesService {
     const dtmHourAmount =
       (dtmLt20TotalHours + dtmBt20And50TotalHours + dtmGt50TotalHours) *
       rigBillingConfiguration.dtmHourTax;
-
-    /*     console.log('Total de horas em DTM', dtmHourAmount); */
-    console.log(
-      'Total de horas em DTM',
-      dtmLt20TotalHours + dtmBt20And50TotalHours + dtmGt50TotalHours,
-    );
 
     const christmasTreeDisassemblyAmount =
       christmasTreeDisassemblyHours *
@@ -403,8 +434,6 @@ export class EfficienciesService {
 
     efficiencyData['dtmHours'] =
       dtmLt20TotalHours + dtmGt50TotalHours + dtmBt20And50TotalHours;
-
-    console.log(efficiencyData);
 
     const efficiency = await this.efficiencyRepo.create({
       data: efficiencyData,
@@ -538,6 +567,25 @@ export class EfficienciesService {
         },
         equipmentRatio: { select: { ratio: true } },
         fluidRatio: { select: { ratio: true } },
+        Billing: {
+          select: {
+            availableHourAmount: true,
+            mobilizationAmount: true,
+            demobilizationAmount: true,
+            extraTrailerAmount: true,
+            powerSwivelAmount: true,
+            truckCartRentAmount: true,
+            transportationAmount: true,
+            bobRentAmount: true,
+            mixTankMonthRentAmount: true,
+            mixTankHourRentAmount: true,
+            mixTankOperatorAmount: true,
+            mixTankDemobilizationAmount: true,
+            mixTankDtmAmount: true,
+            mixTankMobilizationAmount: true,
+            christmasTreeDisassemblyAmount: true,
+          },
+        },
       },
     });
 

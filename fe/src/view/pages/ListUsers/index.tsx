@@ -7,7 +7,6 @@ import { Link } from "react-router-dom";
 export const ListUsers = () => {
   const { users, isFetchingUsers, navigate } = useListUsers();
 
-  console.log("users", users);
 
   return (
     <div className="w-full h-full overflow-y-scroll">

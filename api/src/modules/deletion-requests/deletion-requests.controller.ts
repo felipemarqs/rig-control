@@ -47,7 +47,6 @@ export class DeletionRequestsController {
     @Param('deletionRequestId') deletionRequestId: string,
     @Body() updateDeletionRequestDto: UpdateDeletionRequestDto,
   ) {
-    console.log(deletionRequestId);
     return this.deletionRequestsService.update(
       deletionRequestId,
       updateDeletionRequestDto,

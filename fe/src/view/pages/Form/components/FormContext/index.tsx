@@ -100,7 +100,6 @@ export const FormContext = createContext({} as FormContextValue);
 export const FormProvider = ({children}: {children: React.ReactNode}) => {
   const {user} = useAuth();
   const isUserAdm = user?.accessLevel === "ADM";
-  console.log("User", user);
   const navigate = useNavigate();
   const [date, setDate] = useState<Date>();
   const [well, setWell] = useState<string>("");

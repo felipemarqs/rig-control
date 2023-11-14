@@ -110,20 +110,39 @@ model UserContract {
 }
 
 model Efficiency {
-  id              String            @id @default(uuid()) @db.Uuid
-  date            DateTime
-  well            String
-  availableHours  Float             @map("available_hours")
-  dtmHours        Float             @map("dtm_hours")
-  rigId           String            @map("rig_id") @db.Uuid
-  userId          String            @map("user_id") @db.Uuid
-  rig             Rig               @relation(fields: [rigId], references: [id], onDelete: Cascade)
-  user            User              @relation(fields: [userId], references: [id])
-  periods         Period[]
-  fluidRatio      FluidRatio[]
-  equipmentRatio  EquipmentRatio[]
-  Billing         Billing[]
-  DeletionRequest DeletionRequest[]
+  id             String   @id @default(uuid()) @db.Uuid
+  date           DateTime
+  well           String
+  availableHours Float    @map("available_hours")
+  dtmHours       Float    @map("dtm_hours")
+
+  hasDemobilization             Boolean           @map("has_demobilization")
+  hasExtraTrailer               Boolean           @map("has_extra_trailer")
+  hasPowerSwivel                Boolean           @map("has_power_swivel")
+  hasTruckCartRent              Boolean           @map("has_truck_cart_rent")
+  hasTransportation             Boolean           @map("has_transportation")
+  truckKmHours                  Float             @map("truck_km_amount")
+  bobRentHours                  Float             @map("bot_rent_hours")
+  hasMixTankMonthRent           Boolean           @map("has_mix_tank_month_rent")
+  hasMixTankHourRent            Boolean           @map("has_mix_tank_hour_rent")
+  hasGeneratorFuel              Boolean           @map("has_generator_fuel")
+  hasMixTankOperator            Boolean           @map("has_mix_tank_operator")
+  hasMixTankDtm                 Boolean           @map("has_mix_tank_dtm")
+  hasMixTankMobilization        Boolean           @map("has_mix_tank_mobilization")
+  hasMixTankDemobilization      Boolean           @map("has_mix_tank_demobilization")
+  hasSuckingTruck               Boolean           @map("has_sucking_truck")
+  hasTruckTank                  Boolean           @map("has_truck_tank")
+  christmasTreeDisassemblyHours Float             @map("christmas_tree_disassembly_hours")
+  hasMunck                      Boolean           @map("has_munck")
+  rigId                         String            @map("rig_id") @db.Uuid
+  userId                        String            @map("user_id") @db.Uuid
+  rig                           Rig               @relation(fields: [rigId], references: [id], onDelete: Cascade)
+  user                          User              @relation(fields: [userId], references: [id])
+  periods                       Period[]
+  fluidRatio                    FluidRatio[]
+  equipmentRatio                EquipmentRatio[]
+  Billing                       Billing[]
+  DeletionRequest               DeletionRequest[]
 
   @@map("efficiencies")
 }

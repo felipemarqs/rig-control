@@ -5,7 +5,6 @@ import {useContract} from "./useContract";
 
 export const Contract = () => {
   const {contracts, isFetchingContracts, navigate} = useContract();
-  //createContractconsole.log("contracts:", contracts);
   return (
     <div className="w-full h-full overflow-y-scroll">
       <Header
