@@ -8,6 +8,10 @@ import { RigsModule } from './modules/rigs/rigs.module';
 import { EfficienciesModule } from './modules/efficiencies/efficiencies.module';
 import { BillingsModule } from './modules/billings/billings.module';
 import { BillingsConfigurationModule } from './modules/billings-configuration/billings-configuration.module';
+import { ContractsModule } from './modules/contracts/contracts.module';
+
+import { UsersRigModule } from './modules/users-rig/users-rig.module';
+import { DeletionRequestsModule } from './modules/deletion-requests/deletion-requests.module';
 
 @Module({
   imports: [
@@ -18,6 +22,9 @@ import { BillingsConfigurationModule } from './modules/billings-configuration/bi
     EfficienciesModule,
     BillingsModule,
     BillingsConfigurationModule,
+    ContractsModule,
+    UsersRigModule,
+    DeletionRequestsModule,
   ],
   controllers: [],
   providers: [

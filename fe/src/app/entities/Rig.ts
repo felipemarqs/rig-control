@@ -3,6 +3,7 @@ export interface Rig {
   name: string;
   isActive: boolean;
   state: UF;
+  contractId?: string;
 }
 
 export enum UF {

@@ -1,11 +1,11 @@
-import {createContext, useCallback, useMemo, useState} from "react";
+import { createContext, useCallback, useMemo, useState } from "react";
 import React from "react";
-import {startOfMonth, endOfMonth, format} from "date-fns";
-import {useBillings} from "../../../../app/hooks/useBillings";
-import {BillingResponse} from "../../../../app/services/billingServices/getAll";
-import {formatCurrency} from "../../../../app/utils/formatCurrency";
-import {useConfigBillings} from "../../../../app/hooks/useConfigBillings";
-import {BillingConfigResponse} from "../../../../app/services/billingConfigServices/getAll";
+import { startOfMonth, endOfMonth, format } from "date-fns";
+import { useBillings } from "../../../../app/hooks/useBillings";
+import { BillingResponse } from "../../../../app/services/billingServices/getAll";
+import { formatCurrency } from "../../../../app/utils/formatCurrency";
+import { useConfigBillings } from "../../../../app/hooks/useConfigBillings";
+import { BillingConfigResponse } from "../../../../app/services/billingConfigServices/getAll";
 
 interface BillingDashboardContextValue {
   handleStartDateChange(date: Date): void;
@@ -91,6 +91,8 @@ export const BillingDashboardProvider = ({
   const [configBeingEdited, setConfigBeingEdited] =
     useState<null | BillingConfigResponse>(null);
 
+  console.log("config sendo editada: ", configBeingEdited);
+
   const [sliderState, setSliderState] = useState({
     isBeginning: true,
     isEnd: false,
@@ -129,21 +131,22 @@ export const BillingDashboardProvider = ({
   const handleOpenEditConfigModal = useCallback(
     (data: BillingConfigResponse) => {
       setConfigBeingEdited(data);
-
       setIsEditConfigModalOpen(true);
     },
     []
   );
 
-  const {billings, isFetchingBillings, refetchBillings} = useBillings(filters);
-  const {configs, isFetchingConfig} = useConfigBillings();
+  const { billings, isFetchingBillings, refetchBillings } =
+    useBillings(filters);
+
+  const { configs, isFetchingConfig } = useConfigBillings();
 
   const isEmpty: boolean = billings.length === 0;
 
   const totalAmount = useMemo(() => {
     let totalBillings = 0;
 
-    billings.forEach(({total}) => {
+    billings.forEach(({ total }) => {
       totalBillings += total;
     });
 

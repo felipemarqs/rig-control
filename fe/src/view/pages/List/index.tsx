@@ -41,7 +41,6 @@ export const List = () => {
         <div>
           <DatePickerInput
             placeholder="Data de Início"
-            className="h-[42px]"
             error={""}
             value={new Date(selectedStartDate)}
             onChange={(value) => handleStartDateChange(value)}
@@ -51,7 +50,6 @@ export const List = () => {
         <div>
           <DatePickerInput
             placeholder="Data de Fim"
-            className="h-[42px]"
             error={""}
             value={new Date(selectedEndDate)}
             onChange={(value) => handleEndDateChange(value)}

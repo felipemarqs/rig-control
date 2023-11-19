@@ -6,8 +6,14 @@ interface InputCurrencyProps {
   error?: string;
   onChange?(value: string | number): void;
   value: string | number;
+  styles?: string;
 }
-export const InputCurrency = ({error, onChange, value}: InputCurrencyProps) => {
+export const InputCurrency = ({
+  error,
+  onChange,
+  value,
+  styles,
+}: InputCurrencyProps) => {
   return (
     <>
       <NumericFormat
@@ -15,7 +21,8 @@ export const InputCurrency = ({error, onChange, value}: InputCurrencyProps) => {
         onChange={(event) => onChange?.(event.target.value)}
         className={cn(
           "w-[50%] text-lg text-gray-800 bg-white font-bold tracking-[-1px] outline-none",
-          error && "text-red-500"
+          error && "text-red-500",
+          styles
         )}
         decimalSeparator=","
         decimalScale={2}

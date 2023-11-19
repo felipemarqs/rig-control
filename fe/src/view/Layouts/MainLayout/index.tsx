@@ -7,7 +7,9 @@ import {
   UserCircle,
   FileText,
   CircleDollarSignIcon,
-  CircleDollarSign,
+  ArchiveX,
+  Building2,
+  Construction,
 } from "lucide-react";
 
 import {useSidebarContext} from "../../../app/contexts/SidebarContext";
@@ -16,7 +18,7 @@ import {useAuth} from "../../../app/hooks/useAuth";
 export const MainLayout = () => {
   //const {activeItem,handleNavItemChange} = useMainLayout()
   const {active} = useSidebarContext();
-  const {isUserAdm} = useAuth();
+  const {isUserAdm, userAccessLevel} = useAuth();
   return (
     <div className="flex w-screen h-screen">
       <Sidebar>
@@ -30,41 +32,62 @@ export const MainLayout = () => {
         {isUserAdm && (
           <SidebarItem
             icon={<CircleDollarSignIcon size={20} />}
-            text="Dashboard de Fat."
+            text="Faturamento"
             urlText="invoicing-dashboard"
-            isActive={active === "Dashboard de Fat."}
+            isActive={active === "Faturamento"}
+          />
+        )}
+
+        {userAccessLevel !== "VIEWER" && (
+          <SidebarItem
+            icon={<FileText size={20} />}
+            text="Formulário"
+            urlText="form"
+            isActive={active === "Formulário"}
+          />
+        )}
+
+        <SidebarItem
+          icon={<BarChart3 size={20} />}
+          text="Ocorrências"
+          urlText="list"
+          isActive={active === "Ocorrências"}
+        />
+
+        {isUserAdm && (
+          <SidebarItem
+            icon={<Construction size={20} />}
+            text="Sonda"
+            urlText="rig"
+            isActive={active === "Sonda"}
           />
         )}
 
         {isUserAdm && (
           <SidebarItem
-            icon={<CircleDollarSign size={20} />}
-            text="Listagem de Fat."
-            urlText="invoicing-list"
-            isActive={active === "Listagem de Fat."}
+            icon={<Building2 size={20} />}
+            text="Contrato"
+            urlText="contracts"
+            isActive={active === "Contrato"}
           />
         )}
-
-        <SidebarItem
-          icon={<FileText size={20} />}
-          text="Formulário"
-          urlText="form"
-          isActive={active === "Formulário"}
-        />
-
-        <SidebarItem
-          icon={<BarChart3 size={20} />}
-          text="Listar Ocorrências"
-          urlText="list"
-          isActive={active === "Listar Ocorrências"}
-        />
 
         {isUserAdm && (
           <SidebarItem
             icon={<UserCircle size={20} />}
-            text="Cadastrar Sonda"
-            urlText="rig"
-            isActive={active === "Cadastrar Sonda"}
+            text="Usuários"
+            urlText="users"
+            isActive={active === "Usuários"}
+          />
+        )}
+
+        {isUserAdm && (
+          <SidebarItem
+            alert
+            icon={<ArchiveX size={20} />}
+            text="Deleção"
+            urlText="deletion-requests"
+            isActive={active === "Deleção"}
           />
         )}
       </Sidebar>

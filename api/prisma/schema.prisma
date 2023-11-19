@@ -44,18 +44,30 @@ model Rig {
   id                   String                 @id @default(uuid()) @db.Uuid
   name                 String                 @unique
   isActive             Boolean                @default(true)
+  contractId           String                 @map("contract_id") @db.Uuid
   state                UF
   users                UserRig[]
   efficiencies         Efficiency[]
   BillingConfiguration BillingConfiguration[]
   Billing              Billing[]
+  contract             Contract               @relation(fields: [contractId], references: [id], onDelete: Cascade)
 
   @@map("rigs")
+}
+
+model Contract {
+  id    String         @id @default(uuid()) @db.Uuid
+  name  String         @unique
+  rigs  Rig[]
+  users UserContract[]
+
+  @@map("contracts")
 }
 
 enum AccessLevel {
   ADM
   USER
+  VIEWER
 
   @@map("access_level")
 }
@@ -67,8 +79,10 @@ model User {
   password    String
   accessLevel AccessLevel @map("access_level")
 
-  rigs         UserRig[]
-  efficiencies Efficiency[]
+  rigs            UserRig[]
+  contract        UserContract[]
+  efficiencies    Efficiency[]
+  DeletionRequest DeletionRequest[]
 
   @@map("users")
 }
@@ -84,19 +98,51 @@ model UserRig {
   @@map("users_rigs")
 }
 
+model UserContract {
+  userId     String @map("user_id") @db.Uuid
+  contractId String @map("contract_id") @db.Uuid
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@id([userId, contractId])
+  @@map("users_contracts")
+}
+
 model Efficiency {
   id             String   @id @default(uuid()) @db.Uuid
   date           DateTime
+  well           String
   availableHours Float    @map("available_hours")
-  rigId          String   @map("rig_id") @db.Uuid
-  userId         String   @map("user_id") @db.Uuid
+  dtmHours       Float    @map("dtm_hours")
 
-  rig            Rig              @relation(fields: [rigId], references: [id])
-  user           User             @relation(fields: [userId], references: [id])
-  periods        Period[]
-  fluidRatio     FluidRatio[]
-  equipmentRatio EquipmentRatio[]
-  Billing        Billing[]
+  hasDemobilization             Boolean           @map("has_demobilization")
+  hasExtraTrailer               Boolean           @map("has_extra_trailer")
+  hasPowerSwivel                Boolean           @map("has_power_swivel")
+  hasTruckCartRent              Boolean           @map("has_truck_cart_rent")
+  hasTransportation             Boolean           @map("has_transportation")
+  truckKmHours                  Float             @map("truck_km_amount")
+  bobRentHours                  Float             @map("bot_rent_hours")
+  hasMixTankMonthRent           Boolean           @map("has_mix_tank_month_rent")
+  hasMixTankHourRent            Boolean           @map("has_mix_tank_hour_rent")
+  hasGeneratorFuel              Boolean           @map("has_generator_fuel")
+  hasMixTankOperator            Boolean           @map("has_mix_tank_operator")
+  hasMixTankDtm                 Boolean           @map("has_mix_tank_dtm")
+  hasMixTankMobilization        Boolean           @map("has_mix_tank_mobilization")
+  hasMixTankDemobilization      Boolean           @map("has_mix_tank_demobilization")
+  hasSuckingTruck               Boolean           @map("has_sucking_truck")
+  hasTruckTank                  Boolean           @map("has_truck_tank")
+  christmasTreeDisassemblyHours Float             @map("christmas_tree_disassembly_hours")
+  hasMunck                      Boolean           @map("has_munck")
+  rigId                         String            @map("rig_id") @db.Uuid
+  userId                        String            @map("user_id") @db.Uuid
+  rig                           Rig               @relation(fields: [rigId], references: [id], onDelete: Cascade)
+  user                          User              @relation(fields: [userId], references: [id])
+  periods                       Period[]
+  fluidRatio                    FluidRatio[]
+  equipmentRatio                EquipmentRatio[]
+  Billing                       Billing[]
+  DeletionRequest               DeletionRequest[]
 
   @@map("efficiencies")
 }
@@ -176,47 +222,110 @@ model EquipmentRatio {
 }
 
 model BillingConfiguration {
-  id                         String @id @default(uuid()) @db.Uuid
-  rigId                      String @map("rig_id") @db.Uuid
-  availableHourTax           Float  @map("available_hour_tax")
-  glossHourTax               Float  @map("gloss_hour_tax")
-  dtmLt20Tax                 Float  @map("dtm_lt_20_tax")
-  dtmBt20And50Tax            Float  @map("dtm_bt_20_and_50_tax")
-  dtmGt50Tax                 Float  @map("dtm_gt_50_tax")
-  fluidRatioLt20Tax          Float  @map("fluid_ratio_lt_20_tax")
-  fluidRatioBt20And50Tax     Float  @map("fluid_ratio_bt_20_and_50_tax")
-  fluidRatioGt50Tax          Float  @map("fluid_ratio_gt_50_tax")
-  equipmentRatioLt20Tax      Float  @map("equipment_ratio_lt_20_tax")
-  equipmentRatioBt20And50Tax Float  @map("equipment_ratio_bt_20_and_50_tax")
-  equipmentRatioGt50Tax      Float  @map("equipment_ratio_gt_50_tax")
-  readjustment               Float
-  mobilization               Float
+  id                          String   @id @default(uuid()) @db.Uuid
+  rigId                       String   @map("rig_id") @db.Uuid
+  availableHourTax            Float    @map("available_hour_tax")
+  dtmHourTax                  Float?   @default(0) @map("dtm_hour_tax")
+  glossHourTax                Float    @map("gloss_hour_tax")
+  dtmLt20Tax                  Float?   @default(0) @map("dtm_lt_20_tax")
+  dtmBt20And50Tax             Float?   @default(0) @map("dtm_bt_20_and_50_tax")
+  dtmGt50Tax                  Float?   @default(0) @map("dtm_gt_50_tax")
+  fluidRatioLt20Tax           Float?   @default(0) @map("fluid_ratio_lt_20_tax")
+  fluidRatioBt20And50Tax      Float?   @default(0) @map("fluid_ratio_bt_20_and_50_tax")
+  fluidRatioGt50Tax           Float?   @default(0) @map("fluid_ratio_gt_50_tax")
+  equipmentRatioLt20Tax       Float?   @default(0) @map("equipment_ratio_lt_20_tax")
+  equipmentRatioBt20And50Tax  Float?   @default(0) @map("equipment_ratio_bt_20_and_50_tax")
+  equipmentRatioGt50Tax       Float?   @default(0) @map("equipment_ratio_gt_50_tax")
+  truckCartRentTax            Float?   @default(0) @map("truck_cart_rent_tax")
+  extraTrailerTax             Float?   @default(0) @map("extra_trailer")
+  powerSwivelTax              Float?   @default(0) @map("power_swivel")
+  transportationTax           Float?   @default(0) @map("transportation_tax")
+  truckKmTax                  Float?   @default(0) @map("truck_km_tax")
+  bobRentTax                  Float?   @default(0) @map("bob_rent_tax")
+  christmasTreeDisassemblyTax Float?   @default(0) @map("christmas_tree_disassembly_tax")
+  mixTankMonthRentTax         Float?   @default(0) @map("mix_tank_month_rent_tax")
+  mixTankHourRentTax          Float?   @default(0) @map("mix_tank_hour_rent_tax")
+  generatorFuelTax            Float?   @default(0) @map("generator_fuel_tax")
+  mixTankOperatorTax          Float?   @default(0) @map("mix_tank_operator_tax")
+  mixTankDtmTax               Float?   @default(0) @map("mix_tank_dtm_tax")
+  mixTankMobilizationTax      Float?   @default(0) @map("mix_tank_mobilization_tax")
+  mixTankDemobilizationTax    Float?   @default(0) @map("mix_tank_demobilization_tax")
+  suckingTruckTax             Float?   @default(0) @map("sucking_truck_tax")
+  truckTankTax                Float?   @default(0) @map("truck_tank_tax")
+  munckTax                    Float?   @default(0) @map("munck_truck_tax")
+  createdAt                   DateTime @default(now())
+  createdBy                   String?
+  updatedBy                   String?
 
-  rig Rig @relation(fields: [rigId], references: [id])
+  readjustment   Float
+  mobilization   Float? @default(0)
+  demobilization Float? @default(0)
+  rig            Rig    @relation(fields: [rigId], references: [id], onDelete: Cascade)
 
   @@map("billing_configurations")
 }
 
 model Billing {
-  id                       String   @id @default(uuid()) @db.Uuid
-  rigId                    String   @map("rig_id") @db.Uuid
-  efficiencyId             String   @map("efficiency_id") @db.Uuid
-  availableHourAmount      Float    @map("available_hour_amount")
-  glossHourAmount          Float    @map("gloss_hour_amount")
-  dtmLt20Amount            Float    @map("dtm_lt_20_amount")
-  dtmBt20And50Amount       Float    @map("dtm_bt_20_and_50_amount")
-  dtmGt50Amount            Float    @map("dtm_gt_50_amount")
-  fluidLt20Amount          Float    @map("fluid_lt_20_amount")
-  fluidBt20And50Amount     Float    @map("fluid_bt_20_and_50_amount")
-  fluidGt50Amount          Float    @map("fluid_gt_50_amount")
-  equipmentLt20Amount      Float    @map("equipment_lt_20_amount")
-  equipmentBt20And50Amount Float    @map("equipment_bt_20_and_50_amount")
-  equipmentGt50Amount      Float    @map("equipment_gt_50_amount")
-  date                     DateTime
-  total                    Float
+  id                             String   @id @default(uuid()) @db.Uuid
+  rigId                          String   @map("rig_id") @db.Uuid
+  efficiencyId                   String   @map("efficiency_id") @db.Uuid
+  availableHourAmount            Float    @map("available_hour_amount")
+  dtmHourAmount                  Float    @map("dtm_hour_amount")
+  glossHourAmount                Float    @map("gloss_hour_amount")
+  dtmLt20Amount                  Float    @map("dtm_lt_20_amount")
+  dtmBt20And50Amount             Float    @map("dtm_bt_20_and_50_amount")
+  dtmGt50Amount                  Float    @map("dtm_gt_50_amount")
+  fluidLt20Amount                Float    @map("fluid_lt_20_amount")
+  fluidBt20And50Amount           Float    @map("fluid_bt_20_and_50_amount")
+  fluidGt50Amount                Float    @map("fluid_gt_50_amount")
+  equipmentLt20Amount            Float    @map("equipment_lt_20_amount")
+  equipmentBt20And50Amount       Float    @map("equipment_bt_20_and_50_amount")
+  equipmentGt50Amount            Float    @map("equipment_gt_50_amount")
+  mobilizationAmount             Float    @map("mobilization_amount")
+  demobilizationAmount           Float    @map("demobilization_amount")
+  extraTrailerAmount             Float    @map("extra_trailer_amount")
+  powerSwivelAmount              Float    @map("power_swivel_amount")
+  truckCartRentAmount            Float    @map("truck_cart_rent_amount")
+  transportationAmount           Float    @map("transportation_amount")
+  truckKmAmount                  Float    @map("truck_km_amount")
+  bobRentAmount                  Float    @map("bob_rent_amount")
+  mixTankMonthRentAmount         Float    @map("mix_tank_month_rent_amount")
+  mixTankHourRentAmount          Float    @map("mix_tank_hour_rent_amount") //
+  generatorFuelAmount            Float    @map("generator_fuel_amount")
+  mixTankOperatorAmount          Float    @map("mix_tank_operator_amount")
+  mixTankDtmAmount               Float    @map("mix_tank_dtm_amount")
+  mixTankMobilizationAmount      Float    @map("mix_tank_mobilization_amount")
+  mixTankDemobilizationAmount    Float    @map("mix_tank_demobilization_amount")
+  suckingTruckAmount             Float    @map("sucking_truck_amount")
+  truckTankAmount                Float    @map("truck_TankAmount")
+  christmasTreeDisassemblyAmount Float    @map("christmas_tree_disassembly_amount")
+  munckAmount                    Float    @map("munck_amount")
+  createdAt                      DateTime @default(now())
+  createdBy                      String?
+  updatedBy                      String?
+
+  date  DateTime
+  total Float
 
   rig        Rig        @relation(fields: [rigId], references: [id], onDelete: Cascade)
   efficiency Efficiency @relation(fields: [efficiencyId], references: [id], onDelete: Cascade)
 
   @@map("billings")
+}
+
+enum RequestStatus {
+  PENDING
+  FINISHED
+  REJECTED
+}
+
+model DeletionRequest {
+  id           String        @id @default(uuid()) @db.Uuid
+  userId       String        @map("user_id") @db.Uuid
+  efficiencyId String        @map("efficiency_id") @db.Uuid
+  reason       String
+  status       RequestStatus @default(PENDING)
+  createdAt    DateTime      @default(now())
+  efficiency   Efficiency    @relation(fields: [efficiencyId], references: [id], onDelete: Cascade)
+  user         User          @relation(fields: [userId], references: [id])
 }

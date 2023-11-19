@@ -182,7 +182,7 @@ export const BillingDashboard = () => {
                   <div
                     className={cn(
                       " col-span-12 row-span-5 flex justify-center bg-primary-500 rounded-lg items-center p-4",
-                      configs.length <= 3 && "p-[10rem]"
+                      configs.length <= 3 && "p-[12rem]"
                     )}
                   >
                     {isFetchingBillings && <Spinner />}
@@ -190,7 +190,7 @@ export const BillingDashboard = () => {
                       <>
                         <Swiper
                           spaceBetween={16}
-                          slidesPerView={configs.length <= 3 ? 1 : 3.1}
+                          slidesPerView={configs.length <= 1 ? 1 : 2.1}
                           onSlideChange={(swiper) => {
                             setConfigSliderState({
                               isBeginning: swiper.isBeginning,

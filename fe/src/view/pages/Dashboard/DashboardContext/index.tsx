@@ -27,8 +27,6 @@ interface DashboardContextValue {
     | {
         id: string;
         name: string;
-        isActive: boolean;
-        state: string;
       }[];
   efficiencies: Efficiency[];
   totalAvailableHours: number;
@@ -50,14 +48,13 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
 
   const {rigs} = useRigs(isUserAdm);
 
-  const userRig = [
-    {
-      id: user?.rigs[0].rig.id!,
-      name: user?.rigs[0].rig.name!,
-      isActive: user?.rigs[0].rig.isAtive!,
-      state: user?.rigs[0].rig.state!,
-    },
-  ];
+  const userRigs =
+    user?.rigs.map(({rig: {id, name}}) => {
+      return {
+        id,
+        name,
+      };
+    }) || [];
 
   const [selectedRig, setSelectedRig] = useState<string>(() => {
     return isUserAdm ? "" : user?.rigs[0].rig.id!;
@@ -105,11 +102,13 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   const {efficiencies, isFetchingEfficiencies, refetchEffciencies} =
     useEfficiencies(filters);
 
+  console.log("efficiencies", efficiencies);
+
   const {average, refetchAverage, isFetchingAverage} = useEfficiencyAverage(
     filters.rigId
   );
 
-  console.log("Average", average);
+  console.log("average", JSON.stringify(average));
 
   const isEmpty: boolean = efficiencies.length === 0;
 
@@ -186,7 +185,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         isFetchingEfficiencies,
         isFetchingAverage,
         user,
-        rigs: isUserAdm ? rigs : userRig,
+        rigs: isUserAdm ? rigs : userRigs,
         signout,
         isEmpty,
         totalAvailableHours,

@@ -58,6 +58,21 @@ export const ListEfficienciesDataGrid = ({
       },
     },
     {
+      field: "well",
+      headerName: "Poço",
+      headerAlign: "center",
+      flex: 0.5,
+      renderCell(params: GridRenderCellParams) {
+        return (
+          <div className="w-full flex justify-center items-center">
+            <div className="text-white font-semibold bg-primary-500 py-2 px-6 rounded-md">
+              {params.value}
+            </div>
+          </div>
+        );
+      },
+    },
+    {
       field: "availableHours",
       headerName: "Horas Disponíveis",
       headerAlign: "center",

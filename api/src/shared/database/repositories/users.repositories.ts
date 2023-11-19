@@ -6,11 +6,19 @@ import { PrismaService } from '../prisma.service';
 export class UsersRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  create(createDto: Prisma.UserCreateArgs) {
-    return this.prismaService.user.create(createDto);
+  async create(createDto: Prisma.UserCreateArgs) {
+    return await this.prismaService.user.create(createDto);
   }
 
-  findUnique(findUniqueDto: Prisma.UserFindUniqueArgs) {
-    return this.prismaService.user.findUnique(findUniqueDto);
+  async findUnique(findUniqueDto: Prisma.UserFindUniqueArgs) {
+    return await this.prismaService.user.findUnique(findUniqueDto);
+  }
+
+  async findAll(findAll: Prisma.UserFindManyArgs) {
+    return await this.prismaService.user.findMany(findAll);
+  }
+
+  async update(updateDto: Prisma.UserUpdateArgs) {
+    return await this.prismaService.user.update(updateDto);
   }
 }

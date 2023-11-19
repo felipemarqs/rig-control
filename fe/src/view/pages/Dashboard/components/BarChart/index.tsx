@@ -1,5 +1,4 @@
 import {ResponsiveBar} from "@nivo/bar";
-import {formatCurrency} from "../../../../../app/utils/formatCurrency";
 import {useBarChart} from "./useBarChart";
 
 export const BarChart = () => {
@@ -59,7 +58,7 @@ export const BarChart = () => {
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: "Faturamento",
+        legend: "Eficiência Mensal",
         legendPosition: "middle",
         legendOffset: 32,
       }}
@@ -98,7 +97,7 @@ export const BarChart = () => {
           ],
         },
       ]} */
-      valueFormat={(value) => `${((value * 100) / 24).toFixed(2)}%`}
+      valueFormat={(value) => `${value}%`}
       role="application"
       ariaLabel=""
       barAriaLabel={(e) =>
