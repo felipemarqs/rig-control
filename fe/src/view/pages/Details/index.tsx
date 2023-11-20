@@ -1,3 +1,4 @@
+import {formatDate} from "../../../app/utils/formatDate";
 import {Button} from "../../components/Button";
 import {Header} from "../../components/Header";
 import {Spinner} from "../../components/Spinner";
@@ -27,15 +28,25 @@ export const Details = () => {
           isLoadingRemoveEfficiency,
           handleDeleteEfficiency,
           isUserAdm,
-
           efficiencyId,
-
           closeDeletionRequestModal,
           openDeletionRequestModal,
           isDeletionRequestModalOpen,
         }) => (
           <div className="w-full h-full overflow-y-scroll">
-            <Header title="LISTAGEM" subtitle="Listagem de efficienciências" />
+            <Header title="DETALHES" subtitle="Detalhes da  Operação" />
+            <div className="m-4">
+              {!isFetchingEfficiency &&
+                efficiency &&
+                !(efficiency instanceof Array) && (
+                  <div className="flex gap-1">
+                    <h1 className="text-xl font-bold text-primary-500">Dia:</h1>
+                    <h2 className="text-lg text-secondary-500">
+                      {formatDate(new Date(efficiency.date))}
+                    </h2>
+                  </div>
+                )}
+            </div>
             <DetailsModal
               onClose={closeDetailModal}
               open={isDetailModalOpen}
