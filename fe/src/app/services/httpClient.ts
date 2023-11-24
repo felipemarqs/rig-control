@@ -3,8 +3,11 @@ import {localStorageKeys} from "../config/localStorageKeys";
 //import {localStorageKeys} from "../config/localStorageKeys";
 //import { timeout } from "../utils/timeout";
 
+const renderBaseURL = "https://rig-control-backend-new.onrender.com";
+//const awsBaseURL = "http://54.224.10.112:3000"
+
 export const httpClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: renderBaseURL,
 });
 
 httpClient.interceptors.request.use(async (config) => {
