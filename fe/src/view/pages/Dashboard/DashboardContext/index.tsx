@@ -102,13 +102,9 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   const {efficiencies, isFetchingEfficiencies, refetchEffciencies} =
     useEfficiencies(filters);
 
-  console.log("efficiencies", efficiencies);
-
   const {average, refetchAverage, isFetchingAverage} = useEfficiencyAverage(
     filters.rigId
   );
-
-  console.log("average", JSON.stringify(average));
 
   const isEmpty: boolean = efficiencies.length === 0;
 

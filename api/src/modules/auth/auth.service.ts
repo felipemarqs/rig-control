@@ -29,8 +29,6 @@ export class AuthService {
       where: { email },
     });
 
-    console.log(user);
-
     if (!user) {
       throw new UnauthorizedException('Usuário não encontrado!');
     }

@@ -31,15 +31,23 @@ export const Form = () => {
             <div className="w-full h-[80vh]  overflow-y-auto  flex-col-reverse justify-center flex gap-2  lg:h-[87vh] lg:flex-row lg:p-4">
               <PeriodsFormContainer />
 
-              {userRig.contract.name === "Petrobrás" && <></>}
+              {userRig.contract.name.toLocaleLowerCase() === "petrobrás" && (
+                <></>
+              )}
 
-              {userRig.contract.name === "Braskem" && <BraskemFormContainer />}
+              {userRig.contract.name.toLocaleLowerCase() === "braskem" && (
+                <BraskemFormContainer />
+              )}
 
-              {userRig.contract.name === "3R" && <TresRFormContainer />}
+              {userRig.contract.name.toLocaleLowerCase() === "3r" && (
+                <TresRFormContainer />
+              )}
 
-              {userRig.contract.name === "Origem" && <OrigemContainer />}
+              {userRig.contract.name.toLocaleLowerCase() === "origem" && (
+                <OrigemContainer />
+              )}
 
-              {userRig.contract.name === "Carmo Energy" && (
+              {userRig.contract.name.toLocaleLowerCase() === "carmo energy" && (
                 <CarmoEnergyContainer />
               )}
             </div>

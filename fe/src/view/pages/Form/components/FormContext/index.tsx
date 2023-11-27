@@ -11,13 +11,24 @@ import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
 import {Dayjs} from "dayjs";
 import {parse, differenceInMinutes} from "date-fns";
 
+type ErrorArgs = {fieldName: string; message: string};
+
 interface FormContextValue {
   date: Date | undefined;
   well: string;
   remainingMinutes: number | undefined;
   periods: Periods;
   isLoading: boolean;
-  userRig: any; // Não tenho certeza do tipo exato, então usei `any` por enquanto
+  userRig: {
+    id: string;
+    name: string;
+    state?: string | undefined;
+    isAtive?: boolean | undefined;
+    contract: {
+      id: string;
+      name: string;
+    };
+  }; // Não tenho certeza do tipo exato, então usei `any` por enquanto
   handleDateChange(date: Date): void;
   handleStartHourChange(
     time: Dayjs | null,
@@ -76,6 +87,9 @@ interface FormContextValue {
   isMunckSelected: boolean;
   isTransportationSelected: boolean;
   truckKm: number;
+  setError(arg0: ErrorArgs): void;
+  removeError(fieldName: string): void;
+  getErrorMessageByFildName(fieldName: string): string;
   isExtraTrailerSelected: boolean;
   handleBobRentHours(time: Dayjs | null, timeString: string): void;
   handleChristmasTreeDisassemblyHours(
@@ -122,6 +136,36 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const {isLoading, mutateAsync} = useMutation(efficienciesService.create);
   const queryClient = useQueryClient();
+
+  const [errors, setErrors] = useState<Array<ErrorArgs>>([]);
+
+  const setError = ({fieldName, message}: ErrorArgs) => {
+    const errorAlreadyExists = errors.find(
+      (error) => error.fieldName === fieldName
+    );
+
+    if (errorAlreadyExists) return;
+
+    setErrors((prevState) => [...prevState, {fieldName, message}]);
+  };
+
+  const removeError = (fieldName: string) => {
+    setErrors((prevState) =>
+      prevState.filter((error) => error.fieldName !== fieldName)
+    );
+  };
+
+  const getErrorMessageByFildName = (fieldName: string) => {
+    let findErrorMessage = errors.find(
+      (error) => error.fieldName === fieldName
+    )?.message;
+
+    if (!findErrorMessage) {
+      findErrorMessage = "";
+    }
+
+    return findErrorMessage;
+  };
 
   const handleSubmit = async (periods: Periods) => {
     const {toPersistenceObj} = efficiencyMappers.toPersistance({
@@ -274,6 +318,11 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleDateChange = (date: Date) => {
     setDate(date);
+    if (new Date(date) >= new Date()) {
+      setError({fieldName: "date", message: "Data Inválida!"});
+    } else {
+      removeError("date");
+    }
   };
 
   const handleDeletePeriod = (id: string) => {
@@ -469,8 +518,13 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     setIsSuckingTruckSelected((prevState) => !prevState);
   }, []);
 
-  const handleWellChange = useCallback((value: any) => {
+  const handleWellChange = useCallback((value: string) => {
     setWell(value);
+    if (!value) {
+      setError({fieldName: "well", message: "Obrigatório!"});
+    } else {
+      removeError("well");
+    }
   }, []);
 
   return (
@@ -539,6 +593,9 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         well,
         handleWellChange,
         selectedRig,
+        setError,
+        removeError,
+        getErrorMessageByFildName,
       }}
     >
       {children}

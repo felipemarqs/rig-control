@@ -30,11 +30,11 @@ export const PeriodsFormContainer = () => {
     handleSubmit,
     cleanFields,
     isLoading,
-    well,
     handleWellChange,
     selectedRig,
     handleChangeRig,
     usersRigs,
+    getErrorMessageByFildName,
   } = useForm();
 
   const format = "HH:mm";
@@ -42,7 +42,7 @@ export const PeriodsFormContainer = () => {
     <div className=" max-h-[90vh] overflow-y-scroll flex-1 max-w-[800px]  bg-primary-500 lg:p-4 rounded-xl">
       <div className={cn(" flex items-center justify-center gap-2")}>
         <DatePickerInput
-          error={!date ? "Selecione uma data!" : undefined}
+          error={getErrorMessageByFildName("date")}
           value={date}
           onChange={(value) => handleDateChange(value)}
         />
@@ -50,7 +50,7 @@ export const PeriodsFormContainer = () => {
         <Input
           onChange={(value) => handleWellChange(value.target.value)}
           name="well"
-          error={well.length === 0 ? "Obrigatório" : ""}
+          error={getErrorMessageByFildName("well")}
           placeholder="Poço"
           labelStyles="text-black"
           className="border-1 text-black border-black bg-white hover:bg-white"

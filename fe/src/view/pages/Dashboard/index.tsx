@@ -221,7 +221,6 @@ export const Dashboard = () => {
                 </div>
               )}
             </div>
-            <button onClick={signout}>Sair</button>
           </div>
         )}
       </DashboardContext.Consumer>
