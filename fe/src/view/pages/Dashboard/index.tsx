@@ -25,7 +25,6 @@ export const Dashboard = () => {
           handleApplyFilters,
           isFetchingEfficiencies,
           rigs,
-          signout,
           isEmpty,
           totalAvailableHours,
           availableHoursPercentage,
