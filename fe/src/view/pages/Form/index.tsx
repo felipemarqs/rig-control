@@ -7,12 +7,21 @@ import {FormContext, FormProvider} from "./components/FormContext";
 import {TresRFormContainer} from "./components/TresRForm";
 import {OrigemContainer} from "./components/OrigemForm";
 import {CarmoEnergyContainer} from "./components/CarmoEnergyForm";
+import {Button} from "../../components/Button";
 
 export const Form = () => {
   return (
     <FormProvider>
       <FormContext.Consumer>
-        {({isPending, remainingMinutes, userRig}) => (
+        {({
+          isPending,
+          remainingMinutes,
+          userRig,
+          isFormValid,
+          handleSubmit,
+          periods,
+          isLoading,
+        }) => (
           <div className="w-full h-full lg:min-w-[1000px]">
             <Header
               title=" Boletim Diário de Ocorrência"
@@ -28,7 +37,7 @@ export const Form = () => {
               {!isPending && <span> Horários Preenchidos!</span>}
             </div>
 
-            <div className="w-full h-[80vh]  overflow-y-auto  flex-col-reverse justify-center flex gap-2  lg:h-[87vh] lg:flex-row lg:p-4">
+            <div className="w-full h-[80vh]  overflow-y-auto  flex-col justify-center flex gap-2  lg:h-[87vh] lg:flex-row lg:p-4">
               <PeriodsFormContainer />
 
               {userRig.contract.name.toLocaleLowerCase() === "petrobrás" && (
@@ -50,6 +59,16 @@ export const Form = () => {
               {userRig.contract.name.toLocaleLowerCase() === "carmo energy" && (
                 <CarmoEnergyContainer />
               )}
+            </div>
+
+            <div className="flex justify-center mt-6 ">
+              <Button
+                disabled={!isFormValid || isLoading}
+                className="bg-secondary-500 w-2/3 "
+                onClick={() => handleSubmit(periods)}
+              >
+                Enviar dados
+              </Button>
             </div>
           </div>
         )}

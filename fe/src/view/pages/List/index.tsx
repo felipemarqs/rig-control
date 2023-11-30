@@ -5,6 +5,8 @@ import {Select} from "../../components/Select";
 import {Spinner} from "../../components/Spinner";
 import {ListEfficienciesDataGrid} from "../../components/ListEfficienciesDataGrid";
 import {useListController} from "./useListController";
+import {FilterIcon} from "lucide-react";
+import {useSidebarContext} from "../../../app/contexts/SidebarContext";
 
 export const List = () => {
   const {
@@ -20,12 +22,14 @@ export const List = () => {
     isFetchingEfficiencies,
   } = useListController();
 
+  const {windowWidth} = useSidebarContext();
+
   return (
     <div className="w-full h-full overflow-y-scroll">
       <Header title="LISTAGEM" subtitle="Listagem de efficienciências" />
 
-      <div className="w-full flex justify-end gap-4 px-4">
-        <div className="w-[123px]">
+      <div className="w-full flex flex-wrap justify-center items-center lg:justify-end gap-1 lg:px-4">
+        <div className="w-[113px] lg:w-[123px]">
           <Select
             error={""}
             placeholder="Sonda"
@@ -57,21 +61,21 @@ export const List = () => {
         </div>
 
         <div>
-          <Button className="h-[42px]" onClick={handleApplyFilters}>
-            Aplicar Filtros
+          <Button className="h-[32px] lg:h-[52px]" onClick={handleApplyFilters}>
+            {windowWidth <= 1024 ? <FilterIcon /> : "Aplicar Filtro"}
           </Button>
         </div>
       </div>
 
-      <div className="w-full h-full  mx-5 mt-5 max-w-[1400px] flex justify-center  ">
+      <div className="w-full h-full  lg:mx-5 mt-5 max-w-[1400px] flex justify-center  ">
         {isFetchingEfficiencies && (
-          <div className="w-[70vw] h-[70vh] bg-primary-500 p-2 rounded-md flex justify-center items-center">
+          <div className="lg:w-[70vw] lg:h-[70vh] bg-primary-500 p-2 rounded-md flex justify-center items-center">
             <Spinner className="h-12 w-12" />
           </div>
         )}
 
         {!isFetchingEfficiencies && (
-          <div className="w-[70vw] h-[70vh] bg-primary-200 p-2 rounded-md flex justify-center items-center">
+          <div className="w-full h-full bg-primary-200 p-2 rounded-md flex justify-center items-center lg:w-[70vw] lg:h-[70vh]">
             <ListEfficienciesDataGrid data={efficiencies} isDashboard={false} />
           </div>
         )}

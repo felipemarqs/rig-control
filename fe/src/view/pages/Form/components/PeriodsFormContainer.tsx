@@ -270,7 +270,7 @@ export const PeriodsFormContainer = () => {
         </Button>
       </div>
 
-      <div className="flex justify-center mt-6 ">
+      <div className="hidden lg:flex lg:justify-center lg:mt-6 ">
         <Button
           disabled={!isFormValid || isLoading}
           className="bg-secondary-500 w-2/3 "

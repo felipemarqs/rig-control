@@ -113,7 +113,7 @@ export const BillingDashboard = () => {
               </div>
             </div>
 
-            <div className="min-w-[1200px]  mx-auto max-w-[715px] bg-gray-400 p-4 rounded-md">
+            <div className=" mx-auto max-w-[1024px] bg-gray-400  rounded-md lg:min-w-[1300px] lg:p-4">
               {isEmpty && (
                 <>
                   {isFetchingBillings && (
@@ -134,14 +134,14 @@ export const BillingDashboard = () => {
 
               {!isEmpty && (
                 <div className="grid grid-cols-12 auto-rows-[120px] gap-3">
-                  <div className="col-span-8 row-span-3 flex justify-center bg-gray-200 rounded-lg items-center">
+                  <div className="col-span-12 row-span-3 flex justify-center bg-gray-200 rounded-lg items-center lg:col-span-8">
                     {isFetchingBillings && <Spinner />}
                     {!isFetchingBillings && <BarChart />}
                   </div>
 
                   <div
                     className={cn(
-                      " col-span-4 row-span-3 flex justify-center bg-primary-500 rounded-lg items-center p-4"
+                      " col-span-12 row-span-3 flex justify-center bg-primary-500 rounded-lg items-center lg:p-4 lg:col-span-4"
                     )}
                   >
                     {isFetchingBillings && <Spinner />}
@@ -182,7 +182,7 @@ export const BillingDashboard = () => {
                   <div
                     className={cn(
                       " col-span-12 row-span-5 flex justify-center bg-primary-500 rounded-lg items-center p-4",
-                      configs.length <= 3 && "p-[12rem]"
+                      configs.length <= 3 && "lg:p-[12rem]"
                     )}
                   >
                     {isFetchingBillings && <Spinner />}
@@ -190,7 +190,7 @@ export const BillingDashboard = () => {
                       <>
                         <Swiper
                           spaceBetween={16}
-                          slidesPerView={configs.length <= 1 ? 1 : 2.1}
+                          slidesPerView={configs.length <= 2 ? 1 : 2}
                           onSlideChange={(swiper) => {
                             setConfigSliderState({
                               isBeginning: swiper.isBeginning,

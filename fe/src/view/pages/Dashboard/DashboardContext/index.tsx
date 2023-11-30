@@ -9,6 +9,7 @@ import {Rig} from "../../../../app/entities/Rig";
 import {Efficiency} from "../entities/Efficiency";
 import {useEfficiencyAverage} from "../../../../app/hooks/useEfficiencyAverage";
 import {AverageResponse} from "../../../../app/services/efficienciesService/getAverage";
+import {useSidebarContext} from "../../../../app/contexts/SidebarContext";
 
 interface DashboardContextValue {
   selectedRig: string;
@@ -37,12 +38,15 @@ interface DashboardContextValue {
   totalMovimentations: number;
   isFetchingAverage: boolean;
   average: AverageResponse;
+  windowWidth: number;
 }
 
 export const DashboardContext = createContext({} as DashboardContextValue);
 
 export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   const {user, signout} = useAuth();
+
+  const {windowWidth} = useSidebarContext();
 
   const isUserAdm = user?.accessLevel === "ADM";
 
@@ -191,6 +195,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         totalDtms,
         totalMovimentations,
         average,
+        windowWidth,
       }}
     >
       {children}

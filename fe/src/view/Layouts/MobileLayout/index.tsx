@@ -1,6 +1,4 @@
 import {Outlet} from "react-router-dom";
-import Sidebar from "../../components/Sidebar";
-import {SidebarItem} from "../../components/SidebarItem";
 import {
   BarChart3,
   LayoutDashboard,
@@ -14,15 +12,17 @@ import {
 
 import {useSidebarContext} from "../../../app/contexts/SidebarContext";
 import {useAuth} from "../../../app/hooks/useAuth";
+import {Navbar} from "../../components/Navbar";
+import {NavbarItem} from "../../components/NavbarItem";
 
-export const MainLayout = () => {
+export const MobileLayout = () => {
   //const {activeItem,handleNavItemChange} = useMainLayout()
   const {active} = useSidebarContext();
   const {isUserAdm, userAccessLevel} = useAuth();
   return (
-    <div className="flex w-screen h-screen">
-      <Sidebar>
-        <SidebarItem
+    <div className="w-screen h-screen">
+      <Navbar>
+        <NavbarItem
           icon={<LayoutDashboard size={20} />}
           text="Dashboard"
           urlText="dashboard"
@@ -30,7 +30,7 @@ export const MainLayout = () => {
         />
 
         {isUserAdm && (
-          <SidebarItem
+          <NavbarItem
             icon={<CircleDollarSignIcon size={20} />}
             text="Faturamento"
             urlText="invoicing-dashboard"
@@ -38,16 +38,17 @@ export const MainLayout = () => {
           />
         )}
 
-        {userAccessLevel !== "VIEWER" && (
-          <SidebarItem
-            icon={<FileText size={20} />}
-            text="Formulário"
-            urlText="form"
-            isActive={active === "Formulário"}
-          />
-        )}
+        {userAccessLevel !== "VIEWER" ||
+          ("ADM" && (
+            <NavbarItem
+              icon={<FileText size={20} />}
+              text="Formulário"
+              urlText="form"
+              isActive={active === "Formulário"}
+            />
+          ))}
 
-        <SidebarItem
+        <NavbarItem
           icon={<BarChart3 size={20} />}
           text="Ocorrências"
           urlText="list"
@@ -55,7 +56,7 @@ export const MainLayout = () => {
         />
 
         {isUserAdm && (
-          <SidebarItem
+          <NavbarItem
             icon={<Construction size={20} />}
             text="Sonda"
             urlText="rig"
@@ -64,7 +65,7 @@ export const MainLayout = () => {
         )}
 
         {isUserAdm && (
-          <SidebarItem
+          <NavbarItem
             icon={<Building2 size={20} />}
             text="Contrato"
             urlText="contracts"
@@ -73,7 +74,7 @@ export const MainLayout = () => {
         )}
 
         {isUserAdm && (
-          <SidebarItem
+          <NavbarItem
             icon={<UserCircle size={20} />}
             text="Usuários"
             urlText="users"
@@ -82,15 +83,15 @@ export const MainLayout = () => {
         )}
 
         {isUserAdm && (
-          <SidebarItem
-            alert
+          <NavbarItem
             icon={<ArchiveX size={20} />}
             text="Deleção"
             urlText="deletion-requests"
             isActive={active === "Deleção"}
           />
         )}
-      </Sidebar>
+      </Navbar>
+
       <Outlet />
     </div>
   );

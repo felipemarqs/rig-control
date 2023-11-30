@@ -1,12 +1,11 @@
-import { PlusIcon } from "@radix-ui/react-icons";
-import { Header } from "../../components/Header";
-import { Spinner } from "../../components/Spinner";
-import { useListUsers } from "./useListUsers";
-import { Link } from "react-router-dom";
+import {PlusIcon} from "@radix-ui/react-icons";
+import {Header} from "../../components/Header";
+import {Spinner} from "../../components/Spinner";
+import {useListUsers} from "./useListUsers";
+import {Link} from "react-router-dom";
 
 export const ListUsers = () => {
-  const { users, isFetchingUsers, navigate } = useListUsers();
-
+  const {users, isFetchingUsers, navigate} = useListUsers();
 
   return (
     <div className="w-full h-full overflow-y-scroll">

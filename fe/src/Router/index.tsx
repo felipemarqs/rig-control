@@ -4,7 +4,7 @@ import {Login} from "../view/pages/Login";
 import {Dashboard} from "../view/pages/Dashboard";
 import {Register} from "../view/pages/Register";
 import {AuthLayout} from "../view/Layouts/AuthLayout";
-import {MainLayout} from "../view/Layouts/MainLayout/index";
+import {DesktopLayout} from "../view/Layouts/DesktopLayout/index";
 import {Form} from "../view/pages/Form";
 import {List} from "../view/pages/List";
 import {BillingDashboard} from "../view/pages/BillingDashboard";
@@ -18,8 +18,11 @@ import {CreateUser} from "../view/pages/CreateUser";
 import {UpdateUser} from "../view/pages/UpdateUser";
 import {UpdateUserRigs} from "../view/pages/UpdateUserRigs";
 import {DeletionRequests} from "../view/pages/DeletionRequests";
+import {MobileLayout} from "../view/Layouts/MobileLayout";
+import {useSidebarContext} from "../app/contexts/SidebarContext";
 
 export const Router = () => {
+  const {windowWidth} = useSidebarContext();
   return (
     <BrowserRouter>
       <Routes>
@@ -31,7 +34,9 @@ export const Router = () => {
         </Route>
 
         <Route element={<AuthGuard isPrivate={true} />}>
-          <Route element={<MainLayout />}>
+          <Route
+            element={windowWidth <= 1024 ? <MobileLayout /> : <DesktopLayout />}
+          >
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/" element={<Dashboard />} />
             <Route path="/form" element={<Form />} />
