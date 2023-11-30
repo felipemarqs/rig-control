@@ -61,7 +61,7 @@ export const Form = () => {
               )}
             </div>
 
-            <div className="flex justify-center mt-6 ">
+            <div className="flex justify-center mt-6 lg:hidden">
               <Button
                 disabled={!isFormValid || isLoading}
                 className="bg-secondary-500 w-2/3 "

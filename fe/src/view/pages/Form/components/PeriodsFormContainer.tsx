@@ -203,7 +203,7 @@ export const PeriodsFormContainer = () => {
               </div>
 
               <div className="flex justify-between p-4  w-[90%]">
-                <div className="w-full   lg:w-[33%]">
+                <div className="w-full lg:w-[33%]">
                   <Select
                     placeholder="Movimentação de Fluido"
                     value={fluidRatio}
@@ -212,7 +212,7 @@ export const PeriodsFormContainer = () => {
                   />
                 </div>
 
-                <div className="w-full   lg:w-[33%]">
+                <div className="w-full lg:w-[33%]">
                   <Select
                     placeholder="Movimentação de Equip."
                     value={equipmentRatio}
