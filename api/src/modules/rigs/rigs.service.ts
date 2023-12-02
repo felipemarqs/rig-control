@@ -2,6 +2,7 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateRigDto } from './dto/create-rig.dto';
 
 import { RigsRepository } from 'src/shared/database/repositories/rigs.repositories';
+import { UpdateRigDto } from './dto/update-rig-dto';
 
 @Injectable()
 export class RigsService {
@@ -96,5 +97,14 @@ export class RigsService {
 
   async findAll() {
     return this.rigsRepo.findAll();
+  }
+
+  async update(rigId: string, updateRigDto: UpdateRigDto) {
+    const { name, state, isActive } = updateRigDto;
+
+    return this.rigsRepo.update({
+      where: { id: rigId },
+      data: { name, state, isActive },
+    });
   }
 }

@@ -1,4 +1,4 @@
-import {Outlet} from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import {
   BarChart3,
   LayoutDashboard,
@@ -10,15 +10,15 @@ import {
   Construction,
 } from "lucide-react";
 
-import {useSidebarContext} from "../../../app/contexts/SidebarContext";
-import {useAuth} from "../../../app/hooks/useAuth";
-import {Navbar} from "../../components/Navbar";
-import {NavbarItem} from "../../components/NavbarItem";
+import { useSidebarContext } from "../../../app/contexts/SidebarContext";
+import { useAuth } from "../../../app/hooks/useAuth";
+import { Navbar } from "../../components/Navbar";
+import { NavbarItem } from "../../components/NavbarItem";
 
 export const MobileLayout = () => {
   //const {activeItem,handleNavItemChange} = useMainLayout()
-  const {active} = useSidebarContext();
-  const {isUserAdm, userAccessLevel} = useAuth();
+  const { active } = useSidebarContext();
+  const { isUserAdm, userAccessLevel } = useAuth();
   return (
     <div className="w-screen h-screen">
       <Navbar>
@@ -61,6 +61,15 @@ export const MobileLayout = () => {
             text="Sonda"
             urlText="rig"
             isActive={active === "Sonda"}
+          />
+        )}
+
+        {isUserAdm && (
+          <NavbarItem
+            icon={<Construction size={20} />}
+            text="Listar Sondas"
+            urlText="list-rigs"
+            isActive={active === "Listar Sondas"}
           />
         )}
 

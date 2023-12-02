@@ -25,7 +25,7 @@ export const ListUsers = () => {
             </div>
           )}
           {!isFetchingUsers && (
-            <div className="p-8 flex flex-col h-full gap-4 lg:items-center">
+            <div className="p-2 flex flex-col h-full gap-4 lg:items-center lg:p-8">
               <div
                 onClick={() => navigate("/create-user")}
                 className="p-4 bg-white rounded-2xl shadow-[0_1px_2px] flex  h-20 gap-4 justify-center items-center border-l-4  border-primary-500 lg:w-3/4 cursor-pointer"
@@ -87,7 +87,7 @@ export const ListUsers = () => {
                       </span>
                     </div>
 
-                    <div className="w-1/2 flex justify-between">
+                    <div className="hidden lg:w-1/2 lg:flex lg:justify-between ">
                       <div className="flex flex-col ">
                         <span className="text-gray-800 tracking-[-0.5] font-medium block">
                           Contrato
@@ -99,7 +99,7 @@ export const ListUsers = () => {
                         </span>
                       </div>
 
-                      <div className="flex flex-col ">
+                      <div className="hidden lg:flex lg:flex-col ">
                         <span className="text-gray-800 tracking-[-0.5] font-medium block">
                           Nível de Acesso
                         </span>

@@ -20,6 +20,7 @@ import {UpdateUserRigs} from "../view/pages/UpdateUserRigs";
 import {DeletionRequests} from "../view/pages/DeletionRequests";
 import {MobileLayout} from "../view/Layouts/MobileLayout";
 import {useSidebarContext} from "../app/contexts/SidebarContext";
+import {ListRigs} from "../view/pages/ListRigs";
 
 export const Router = () => {
   const {windowWidth} = useSidebarContext();
@@ -45,6 +46,7 @@ export const Router = () => {
             <Route path="/invoicing-list" element={<ListBilling />} />
             <Route path="/details/:efficiencyId" element={<Details />} />
             <Route path="/rig" element={<CreateRig />} />
+            <Route path="/list-rigs" element={<ListRigs />} />
             <Route path="/create-contract" element={<CreateContract />} />
             <Route path="/contracts" element={<Contract />} />
             <Route path="/users" element={<ListUsers />} />

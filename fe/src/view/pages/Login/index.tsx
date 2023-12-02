@@ -1,4 +1,3 @@
-import {Link} from "react-router-dom";
 import {Input} from "../../components/Input";
 import {Button} from "../../components/Button";
 import {useLoginController} from "./useLoginController";
@@ -7,7 +6,7 @@ export const Login = () => {
   const {handleSubmit, register, errors, isLoading} = useLoginController();
   return (
     //Container
-    <div className="bg-secondary-500  w-[90%]  max-w-[1000px] min-h-full mb-12  rounded-2xl lg:w-[40%] text-center">
+    <div className="bg-secondary-500  w-[90%]  max-w-[1000px] h-full mb-12  rounded-2xl lg:w-[40%] text-center">
       {/* Image Container */}
       <div
         className="w-full h-[300px] flex flex-col justify-between bg-cover bg-center bg-sonda-mar rounded-2xl"
@@ -27,24 +26,26 @@ export const Login = () => {
 
       {/* Form Container */}
       <form
-        className="mt-12 flex flex-col  gap-6 px-3 lg:px-12"
+        className="mt-12 flex flex-col justify-around  h-1/2 gap-6 px-3 lg:px-12"
         onSubmit={handleSubmit}
       >
-        <Input
-          type="email"
-          placeholder="E-mail"
-          error={errors.email?.message}
-          {...register("email")}
-        />
+        <div className="flex flex-col gap-6">
+          <Input
+            type="email"
+            placeholder="E-mail"
+            error={errors.email?.message}
+            {...register("email")}
+          />
 
-        <Input
-          type="password"
-          placeholder="Senha"
-          {...register("password")}
-          error={errors.password?.message}
-        />
+          <Input
+            type="password"
+            placeholder="Senha"
+            {...register("password")}
+            error={errors.password?.message}
+          />
+        </div>
 
-        <div className="w-1/2 mx-auto">
+        <div className="w-1/2 mx-auto ">
           <Button type="submit" className="mt-2 w-full" isLoading={isLoading}>
             Fazer Login
           </Button>
@@ -52,22 +53,6 @@ export const Login = () => {
       </form>
 
       {/* End Form Container */}
-
-      {/* Link Container */}
-
-      <p className="space-x-2 mt-20">
-        <span className="text-primary-700 font-semibold tracking-[-0.5px]">
-          Novo usuário?
-        </span>
-        <Link
-          className="text-primary-800 font-semibold underline tracking-[-0.5px]"
-          to="/register"
-        >
-          Crie uma conta aqui
-        </Link>
-      </p>
-
-      {/* End Link Container */}
     </div>
   );
 };

@@ -1,11 +1,6 @@
 import {useEffect, useRef, useState} from "react";
 import whiteLogo from "../../assets/images/white-logo.png";
 
-interface NavigationItem {
-  title: string;
-  path: string;
-}
-
 export const Navbar = ({children}: {children: React.ReactNode}) => {
   const [state, setState] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);

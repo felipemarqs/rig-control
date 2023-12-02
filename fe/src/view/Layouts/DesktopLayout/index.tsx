@@ -57,9 +57,18 @@ export const DesktopLayout = () => {
         {isUserAdm && (
           <SidebarItem
             icon={<Construction size={20} />}
-            text="Sonda"
+            text="Cadastrar Sonda"
             urlText="rig"
-            isActive={active === "Sonda"}
+            isActive={active === "Cadastrar Sonda"}
+          />
+        )}
+
+        {isUserAdm && (
+          <SidebarItem
+            icon={<Construction size={20} />}
+            text="Listar Sondas"
+            urlText="list-rigs"
+            isActive={active === "Listar Sondas"}
           />
         )}
 
