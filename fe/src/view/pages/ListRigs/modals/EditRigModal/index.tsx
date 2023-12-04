@@ -1,6 +1,5 @@
 import { Controller } from "react-hook-form";
 import { Modal } from "../../../../components/Modal";
-import { useListRigs } from "../../ListRigsContext/useListRigs";
 import { useEditRigModal } from "./useEditRigModal";
 import { Input } from "../../../../components/Input";
 import { UF } from "../../../../../app/entities/Rig";
@@ -15,7 +14,6 @@ export const EditRigModal = () => {
     control,
     errors,
     register,
-    reset,
     isActiveOptions,
     handleSubmit,
     isLoading,

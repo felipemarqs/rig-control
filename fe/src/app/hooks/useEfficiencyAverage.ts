@@ -5,6 +5,7 @@ export const useEfficiencyAverage = (rig: string) => {
   const {data, isFetching, refetch} = useQuery({
     queryKey: ["average"],
     queryFn: () => efficienciesService.getAverage(rig),
+    staleTime: 24 * 60 * 60 * 1000,
   });
 
   return {

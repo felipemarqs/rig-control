@@ -6,6 +6,7 @@ export const useContracts = (isUserAdm?: boolean) => {
     queryKey: ["contracts"],
     queryFn: () => contractsService.getAll(),
     enabled: isUserAdm,
+    staleTime: 24 * 60 * 60 * 1000,
   });
 
   return {

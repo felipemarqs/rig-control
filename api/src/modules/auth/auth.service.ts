@@ -11,6 +11,7 @@ import { SigninDto } from './dto/signin.dto';
 import { JwtService } from '@nestjs/jwt';
 import { RigsRepository } from 'src/shared/database/repositories/rigs.repositories';
 import { UsersContractRepository } from 'src/shared/database/repositories/usersContract.repositories';
+import { AccessLevel } from './entities/AccessLevel';
 
 @Injectable()
 export class AuthService {
@@ -39,7 +40,10 @@ export class AuthService {
       throw new UnauthorizedException('Credenciais inválidas!');
     }
 
-    const accessToken = await this.generateAccessToken(user.id);
+    const accessToken = await this.generateAccessToken(
+      user.id,
+      user.accessLevel as AccessLevel,
+    );
 
     return { accessToken };
   }
@@ -95,14 +99,23 @@ export class AuthService {
       });
     }
 
-    const accessToken = await this.generateAccessToken(user.id);
+    const accessToken = await this.generateAccessToken(
+      user.id,
+      user.accessLevel as AccessLevel,
+    );
 
     return {
       accessToken,
     };
   }
 
-  private async generateAccessToken(userId: string) {
-    return await this.jwtService.signAsync({ sub: userId });
+  private async generateAccessToken(
+    userId: string,
+    userAccessLevel: AccessLevel,
+  ) {
+    return await this.jwtService.signAsync({
+      sub: userId,
+      role: userAccessLevel,
+    });
   }
 }

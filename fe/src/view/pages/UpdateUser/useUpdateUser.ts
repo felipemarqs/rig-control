@@ -54,7 +54,7 @@ export const useUpdateUser = () => {
       reset();
 
       queryClient.invalidateQueries({queryKey: ["users"]});
-      navigate("/users");
+      navigate("/dashboard");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
       console.log(error);

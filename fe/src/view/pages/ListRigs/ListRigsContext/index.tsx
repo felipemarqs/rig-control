@@ -3,9 +3,6 @@ import {useAuth} from "../../../../app/hooks/useAuth";
 import {useNavigate} from "react-router-dom";
 import {Rig} from "../../../../app/entities/Rig";
 import {useRigs} from "../../../../app/hooks/useRigs";
-import {useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {z} from "zod";
 
 interface useListContextValues {
   isFetchingRigs: boolean;
@@ -35,7 +32,6 @@ export const ListRigsProvider = ({children}: {children: React.ReactNode}) => {
 
     if (!rig) {
       setRigBeingEdited(null);
-      console.log("null");
       return;
     }
 

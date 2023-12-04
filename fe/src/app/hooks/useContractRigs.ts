@@ -5,6 +5,7 @@ export const useContractRigs = (contractId: string) => {
   const {data, isFetching, refetch} = useQuery({
     queryKey: ["contractRigs"],
     queryFn: () => contractsService.getRigs(contractId),
+    staleTime: 24 * 60 * 60 * 1000,
   });
 
   return {

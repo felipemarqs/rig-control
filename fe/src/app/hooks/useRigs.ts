@@ -1,11 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
-import { rigsService } from "../services/rigsService";
+import {useQuery} from "@tanstack/react-query";
+import {rigsService} from "../services/rigsService";
 
 export const useRigs = (isUserAdm: boolean) => {
-  const { data, isFetching, refetch } = useQuery({
+  const {data, isFetching, refetch} = useQuery({
     queryKey: ["rigs"],
     queryFn: () => rigsService.getAll(),
     enabled: isUserAdm,
+    staleTime: 24 * 60 * 60 * 1000,
   });
 
   return {
