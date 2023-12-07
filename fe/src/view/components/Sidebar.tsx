@@ -1,16 +1,15 @@
-import {ChevronLast, ChevronFirst} from "lucide-react";
+import { ChevronLast, ChevronFirst } from "lucide-react";
 import React from "react";
 import whiteLogo from "../../assets/images/white-logo.png";
-import {useSidebarContext} from "../../app/contexts/SidebarContext";
-import {useAuth} from "../../app/hooks/useAuth";
-import {Button} from "./Button";
-import {useNavigate} from "react-router-dom";
-import {cn} from "../../app/utils/cn";
+import { useSidebarContext } from "../../app/contexts/SidebarContext";
+import { useAuth } from "../../app/hooks/useAuth";
+import { Button } from "./Button";
+import { useNavigate } from "react-router-dom";
+import { cn } from "../../app/utils/cn";
 
-export default function Sidebar({children}: {children: React.ReactNode}) {
-  const {expanded, toggleVisibility, windowWidth, toggleHiddenVisibility} =
-    useSidebarContext();
-  const {signout, user} = useAuth();
+export default function Sidebar({ children }: { children: React.ReactNode }) {
+  const { expanded, toggleVisibility } = useSidebarContext();
+  const { signout, user } = useAuth();
   const navigate = useNavigate();
 
   return (
@@ -25,9 +24,7 @@ export default function Sidebar({children}: {children: React.ReactNode}) {
             alt=""
           />
           <button
-            onClick={() =>
-              windowWidth > 1300 ? toggleVisibility() : toggleHiddenVisibility()
-            }
+            onClick={() => toggleVisibility()}
             className="p-1.5 rounded-lg bg-primary-500 text-white hover:bg-primary-300"
           >
             {expanded ? <ChevronFirst /> : <ChevronLast />}

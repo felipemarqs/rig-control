@@ -71,7 +71,16 @@ export class UsersService {
       select: {
         id: true,
         name: true,
-        contract: true,
+        contracts: {
+          select: {
+            contract: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
         rigs: {
           select: {
             rig: {

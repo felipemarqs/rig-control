@@ -1,13 +1,13 @@
-import {Header} from "../../components/Header";
+import { Header } from "../../components/Header";
 
-import {cn} from "../../../app/utils/cn";
-import {PeriodsFormContainer} from "./components/PeriodsFormContainer";
-import {BraskemFormContainer} from "./components/BraskemForm";
-import {FormContext, FormProvider} from "./components/FormContext";
-import {TresRFormContainer} from "./components/TresRForm";
-import {OrigemContainer} from "./components/OrigemForm";
-import {CarmoEnergyContainer} from "./components/CarmoEnergyForm";
-import {Button} from "../../components/Button";
+import { cn } from "../../../app/utils/cn";
+import { PeriodsFormContainer } from "./components/PeriodsFormContainer";
+import { BraskemFormContainer } from "./components/BraskemForm";
+import { FormContext, FormProvider } from "./components/FormContext";
+import { TresRFormContainer } from "./components/TresRForm";
+import { OrigemContainer } from "./components/OrigemForm";
+import { CarmoEnergyContainer } from "./components/CarmoEnergyForm";
+import { Button } from "../../components/Button";
 
 export const Form = () => {
   return (
@@ -16,11 +16,11 @@ export const Form = () => {
         {({
           isPending,
           remainingMinutes,
-          userRig,
           isFormValid,
           handleSubmit,
           periods,
           isLoading,
+          selectedContract,
         }) => (
           <div className="w-full h-full lg:min-w-[1000px]">
             <Header
@@ -40,25 +40,20 @@ export const Form = () => {
             <div className="w-full h-[80vh]  overflow-y-auto  flex-col justify-center flex gap-2  lg:h-[87vh] lg:flex-row lg:p-4">
               <PeriodsFormContainer />
 
-              {userRig.contract.name.toLocaleLowerCase() === "petrobrás" && (
-                <></>
-              )}
+              {selectedContract?.rig.contract.name.toLocaleLowerCase() ===
+                "petrobrás" && <></>}
 
-              {userRig.contract.name.toLocaleLowerCase() === "braskem" && (
-                <BraskemFormContainer />
-              )}
+              {selectedContract?.rig.contract.name.toLocaleLowerCase() ===
+                "braskem" && <BraskemFormContainer />}
 
-              {userRig.contract.name.toLocaleLowerCase() === "3r" && (
-                <TresRFormContainer />
-              )}
+              {selectedContract?.rig.contract.name.toLocaleLowerCase() ===
+                "3r" && <TresRFormContainer />}
 
-              {userRig.contract.name.toLocaleLowerCase() === "origem" && (
-                <OrigemContainer />
-              )}
+              {selectedContract?.rig.contract.name.toLocaleLowerCase() ===
+                "origem" && <OrigemContainer />}
 
-              {userRig.contract.name.toLocaleLowerCase() === "carmo energy" && (
-                <CarmoEnergyContainer />
-              )}
+              {selectedContract?.rig.contract.name.toLocaleLowerCase() ===
+                "carmo energy" && <CarmoEnergyContainer />}
             </div>
 
             <div className="flex justify-center mt-6 lg:hidden">

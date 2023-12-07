@@ -10,6 +10,8 @@ export const useListUsers = () => {
 
   const {users, isFetchingUsers} = useUsers(filters, isUserAdm);
 
+  console.log(users);
+
   return {
     users,
     isFetchingUsers,

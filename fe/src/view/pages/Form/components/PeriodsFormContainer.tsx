@@ -1,16 +1,19 @@
 import React from "react";
-import {cn} from "../../../../app/utils/cn";
-import {DatePickerInput} from "../../../components/DatePickerInput";
+import { cn } from "../../../../app/utils/cn";
+import { DatePickerInput } from "../../../components/DatePickerInput";
 
-import {TimePicker} from "antd";
+import { TimePicker } from "antd";
 import dayjs from "dayjs";
-import {Select} from "../../../components/Select";
-import {periodTypes} from "../../../../app/utils/periodTypes";
-import {getPeriodClassification} from "../../../../app/utils/periodClassifications";
-import {Button} from "../../../components/Button";
+import { Select } from "../../../components/Select";
+import { periodTypes } from "../../../../app/utils/periodTypes";
+import {
+  getPeriodClassification,
+  getRepairClassification,
+} from "../../../../app/utils/periodClassifications";
+import { Button } from "../../../components/Button";
 import TextArea from "antd/es/input/TextArea";
-import {useForm} from "./FormContext/useForm";
-import {Input} from "../../../components/Input";
+import { useForm } from "./FormContext/useForm";
+import { Input } from "../../../components/Input";
 
 export const PeriodsFormContainer = () => {
   const {
@@ -21,6 +24,7 @@ export const PeriodsFormContainer = () => {
     periods,
     handlePeriodType,
     handlePeriodClassification,
+    handleRepairClassification,
     handleFluidRatio,
     handleEquipmentRatio,
     handleDateChange,
@@ -62,7 +66,7 @@ export const PeriodsFormContainer = () => {
             placeholder="Sonda"
             value={selectedRig}
             onChange={(value) => handleChangeRig(value)}
-            options={usersRigs.map(({id, name}) => ({
+            options={usersRigs.map(({ id, name }) => ({
               value: id,
               label: name,
             }))}
@@ -79,6 +83,7 @@ export const PeriodsFormContainer = () => {
           fluidRatio,
           equipmentRatio,
           description,
+          repairClassification,
         }) => (
           <React.Fragment key={id}>
             <div className="flex justify-center flex-col items-center  py-4  my-4 rounded-xl bg-gray-400 ">
@@ -113,7 +118,7 @@ export const PeriodsFormContainer = () => {
                       return {
                         disabledHours: () => {
                           const disabledHours = Array.from(
-                            {length: 24},
+                            { length: 24 },
                             (_, hour) => (hour < minHour ? hour : -1)
                           );
                           return disabledHours;
@@ -121,7 +126,7 @@ export const PeriodsFormContainer = () => {
                         disabledMinutes: (selectedHour) => {
                           if (selectedHour === minHour) {
                             // Desativar minutos antes do horário mínimo
-                            return Array.from({length: 60}, (_, minute) =>
+                            return Array.from({ length: 60 }, (_, minute) =>
                               minute < minMinute ? minute : -1
                             );
                           }
@@ -151,7 +156,7 @@ export const PeriodsFormContainer = () => {
                       return {
                         disabledHours: () => {
                           const disabledHours = Array.from(
-                            {length: 24},
+                            { length: 24 },
                             (_, hour) => (hour < minHour ? hour : -1)
                           );
                           return disabledHours;
@@ -159,7 +164,7 @@ export const PeriodsFormContainer = () => {
                         disabledMinutes: (selectedHour) => {
                           if (selectedHour === minHour) {
                             // Desativar minutos antes do horário mínimo
-                            return Array.from({length: 60}, (_, minute) =>
+                            return Array.from({ length: 60 }, (_, minute) =>
                               minute < minMinute ? minute : -1
                             );
                           }
@@ -172,13 +177,13 @@ export const PeriodsFormContainer = () => {
               </div>
 
               <div className="flex justify-between p-4   w-[90%]">
-                <div className="w-[33%]">
+                <div className="w-[45%]">
                   <Select
                     error={!type ? "Obrigatório" : ""}
                     placeholder="Tipo"
                     value={type}
                     onChange={(value) => handlePeriodType(id, value)}
-                    options={periodTypes.map(({id, type}) => {
+                    options={periodTypes.map(({ id, type }) => {
                       return {
                         value: id,
                         label: type,
@@ -187,7 +192,7 @@ export const PeriodsFormContainer = () => {
                   />
                 </div>
 
-                <div className="w-1/2 lg:w-[33%]">
+                <div className="w-1/2 lg:w-[45%]">
                   {type && (
                     <Select
                       error={!classification ? "Obrigatório" : ""}
@@ -201,6 +206,21 @@ export const PeriodsFormContainer = () => {
                   )}
                 </div>
               </div>
+              {type === "REPAIR" && (
+                <div className="flex justify-between p-4  w-[90%]">
+                  <div className="w-1/2 lg:w-[100%]">
+                    <Select
+                      error={!repairClassification ? "Obrigatório" : ""}
+                      onChange={(value) =>
+                        handleRepairClassification(id, value)
+                      }
+                      placeholder="Tipo do Reparo"
+                      value={repairClassification}
+                      options={getRepairClassification(classification)}
+                    />
+                  </div>
+                </div>
+              )}
 
               <div className="flex justify-between p-4  w-[90%]">
                 <div className="w-full lg:w-[33%]">

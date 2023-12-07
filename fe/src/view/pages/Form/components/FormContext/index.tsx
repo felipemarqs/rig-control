@@ -1,17 +1,17 @@
-import {createContext, useCallback, useEffect, useState} from "react";
-import {useAuth} from "../../../../../app/hooks/useAuth";
-import {useNavigate} from "react-router-dom";
-import {v4 as uuidv4} from "uuid";
-import {efficiencyMappers} from "../../../../../app/services/mappers/efficiencyMappers";
-import {customColorToast} from "../../../../../app/utils/customColorToast";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {efficienciesService} from "../../../../../app/services/efficienciesService";
-import {AxiosError} from "axios";
-import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
-import {Dayjs} from "dayjs";
-import {parse, differenceInMinutes} from "date-fns";
+import { createContext, useCallback, useEffect, useState } from "react";
+import { useAuth } from "../../../../../app/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+import { efficiencyMappers } from "../../../../../app/services/mappers/efficiencyMappers";
+import { customColorToast } from "../../../../../app/utils/customColorToast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { efficienciesService } from "../../../../../app/services/efficienciesService";
+import { AxiosError } from "axios";
+import { treatAxiosError } from "../../../../../app/utils/treatAxiosError";
+import { Dayjs } from "dayjs";
+import { parse, differenceInMinutes } from "date-fns";
 
-type ErrorArgs = {fieldName: string; message: string};
+type ErrorArgs = { fieldName: string; message: string };
 
 interface FormContextValue {
   date: Date | undefined;
@@ -40,6 +40,7 @@ interface FormContextValue {
   addPeriod(): void;
   handlePeriodType(id: string, type: string): void;
   handlePeriodClassification(id: string, classification: string): void;
+  handleRepairClassification(id: string, repairClassification: string): void;
   handleFluidRatio(id: string, ratio: string | never): void;
   handleEquipmentRatio(id: string, ratio: string | never): void;
   handleDescription(id: string, text: string): void;
@@ -69,7 +70,7 @@ interface FormContextValue {
   handleSuckingTruckCheckbox(): void;
   handleWellChange(value: string): void;
   isSuckingTruckSelected: boolean;
-  usersRigs: {id: string; name: string}[];
+  usersRigs: { id: string; name: string }[];
   mobilizationPlace: string;
   isPowerSwivelSelected: boolean;
   isMixTankSelected: boolean;
@@ -96,6 +97,20 @@ interface FormContextValue {
     time: Dayjs | null,
     timeString: string
   ): void;
+  selectedContract:
+    | {
+        rig: {
+          id: string;
+          name: string;
+          state?: string | undefined;
+          isAtive?: boolean | undefined;
+          contract: {
+            id: string;
+            name: string;
+          };
+        };
+      }
+    | undefined;
 }
 
 type Periods = {
@@ -104,6 +119,7 @@ type Periods = {
   endHour: string;
   type: string;
   classification: string;
+  repairClassification: string;
   fluidRatio: string;
   equipmentRatio: string;
   description: string;
@@ -111,8 +127,8 @@ type Periods = {
 
 export const FormContext = createContext({} as FormContextValue);
 
-export const FormProvider = ({children}: {children: React.ReactNode}) => {
-  const {user} = useAuth();
+export const FormProvider = ({ children }: { children: React.ReactNode }) => {
+  const { user } = useAuth();
   const isUserAdm = user?.accessLevel === "ADM";
   const navigate = useNavigate();
   const [date, setDate] = useState<Date>();
@@ -129,24 +145,25 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
       type: "",
       classification: "",
       fluidRatio: "",
+      repairClassification: "",
       equipmentRatio: "",
       description: "",
     },
   ]);
 
-  const {isLoading, mutateAsync} = useMutation(efficienciesService.create);
+  const { isLoading, mutateAsync } = useMutation(efficienciesService.create);
   const queryClient = useQueryClient();
 
   const [errors, setErrors] = useState<Array<ErrorArgs>>([]);
 
-  const setError = ({fieldName, message}: ErrorArgs) => {
+  const setError = ({ fieldName, message }: ErrorArgs) => {
     const errorAlreadyExists = errors.find(
       (error) => error.fieldName === fieldName
     );
 
     if (errorAlreadyExists) return;
 
-    setErrors((prevState) => [...prevState, {fieldName, message}]);
+    setErrors((prevState) => [...prevState, { fieldName, message }]);
   };
 
   const removeError = (fieldName: string) => {
@@ -167,8 +184,10 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     return findErrorMessage;
   };
 
+  console.log(periods);
+
   const handleSubmit = async (periods: Periods) => {
-    const {toPersistenceObj} = efficiencyMappers.toPersistance({
+    const { toPersistenceObj } = efficiencyMappers.toPersistance({
       rigId: selectedRig,
       date: date ?? new Date(),
       well,
@@ -208,13 +227,14 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
           type: "",
           classification: "",
           fluidRatio: "",
+          repairClassification: "",
           equipmentRatio: "",
           description: "",
         },
       ]);
-      queryClient.invalidateQueries({queryKey: ["efficiencies", "average"]});
+      queryClient.invalidateQueries({ queryKey: ["efficiencies", "average"] });
 
-      navigate("/dashboard", {replace: true});
+      navigate("/dashboard", { replace: true });
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
     }
@@ -228,7 +248,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   ) => {
     console.log(time);
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, startHour: timeString} : period;
+      return period.id === id ? { ...period, startHour: timeString } : period;
     });
 
     setPeriods(newPeriods);
@@ -241,7 +261,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   ) => {
     console.log(time);
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, endHour: timeString} : period;
+      return period.id === id ? { ...period, endHour: timeString } : period;
     });
 
     setPeriods(newPeriods);
@@ -250,7 +270,12 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   const handlePeriodType = (id: string, type: string) => {
     const newPeriods = periods.map((period) => {
       return period.id === id
-        ? {...period, type: type, classification: ""}
+        ? {
+            ...period,
+            type: type,
+            classification: "",
+            repairClassification: "",
+          }
         : period;
     });
 
@@ -260,7 +285,24 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   const handlePeriodClassification = (id: string, classification: string) => {
     const newPeriods = periods.map((period) => {
       return period.id === id
-        ? {...period, classification: classification}
+        ? {
+            ...period,
+            classification: classification,
+            repairClassification: "",
+          }
+        : period;
+    });
+
+    setPeriods(newPeriods);
+  };
+
+  const handleRepairClassification = (
+    id: string,
+    repairClassification: string
+  ) => {
+    const newPeriods = periods.map((period) => {
+      return period.id === id
+        ? { ...period, repairClassification: repairClassification }
         : period;
     });
 
@@ -269,7 +311,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleFluidRatio = (id: string, ratio: string | never) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, fluidRatio: ratio} : period;
+      return period.id === id ? { ...period, fluidRatio: ratio } : period;
     });
 
     setPeriods(newPeriods);
@@ -277,7 +319,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleEquipmentRatio = (id: string, ratio: string | never) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, equipmentRatio: ratio} : period;
+      return period.id === id ? { ...period, equipmentRatio: ratio } : period;
     });
 
     setPeriods(newPeriods);
@@ -293,6 +335,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         type: "",
         classification: "",
         fluidRatio: "",
+        repairClassification: "",
         equipmentRatio: "",
         description: "",
       },
@@ -319,7 +362,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   const handleDateChange = (date: Date) => {
     setDate(date);
     if (new Date(date) >= new Date()) {
-      setError({fieldName: "date", message: "Data Inválida!"});
+      setError({ fieldName: "date", message: "Data Inválida!" });
     } else {
       removeError("date");
     }
@@ -333,7 +376,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleDescription = (id: string, text: string) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, description: text} : period;
+      return period.id === id ? { ...period, description: text } : period;
     });
 
     setPeriods(newPeriods);
@@ -367,12 +410,19 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   const userRig = user?.rigs[0].rig!;
 
   const usersRigs =
-    user?.rigs.map(({rig: {id, name}}) => {
+    user?.rigs.map(({ rig: { id, name } }) => {
       return {
         id,
         name,
       };
     }) || [];
+
+  const selectedContract = user?.rigs.find(({ rig: { id } }) => {
+    console.log(selectedRig);
+    return id === selectedRig;
+  });
+
+  // console.log("selectedContract", selectedContract?.rig.contract.name);
 
   //Configurações de formulário adicionais
 
@@ -521,7 +571,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   const handleWellChange = useCallback((value: string) => {
     setWell(value);
     if (!value) {
-      setError({fieldName: "well", message: "Obrigatório!"});
+      setError({ fieldName: "well", message: "Obrigatório!" });
     } else {
       removeError("well");
     }
@@ -596,6 +646,8 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         setError,
         removeError,
         getErrorMessageByFildName,
+        handleRepairClassification,
+        selectedContract,
       }}
     >
       {children}

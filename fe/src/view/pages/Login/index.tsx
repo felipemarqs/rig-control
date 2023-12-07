@@ -43,12 +43,11 @@ export const Login = () => {
             {...register("password")}
             error={errors.password?.message}
           />
-        </div>
-
-        <div className="w-1/2 mx-auto ">
-          <Button type="submit" className="mt-2 w-full" isLoading={isLoading}>
-            Fazer Login
-          </Button>
+          <div className="w-1/2 mx-auto ">
+            <Button type="submit" className="mt-2 w-full" isLoading={isLoading}>
+              Fazer Login
+            </Button>
+          </div>
         </div>
       </form>
 

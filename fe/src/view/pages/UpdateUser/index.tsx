@@ -1,10 +1,10 @@
-import {Button} from "../../components/Button";
-import {Header} from "../../components/Header";
-import {Input} from "../../components/Input";
-import {useUpdateUser} from "./useUpdateUser";
+import { Button } from "../../components/Button";
+import { Header } from "../../components/Header";
+import { Input } from "../../components/Input";
+import { useUpdateUser } from "./useUpdateUser";
 
 export const UpdateUser = () => {
-  const {errors, register, handleSubmit, isLoading} = useUpdateUser();
+  const { errors, register, handleSubmit, isLoading } = useUpdateUser();
 
   return (
     <div className="w-full h-full overflow-y-scroll">
@@ -15,8 +15,9 @@ export const UpdateUser = () => {
           <div className="w-full p-4 bg-gray-300 rounded-lg flex flex-col gap-2 lg:w-1/2 lg:mx-auto">
             <div className="w-full">
               <Input
-                className=" bg-white w-full rounded-lg border-2 text-black border-white focus:border-white   hover:bg-gray-100 hover:border-3"
+                className=" bg-white w-full rounded-lg border-2 text-black border-white focus:border-white   hover:bg-gray-100 hover:border-3 cursor-not-allowed"
                 placeholder="Nome"
+                disabled
                 labelStyles="text-black"
                 error={errors.name?.message}
                 {...register("name")}
@@ -25,9 +26,10 @@ export const UpdateUser = () => {
 
             <div className="w-full">
               <Input
-                className=" bg-white w-full rounded-lg border-2 text-black border-white focus:border-white   hover:bg-gray-100 hover:border-3"
+                className=" bg-white w-full rounded-lg border-2 text-black border-white focus:border-white   hover:bg-gray-100 hover:border-3 cursor-not-allowed"
                 placeholder="Email"
                 type="email"
+                disabled
                 labelStyles="text-black"
                 error={errors.email?.message}
                 {...register("email")}

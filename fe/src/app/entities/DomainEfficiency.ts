@@ -12,6 +12,7 @@ export interface DomainEfficiency {
     description?: string;
     fluidRatio: string;
     equipmentRatio: string;
+    repairClassification: string;
   }[];
   christmasTreeDisassemblyHours?: string;
   isMixTankSelected?: boolean;

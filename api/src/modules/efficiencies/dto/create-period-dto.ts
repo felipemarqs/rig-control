@@ -2,11 +2,13 @@ import {
   IsDateString,
   IsEnum,
   IsNotEmpty,
+  IsOptional,
   IsString,
   IsUUID,
 } from 'class-validator';
 import { PeriodClassification } from '../entities/PeriodClassification';
 import { PeriodType } from '../entities/PeriodType';
+import { RepairClassification } from '../entities/RepairClassification';
 
 export class PeriodDto {
   @IsString()
@@ -26,4 +28,8 @@ export class PeriodDto {
   @IsEnum(PeriodType)
   @IsNotEmpty()
   type: PeriodType;
+
+  @IsEnum(RepairClassification)
+  @IsOptional()
+  repairClassification: RepairClassification;
 }
