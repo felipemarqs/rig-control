@@ -29,7 +29,7 @@ export class UsersController {
     if (!isUserAdm) {
       throw new UnauthorizedException('Acesso Restrito!');
     }
-    console.log('is user Adm?', isUserAdm);
+
     return this.usersService.findAll({ contractId });
   }
 

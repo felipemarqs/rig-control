@@ -356,13 +356,8 @@ export const allClassifications = WORKING.concat(REPAIR, GLOSS, INTERVAL);
 
 export const getRepairClassification = (parameter: string) => {
   const result = periodClassifications.REPAIR.find(({ id }) => {
-    console.log("classification", id);
-    console.log("parameter", parameter);
-
     return parameter === id;
   });
-
-  console.log("result", result);
 
   if (!result) {
     return [
