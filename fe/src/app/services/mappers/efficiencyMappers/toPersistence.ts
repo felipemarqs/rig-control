@@ -65,7 +65,9 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
         classification: classification,
         description: description,
         type: type,
-        repairClassification: repairClassification,
+        repairClassification: repairClassification
+          ? repairClassification
+          : null,
       };
     }
   );

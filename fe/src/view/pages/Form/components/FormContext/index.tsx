@@ -119,7 +119,7 @@ type Periods = {
   endHour: string;
   type: string;
   classification: string;
-  repairClassification: string;
+  repairClassification: string | null;
   fluidRatio: string;
   equipmentRatio: string;
   description: string;
@@ -137,7 +137,19 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
     return isUserAdm ? "" : user?.rigs[0].rig.id!;
   });
   const [remainingMinutes, setRemainingMinutes] = useState<number>();
-  const [periods, setPeriods] = useState([
+  const [periods, setPeriods] = useState<
+    {
+      id: string;
+      startHour: string;
+      endHour: string;
+      type: string;
+      classification: string;
+      fluidRatio: string;
+      repairClassification: null | string;
+      equipmentRatio: string;
+      description: string;
+    }[]
+  >([
     {
       id: uuidv4(),
       startHour: "00:00",
@@ -145,7 +157,7 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
       type: "",
       classification: "",
       fluidRatio: "",
-      repairClassification: "",
+      repairClassification: null,
       equipmentRatio: "",
       description: "",
     },
@@ -227,7 +239,7 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
           type: "",
           classification: "",
           fluidRatio: "",
-          repairClassification: "",
+          repairClassification: null,
           equipmentRatio: "",
           description: "",
         },
@@ -274,7 +286,7 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
             ...period,
             type: type,
             classification: "",
-            repairClassification: "",
+            repairClassification: null,
           }
         : period;
     });
@@ -288,7 +300,7 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
         ? {
             ...period,
             classification: classification,
-            repairClassification: "",
+            repairClassification: null,
           }
         : period;
     });
@@ -335,7 +347,7 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
         type: "",
         classification: "",
         fluidRatio: "",
-        repairClassification: "",
+        repairClassification: null,
         equipmentRatio: "",
         description: "",
       },
