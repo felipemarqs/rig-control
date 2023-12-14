@@ -39,11 +39,24 @@ export const Details = () => {
               {!isFetchingEfficiency &&
                 efficiency &&
                 !(efficiency instanceof Array) && (
-                  <div className="flex gap-1">
-                    <h1 className="text-xl font-bold text-primary-500">Dia:</h1>
-                    <h2 className="text-lg text-secondary-500">
-                      {formatDate(new Date(efficiency.date))}
-                    </h2>
+                  <div className="flex gap-4">
+                    <div className="flex gap-1">
+                      <h1 className="text-xl font-bold text-primary-500">
+                        Dia:
+                      </h1>
+                      <h2 className="text-lg text-secondary-500">
+                        {formatDate(new Date(efficiency.date))}
+                      </h2>
+                    </div>
+
+                    <div className="flex gap-1">
+                      <h1 className="text-xl font-bold text-primary-500">
+                        Poço:
+                      </h1>
+                      <h2 className="text-lg text-secondary-500">
+                        {efficiency.well}
+                      </h2>
+                    </div>
                   </div>
                 )}
             </div>

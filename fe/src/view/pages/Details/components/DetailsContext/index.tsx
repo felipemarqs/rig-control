@@ -45,6 +45,8 @@ export const DetailsContextProvider = ({
 
   const {efficiency, isFetchingEfficiency} = useEfficiencyById(efficiencyId!);
 
+  console.log("efficiency", efficiency);
+
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const {isUserAdm} = useAuth();

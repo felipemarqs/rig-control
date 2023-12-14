@@ -7,7 +7,6 @@ export const useEfficiencies = (filters: EfficienciesFilters) => {
   const {data, isFetching, refetch} = useQuery({
     queryKey: ["efficiencies"],
     queryFn: () => efficienciesService.getAll(filters),
-    staleTime: 24 * 60 * 60 * 1000,
   });
 
   return {

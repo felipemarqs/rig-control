@@ -5,7 +5,6 @@ export const useEfficiencyById = (efficiencyId: string) => {
   const {data, isFetching, refetch} = useQuery({
     queryKey: ["efficiency"],
     queryFn: () => efficienciesService.getById(efficiencyId),
-    staleTime: 24 * 60 * 60 * 1000,
   });
 
   return {
