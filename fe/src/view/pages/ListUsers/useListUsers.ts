@@ -1,5 +1,5 @@
 import {useNavigate} from "react-router-dom";
-import {useUsers} from "../../../app/hooks/useUsers";
+import {useUsers} from "../../../app/hooks/users/useUsers";
 import {useState} from "react";
 import {useAuth} from "../../../app/hooks/useAuth";
 

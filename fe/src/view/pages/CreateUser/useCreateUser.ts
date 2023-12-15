@@ -9,8 +9,8 @@ import {useNavigate} from "react-router-dom";
 import {usersService} from "../../../app/services/usersService";
 import {AccessLevel} from "../../../app/entities/AccessLevel";
 import {useAuth} from "../../../app/hooks/useAuth";
-import {useContracts} from "../../../app/hooks/useContracts";
-import {useContractRigs} from "../../../app/hooks/useContractRigs";
+import {useContracts} from "../../../app/hooks/contracts/useContracts";
+import {useContractRigs} from "../../../app/hooks/contracts/useContractRigs";
 import {useEffect} from "react";
 
 const schema = z.object({

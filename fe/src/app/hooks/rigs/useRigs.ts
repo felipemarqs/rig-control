@@ -1,5 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
-import {rigsService} from "../services/rigsService";
+import {rigsService} from "../../services/rigsService";
 
 export const useRigs = (isUserAdm: boolean) => {
   const {data, isFetching, refetch} = useQuery({

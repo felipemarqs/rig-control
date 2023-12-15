@@ -9,7 +9,7 @@ import {DashboardContext, DashboardProvider} from "./DashboardContext";
 import {LineChart} from "./components/LineChart";
 import {ListEfficienciesDataGrid} from "../../components/ListEfficienciesDataGrid";
 import {cn} from "../../../app/utils/cn";
-import {BarChart} from "./components/BarChart";
+/* import {BarChart} from "./components/BarChart"; */
 
 export const Dashboard = () => {
   return (
@@ -18,6 +18,7 @@ export const Dashboard = () => {
         {({
           selectedRig,
           handleChangeRig,
+          handleChangePeriod,
           selectedEndDate,
           selectedStartDate,
           handleStartDateChange,
@@ -33,8 +34,10 @@ export const Dashboard = () => {
           totalDtms,
           totalMovimentations,
           efficiencies,
-          isFetchingAverage,
+          /*  isFetchingAverage, */
           windowWidth,
+          months,
+          selectedPeriod,
         }) => (
           <div className="w-full  overflow-y-scroll">
             <Header title="DASHBOARD" subtitle="Página de início do usuário" />
@@ -49,6 +52,15 @@ export const Dashboard = () => {
                     value: id ?? "",
                     label: name ?? "",
                   }))}
+                />
+              </div>
+              <div className="w-[113px] lg:w-[123px]">
+                <Select
+                  error={""}
+                  placeholder="Por Período"
+                  value={selectedPeriod}
+                  onChange={(value) => handleChangePeriod(value)}
+                  options={months}
                 />
               </div>
 
@@ -189,7 +201,8 @@ export const Dashboard = () => {
                   <div
                     className={cn(
                       "col-span-12 row-span-3 flex justify-center bg-gray-200 rounded-lg items-center lg:col-start-3 lg:col-span-8 lg:row-span-3",
-                      efficiencies.length > 15 && "col-start-1 col-span-12"
+                      efficiencies.length > 15 &&
+                        "lg:col-start-0 lg:col-span-12"
                     )}
                   >
                     {isFetchingEfficiencies && <Spinner />}
@@ -201,14 +214,14 @@ export const Dashboard = () => {
                     {!isFetchingEfficiencies && <LineChart />}
                   </div>*/}
 
-                  <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center lg:col-start-2 lg:col-span-10 lg:row-span-3">
+                  {/*  <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center lg:col-start-2 lg:col-span-10 lg:row-span-3">
                     {isFetchingAverage && <Spinner />}
                     {!isFetchingAverage && (
                       <div className="w-full h-full">
                         <BarChart />
                       </div>
                     )}
-                  </div>
+                  </div> */}
 
                   <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center lg:col-start-2 lg:col-span-10">
                     {isFetchingEfficiencies && <Spinner />}

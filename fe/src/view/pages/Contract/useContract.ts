@@ -1,4 +1,4 @@
-import {useContracts} from "../../../app/hooks/useContracts";
+import {useContracts} from "../../../app/hooks/contracts/useContracts";
 import {useAuth} from "../../../app/hooks/useAuth";
 import {useNavigate} from "react-router-dom";
 

@@ -21,6 +21,8 @@ import {DeletionRequests} from "../view/pages/DeletionRequests";
 import {MobileLayout} from "../view/Layouts/MobileLayout";
 import {useSidebarContext} from "../app/contexts/SidebarContext";
 import {ListRigs} from "../view/pages/ListRigs";
+//import {BillingRigDetailDashboard} from "../view/pages/BillingRigDetailDashboard";
+import {InDevelopmentPage} from "../view/pages/InDevelopmentPage";
 
 export const Router = () => {
   const {windowWidth} = useSidebarContext();
@@ -43,6 +45,10 @@ export const Router = () => {
             <Route path="/form" element={<Form />} />
             <Route path="/list" element={<List />} />
             <Route path="/invoicing-dashboard" element={<BillingDashboard />} />
+            <Route
+              path="/invoicing-rig-dashboard"
+              element={<InDevelopmentPage />}
+            />
             <Route path="/invoicing-list" element={<ListBilling />} />
             <Route path="/details/:efficiencyId" element={<Details />} />
             <Route path="/rig" element={<CreateRig />} />

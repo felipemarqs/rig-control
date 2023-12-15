@@ -1,13 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
-import { useAuth } from "../../../app/hooks/useAuth";
-import { useUsers } from "../../../app/hooks/useUsers";
-import { useMutation } from "@tanstack/react-query";
-import { usersService } from "../../../app/services/usersService";
-import { customColorToast } from "../../../app/utils/customColorToast";
-import { useNavigate } from "react-router-dom";
-import { treatAxiosError } from "../../../app/utils/treatAxiosError";
-import { AxiosError } from "axios";
-import { useRigs } from "../../../app/hooks/useRigs";
+import {useEffect, useMemo, useState} from "react";
+import {useAuth} from "../../../app/hooks/useAuth";
+import {useUsers} from "../../../app/hooks/users/useUsers";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {usersService} from "../../../app/services/usersService";
+import {customColorToast} from "../../../app/utils/customColorToast";
+import {useNavigate} from "react-router-dom";
+import {treatAxiosError} from "../../../app/utils/treatAxiosError";
+import {AxiosError} from "axios";
+import {useRigs} from "../../../app/hooks/rigs/useRigs";
 
 interface Rig {
   id: string;
@@ -16,20 +16,22 @@ interface Rig {
 }
 
 export const useUpdateUserRigs = (id: string) => {
-  const { user } = useAuth();
+  const {user} = useAuth();
   const navigate = useNavigate();
-  const [filters] = useState({ contractId: "" });
+  const [filters] = useState({contractId: ""});
 
   const [userRigs, setUserRigs] = useState<Array<Rig>>([]);
   const [availableRigs, setAvailableRigs] = useState<Array<Rig>>([]);
 
   const isUserAdm = user?.accessLevel === "ADM";
 
-  const { rigs, isFetchingRigs } = useRigs(isUserAdm);
+  const {rigs, isFetchingRigs} = useRigs(isUserAdm);
 
-  const { users, isFetchingUsers } = useUsers(filters);
+  const queryClient = useQueryClient();
 
-  const { isLoading: isLoadingUpdateRigs, mutateAsync } = useMutation(
+  const {users, isFetchingUsers} = useUsers(filters);
+
+  const {isLoading: isLoadingUpdateRigs, mutateAsync} = useMutation(
     usersService.updateRigs
   );
 
@@ -39,7 +41,7 @@ export const useUpdateUserRigs = (id: string) => {
 
   useEffect(() => {
     const userRigs = userBeingEdited?.rigs.map(
-      ({ rig: { id, name, isAtive } }) => ({
+      ({rig: {id, name, isAtive}}) => ({
         id,
         name,
         isActive: isAtive,
@@ -74,14 +76,15 @@ export const useUpdateUserRigs = (id: string) => {
   };
 
   const handleSubmit = async () => {
-    const rigsToPersistence = userRigs.map(({ id }) => id);
+    const rigsToPersistence = userRigs.map(({id}) => id);
     const userId = userBeingEdited?.id!;
 
-    const body = { userId, rigs: rigsToPersistence };
+    const body = {userId, rigs: rigsToPersistence};
     try {
       await mutateAsync(body);
       navigate("/users");
       customColorToast("Sondas editadas com sucesso!", "#1c7b7b", "success");
+      queryClient.invalidateQueries({queryKey: ["users"]});
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
       console.log(error);

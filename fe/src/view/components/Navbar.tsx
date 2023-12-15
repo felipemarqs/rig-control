@@ -1,5 +1,6 @@
 import {useEffect, useRef, useState} from "react";
 import whiteLogo from "../../assets/images/white-logo.png";
+import {Link} from "react-router-dom";
 
 export const Navbar = ({children}: {children: React.ReactNode}) => {
   const [state, setState] = useState(false);
@@ -31,9 +32,9 @@ export const Navbar = ({children}: {children: React.ReactNode}) => {
     <nav ref={navRef} className="bg-primary-500 w-full top-0 z-20">
       <div className="items-center px-4 max-w-screen-xl mx-auto md:px-8 lg:flex">
         <div className="flex items-center justify-between py-3 lg:py-4 lg:block">
-          <a href="javascript:void(0)">
+          <Link to="/dashboard">
             <img src={whiteLogo} className="w-16" alt="Float UI logo" />
-          </a>
+          </Link>
           <div className="lg:hidden">
             <button
               className="text-gray-700 outline-none p-2 rounded-md focus:border-gray-400 focus:border"

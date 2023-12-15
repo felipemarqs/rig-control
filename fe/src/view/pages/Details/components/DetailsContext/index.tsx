@@ -1,7 +1,7 @@
 import {createContext, useState} from "react";
 import {customColorToast} from "../../../../../app/utils/customColorToast";
 import {PersistanceEfficiency} from "../../../../../app/entities/PersistanceEfficiency";
-import {useEfficiencyById} from "../../../../../app/hooks/useEfficiencyById";
+import {useEfficiencyById} from "../../../../../app/hooks/efficiencies/useEfficiencyById";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {useNavigate, useParams} from "react-router-dom";
 import {useAuth} from "../../../../../app/hooks/useAuth";
@@ -44,6 +44,8 @@ export const DetailsContextProvider = ({
   }
 
   const {efficiency, isFetchingEfficiency} = useEfficiencyById(efficiencyId!);
+
+  console.log("efficiency", efficiency);
 
   const queryClient = useQueryClient();
   const navigate = useNavigate();

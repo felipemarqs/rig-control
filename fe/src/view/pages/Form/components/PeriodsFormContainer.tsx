@@ -215,7 +215,7 @@ export const PeriodsFormContainer = () => {
                         handleRepairClassification(id, value)
                       }
                       placeholder="Tipo do Reparo"
-                      value={repairClassification}
+                      value={repairClassification ?? ""}
                       options={getRepairClassification(classification)}
                     />
                   </div>

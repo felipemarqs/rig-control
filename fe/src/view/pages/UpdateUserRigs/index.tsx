@@ -23,7 +23,7 @@ export const UpdateUserRigs = () => {
     <div className="w-full h-full overflow-y-scroll">
       <Header title="SONDAS" subtitle="Editar sondas dos usuários" />
 
-      <div className="lg:min-w-[1200px]  mx-auto max-w-[715px] h-2/3 bg-gray-400 p-4 gap-2 rounded-md flex flex-col lg:flex-row lg:justify-center ">
+      <div className="lg:min-w-[1200px]  mx-auto max-w-[715px]  bg-gray-400 p-4 gap-2 rounded-md flex flex-col lg:flex-row lg:justify-center ">
         {isLoading && (
           <div className="w-full h-full flex justify-center items-center">
             <Spinner />
@@ -33,7 +33,7 @@ export const UpdateUserRigs = () => {
         {!isLoading && (
           <>
             {" "}
-            <div className="bg-primary-500 h-full rounded-md p-4 lg:w-1/2">
+            <div className="bg-primary-500 min-h-[380px] rounded-md p-4 lg:w-1/2">
               <span className="text-white tracking-[-0.5] mb-14 font-medium block">
                 Sondas vinculadas à: {userBeingEdited?.name}
               </span>
@@ -54,7 +54,7 @@ export const UpdateUserRigs = () => {
                       <div
                         key={id}
                         onClick={() => handleUnlinkRig(id)}
-                        className="p-4 bg-white cursor-pointer rounded-2xl shadow-[0_1px_2px] flex w-1/3 justify-between items-center border-l-4  border-secondary-500 lg:w-1/2"
+                        className="p-4 bg-white cursor-pointer rounded-2xl shadow-[0_1px_2px] flex w-1/4 justify-between items-center border-l-4  border-secondary-500 "
                       >
                         <span className="text-gray-800">{name}</span>
                         <span
@@ -69,9 +69,9 @@ export const UpdateUserRigs = () => {
                 )}
               </div>
             </div>
-            <div className="bg-primary-500 h-full rounded-md p-4 lg:w-1/2">
+            <div className="bg-primary-500 min-h-[380px] rounded-md p-4 lg:w-1/2">
               <span className="text-white tracking-[-0.5] mb-14 font-medium block">
-                Sondas vinculadas ao contrato do usuário
+                Sondas cadastradas no sistema
               </span>
               <div className="flex flex-wrap gap-2">
                 {availableRigs.length === 0 && (
@@ -91,7 +91,7 @@ export const UpdateUserRigs = () => {
                       <div
                         key={id}
                         onClick={() => handleLinkRig(id)}
-                        className="p-4 bg-white cursor-pointer rounded-2xl shadow-[0_1px_2px] flex w-1/3 justify-between items-center border-l-4  border-secondary-500 lg:w-1/2"
+                        className="p-4 bg-white cursor-pointer rounded-2xl shadow-[0_1px_2px] flex w-1/4 justify-between items-center border-l-4  border-secondary-500 "
                       >
                         <span className="text-gray-800">{name}</span>
                         <span

@@ -1,19 +1,22 @@
 import {createContext, useState} from "react";
 import React from "react";
-import {useEfficiencies} from "../../../../app/hooks/useEfficiencies";
+import {useEfficiencies} from "../../../../app/hooks/efficiencies/useEfficiencies";
 import {useAuth} from "../../../../app/hooks/useAuth";
 import {User} from "../../../../app/entities/User";
 import {startOfMonth, endOfMonth, format} from "date-fns";
-import {useRigs} from "../../../../app/hooks/useRigs";
+import {useRigs} from "../../../../app/hooks/rigs/useRigs";
 import {Rig} from "../../../../app/entities/Rig";
 import {Efficiency} from "../entities/Efficiency";
-import {useEfficiencyAverage} from "../../../../app/hooks/useEfficiencyAverage";
+import {useEfficiencyAverage} from "../../../../app/hooks/efficiencies/useEfficiencyAverage";
 import {AverageResponse} from "../../../../app/services/efficienciesService/getAverage";
 import {useSidebarContext} from "../../../../app/contexts/SidebarContext";
+import {getPeriodRange} from "../../../../app/utils/getPeriodRange";
 
 interface DashboardContextValue {
   selectedRig: string;
+  selectedPeriod: string;
   handleChangeRig(rigId: string): void;
+  handleChangePeriod(period: string): void;
   handleStartDateChange(date: Date): void;
   handleEndDateChange(date: Date): void;
   selectedEndDate: string;
@@ -39,6 +42,10 @@ interface DashboardContextValue {
   isFetchingAverage: boolean;
   average: AverageResponse;
   windowWidth: number;
+  months: {
+    label: string;
+    value: string;
+  }[];
 }
 
 export const DashboardContext = createContext({} as DashboardContextValue);
@@ -97,6 +104,8 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   const [selectedStartDate, setSelectedStartDate] = useState(formattedFirstDay);
   const [selectedEndDate, setSelectedEndDate] = useState(formattedLastDay);
 
+  const [selectedPeriod, setSelectedPeriod] = useState("");
+
   const [filters, setFilters] = useState({
     rigId: selectedRig,
     startDate: selectedStartDate,
@@ -109,6 +118,8 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   const {average, refetchAverage, isFetchingAverage} = useEfficiencyAverage(
     filters.rigId
   );
+
+  console.log(efficiencies.length > 15);
 
   const isEmpty: boolean = efficiencies.length === 0;
 
@@ -138,6 +149,36 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     }));
   };
 
+  const handleChangePeriod = (period: string) => {
+    setSelectedPeriod(period);
+
+    const periodFound = getPeriodRange(selectedRig);
+
+    if (periodFound) {
+      const monthPeriodSelected = periodFound.months.find((month) => {
+        return month.month === period;
+      });
+
+      handleStartDateChange(monthPeriodSelected?.startDate!);
+      handleEndDateChange(monthPeriodSelected?.endDate!);
+    }
+  };
+
+  const months = [
+    {label: "Janeiro", value: "Janeiro"},
+    {label: "Fevereiro", value: "Fevereiro"},
+    {label: "Março", value: "Março"},
+    {label: "Abril", value: "Abril"},
+    {label: "Maio", value: "Maio"},
+    {label: "Junho", value: "Junho"},
+    {label: "Julho", value: "Julho"},
+    {label: "Agosto", value: "Agosto"},
+    {label: "Setembro", value: "Setembro"},
+    {label: "Outubro", value: "Outubro"},
+    {label: "Novembro", value: "Novembro"},
+    {label: "Dezembro", value: "Dezembro"},
+  ];
+
   //Lopping para armazenar informações dos stats (colocar em um useMemo)
 
   let totalAvailableHours: number = 0;
@@ -154,12 +195,15 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     totalMovimentations +=
       efficiency.fluidRatio.length + efficiency.equipmentRatio.length;
 
-    //Somando os periodos
-    efficiency.periods.forEach(({type}) => {
+    const dtmFound = efficiency.periods.find(({type}) => {
       if (type === "DTM") {
-        totalDtms++;
+        return type;
       }
     });
+
+    if (dtmFound) {
+      totalDtms++;
+    }
   });
 
   const totalHours: number = totalAvailableHours + totalUnavailableHours;
@@ -174,8 +218,11 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   return (
     <DashboardContext.Provider
       value={{
+        months,
         selectedRig,
         handleChangeRig,
+        selectedPeriod,
+        handleChangePeriod,
         selectedStartDate,
         selectedEndDate,
         handleStartDateChange,

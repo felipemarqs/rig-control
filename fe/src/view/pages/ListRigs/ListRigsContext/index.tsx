@@ -2,7 +2,7 @@ import {createContext, useState} from "react";
 import {useAuth} from "../../../../app/hooks/useAuth";
 import {useNavigate} from "react-router-dom";
 import {Rig} from "../../../../app/entities/Rig";
-import {useRigs} from "../../../../app/hooks/useRigs";
+import {useRigs} from "../../../../app/hooks/rigs/useRigs";
 
 interface useListContextValues {
   isFetchingRigs: boolean;

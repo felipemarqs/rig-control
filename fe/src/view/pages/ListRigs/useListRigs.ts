@@ -1,6 +1,6 @@
 import {useAuth} from "../../../app/hooks/useAuth";
 import {useNavigate} from "react-router-dom";
-import {useRigs} from "../../../app/hooks/useRigs";
+import {useRigs} from "../../../app/hooks/rigs/useRigs";
 import {Rig} from "../../../app/entities/Rig";
 import {useState} from "react";
 

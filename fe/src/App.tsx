@@ -2,7 +2,7 @@ import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {Router} from "./Router";
 import {Toaster} from "react-hot-toast";
 import {AuthProvider} from "./app/contexts/AuthContext";
-/*import { ReactQueryDevtools } from "@tanstack/react-query-devtools"; */
+import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
 
 import {SidebarProvider} from "./app/contexts/SidebarContext";
 
@@ -25,7 +25,7 @@ export const App = () => {
           <Toaster position="bottom-center" reverseOrder={false} />
         </SidebarProvider>
       </AuthProvider>
-      {/*  <ReactQueryDevtools /> */}
+      <ReactQueryDevtools />
     </QueryClientProvider>
   );
 };
