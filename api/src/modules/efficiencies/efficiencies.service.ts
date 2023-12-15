@@ -216,17 +216,17 @@ export class EfficienciesService {
 
       if (type === 'DTM') {
         if (classification === 'LT20') {
-          dtmLt20TotalAmmount++;
+          dtmLt20TotalAmmount = 1;
           dtmLt20TotalHours += diffInMinutes / 60;
         }
 
         if (classification === 'BT20AND50') {
-          dtmBt20and50TotalAmmout++;
+          dtmBt20and50TotalAmmout = 1;
           dtmBt20And50TotalHours += diffInMinutes / 60;
         }
 
         if (classification === 'GT50') {
-          dtmGt50TotalAmount++;
+          dtmGt50TotalAmount = 1;
           dtmGt50TotalHours += diffInMinutes / 60;
         }
       }
@@ -374,6 +374,8 @@ export class EfficienciesService {
     bobRentTotalAmount = rigBillingConfiguration.bobRentTax * bobRentHours;
 
     truckKmTotalAmount = rigBillingConfiguration.truckKmTax * truckKm;
+
+    console.log(dtmGt50TotalAmount);
 
     const totalAmmount =
       (availableHourAmount +

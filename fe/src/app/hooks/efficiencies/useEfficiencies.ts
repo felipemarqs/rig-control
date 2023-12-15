@@ -1,7 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
-import {efficienciesService} from "../services/efficienciesService";
+import {efficienciesService} from "../../services/efficienciesService";
 
-import {EfficienciesFilters} from "../services/efficienciesService/getAll";
+import {EfficienciesFilters} from "../../services/efficienciesService/getAll";
 
 export const useEfficiencies = (filters: EfficienciesFilters) => {
   const {data, isFetching, refetch} = useQuery({

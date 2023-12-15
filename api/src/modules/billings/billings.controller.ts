@@ -6,8 +6,19 @@ export class BillingsController {
   constructor(private readonly billingsService: BillingsService) {}
 
   @Get()
-  findByEfficiency(@Query('efficiencyId', ParseUUIDPipe) efficiencyId: string) {
-    return this.billingsService.findByEfficiencyId(efficiencyId);
+  async findByRigId(
+    @Query('rigId', ParseUUIDPipe) rigId: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    const res = await this.billingsService.findByRigId({
+      rigId,
+      startDate,
+      endDate,
+    });
+
+    console.log(res);
+    return res;
   }
 
   @Get('/all')

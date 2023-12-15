@@ -1,13 +1,13 @@
 import {useEffect, useMemo, useState} from "react";
 import {useAuth} from "../../../app/hooks/useAuth";
-import {useUsers} from "../../../app/hooks/useUsers";
+import {useUsers} from "../../../app/hooks/users/useUsers";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {usersService} from "../../../app/services/usersService";
 import {customColorToast} from "../../../app/utils/customColorToast";
 import {useNavigate} from "react-router-dom";
 import {treatAxiosError} from "../../../app/utils/treatAxiosError";
 import {AxiosError} from "axios";
-import {useRigs} from "../../../app/hooks/useRigs";
+import {useRigs} from "../../../app/hooks/rigs/useRigs";
 
 interface Rig {
   id: string;

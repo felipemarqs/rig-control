@@ -8,6 +8,7 @@ import {
   FileText,
   CircleDollarSignIcon,
   ArchiveX,
+  Receipt,
   Building2,
   Construction,
 } from "lucide-react";
@@ -31,10 +32,19 @@ export const DesktopLayout = () => {
 
         {isUserAdm && (
           <SidebarItem
-            icon={<CircleDollarSignIcon size={20} />}
-            text="Faturamento"
+            icon={<Receipt size={20} />}
+            text="Faturamento Total"
             urlText="invoicing-dashboard"
-            isActive={active === "Faturamento"}
+            isActive={active === "Faturamento Total"}
+          />
+        )}
+
+        {isUserAdm && (
+          <SidebarItem
+            icon={<CircleDollarSignIcon size={20} />}
+            text="Faturamento Sonda"
+            urlText="invoicing-rig-dashboard"
+            isActive={active === "Faturamento Sonda"}
           />
         )}
 

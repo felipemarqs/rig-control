@@ -1,18 +1,18 @@
-import { useState } from "react";
-import { useAuth } from "../../../app/hooks/useAuth";
-import { useRigs } from "../../../app/hooks/useRigs";
-import { endOfMonth, format, startOfMonth } from "date-fns";
-import { useEfficiencies } from "../../../app/hooks/useEfficiencies";
+import {useState} from "react";
+import {useAuth} from "../../../app/hooks/useAuth";
+import {useRigs} from "../../../app/hooks/rigs/useRigs";
+import {endOfMonth, format, startOfMonth} from "date-fns";
+import {useEfficiencies} from "../../../app/hooks/efficiencies/useEfficiencies";
 
 export const useListController = () => {
-  const { user, signout } = useAuth();
+  const {user, signout} = useAuth();
 
   const isUserAdm = user?.accessLevel === "ADM";
 
-  const { rigs } = useRigs(isUserAdm);
+  const {rigs} = useRigs(isUserAdm);
 
   const userRig =
-    user?.rigs.map(({ rig: { id, name } }) => {
+    user?.rigs.map(({rig: {id, name}}) => {
       return {
         id,
         name,
@@ -52,7 +52,7 @@ export const useListController = () => {
     endDate: selectedEndDate,
   });
 
-  const { efficiencies, isFetchingEfficiencies, refetchEffciencies } =
+  const {efficiencies, isFetchingEfficiencies, refetchEffciencies} =
     useEfficiencies(filters);
 
   const isEmpty: boolean = efficiencies.length === 0;
@@ -63,7 +63,7 @@ export const useListController = () => {
 
   const handleChangeRig = (rigId: string) => {
     setSelectedRig(rigId);
-    setFilters((prevState) => ({ ...prevState, rigId: rigId }));
+    setFilters((prevState) => ({...prevState, rigId: rigId}));
   };
 
   const handleStartDateChange = (date: Date) => {

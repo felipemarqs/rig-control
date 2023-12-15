@@ -1,5 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
-import {contractsService} from "../services/contractsService";
+import {contractsService} from "../../services/contractsService";
 
 export const useContracts = (isUserAdm?: boolean) => {
   const {data, isFetching, refetch} = useQuery({

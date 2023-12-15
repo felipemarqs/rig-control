@@ -1,11 +1,13 @@
 import {httpClient} from "../httpClient";
 
-export type BillingsFilters = {
+export type BillingsByRigIFilters = {
+  rigId: string;
   startDate: string;
   endDate: string;
 };
-export interface BillingResponse {
-  availablehouramount: number;
+export interface BillingByRigIdResponse {
+  data: any;
+  /*   availablehouramount: number;
   dtmbt20and50amount: number;
   dtmgt50amount: number;
   dtmlt20amount: number;
@@ -18,14 +20,16 @@ export interface BillingResponse {
   glosshouramount: number;
   rigid: string;
   rigname: string;
-  total: number;
+  total: number; */
 }
 
-export const getAll = async (filters: BillingsFilters) => {
-  console.log("filters", JSON.stringify(filters));
-  const {data} = await httpClient.get<Array<BillingResponse>>(`/billings/all`, {
-    params: filters,
-  });
+export const getbyRigId = async (filters: BillingsByRigIFilters) => {
+  const {data} = await httpClient.get<Array<BillingByRigIdResponse>>(
+    `/billings/`,
+    {
+      params: filters,
+    }
+  );
 
-  return data;
+  return data[0];
 };

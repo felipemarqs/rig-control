@@ -1,19 +1,15 @@
-import {UF} from "../../../app/entities/Rig";
 import {z} from "zod";
+import {useBillingRigDetailDashboard} from "../../BillingRigDetailDashboardContext/useBillingDashboard";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {rigsService} from "../../../app/services/rigsService";
+import {currencyStringToNumber} from "../../../../../app/utils/currencyStringToNumber";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {useContracts} from "../../../app/hooks/contracts/useContracts";
-import {useAuth} from "../../../app/hooks/useAuth";
-import {currencyStringToNumber} from "../../../app/utils/currencyStringToNumber";
-import {treatAxiosError} from "../../../app/utils/treatAxiosError";
+import {billingConfigService} from "../../../../../app/services/billingConfigServices";
+import {customColorToast} from "../../../../../app/utils/customColorToast";
 import {AxiosError} from "axios";
-import {customColorToast} from "../../../app/utils/customColorToast";
+import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
 
 const schema = z.object({
-  name: z.string().nonempty("Nome é obrigatório"),
-  state: z.string().nonempty("Estado é obrigatório"),
   availableHourTax: z.union([z.string().nonempty("Obrigatório"), z.number()]),
   dtmBt20And50Tax: z.union([z.string().nonempty("Obrigatório"), z.number()]),
   dtmHourTax: z.union([z.string().nonempty("Obrigatório"), z.number()]),
@@ -119,38 +115,69 @@ const schema = z.object({
     z.string().nonempty("Saldo é obrigatório"),
     z.number(),
   ]),
-  contractId: z.string().nonempty("Contrato é obrigatório"),
   munckTax: z.union([z.string().nonempty("Saldo é obrigatório"), z.number()]),
 });
 
 type FormData = z.infer<typeof schema>;
 
-export const useCreateRig = () => {
-  const {user} = useAuth();
-  const queryClient = useQueryClient();
+export const useEditConfigModal = () => {
+  const {isEditConfigModalOpen, handleCloseEditConfigModal, configBeingEdited} =
+    useBillingRigDetailDashboard();
 
-  const isUserAdm = user?.accessLevel === "ADM";
+  const {isLoading, mutateAsync: mutateAsyncUpdateConfig} = useMutation(
+    billingConfigService.update
+  );
+
+  const queryClient = useQueryClient();
 
   const {
     handleSubmit: hookFormHandleSubmit,
     register,
     control,
-    reset,
     formState: {errors},
   } = useForm<FormData>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      availableHourTax: configBeingEdited?.availableHourTax,
+      glossHourTax: configBeingEdited?.glossHourTax,
+      dtmLt20Tax: configBeingEdited?.dtmLt20Tax,
+      dtmBt20And50Tax: configBeingEdited?.dtmBt20And50Tax,
+      dtmGt50Tax: configBeingEdited?.dtmGt50Tax,
+      equipmentRatioLt20Tax: configBeingEdited?.equipmentRatioLt20Tax,
+      equipmentRatioBt20And50Tax: configBeingEdited?.equipmentRatioBt20And50Tax,
+      equipmentRatioGt50Tax: configBeingEdited?.equipmentRatioGt50Tax,
+      fluidRatioLt20Tax: configBeingEdited?.fluidRatioLt20Tax,
+      fluidRatioBt20And50Tax: configBeingEdited?.fluidRatioBt20And50Tax,
+      fluidRatioGt50Tax: configBeingEdited?.fluidRatioGt50Tax,
+      mobilization: configBeingEdited?.mobilization,
+      readjustment: configBeingEdited?.readjustment,
+      bobRentTax: configBeingEdited?.bobRentTax,
+      dtmHourTax: configBeingEdited?.dtmHourTax,
+      extraTrailerTax: configBeingEdited?.extraTrailerTax,
+      generatorFuelTax: configBeingEdited?.generatorFuelTax,
+      mixTankDemobilizationTax: configBeingEdited?.mixTankDemobilizationTax,
+      mixTankDtmTax: configBeingEdited?.mixTankDtmTax,
+      mixTankHourRentTax: configBeingEdited?.mixTankHourRentTax,
+      mixTankMobilizationTax: configBeingEdited?.mixTankMobilizationTax,
+      mixTankMonthRentTax: configBeingEdited?.mixTankHourRentTax,
+      mixTankOperatorTax: configBeingEdited?.mixTankOperatorTax,
+      munckTax: configBeingEdited?.munckTax,
+      powerSwivelTax: configBeingEdited?.powerSwivelTax,
+      suckingTruckTax: configBeingEdited?.suckingTruckTax,
+      transportationTax: configBeingEdited?.transportationTax,
+      truckCartRentTax: configBeingEdited?.truckCartRentTax,
+      truckKmTax: configBeingEdited?.truckKmTax,
+      truckTankTax: configBeingEdited?.truckTankTax,
+      christmasTreeDisassemblyTax:
+        configBeingEdited?.christmasTreeDisassemblyTax,
+      demobilization: configBeingEdited?.demobilization,
+    },
   });
-
-  const {isLoading, mutateAsync} = useMutation(rigsService.create);
-
-  const {contracts, isFetchingContracts} = useContracts(isUserAdm);
 
   const handleSubmit = hookFormHandleSubmit(async (data) => {
     try {
-      await mutateAsync({
-        ...data,
-        state: data.state as UF,
-        isActive: true,
+      await mutateAsyncUpdateConfig({
+        id: configBeingEdited!.id,
         availableHourTax:
           currencyStringToNumber(data.availableHourTax as string) ??
           (data.availableHourTax as number),
@@ -245,23 +272,29 @@ export const useCreateRig = () => {
         christmasTreeDisassemblyTax:
           currencyStringToNumber(data.christmasTreeDisassemblyTax as string) ??
           (data.christmasTreeDisassemblyTax as number),
+        rigId: configBeingEdited?.rig.id!,
       });
-      queryClient.invalidateQueries({queryKey: ["contracts", "rigs"]});
-      customColorToast("Sonda cadastrada com Sucesso!", "#1c7b7b", "success");
-      reset();
+
+      queryClient.invalidateQueries({queryKey: ["configBillings"]});
+
+      customColorToast(
+        "Configuração editada com sucesso!",
+        "#1c7b7b",
+        "success"
+      );
+      handleCloseEditConfigModal();
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
-      console.log(error);
     }
   });
 
   return {
-    register,
+    isEditConfigModalOpen,
+    handleCloseEditConfigModal,
+    handleSubmit,
     control,
     errors,
-    handleSubmit,
-    contracts,
-    isFetchingContracts,
+    register,
     isLoading,
   };
 };

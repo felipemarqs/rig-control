@@ -2,7 +2,7 @@ import {useState} from "react";
 
 import {endOfMonth, format, startOfMonth} from "date-fns";
 
-import {useBillings} from "../../../app/hooks/useBillings";
+import {useBillings} from "../../../app/hooks/billings/useBillings";
 
 export const useBillingListController = () => {
   // Obtenha a data atual

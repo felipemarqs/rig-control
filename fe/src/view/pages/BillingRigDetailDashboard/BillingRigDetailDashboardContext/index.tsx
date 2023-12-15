@@ -6,8 +6,11 @@ import {BillingResponse} from "../../../../app/services/billingServices/getAll";
 import {formatCurrency} from "../../../../app/utils/formatCurrency";
 import {useConfigBillings} from "../../../../app/hooks/useConfigBillings";
 import {BillingConfigResponse} from "../../../../app/services/billingConfigServices/getAll";
+import {useBillingByRigId} from "../../../../app/hooks/billings/useBillingByRigId";
+import {Rig} from "../../../../app/entities/Rig";
+import {useRigs} from "../../../../app/hooks/rigs/useRigs";
 
-interface BillingDashboardContextValue {
+interface BillingRigDetailDashboardContextValue {
   handleStartDateChange(date: Date): void;
   handleEndDateChange(date: Date): void;
   selectedEndDate: string;
@@ -29,6 +32,12 @@ interface BillingDashboardContextValue {
     isBeginning: boolean;
     isEnd: boolean;
   };
+  rigs:
+    | Rig[]
+    | {
+        id: string;
+        name: string;
+      }[];
   setConfigSliderState({
     isBeginning,
     isEnd,
@@ -40,6 +49,7 @@ interface BillingDashboardContextValue {
     isBeginning: boolean;
     isEnd: boolean;
   };
+  selectedRig: string;
   isEditRigModalOpen: boolean;
   isEditConfigModalOpen: boolean;
   handleCloseEditRigModal(): void;
@@ -49,13 +59,14 @@ interface BillingDashboardContextValue {
   rigBeingEdited: BillingResponse | null;
   configBeingEdited: BillingConfigResponse | null;
   configs: Array<BillingConfigResponse>;
+  handleChangeRig(rigId: string): void;
 }
 
-export const BillingDashboardContext = createContext(
-  {} as BillingDashboardContextValue
+export const BillingRigDetailDashboardContext = createContext(
+  {} as BillingRigDetailDashboardContextValue
 );
 
-export const BillingDashboardProvider = ({
+export const BillingRigDetailDashboardProvider = ({
   children,
 }: {
   children: React.ReactNode;
@@ -87,6 +98,10 @@ export const BillingDashboardProvider = ({
     null
   );
 
+  const {rigs} = useRigs(true);
+
+  const [selectedRig, setSelectedRig] = useState<string>("");
+
   const [isEditConfigModalOpen, setIsEditConfigModalOpen] = useState(false);
   const [configBeingEdited, setConfigBeingEdited] =
     useState<null | BillingConfigResponse>(null);
@@ -102,6 +117,7 @@ export const BillingDashboardProvider = ({
   });
 
   const [filters, setFilters] = useState({
+    rigId: selectedRig,
     startDate: selectedStartDate,
     endDate: selectedEndDate,
   });
@@ -111,6 +127,11 @@ export const BillingDashboardProvider = ({
     setIsEditRigModalOpen(false);
     setRigBeingEdited(null);
   }, []);
+
+  const handleChangeRig = (rigId: string) => {
+    setSelectedRig(rigId);
+    setFilters((prevState) => ({...prevState, rigId: rigId}));
+  };
 
   const handleOpenEditRigModal = useCallback((data: BillingResponse) => {
     setRigBeingEdited(data);
@@ -134,11 +155,17 @@ export const BillingDashboardProvider = ({
     []
   );
 
-  const {billings, isFetchingBillings, refetchBillings} = useBillings(filters);
+  const {billings, isFetchingBillings} = useBillings(filters);
 
+  const {billing, refetchBilling} = useBillingByRigId(filters);
+
+  console.log(`Billing from`, billing);
+
+  console.log(`Filters`, filters);
   const {configs, isFetchingConfig} = useConfigBillings();
 
-  const isEmpty: boolean = billings.length === 0;
+  //Temporary Condition
+  const isEmpty: boolean = true; /* billings.length === 0 */
 
   const totalAmount = useMemo(() => {
     let totalBillings = 0;
@@ -151,7 +178,7 @@ export const BillingDashboardProvider = ({
   }, [billings]);
 
   const handleApplyFilters = () => {
-    refetchBillings();
+    refetchBilling();
   };
 
   const handleStartDateChange = useCallback((date: Date) => {
@@ -171,7 +198,7 @@ export const BillingDashboardProvider = ({
   };
 
   return (
-    <BillingDashboardContext.Provider
+    <BillingRigDetailDashboardContext.Provider
       value={{
         selectedStartDate,
         selectedEndDate,
@@ -196,9 +223,12 @@ export const BillingDashboardProvider = ({
         handleOpenEditConfigModal,
         configs,
         configBeingEdited,
+        handleChangeRig,
+        selectedRig,
+        rigs,
       }}
     >
       {children}
-    </BillingDashboardContext.Provider>
+    </BillingRigDetailDashboardContext.Provider>
   );
 };
