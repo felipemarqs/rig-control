@@ -1,8 +1,8 @@
 import {useState} from "react";
 import {useAuth} from "../../../app/hooks/useAuth";
-import {useRigs} from "../../../app/hooks/useRigs";
+import {useRigs} from "../../../app/hooks/rigs/useRigs";
 import {endOfMonth, format, startOfMonth} from "date-fns";
-import {useEfficiencies} from "../../../app/hooks/useEfficiencies";
+import {useEfficiencies} from "../../../app/hooks/efficiencies/useEfficiencies";
 
 export const useListController = () => {
   const {user, signout} = useAuth();
@@ -11,7 +11,13 @@ export const useListController = () => {
 
   const {rigs} = useRigs(isUserAdm);
 
-  const userRig = [{id: user?.rigs[0].rig.id, name: user?.rigs[0].rig.name}];
+  const userRig =
+    user?.rigs.map(({rig: {id, name}}) => {
+      return {
+        id,
+        name,
+      };
+    }) || [];
 
   const [selectedRig, setSelectedRig] = useState<string>(() => {
     return isUserAdm ? "" : user?.rigs[0].rig.id!;

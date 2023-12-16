@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
-import {DomainEfficiency} from "../../../entities/DomainEfficiency";
-import {differenceInMinutes, parse} from "date-fns";
-import {ToPersistanceEfficiency} from "../../../entities/PersistanceEfficiency";
-import {getTotalHoursFromTimeString} from "../../../utils/getTotalHoursFromTimeString";
+import { DomainEfficiency } from "../../../entities/DomainEfficiency";
+import { differenceInMinutes, parse } from "date-fns";
+import { ToPersistanceEfficiency } from "../../../entities/PersistanceEfficiency";
+import { getTotalHoursFromTimeString } from "../../../utils/getTotalHoursFromTimeString";
 
 export const toPersistence = (domainEfficiency: DomainEfficiency) => {
   let totalAvailableHours = 0;
@@ -16,7 +16,14 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
   );
 
   const periodsArray = domainEfficiency.periods.map(
-    ({startHour, endHour, classification, type, description}) => {
+    ({
+      startHour,
+      endHour,
+      classification,
+      type,
+      description,
+      repairClassification,
+    }) => {
       const [startHourString, startMinuteString] = startHour.split(":");
       const [endHourString, endMinuteString] = endHour.split(":");
 
@@ -58,6 +65,9 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
         classification: classification,
         description: description,
         type: type,
+        repairClassification: repairClassification
+          ? repairClassification
+          : null,
       };
     }
   );
@@ -93,7 +103,7 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
     isSuckingTruckSelected: domainEfficiency.isSuckingTruckSelected,
   };
 
-  domainEfficiency.periods.forEach(({equipmentRatio, fluidRatio}) => {
+  domainEfficiency.periods.forEach(({ equipmentRatio, fluidRatio }) => {
     if (equipmentRatio) {
       toPersistenceObj.equipmentRatio.push({
         ratio: equipmentRatio,
@@ -107,7 +117,7 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
     }
   });
 
-  return {toPersistenceObj};
+  return { toPersistenceObj };
 };
 
 /* export class PeriodDto {

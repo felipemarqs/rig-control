@@ -1,7 +1,16 @@
-import { Body, Controller, Get, Param, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Put,
+  Query,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { IsUserAdm } from 'src/shared/decorators/IsUserAdm';
 
 @Controller('users')
 export class UsersController {
@@ -13,7 +22,14 @@ export class UsersController {
   }
 
   @Get()
-  findAll(@Query('contractId') contractId?: string) {
+  findAll(
+    @IsUserAdm() isUserAdm: boolean,
+    @Query('contractId') contractId?: string,
+  ) {
+    if (!isUserAdm) {
+      throw new UnauthorizedException('Acesso Restrito!');
+    }
+
     return this.usersService.findAll({ contractId });
   }
 

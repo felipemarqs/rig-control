@@ -8,6 +8,7 @@ import {
   FileText,
   CircleDollarSignIcon,
   ArchiveX,
+  Receipt,
   Building2,
   Construction,
 } from "lucide-react";
@@ -15,7 +16,7 @@ import {
 import {useSidebarContext} from "../../../app/contexts/SidebarContext";
 import {useAuth} from "../../../app/hooks/useAuth";
 
-export const MainLayout = () => {
+export const DesktopLayout = () => {
   //const {activeItem,handleNavItemChange} = useMainLayout()
   const {active} = useSidebarContext();
   const {isUserAdm, userAccessLevel} = useAuth();
@@ -31,14 +32,23 @@ export const MainLayout = () => {
 
         {isUserAdm && (
           <SidebarItem
-            icon={<CircleDollarSignIcon size={20} />}
-            text="Faturamento"
+            icon={<Receipt size={20} />}
+            text="Faturamento Total"
             urlText="invoicing-dashboard"
-            isActive={active === "Faturamento"}
+            isActive={active === "Faturamento Total"}
           />
         )}
 
-        {userAccessLevel !== "VIEWER" && (
+        {isUserAdm && (
+          <SidebarItem
+            icon={<CircleDollarSignIcon size={20} />}
+            text="Faturamento Sonda"
+            urlText="invoicing-rig-dashboard"
+            isActive={active === "Faturamento Sonda"}
+          />
+        )}
+
+        {userAccessLevel == "USER" && (
           <SidebarItem
             icon={<FileText size={20} />}
             text="Formulário"
@@ -57,9 +67,18 @@ export const MainLayout = () => {
         {isUserAdm && (
           <SidebarItem
             icon={<Construction size={20} />}
-            text="Sonda"
+            text="Cadastrar Sonda"
             urlText="rig"
-            isActive={active === "Sonda"}
+            isActive={active === "Cadastrar Sonda"}
+          />
+        )}
+
+        {isUserAdm && (
+          <SidebarItem
+            icon={<Construction size={20} />}
+            text="Listar Sondas"
+            urlText="list-rigs"
+            isActive={active === "Listar Sondas"}
           />
         )}
 
@@ -83,7 +102,6 @@ export const MainLayout = () => {
 
         {isUserAdm && (
           <SidebarItem
-            alert
             icon={<ArchiveX size={20} />}
             text="Deleção"
             urlText="deletion-requests"

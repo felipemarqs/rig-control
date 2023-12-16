@@ -1,18 +1,27 @@
-import {Header} from "../../components/Header";
+import { Header } from "../../components/Header";
 
-import {cn} from "../../../app/utils/cn";
-import {PeriodsFormContainer} from "./components/PeriodsFormContainer";
-import {BraskemFormContainer} from "./components/BraskemForm";
-import {FormContext, FormProvider} from "./components/FormContext";
-import {TresRFormContainer} from "./components/TresRForm";
-import {OrigemContainer} from "./components/OrigemForm";
-import {CarmoEnergyContainer} from "./components/CarmoEnergyForm";
+import { cn } from "../../../app/utils/cn";
+import { PeriodsFormContainer } from "./components/PeriodsFormContainer";
+import { BraskemFormContainer } from "./components/BraskemForm";
+import { FormContext, FormProvider } from "./components/FormContext";
+import { TresRFormContainer } from "./components/TresRForm";
+import { OrigemContainer } from "./components/OrigemForm";
+import { CarmoEnergyContainer } from "./components/CarmoEnergyForm";
+import { Button } from "../../components/Button";
 
 export const Form = () => {
   return (
     <FormProvider>
       <FormContext.Consumer>
-        {({isPending, remainingMinutes, userRig}) => (
+        {({
+          isPending,
+          remainingMinutes,
+          isFormValid,
+          handleSubmit,
+          periods,
+          isLoading,
+          selectedContract,
+        }) => (
           <div className="w-full h-full lg:min-w-[1000px]">
             <Header
               title=" Boletim Diário de Ocorrência"
@@ -28,20 +37,33 @@ export const Form = () => {
               {!isPending && <span> Horários Preenchidos!</span>}
             </div>
 
-            <div className="w-full h-[80vh]  overflow-y-auto  flex-col-reverse justify-center flex gap-2  lg:h-[87vh] lg:flex-row lg:p-4">
+            <div className="w-full h-[80vh]  overflow-y-auto  flex-col justify-center flex gap-2  lg:h-[87vh] lg:flex-row lg:p-4">
               <PeriodsFormContainer />
 
-              {userRig.contract.name === "Petrobrás" && <></>}
+              {selectedContract?.rig.contract.name.toLocaleLowerCase() ===
+                "petrobrás" && <></>}
 
-              {userRig.contract.name === "Braskem" && <BraskemFormContainer />}
+              {selectedContract?.rig.contract.name.toLocaleLowerCase() ===
+                "braskem" && <BraskemFormContainer />}
 
-              {userRig.contract.name === "3R" && <TresRFormContainer />}
+              {selectedContract?.rig.contract.name.toLocaleLowerCase() ===
+                "3r" && <TresRFormContainer />}
 
-              {userRig.contract.name === "Origem" && <OrigemContainer />}
+              {selectedContract?.rig.contract.name.toLocaleLowerCase() ===
+                "origem" && <OrigemContainer />}
 
-              {userRig.contract.name === "Carmo Energy" && (
-                <CarmoEnergyContainer />
-              )}
+              {selectedContract?.rig.contract.name.toLocaleLowerCase() ===
+                "carmo energy" && <CarmoEnergyContainer />}
+            </div>
+
+            <div className="flex justify-center mt-6 lg:hidden">
+              <Button
+                disabled={!isFormValid || isLoading}
+                className="bg-secondary-500 w-2/3 "
+                onClick={() => handleSubmit(periods)}
+              >
+                Enviar dados
+              </Button>
             </div>
           </div>
         )}

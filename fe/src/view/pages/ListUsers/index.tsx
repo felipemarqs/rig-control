@@ -1,12 +1,11 @@
-import { PlusIcon } from "@radix-ui/react-icons";
-import { Header } from "../../components/Header";
-import { Spinner } from "../../components/Spinner";
-import { useListUsers } from "./useListUsers";
-import { Link } from "react-router-dom";
+import {PlusIcon} from "@radix-ui/react-icons";
+import {Header} from "../../components/Header";
+import {Spinner} from "../../components/Spinner";
+import {useListUsers} from "./useListUsers";
+import {Link} from "react-router-dom";
 
 export const ListUsers = () => {
-  const { users, isFetchingUsers, navigate } = useListUsers();
-
+  const {users, isFetchingUsers, navigate} = useListUsers();
 
   return (
     <div className="w-full h-full overflow-y-scroll">
@@ -26,7 +25,7 @@ export const ListUsers = () => {
             </div>
           )}
           {!isFetchingUsers && (
-            <div className="p-8 flex flex-col h-full gap-4 lg:items-center">
+            <div className="p-2 flex flex-col h-full gap-4 lg:items-center lg:p-8">
               <div
                 onClick={() => navigate("/create-user")}
                 className="p-4 bg-white rounded-2xl shadow-[0_1px_2px] flex  h-20 gap-4 justify-center items-center border-l-4  border-primary-500 lg:w-3/4 cursor-pointer"
@@ -38,77 +37,59 @@ export const ListUsers = () => {
                   Cadastre um novo usuário
                 </span>
               </div>
+
               {users.map((user) => (
                 <div
                   key={user.id}
-                  className="p-4 bg-white rounded-2xl shadow-[0_1px_2px] flex-col flex h-40 justify-between border-l-4  border-primary-500 lg:w-3/4"
+                  className="p-4 grid grid-cols-12 auto-rows-[50px] gap-3 rounded-2xl shadow-[0_1px_2px] h-60 lg:h-44 justify-between border-l-4 border-primary-500  bg-white lg:w-3/4 "
                 >
-                  <div className="flex justify-between w-full">
-                    <div className="flex flex-col">
-                      <span className="text-gray-800 tracking-[-0.5] font-medium block">
-                        Nome
-                      </span>
-                      <span className="text-gray-600 tracking-[-0.5] font-medium block">
-                        {user.name}
-                      </span>
-                    </div>
-
-                    <div className="flex flex-col w-1/2 ">
-                      <span className="text-gray-800 tracking-[-0.5] font-medium block">
-                        Sondas
-                      </span>
-                      <div className="flex gap-2">
-                        {user.rigs.map((rig) => (
-                          <span
-                            key={rig.rig.id}
-                            className="text-gray-600 tracking-[-0.5] font-medium block border-r-2 pr-2"
-                          >
-                            {rig.rig.name}
-                          </span>
-                        ))}
-                        {user.accessLevel !== "ADM" && (
-                          <Link
-                            className="text-primary-500 tracking-[-0.5] underline font-semibold"
-                            to={`/users/update-rigs/${user.id}`}
-                          >
-                            Editar Sondas
-                          </Link>
-                        )}
-                      </div>
-                    </div>
+                  <div className="col-span-6 row-span-1 flex flex-col">
+                    <span className="text-gray-800 tracking-[-0.5] font-medium block">
+                      Nome
+                    </span>
+                    <span className="text-gray-600 tracking-[-0.5] font-medium block">
+                      {user.name}
+                    </span>
                   </div>
 
-                  <div className="flex justify-between  w-full">
-                    <div className="flex flex-col w-1/2">
-                      <span className="text-gray-800 tracking-[-0.5] font-medium block">
-                        Email
-                      </span>
-                      <span className="text-gray-600 tracking-[-0.5] font-medium block">
-                        {user.email}
-                      </span>
-                    </div>
+                  <div className="col-span-12 row-span-1  flex flex-col lg:col-span-6">
+                    <span className="text-gray-800 tracking-[-0.5] font-medium block">
+                      Email
+                    </span>
+                    <span className="text-gray-600 tracking-[-0.5] font-medium block">
+                      {user.email}
+                    </span>
+                  </div>
 
-                    <div className="w-1/2 flex justify-between">
-                      <div className="flex flex-col ">
-                        <span className="text-gray-800 tracking-[-0.5] font-medium block">
-                          Contrato
-                        </span>
-                        <span className="text-gray-600 tracking-[-0.5] font-medium block">
-                          {user.accessLevel === "ADM" && "ADM"}
-                          {user.accessLevel !== "ADM" &&
-                            user.rigs[0].rig.contract.name}
-                        </span>
-                      </div>
+                  <div className="col-span-4 row-span-1  flex flex-col lg:col-span-6">
+                    <span className="text-gray-800 tracking-[-0.5] font-medium block">
+                      Nv. de Acesso
+                    </span>
+                    <span className="text-gray-600 tracking-[-0.5] font-medium block">
+                      {user.accessLevel}
+                    </span>
+                  </div>
 
-                      <div className="flex flex-col ">
-                        <span className="text-gray-800 tracking-[-0.5] font-medium block">
-                          Nível de Acesso
-                        </span>
-                        <span className="text-gray-600 tracking-[-0.5] font-medium block">
-                          {user.accessLevel}
-                        </span>
-                      </div>
-                    </div>
+                  <div className="col-span-6 row-span-1  flex flex-col">
+                    <span className="text-gray-800 tracking-[-0.5] font-medium block">
+                      Contrato
+                    </span>
+                    <span className="text-gray-600 tracking-[-0.5] font-medium block">
+                      {user.accessLevel === "ADM" && "ADM"}
+                      {user.accessLevel !== "ADM" &&
+                        user.rigs[0].rig.contract.name}
+                    </span>
+                  </div>
+
+                  <div className="col-span-12 row-span-1  flex flex-wrap justify-end">
+                    {user.accessLevel !== "ADM" && (
+                      <Link
+                        className="text-primary-500 tracking-[-0.5] underline font-semibold px-2"
+                        to={`/users/update-rigs/${user.id}`}
+                      >
+                        Visualizar Sondas
+                      </Link>
+                    )}
                   </div>
                 </div>
               ))}

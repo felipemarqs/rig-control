@@ -1,14 +1,13 @@
 import {useEffect, useMemo, useState} from "react";
 import {useAuth} from "../../../app/hooks/useAuth";
-import {useUsers} from "../../../app/hooks/useUsers";
-
-import {useContracts} from "../../../app/hooks/useContracts";
-import {useMutation} from "@tanstack/react-query";
+import {useUsers} from "../../../app/hooks/users/useUsers";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {usersService} from "../../../app/services/usersService";
 import {customColorToast} from "../../../app/utils/customColorToast";
 import {useNavigate} from "react-router-dom";
 import {treatAxiosError} from "../../../app/utils/treatAxiosError";
 import {AxiosError} from "axios";
+import {useRigs} from "../../../app/hooks/rigs/useRigs";
 
 interface Rig {
   id: string;
@@ -25,7 +24,10 @@ export const useUpdateUserRigs = (id: string) => {
   const [availableRigs, setAvailableRigs] = useState<Array<Rig>>([]);
 
   const isUserAdm = user?.accessLevel === "ADM";
-  const {contracts, isFetchingContracts} = useContracts(isUserAdm);
+
+  const {rigs, isFetchingRigs} = useRigs(isUserAdm);
+
+  const queryClient = useQueryClient();
 
   const {users, isFetchingUsers} = useUsers(filters);
 
@@ -46,24 +48,15 @@ export const useUpdateUserRigs = (id: string) => {
       })
     )!;
 
-    const userContract = contracts.find(
-      //@ts-ignore
-      (contract) => userBeingEdited?.contract[0].contractId === contract.id
-    );
-    [];
-    const contractRigs = userContract
-      ? userContract?.rigs.map(({id, name, isActive}) => ({
-          id,
-          name,
-          isActive,
-        }))!
-      : [];
+    const contractRigs = rigs;
 
     const availableRigs = contractRigs
       ? contractRigs.filter(
           (rig) => !userRigs.some((userRig) => userRig.id === rig.id)
         )
       : [];
+
+    console.log(contractRigs);
 
     setAvailableRigs(availableRigs);
 
@@ -91,6 +84,7 @@ export const useUpdateUserRigs = (id: string) => {
       await mutateAsync(body);
       navigate("/users");
       customColorToast("Sondas editadas com sucesso!", "#1c7b7b", "success");
+      queryClient.invalidateQueries({queryKey: ["users"]});
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
       console.log(error);
@@ -99,7 +93,7 @@ export const useUpdateUserRigs = (id: string) => {
 
   return {
     user,
-    isLoading: isFetchingUsers || isFetchingContracts,
+    isLoading: isFetchingUsers || isFetchingRigs,
     userBeingEdited,
     userRigs,
     availableRigs,

@@ -36,3 +36,18 @@ body,
 ::-webkit-scrollbar-track:hover {
   background: #1c7b7b;
 }
+
+// Add this style to your css file
+.sticky-nav {
+  animation: sticky-nav 300ms;
+}
+
+@keyframes sticky-nav {
+  0% {
+    transform: translateY(-6em);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}

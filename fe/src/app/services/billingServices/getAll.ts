@@ -22,6 +22,7 @@ export interface BillingResponse {
 }
 
 export const getAll = async (filters: BillingsFilters) => {
+  console.log("filters", JSON.stringify(filters));
   const {data} = await httpClient.get<Array<BillingResponse>>(`/billings/all`, {
     params: filters,
   });

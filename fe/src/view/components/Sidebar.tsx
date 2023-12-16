@@ -8,8 +8,7 @@ import {useNavigate} from "react-router-dom";
 import {cn} from "../../app/utils/cn";
 
 export default function Sidebar({children}: {children: React.ReactNode}) {
-  const {expanded, toggleVisibility, windowWidth, toggleHiddenVisibility} =
-    useSidebarContext();
+  const {expanded, toggleVisibility} = useSidebarContext();
   const {signout, user} = useAuth();
   const navigate = useNavigate();
 
@@ -25,9 +24,7 @@ export default function Sidebar({children}: {children: React.ReactNode}) {
             alt=""
           />
           <button
-            onClick={() =>
-              windowWidth > 1300 ? toggleVisibility() : toggleHiddenVisibility()
-            }
+            onClick={() => toggleVisibility()}
             className="p-1.5 rounded-lg bg-primary-500 text-white hover:bg-primary-300"
           >
             {expanded ? <ChevronFirst /> : <ChevronLast />}
@@ -48,7 +45,9 @@ export default function Sidebar({children}: {children: React.ReactNode}) {
             <div className="leading-4">
               <h4 className="text-white font-semibold">{user?.name}</h4>
               <span className="text-xs  text-white">
-                {user?.rigs[0].rig.name}
+                {user?.accessLevel === "ADM"
+                  ? "ADMINISTRADOR"
+                  : user?.rigs[0].rig.name}
               </span>
             </div>
           </div>

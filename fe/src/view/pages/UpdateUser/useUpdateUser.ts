@@ -43,11 +43,6 @@ export const useUpdateUser = () => {
   const {isLoading, mutateAsync} = useMutation(usersService.update);
 
   const handleSubmit = hookFormHandleSubmit(async (data) => {
-    console.log({
-      id: user?.id!,
-      accessLevel: user?.accessLevel as AccessLevel,
-      ...data,
-    });
     try {
       await mutateAsync({
         id: user?.id!,
@@ -59,7 +54,7 @@ export const useUpdateUser = () => {
       reset();
 
       queryClient.invalidateQueries({queryKey: ["users"]});
-      navigate("/users");
+      navigate("/dashboard");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
       console.log(error);

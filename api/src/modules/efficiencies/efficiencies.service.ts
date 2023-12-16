@@ -143,30 +143,6 @@ export class EfficienciesService {
       },
     };
 
-    const efficiencytes = await this.efficiencyRepo.create({
-      data: {
-        ...efficiencyData,
-        christmasTreeDisassemblyHours: christmasTreeDisassemblyHours,
-        bobRentHours: bobRentHours,
-        hasDemobilization: isDemobilizationSelected,
-        hasExtraTrailer: isExtraTrailerSelected,
-        hasGeneratorFuel: isFuelGeneratorSelected,
-        hasMixTankDemobilization: isTankMixDemobilizationSelected,
-        hasMixTankDtm: isTankMixDTMSelected,
-        hasMixTankHourRent: isMixTankSelected,
-        hasMixTankMobilization: isTankMixMobilizationSelected,
-        hasMixTankMonthRent: isMixTankMonthSelected,
-        hasMixTankOperator: isMixTankOperatorsSelected,
-        hasMunck: isMunckSelected,
-        hasPowerSwivel: isPowerSwivelSelected,
-        hasSuckingTruck: isSuckingTruckSelected,
-        hasTransportation: isTransportationSelected,
-        hasTruckCartRent: isTruckCartSelected,
-        hasTruckTank: isTruckTankSelected,
-        truckKmHours: truckKm,
-      },
-    });
-
     if (equipmentRatio?.length > 0) {
       efficiencyData['equipmentRatio'] = {
         createMany: {
@@ -240,17 +216,17 @@ export class EfficienciesService {
 
       if (type === 'DTM') {
         if (classification === 'LT20') {
-          dtmLt20TotalAmmount++;
+          dtmLt20TotalAmmount = 1;
           dtmLt20TotalHours += diffInMinutes / 60;
         }
 
         if (classification === 'BT20AND50') {
-          dtmBt20and50TotalAmmout++;
+          dtmBt20and50TotalAmmout = 1;
           dtmBt20And50TotalHours += diffInMinutes / 60;
         }
 
         if (classification === 'GT50') {
-          dtmGt50TotalAmount++;
+          dtmGt50TotalAmount = 1;
           dtmGt50TotalHours += diffInMinutes / 60;
         }
       }
@@ -398,6 +374,8 @@ export class EfficienciesService {
     bobRentTotalAmount = rigBillingConfiguration.bobRentTax * bobRentHours;
 
     truckKmTotalAmount = rigBillingConfiguration.truckKmTax * truckKm;
+
+    console.log(dtmGt50TotalAmount);
 
     const totalAmmount =
       (availableHourAmount +
@@ -548,6 +526,26 @@ export class EfficienciesService {
         availableHours: true,
         rigId: true,
         userId: true,
+        christmasTreeDisassemblyHours: true,
+        bobRentHours: true,
+        hasDemobilization: true,
+        hasExtraTrailer: true,
+        hasGeneratorFuel: true,
+        hasMixTankDemobilization: true,
+        hasMixTankDtm: true,
+        hasMixTankHourRent: true,
+        hasMixTankMobilization: true,
+        hasMixTankMonthRent: true,
+        hasMixTankOperator: true,
+        hasMunck: true,
+        hasPowerSwivel: true,
+        hasSuckingTruck: true,
+        hasTransportation: true,
+        hasTruckCartRent: true,
+        truckKmHours: true,
+        well: true,
+        hasTruckTank: true,
+        rig: true,
         user: {
           select: {
             name: true,
