@@ -119,8 +119,6 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     filters.rigId
   );
 
-  console.log(efficiencies.length > 15);
-
   const isEmpty: boolean = efficiencies.length === 0;
 
   const handleApplyFilters = () => {
@@ -209,10 +207,10 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   const totalHours: number = totalAvailableHours + totalUnavailableHours;
 
   let availableHoursPercentage: number = Number(
-    ((totalAvailableHours * 100) / totalHours).toFixed()
+    ((totalAvailableHours * 100) / totalHours).toFixed(2)
   );
   let unavailableHoursPercentage: number = Number(
-    ((totalUnavailableHours * 100) / totalHours).toFixed()
+    ((totalUnavailableHours * 100) / totalHours).toFixed(2)
   );
 
   return (

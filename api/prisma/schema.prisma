@@ -153,6 +153,7 @@ enum PeriodType {
   REPAIR
   DTM
   WORKING
+  SCHEDULED_STOP
 
   @@map("period_type")
 }
