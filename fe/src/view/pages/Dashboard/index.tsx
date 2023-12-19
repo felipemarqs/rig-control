@@ -9,6 +9,7 @@ import {DashboardContext, DashboardProvider} from "./DashboardContext";
 import {LineChart} from "./components/LineChart";
 import {ListEfficienciesDataGrid} from "../../components/ListEfficienciesDataGrid";
 import {cn} from "../../../app/utils/cn";
+import {FilterType} from "../../../app/entities/FilterType";
 /* import {BarChart} from "./components/BarChart"; */
 
 export const Dashboard = () => {
@@ -37,11 +38,25 @@ export const Dashboard = () => {
           /*  isFetchingAverage, */
           windowWidth,
           months,
+          filterOptions,
+          handleToggleFilterType,
+          selectedFilterType,
           selectedPeriod,
         }) => (
           <div className="w-full  overflow-y-scroll">
             <Header title="DASHBOARD" subtitle="Página de início do usuário" />
             <div className="w-full flex flex-wrap justify-center items-center lg:justify-end gap-1 lg:px-4">
+              <div className="w-[113px] lg:w-[213px]">
+                <Select
+                  error={""}
+                  placeholder="Tipo de Filtro"
+                  value={selectedFilterType}
+                  onChange={(value) =>
+                    handleToggleFilterType(value as FilterType)
+                  }
+                  options={filterOptions}
+                />
+              </div>
               <div className="w-[113px] lg:w-[123px]">
                 <Select
                   error={""}
@@ -54,33 +69,41 @@ export const Dashboard = () => {
                   }))}
                 />
               </div>
-              <div className="w-[113px] lg:w-[123px]">
-                <Select
-                  error={""}
-                  placeholder="Por Período"
-                  value={selectedPeriod}
-                  onChange={(value) => handleChangePeriod(value)}
-                  options={months}
-                />
-              </div>
+              {selectedFilterType === FilterType.PERIOD && (
+                <>
+                  <div className="w-[113px] lg:w-[123px]">
+                    <Select
+                      error={""}
+                      placeholder="Período"
+                      value={selectedPeriod}
+                      onChange={(value) => handleChangePeriod(value)}
+                      options={months}
+                    />
+                  </div>
+                </>
+              )}
 
-              <div>
-                <DatePickerInput
-                  placeholder="Data de Início"
-                  error={""}
-                  value={new Date(selectedStartDate)}
-                  onChange={(value) => handleStartDateChange(value)}
-                />
-              </div>
+              {selectedFilterType === FilterType.CUSTOM && (
+                <>
+                  <div>
+                    <DatePickerInput
+                      placeholder="Data de Início"
+                      error={""}
+                      value={new Date(selectedStartDate)}
+                      onChange={(value) => handleStartDateChange(value)}
+                    />
+                  </div>
 
-              <div>
-                <DatePickerInput
-                  placeholder="Data de Fim"
-                  error={""}
-                  value={new Date(selectedEndDate)}
-                  onChange={(value) => handleEndDateChange(value)}
-                />
-              </div>
+                  <div>
+                    <DatePickerInput
+                      placeholder="Data de Fim"
+                      error={""}
+                      value={new Date(selectedEndDate)}
+                      onChange={(value) => handleEndDateChange(value)}
+                    />
+                  </div>
+                </>
+              )}
 
               <div>
                 <Button
