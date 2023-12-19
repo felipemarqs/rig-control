@@ -24,5 +24,6 @@ export enum PeriodClassification {
   LT20 = 'LT20',
   BT20AND50 = 'BT20AND50',
   GT50 = 'GT50',
+  SCHEDULED_STOP = 'SCHEDULED_STOP',
   OTHERS = 'OTHERS',
 }

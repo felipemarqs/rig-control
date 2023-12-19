@@ -16,8 +16,6 @@ export class BillingsController {
       startDate,
       endDate,
     });
-
-    console.log(res);
     return res;
   }
 

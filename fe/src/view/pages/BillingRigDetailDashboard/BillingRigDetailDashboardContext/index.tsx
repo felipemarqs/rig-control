@@ -1,14 +1,14 @@
-import {createContext, useCallback, useMemo, useState} from "react";
+import { createContext, useCallback, useMemo, useState } from "react";
 import React from "react";
-import {startOfMonth, endOfMonth, format} from "date-fns";
-import {useBillings} from "../../../../app/hooks/billings/useBillings";
-import {BillingResponse} from "../../../../app/services/billingServices/getAll";
-import {formatCurrency} from "../../../../app/utils/formatCurrency";
-import {useConfigBillings} from "../../../../app/hooks/useConfigBillings";
-import {BillingConfigResponse} from "../../../../app/services/billingConfigServices/getAll";
-import {useBillingByRigId} from "../../../../app/hooks/billings/useBillingByRigId";
-import {Rig} from "../../../../app/entities/Rig";
-import {useRigs} from "../../../../app/hooks/rigs/useRigs";
+import { startOfMonth, endOfMonth, format } from "date-fns";
+import { useBillings } from "../../../../app/hooks/billings/useBillings";
+import { BillingResponse } from "../../../../app/services/billingServices/getAll";
+import { formatCurrency } from "../../../../app/utils/formatCurrency";
+import { useConfigBillings } from "../../../../app/hooks/useConfigBillings";
+import { BillingConfigResponse } from "../../../../app/services/billingConfigServices/getAll";
+import { useBillingByRigId } from "../../../../app/hooks/billings/useBillingByRigId";
+import { Rig } from "../../../../app/entities/Rig";
+import { useRigs } from "../../../../app/hooks/rigs/useRigs";
 
 interface BillingRigDetailDashboardContextValue {
   handleStartDateChange(date: Date): void;
@@ -98,7 +98,7 @@ export const BillingRigDetailDashboardProvider = ({
     null
   );
 
-  const {rigs} = useRigs(true);
+  const { rigs } = useRigs(true);
 
   const [selectedRig, setSelectedRig] = useState<string>("");
 
@@ -130,7 +130,7 @@ export const BillingRigDetailDashboardProvider = ({
 
   const handleChangeRig = (rigId: string) => {
     setSelectedRig(rigId);
-    setFilters((prevState) => ({...prevState, rigId: rigId}));
+    setFilters((prevState) => ({ ...prevState, rigId: rigId }));
   };
 
   const handleOpenEditRigModal = useCallback((data: BillingResponse) => {
@@ -155,14 +155,14 @@ export const BillingRigDetailDashboardProvider = ({
     []
   );
 
-  const {billings, isFetchingBillings} = useBillings(filters);
+  const { billings, isFetchingBillings } = useBillings(filters);
 
-  const {billing, refetchBilling} = useBillingByRigId(filters);
+  const { billing, refetchBilling } = useBillingByRigId(filters);
 
   console.log(`Billing from`, billing);
 
   console.log(`Filters`, filters);
-  const {configs, isFetchingConfig} = useConfigBillings();
+  const { configs, isFetchingConfig } = useConfigBillings();
 
   //Temporary Condition
   const isEmpty: boolean = true; /* billings.length === 0 */
@@ -170,7 +170,7 @@ export const BillingRigDetailDashboardProvider = ({
   const totalAmount = useMemo(() => {
     let totalBillings = 0;
 
-    billings.forEach(({total}) => {
+    billings.forEach(({ total }) => {
       totalBillings += total;
     });
 

@@ -152,7 +152,7 @@ export const Dashboard = () => {
                       </div>
                       <div className="stat-title text-primary-500">DTMs</div>
                       <div className="stat-desc text-primary-500">
-                        Total de DTMs no mês
+                        No período selecionado
                       </div>
                     </div>
 
@@ -169,7 +169,7 @@ export const Dashboard = () => {
                         Movimentações
                       </div>
                       <div className="stat-desc text-primary-500">
-                        Total de movimentações no mês
+                        No período selecionado
                       </div>
                     </div>
                   </>
