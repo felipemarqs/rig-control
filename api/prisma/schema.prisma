@@ -184,6 +184,7 @@ enum PeriodClassification {
   LT20
   BT20AND50
   GT50
+  SCHEDULED_STOP
   OTHERS
 }
 
@@ -282,6 +283,7 @@ enum RepairClassification {
   MONITORING_SYSTEM
   TANK
   VALVE
+  SCHEDULED_STOP
   STRUCTURE
   OTHERS
 }
@@ -404,6 +406,7 @@ model Billing {
   suckingTruckAmount             Float    @map("sucking_truck_amount")
   truckTankAmount                Float    @map("truck_TankAmount")
   christmasTreeDisassemblyAmount Float    @map("christmas_tree_disassembly_amount")
+  scheduledStopAmount            Float?   @map("scheduled_stop_amount")
   munckAmount                    Float    @map("munck_amount")
   createdAt                      DateTime @default(now())
   createdBy                      String?

@@ -196,8 +196,6 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
     return findErrorMessage;
   };
 
-  console.log(periods);
-
   const handleSubmit = async (periods: Periods) => {
     const { toPersistenceObj } = efficiencyMappers.toPersistance({
       rigId: selectedRig,
@@ -226,6 +224,8 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
       mobilizationPlace,
       isSuckingTruckSelected,
     });
+
+    console.log(toPersistenceObj);
 
     try {
       await mutateAsync(toPersistenceObj);
@@ -430,7 +430,6 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
     }) || [];
 
   const selectedContract = user?.rigs.find(({ rig: { id } }) => {
-    console.log(selectedRig);
     return id === selectedRig;
   });
 

@@ -94,5 +94,6 @@ export enum RepairClassification {
   TANK = 'TANK',
   VALVE = 'VALVE',
   STRUCTURE = 'STRUCTURE',
+  SCHEDULED_STOP = 'SCHEDULED_STOP',
   OTHERS = 'OTHERS',
 }
