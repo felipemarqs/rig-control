@@ -1,3 +1,4 @@
+import {Link} from "react-router-dom";
 import {formatDate} from "../../../app/utils/formatDate";
 import {Button} from "../../components/Button";
 import {Header} from "../../components/Header";
@@ -102,6 +103,14 @@ export const Details = () => {
                 <Button onClick={openDeleteModal} className="bg-redAccent-500">
                   Deletar Registro
                 </Button>
+              )}
+
+              {isUserAdm && (
+                <Link to={`/form/${efficiencyId}`}>
+                  <span className="text-primary-500 tracking-[-0.5] underline font-semibold cursor-pointer">
+                    Editar Registro
+                  </span>
+                </Link>
               )}
 
               {!isUserAdm && (

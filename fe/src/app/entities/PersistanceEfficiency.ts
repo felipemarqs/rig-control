@@ -17,6 +17,7 @@ export type PersistanceEfficiency = {
     type: string;
     classification: string;
     description: string;
+    repairClassification: string | null;
   }[];
   equipmentRatio: {
     ratio: string;

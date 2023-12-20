@@ -23,6 +23,7 @@ import {useSidebarContext} from "../app/contexts/SidebarContext";
 import {ListRigs} from "../view/pages/ListRigs";
 //import {BillingRigDetailDashboard} from "../view/pages/BillingRigDetailDashboard";
 import {InDevelopmentPage} from "../view/pages/InDevelopmentPage";
+import {UpdateForm} from "../view/pages/UpdateForm";
 
 export const Router = () => {
   const {windowWidth} = useSidebarContext();
@@ -43,6 +44,8 @@ export const Router = () => {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/" element={<Dashboard />} />
             <Route path="/form" element={<Form />} />
+            <Route path="/form/:efficiencyId" element={<UpdateForm />} />
+
             <Route path="/list" element={<List />} />
             <Route path="/invoicing-dashboard" element={<BillingDashboard />} />
             <Route

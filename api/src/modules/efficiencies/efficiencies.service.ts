@@ -75,7 +75,6 @@ export class EfficienciesService {
       );
     }
 
-    console.log(periods);
     const efficiencyAlreadyExists = await this.efficiencyRepo.findFirst({
       where: { rigId, date },
     });
@@ -571,6 +570,7 @@ export class EfficienciesService {
             classification: true,
             description: true,
             type: true,
+            repairClassification: true,
           },
           orderBy: { startHour: 'asc' },
         },
