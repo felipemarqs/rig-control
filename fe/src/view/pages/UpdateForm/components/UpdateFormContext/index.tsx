@@ -89,6 +89,7 @@ interface UpdateFormContextValue {
   isTruckCartSelected: boolean;
   isTruckTankSelected: boolean;
   isMunckSelected: boolean;
+  isFetchingEfficiency: boolean;
   isTransportationSelected: boolean;
   truckKm: number;
   setError(arg0: ErrorArgs): void;
@@ -132,7 +133,6 @@ export const UpdateFormContext = createContext({} as UpdateFormContextValue);
 
 export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   const {user} = useAuth();
-  const isUserAdm = user?.accessLevel === "ADM";
 
   const {efficiencyId} = useParams<{efficiencyId: string}>();
 
@@ -705,6 +705,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
         getErrorMessageByFildName,
         handleRepairClassification,
         selectedContract,
+        isFetchingEfficiency,
       }}
     >
       {children}
