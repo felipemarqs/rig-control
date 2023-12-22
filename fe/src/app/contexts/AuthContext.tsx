@@ -11,10 +11,12 @@ import {AccessLevel} from "../entities/AccessLevel";
 interface AuthContextValue {
   signedIn: boolean;
   isUserAdm: boolean;
+  isAlertSeen: boolean;
   userAccessLevel: AccessLevel;
   user: User | undefined;
   signin(accessToken: string): void;
   signout(): void;
+  handleIsAlertSeen(): void;
 }
 
 export const AuthContext = createContext({} as AuthContextValue);
@@ -28,6 +30,8 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     return !!storedAccessToken;
   });
 
+  const [isAlertSeen, setIsAlertSeen] = useState(false);
+
   const signin = useCallback((accessToken: string) => {
     localStorage.setItem(localStorageKeys.ACCESS_TOKEN, accessToken);
 
@@ -39,6 +43,8 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     setSignedIn(false);
     remove();
   }, []);
+
+  const handleIsAlertSeen = () => [setIsAlertSeen(true)];
 
   const {data, isError, error, isFetching, isSuccess, remove} = useQuery({
     queryKey: ["users", "me"],
@@ -67,6 +73,8 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
         user: data,
         isUserAdm,
         userAccessLevel,
+        isAlertSeen,
+        handleIsAlertSeen,
       }}
     >
       {true && <PageLoader isLoading={isFetching} />}

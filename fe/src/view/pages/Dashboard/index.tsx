@@ -10,6 +10,7 @@ import {LineChart} from "./components/LineChart";
 import {ListEfficienciesDataGrid} from "../../components/ListEfficienciesDataGrid";
 import {cn} from "../../../app/utils/cn";
 import {FilterType} from "../../../app/entities/FilterType";
+import {Modal} from "../../components/Modal";
 /* import {BarChart} from "./components/BarChart"; */
 
 export const Dashboard = () => {
@@ -42,6 +43,8 @@ export const Dashboard = () => {
           handleToggleFilterType,
           selectedFilterType,
           selectedPeriod,
+          handleIsAlertSeen,
+          isAlertSeen,
         }) => (
           <div className="w-full  overflow-y-scroll">
             <Header title="DASHBOARD" subtitle="Página de início do usuário" />
@@ -260,6 +263,32 @@ export const Dashboard = () => {
                 </div>
               )}
             </div>
+            <Modal
+              title="Explore as Novas Funcionalidades!"
+              open={!isAlertSeen}
+              onClose={handleIsAlertSeen}
+            >
+              <div className="text-gray-600">
+                <ul className="list-disc list-inside">
+                  <li className="block my-4">
+                    1. Agora você pode filtrar por período de medição, tornando
+                    a análise mais precisa.
+                  </li>
+                  <li className="block my-4">
+                    2. Os administradores têm a capacidade de editar os
+                    registros para melhor controle.
+                  </li>
+                  <li className="block my-4">
+                    3. Nova opção de TNF disponível nos formulários, ampliando
+                    as possibilidades de registro.
+                  </li>
+                  <li className="block my-4">
+                    4. O campo de descrição foi expandido para aceitar mais
+                    caracteres, permitindo detalhamentos mais completos.
+                  </li>
+                </ul>
+              </div>
+            </Modal>
           </div>
         )}
       </DashboardContext.Consumer>

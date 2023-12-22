@@ -23,6 +23,8 @@ interface DashboardContextValue {
   handleStartDateChange(date: Date): void;
   handleEndDateChange(date: Date): void;
   handleToggleFilterType(filterType: FilterType): void;
+  isAlertSeen: boolean;
+  handleIsAlertSeen(): void;
   selectedEndDate: string;
   selectedStartDate: string;
   isFetchingEfficiencies: boolean;
@@ -56,7 +58,7 @@ interface DashboardContextValue {
 export const DashboardContext = createContext({} as DashboardContextValue);
 
 export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
-  const {user, signout} = useAuth();
+  const {user, signout, isAlertSeen, handleIsAlertSeen} = useAuth();
 
   const {windowWidth} = useSidebarContext();
 
@@ -250,6 +252,8 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         totalMovimentations,
         average,
         windowWidth,
+        isAlertSeen,
+        handleIsAlertSeen,
       }}
     >
       {children}
