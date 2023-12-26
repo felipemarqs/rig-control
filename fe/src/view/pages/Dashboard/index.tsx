@@ -286,6 +286,10 @@ export const Dashboard = () => {
                     4. O campo de descrição foi expandido para aceitar mais
                     caracteres, permitindo detalhamentos mais completos.
                   </li>
+                  <li className="block my-4">
+                    5. Corrigido o problema do Formulário não aparecer para os
+                    usuários.
+                  </li>
                 </ul>
               </div>
             </Modal>

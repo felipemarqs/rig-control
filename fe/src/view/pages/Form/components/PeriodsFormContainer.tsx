@@ -1,19 +1,19 @@
 import React from "react";
-import { cn } from "../../../../app/utils/cn";
-import { DatePickerInput } from "../../../components/DatePickerInput";
+import {cn} from "../../../../app/utils/cn";
+import {DatePickerInput} from "../../../components/DatePickerInput";
 
-import { TimePicker } from "antd";
+import {TimePicker} from "antd";
 import dayjs from "dayjs";
-import { Select } from "../../../components/Select";
-import { periodTypes } from "../../../../app/utils/periodTypes";
+import {Select} from "../../../components/Select";
+import {periodTypes} from "../../../../app/utils/periodTypes";
 import {
   getPeriodClassification,
   getRepairClassification,
 } from "../../../../app/utils/periodClassifications";
-import { Button } from "../../../components/Button";
+import {Button} from "../../../components/Button";
 import TextArea from "antd/es/input/TextArea";
-import { useForm } from "./FormContext/useForm";
-import { Input } from "../../../components/Input";
+import {useForm} from "./FormContext/useForm";
+import {Input} from "../../../components/Input";
 
 export const PeriodsFormContainer = () => {
   const {
@@ -66,7 +66,7 @@ export const PeriodsFormContainer = () => {
             placeholder="Sonda"
             value={selectedRig}
             onChange={(value) => handleChangeRig(value)}
-            options={usersRigs.map(({ id, name }) => ({
+            options={usersRigs.map(({id, name}) => ({
               value: id,
               label: name,
             }))}
@@ -118,7 +118,7 @@ export const PeriodsFormContainer = () => {
                       return {
                         disabledHours: () => {
                           const disabledHours = Array.from(
-                            { length: 24 },
+                            {length: 24},
                             (_, hour) => (hour < minHour ? hour : -1)
                           );
                           return disabledHours;
@@ -126,7 +126,7 @@ export const PeriodsFormContainer = () => {
                         disabledMinutes: (selectedHour) => {
                           if (selectedHour === minHour) {
                             // Desativar minutos antes do horário mínimo
-                            return Array.from({ length: 60 }, (_, minute) =>
+                            return Array.from({length: 60}, (_, minute) =>
                               minute < minMinute ? minute : -1
                             );
                           }
@@ -156,7 +156,7 @@ export const PeriodsFormContainer = () => {
                       return {
                         disabledHours: () => {
                           const disabledHours = Array.from(
-                            { length: 24 },
+                            {length: 24},
                             (_, hour) => (hour < minHour ? hour : -1)
                           );
                           return disabledHours;
@@ -164,7 +164,7 @@ export const PeriodsFormContainer = () => {
                         disabledMinutes: (selectedHour) => {
                           if (selectedHour === minHour) {
                             // Desativar minutos antes do horário mínimo
-                            return Array.from({ length: 60 }, (_, minute) =>
+                            return Array.from({length: 60}, (_, minute) =>
                               minute < minMinute ? minute : -1
                             );
                           }
@@ -183,7 +183,7 @@ export const PeriodsFormContainer = () => {
                     placeholder="Tipo"
                     value={type}
                     onChange={(value) => handlePeriodType(id, value)}
-                    options={periodTypes.map(({ id, type }) => {
+                    options={periodTypes.map(({id, type}) => {
                       return {
                         value: id,
                         label: type,
@@ -244,7 +244,7 @@ export const PeriodsFormContainer = () => {
               <div className="flex justify-between p-4  w-[90%] ">
                 <div className="flex justify-between items-center w-full gap-1">
                   <TextArea
-                    maxLength={1000}
+                    maxLength={5000}
                     style={{
                       height: 50,
                       resize: "vertical",

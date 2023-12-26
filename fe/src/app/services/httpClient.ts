@@ -7,7 +7,7 @@ const renderBaseURL = "https://dashboard-backendv3.onrender.com";
 //const awsBaseURL = "https://54.224.10.112:3000"
 
 export const httpClient = axios.create({
-  baseURL: "http://127.0.0.1:3000",
+  baseURL: renderBaseURL,
 });
 
 httpClient.interceptors.request.use(async (config) => {

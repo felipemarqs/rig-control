@@ -30,7 +30,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     return !!storedAccessToken;
   });
 
-  const [isAlertSeen, setIsAlertSeen] = useState(false);
+  const [isAlertSeen, setIsAlertSeen] = useState(true);
 
   const signin = useCallback((accessToken: string) => {
     localStorage.setItem(localStorageKeys.ACCESS_TOKEN, accessToken);
