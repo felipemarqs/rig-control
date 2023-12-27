@@ -14,6 +14,7 @@ import {useSidebarContext} from "../../../../app/contexts/SidebarContext";
 import {getPeriodRange} from "../../../../app/utils/getPeriodRange";
 import {months} from "../../../../app/utils/months";
 import {FilterType} from "../../../../app/entities/FilterType";
+import {filterOptions} from "../../../../app/utils/filterOptions";
 
 interface DashboardContextValue {
   selectedRig: string;
@@ -179,11 +180,6 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     handleStartDateChange(new Date(formattedFirstDay));
     handleEndDateChange(new Date(formattedLastDay));
   };
-
-  const filterOptions = [
-    {label: "Período de Medição", value: FilterType.PERIOD as string},
-    {label: "Período Customizado", value: FilterType.CUSTOM as string},
-  ];
 
   //Lopping para armazenar informações dos stats (colocar em um useMemo)
 
