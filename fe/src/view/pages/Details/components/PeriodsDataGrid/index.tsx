@@ -3,12 +3,9 @@ import {
   GridColDef,
   GridRenderCellParams,
   GridToolbar,
-  GridValueGetterParams,
 } from "@mui/x-data-grid";
 
 import {NotFound} from "../../../../components/NotFound";
-
-import {formatCurrency} from "../../../../../app/utils/formatCurrency";
 import {translateType} from "../../../../../app/utils/translateType";
 import {EfficienciesResponse} from "../../../../../app/services/efficienciesService/getById";
 import {formatIsoStringToHours} from "../../../../../app/utils/formatIsoStringToHours";
@@ -67,7 +64,7 @@ export const PeriodsDataGrid = ({
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-white  bg-primary-500 py-1 px-6 rounded-sm">
+            <div className="text-white  bg-primary-500 py-1 px-4 rounded-sm">
               {translateType(params.value)}
             </div>
           </div>
@@ -83,7 +80,7 @@ export const PeriodsDataGrid = ({
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-white  bg-primary-500 py-1 px-6 rounded-sm">
+            <div className="text-white  bg-primary-500 py-1 px-4 rounded-sm">
               {translateClassification(params.value)}
             </div>
           </div>
@@ -93,7 +90,7 @@ export const PeriodsDataGrid = ({
     {
       field: "description",
       headerName: "Descrição",
-      flex: 1,
+      flex: 0.7,
       headerAlign: "center",
       align: "center",
       renderCell(params: GridRenderCellParams) {

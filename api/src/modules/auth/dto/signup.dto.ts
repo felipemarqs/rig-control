@@ -30,4 +30,8 @@ export class SignupDto {
   @IsString()
   @IsOptional()
   rigId?: string;
+
+  @IsString()
+  @IsOptional()
+  contractId?: string;
 }

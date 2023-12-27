@@ -17,4 +17,8 @@ export class RigsRepository {
   async findAll() {
     return await this.prismaService.rig.findMany();
   }
+
+  async update(updateDto: Prisma.RigUpdateArgs) {
+    return await this.prismaService.rig.update(updateDto);
+  }
 }

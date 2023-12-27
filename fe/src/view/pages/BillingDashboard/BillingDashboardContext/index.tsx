@@ -1,7 +1,7 @@
 import {createContext, useCallback, useMemo, useState} from "react";
 import React from "react";
 import {startOfMonth, endOfMonth, format} from "date-fns";
-import {useBillings} from "../../../../app/hooks/useBillings";
+import {useBillings} from "../../../../app/hooks/billings/useBillings";
 import {BillingResponse} from "../../../../app/services/billingServices/getAll";
 import {formatCurrency} from "../../../../app/utils/formatCurrency";
 import {useConfigBillings} from "../../../../app/hooks/useConfigBillings";
@@ -129,13 +129,15 @@ export const BillingDashboardProvider = ({
   const handleOpenEditConfigModal = useCallback(
     (data: BillingConfigResponse) => {
       setConfigBeingEdited(data);
-
       setIsEditConfigModalOpen(true);
     },
     []
   );
 
   const {billings, isFetchingBillings, refetchBillings} = useBillings(filters);
+
+  console.log("billgins", billings);
+
   const {configs, isFetchingConfig} = useConfigBillings();
 
   const isEmpty: boolean = billings.length === 0;

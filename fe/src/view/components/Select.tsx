@@ -3,11 +3,14 @@ import {ChevronDownIcon, ChevronUpIcon} from "@radix-ui/react-icons";
 import {cn} from "../../app/utils/cn";
 import {useState} from "react";
 import {ErrorContainer} from "./ErrorContainer";
+import {Spinner} from "./Spinner";
 
 interface SelectProps {
   className?: string;
   error?: string;
   placeholder?: string;
+  disabled?: boolean;
+  isLoading?: boolean;
   options: {
     value: string;
     label: string;
@@ -23,6 +26,8 @@ export const Select = ({
   options,
   onChange,
   value,
+  disabled,
+  isLoading,
 }: SelectProps) => {
   const [selectedValue, setSelectedValue] = useState(value);
 
@@ -43,15 +48,26 @@ export const Select = ({
         >
           {placeholder}
         </label>
-        <RadixSelect.Root value={value} onValueChange={handleSelect}>
+        <RadixSelect.Root
+          value={value}
+          onValueChange={handleSelect}
+          disabled={disabled}
+        >
           <RadixSelect.Trigger
             className={cn(
-              "bg-white rounded-lg w-full border border-gray-500 px-3 h-[42px]  text-gray-800    focus:border-gray-800 transition-all outline-none text-left relative pt-4",
+              "bg-white rounded-lg w-full border border-gray-500 px-3 h-[52px]  text-gray-800    focus:border-gray-800 transition-all outline-none text-left relative pt-4",
               error && "!border-red-900",
               className
             )}
           >
-            <RadixSelect.Value />
+            {!isLoading && <RadixSelect.Value />}
+            {isLoading && (
+              <div className="flex items-center justify-center">
+                <Spinner className="h-6 w-6" />
+              </div>
+            )}
+
+            {/*  <RadixSelect.Value /> */}
 
             <RadixSelect.Icon className="absolute right-3 top-1/2 -translate-y-1/2">
               <ChevronDownIcon className="w-6 h-6 text-gray-800 " />

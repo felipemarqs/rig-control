@@ -6,8 +6,17 @@ export class BillingsController {
   constructor(private readonly billingsService: BillingsService) {}
 
   @Get()
-  findByEfficiency(@Query('efficiencyId', ParseUUIDPipe) efficiencyId: string) {
-    return this.billingsService.findByEfficiencyId(efficiencyId);
+  async findByRigId(
+    @Query('rigId', ParseUUIDPipe) rigId: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    const res = await this.billingsService.findByRigId({
+      rigId,
+      startDate,
+      endDate,
+    });
+    return res;
   }
 
   @Get('/all')
@@ -18,3 +27,5 @@ export class BillingsController {
     return await this.billingsService.findAll({ startDate, endDate });
   }
 }
+
+//databox

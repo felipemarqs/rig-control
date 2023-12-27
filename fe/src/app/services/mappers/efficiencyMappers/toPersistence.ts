@@ -1,23 +1,61 @@
 import dayjs from "dayjs";
 import {DomainEfficiency} from "../../../entities/DomainEfficiency";
-import {PersistanceEfficiency} from "../../../entities/PersistanceEfficiency";
 import {differenceInMinutes, parse} from "date-fns";
+import {ToPersistanceEfficiency} from "../../../entities/PersistanceEfficiency";
+import {getTotalHoursFromTimeString} from "../../../utils/getTotalHoursFromTimeString";
 
 export const toPersistence = (domainEfficiency: DomainEfficiency) => {
-  let totalAvailableHours = 0.02;
+  let totalAvailableHours = 0;
+  let totalScheduledStopHours = 0;
+
+  const christmasTreeDisassemblyHours = getTotalHoursFromTimeString(
+    domainEfficiency.christmasTreeDisassemblyHours
+  );
+
+  const bobRentHours = getTotalHoursFromTimeString(
+    domainEfficiency.bobRentHours
+  );
 
   const periodsArray = domainEfficiency.periods.map(
-    ({startHour, endHour, classification, type, description}) => {
+    ({
+      startHour,
+      endHour,
+      classification,
+      type,
+      description,
+      repairClassification,
+    }) => {
       const [startHourString, startMinuteString] = startHour.split(":");
       const [endHourString, endMinuteString] = endHour.split(":");
 
       //Soomando as horas totais caso seja operando
 
-      if (type === "WORKING" || type === '"DTM"') {
-        const horaInicial = parse(startHour, "HH:mm", new Date());
-        const horaFinal = parse(endHour, "HH:mm", new Date());
-        const diffInMinutes = differenceInMinutes(horaFinal, horaInicial);
+      const getDiffInMinutes = (horaFinal: Date, horaInicial: Date) => {
+        const isoEndDate = horaFinal.toISOString().split("T")[0];
+        const isoHour = horaFinal.toISOString().split("T")[1];
+
+        let endDate = horaFinal;
+        if (isoHour === "02:59:00.000Z") {
+          endDate = new Date(`${isoEndDate}T03:00:00.000Z`);
+        }
+
+        return differenceInMinutes(endDate, horaInicial);
+      };
+
+      const horaInicial = parse(startHour, "HH:mm", new Date());
+      const horaFinal = parse(endHour, "HH:mm", new Date());
+
+      if (type === "WORKING" || type === "DTM" || type === "SCHEDULED_STOP") {
+        const diffInMinutes = getDiffInMinutes(horaFinal, horaInicial);
+
         totalAvailableHours += diffInMinutes / 60;
+      }
+
+      //temporarily
+      if (type === "SCHEDULED_STOP") {
+        const diffInMinutes = getDiffInMinutes(horaFinal, horaInicial);
+
+        totalScheduledStopHours += diffInMinutes / 60;
       }
 
       const startDateWithTime = dayjs()
@@ -36,17 +74,42 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
         classification: classification,
         description: description,
         type: type,
+        repairClassification: repairClassification
+          ? repairClassification
+          : null,
       };
     }
   );
 
-  const toPersistenceObj: PersistanceEfficiency = {
+  const toPersistenceObj: ToPersistanceEfficiency = {
     date: domainEfficiency.date,
+    well: domainEfficiency.well,
     availableHours: Number(totalAvailableHours.toFixed(2)),
     rigId: domainEfficiency.rigId!,
     periods: periodsArray,
     equipmentRatio: [],
     fluidRatio: [],
+    christmasTreeDisassemblyHours,
+    bobRentHours,
+    isMixTankSelected: domainEfficiency.isMixTankSelected,
+    isMixTankOperatorsSelected: domainEfficiency.isMixTankOperatorsSelected,
+    isMixTankMonthSelected: domainEfficiency.isMixTankMonthSelected,
+    isFuelGeneratorSelected: domainEfficiency.isFuelGeneratorSelected,
+    isMobilizationSelected: domainEfficiency.isMobilizationSelected,
+    isDemobilizationSelected: domainEfficiency.isDemobilizationSelected,
+    isTankMixMobilizationSelected:
+      domainEfficiency.isTankMixMobilizationSelected,
+    isTankMixDemobilizationSelected:
+      domainEfficiency.isTankMixDemobilizationSelected,
+    isTankMixDTMSelected: domainEfficiency.isTankMixDTMSelected,
+    isTruckCartSelected: domainEfficiency.isTruckCartSelected,
+    isTruckTankSelected: domainEfficiency.isTruckTankSelected,
+    isMunckSelected: domainEfficiency.isMunckSelected,
+    isTransportationSelected: domainEfficiency.isTransportationSelected,
+    truckKm: domainEfficiency.truckKm,
+    isExtraTrailerSelected: domainEfficiency.isExtraTrailerSelected,
+    isPowerSwivelSelected: domainEfficiency.isPowerSwivelSelected,
+    isSuckingTruckSelected: domainEfficiency.isSuckingTruckSelected,
   };
 
   domainEfficiency.periods.forEach(({equipmentRatio, fluidRatio}) => {

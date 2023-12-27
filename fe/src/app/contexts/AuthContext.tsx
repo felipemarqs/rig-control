@@ -6,13 +6,17 @@ import {User} from "../entities/User";
 import {treatAxiosError} from "../utils/treatAxiosError";
 import {AxiosError} from "axios";
 import {PageLoader} from "../../view/components/PageLoader";
+import {AccessLevel} from "../entities/AccessLevel";
 
 interface AuthContextValue {
   signedIn: boolean;
   isUserAdm: boolean;
+  isAlertSeen: boolean;
+  userAccessLevel: AccessLevel;
   user: User | undefined;
   signin(accessToken: string): void;
   signout(): void;
+  handleIsAlertSeen(): void;
 }
 
 export const AuthContext = createContext({} as AuthContextValue);
@@ -26,6 +30,8 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     return !!storedAccessToken;
   });
 
+  const [isAlertSeen, setIsAlertSeen] = useState(true);
+
   const signin = useCallback((accessToken: string) => {
     localStorage.setItem(localStorageKeys.ACCESS_TOKEN, accessToken);
 
@@ -38,6 +44,8 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     remove();
   }, []);
 
+  const handleIsAlertSeen = () => [setIsAlertSeen(true)];
+
   const {data, isError, error, isFetching, isSuccess, remove} = useQuery({
     queryKey: ["users", "me"],
     queryFn: () => usersService.me(),
@@ -46,6 +54,8 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
   });
 
   const isUserAdm = data?.accessLevel === "ADM" ? true : false;
+
+  const userAccessLevel = data?.accessLevel!;
 
   useEffect(() => {
     if (isError) {
@@ -62,6 +72,9 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
         signout,
         user: data,
         isUserAdm,
+        userAccessLevel,
+        isAlertSeen,
+        handleIsAlertSeen,
       }}
     >
       {true && <PageLoader isLoading={isFetching} />}

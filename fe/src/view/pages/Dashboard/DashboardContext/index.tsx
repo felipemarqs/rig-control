@@ -1,32 +1,46 @@
 import {createContext, useState} from "react";
 import React from "react";
-import {useEfficiencies} from "../../../../app/hooks/useEfficiencies";
+import {useEfficiencies} from "../../../../app/hooks/efficiencies/useEfficiencies";
 import {useAuth} from "../../../../app/hooks/useAuth";
 import {User} from "../../../../app/entities/User";
+import {SelectOptions} from "../../../../app/entities/SelectOptions";
 import {startOfMonth, endOfMonth, format} from "date-fns";
-import {useRigs} from "../../../../app/hooks/useRigs";
+import {useRigs} from "../../../../app/hooks/rigs/useRigs";
 import {Rig} from "../../../../app/entities/Rig";
 import {Efficiency} from "../entities/Efficiency";
+import {useEfficiencyAverage} from "../../../../app/hooks/efficiencies/useEfficiencyAverage";
+import {AverageResponse} from "../../../../app/services/efficienciesService/getAverage";
+import {useSidebarContext} from "../../../../app/contexts/SidebarContext";
+import {getPeriodRange} from "../../../../app/utils/getPeriodRange";
+import {months} from "../../../../app/utils/months";
+import {FilterType} from "../../../../app/entities/FilterType";
+import {filterOptions} from "../../../../app/utils/filterOptions";
 
 interface DashboardContextValue {
   selectedRig: string;
+  selectedPeriod: string;
   handleChangeRig(rigId: string): void;
+  handleChangePeriod(period: string): void;
   handleStartDateChange(date: Date): void;
   handleEndDateChange(date: Date): void;
+  handleToggleFilterType(filterType: FilterType): void;
+  isAlertSeen: boolean;
+  handleIsAlertSeen(): void;
   selectedEndDate: string;
   selectedStartDate: string;
   isFetchingEfficiencies: boolean;
   handleApplyFilters(): void;
+  selectedFilterType: FilterType;
+  //handleTogglePeriodFilterType(): void;
   user: User | undefined;
   signout(): void;
   isEmpty: boolean;
+  // isCustomPeriodActive: boolean;
   rigs:
     | Rig[]
     | {
         id: string;
         name: string;
-        isActive: boolean;
-        state: string;
       }[];
   efficiencies: Efficiency[];
   totalAvailableHours: number;
@@ -35,25 +49,31 @@ interface DashboardContextValue {
   unavailableHoursPercentage: number;
   totalDtms: number;
   totalMovimentations: number;
+  isFetchingAverage: boolean;
+  average: AverageResponse;
+  windowWidth: number;
+  filterOptions: SelectOptions;
+  months: SelectOptions;
 }
 
 export const DashboardContext = createContext({} as DashboardContextValue);
 
 export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
-  const {user, signout} = useAuth();
+  const {user, signout, isAlertSeen, handleIsAlertSeen} = useAuth();
+
+  const {windowWidth} = useSidebarContext();
 
   const isUserAdm = user?.accessLevel === "ADM";
 
-  const {rigs, isFetchingRigs, refetchRigs} = useRigs(isUserAdm);
+  const {rigs} = useRigs(isUserAdm);
 
-  const userRig = [
-    {
-      id: user?.rigs[0].rig.id!,
-      name: user?.rigs[0].rig.name!,
-      isActive: user?.rigs[0].rig.isAtive!,
-      state: user?.rigs[0].rig.state!,
-    },
-  ];
+  const userRigs =
+    user?.rigs.map(({rig: {id, name}}) => {
+      return {
+        id,
+        name,
+      };
+    }) || [];
 
   const [selectedRig, setSelectedRig] = useState<string>(() => {
     return isUserAdm ? "" : user?.rigs[0].rig.id!;
@@ -92,6 +112,8 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   const [selectedStartDate, setSelectedStartDate] = useState(formattedFirstDay);
   const [selectedEndDate, setSelectedEndDate] = useState(formattedLastDay);
 
+  const [selectedPeriod, setSelectedPeriod] = useState("");
+
   const [filters, setFilters] = useState({
     rigId: selectedRig,
     startDate: selectedStartDate,
@@ -101,10 +123,19 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   const {efficiencies, isFetchingEfficiencies, refetchEffciencies} =
     useEfficiencies(filters);
 
+  const {average, refetchAverage, isFetchingAverage} = useEfficiencyAverage(
+    filters.rigId
+  );
+
   const isEmpty: boolean = efficiencies.length === 0;
+
+  const [selectedFilterType, setSelectedFilterType] = useState<FilterType>(
+    FilterType.PERIOD
+  );
 
   const handleApplyFilters = () => {
     refetchEffciencies();
+    refetchAverage();
   };
 
   const handleChangeRig = (rigId: string) => {
@@ -128,6 +159,28 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     }));
   };
 
+  const handleChangePeriod = (period: string) => {
+    setSelectedPeriod(period);
+
+    const periodFound = getPeriodRange(selectedRig);
+
+    if (periodFound) {
+      const monthPeriodSelected = periodFound.months.find((month) => {
+        return month.month === period;
+      });
+
+      handleStartDateChange(monthPeriodSelected?.startDate!);
+      handleEndDateChange(monthPeriodSelected?.endDate!);
+    }
+  };
+
+  const handleToggleFilterType = (filterType: FilterType) => {
+    setSelectedFilterType(filterType);
+
+    handleStartDateChange(new Date(formattedFirstDay));
+    handleEndDateChange(new Date(formattedLastDay));
+  };
+
   //Lopping para armazenar informações dos stats (colocar em um useMemo)
 
   let totalAvailableHours: number = 0;
@@ -144,28 +197,35 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     totalMovimentations +=
       efficiency.fluidRatio.length + efficiency.equipmentRatio.length;
 
-    //Somando os periodos
-    efficiency.periods.forEach(({type}) => {
+    const dtmFound = efficiency.periods.find(({type}) => {
       if (type === "DTM") {
-        totalDtms++;
+        return type;
       }
     });
+
+    if (dtmFound) {
+      totalDtms++;
+    }
   });
 
   const totalHours: number = totalAvailableHours + totalUnavailableHours;
 
   let availableHoursPercentage: number = Number(
-    ((totalAvailableHours * 100) / totalHours).toFixed()
+    ((totalAvailableHours * 100) / totalHours).toFixed(2)
   );
   let unavailableHoursPercentage: number = Number(
-    ((totalUnavailableHours * 100) / totalHours).toFixed()
+    ((totalUnavailableHours * 100) / totalHours).toFixed(2)
   );
 
   return (
     <DashboardContext.Provider
       value={{
+        months,
         selectedRig,
         handleChangeRig,
+        selectedPeriod,
+        handleChangePeriod,
+        handleToggleFilterType,
         selectedStartDate,
         selectedEndDate,
         handleStartDateChange,
@@ -173,8 +233,11 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         handleApplyFilters,
         efficiencies,
         isFetchingEfficiencies,
+        isFetchingAverage,
         user,
-        rigs: isUserAdm ? rigs : userRig,
+        filterOptions,
+        selectedFilterType,
+        rigs: isUserAdm ? rigs : userRigs,
         signout,
         isEmpty,
         totalAvailableHours,
@@ -183,6 +246,10 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         unavailableHoursPercentage,
         totalDtms,
         totalMovimentations,
+        average,
+        windowWidth,
+        isAlertSeen,
+        handleIsAlertSeen,
       }}
     >
       {children}

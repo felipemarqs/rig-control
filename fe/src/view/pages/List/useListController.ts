@@ -1,17 +1,25 @@
 import {useState} from "react";
 import {useAuth} from "../../../app/hooks/useAuth";
-import {useRigs} from "../../../app/hooks/useRigs";
+import {useRigs} from "../../../app/hooks/rigs/useRigs";
 import {endOfMonth, format, startOfMonth} from "date-fns";
-import {useEfficiencies} from "../../../app/hooks/useEfficiencies";
+import {useEfficiencies} from "../../../app/hooks/efficiencies/useEfficiencies";
+import {FilterType} from "../../../app/entities/FilterType";
+import {getPeriodRange} from "../../../app/utils/getPeriodRange";
 
 export const useListController = () => {
   const {user, signout} = useAuth();
 
   const isUserAdm = user?.accessLevel === "ADM";
 
-  const {rigs, isFetchingRigs, refetchRigs} = useRigs(isUserAdm);
+  const {rigs} = useRigs(isUserAdm);
 
-  const userRig = [{id: user?.rigs[0].rig.id, name: user?.rigs[0].rig.name}];
+  const userRig =
+    user?.rigs.map(({rig: {id, name}}) => {
+      return {
+        id,
+        name,
+      };
+    }) || [];
 
   const [selectedRig, setSelectedRig] = useState<string>(() => {
     return isUserAdm ? "" : user?.rigs[0].rig.id!;
@@ -39,6 +47,12 @@ export const useListController = () => {
   // Defina os estados iniciais
   const [selectedStartDate, setSelectedStartDate] = useState(formattedFirstDay);
   const [selectedEndDate, setSelectedEndDate] = useState(formattedLastDay);
+
+  const [selectedFilterType, setSelectedFilterType] = useState<FilterType>(
+    FilterType.PERIOD
+  );
+
+  const [selectedPeriod, setSelectedPeriod] = useState("");
 
   const [filters, setFilters] = useState({
     rigId: selectedRig,
@@ -76,6 +90,33 @@ export const useListController = () => {
     }));
   };
 
+  const handleChangePeriod = (period: string) => {
+    setSelectedPeriod(period);
+
+    const periodFound = getPeriodRange(selectedRig);
+
+    if (periodFound) {
+      const monthPeriodSelected = periodFound.months.find((month) => {
+        return month.month === period;
+      });
+
+      handleStartDateChange(monthPeriodSelected?.startDate!);
+      handleEndDateChange(monthPeriodSelected?.endDate!);
+    }
+  };
+
+  const handleToggleFilterType = (filterType: FilterType) => {
+    setSelectedFilterType(filterType);
+
+    handleStartDateChange(new Date(formattedFirstDay));
+    handleEndDateChange(new Date(formattedLastDay));
+  };
+
+  const filterOptions = [
+    {label: "Período de Medição", value: FilterType.PERIOD as string},
+    {label: "Período Customizado", value: FilterType.CUSTOM as string},
+  ];
+
   return {
     selectedRig,
     handleChangeRig,
@@ -90,5 +131,10 @@ export const useListController = () => {
     rigs: isUserAdm ? rigs : userRig,
     signout,
     isEmpty,
+    selectedFilterType,
+    filterOptions,
+    selectedPeriod,
+    handleChangePeriod,
+    handleToggleFilterType,
   };
 };

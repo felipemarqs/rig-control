@@ -10,6 +10,8 @@ import { UsersRigRepository } from 'src/shared/database/repositories/usersRig.re
 import { SigninDto } from './dto/signin.dto';
 import { JwtService } from '@nestjs/jwt';
 import { RigsRepository } from 'src/shared/database/repositories/rigs.repositories';
+import { UsersContractRepository } from 'src/shared/database/repositories/usersContract.repositories';
+import { AccessLevel } from './entities/AccessLevel';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +20,7 @@ export class AuthService {
     private readonly usersRigRepo: UsersRigRepository,
     private readonly jwtService: JwtService,
     private readonly rigsRepo: RigsRepository,
+    private readonly usersContractRepo: UsersContractRepository,
   ) {}
 
   async signin(signinDto: SigninDto) {
@@ -37,13 +40,16 @@ export class AuthService {
       throw new UnauthorizedException('Credenciais inválidas!');
     }
 
-    const accessToken = await this.generateAccessToken(user.id);
+    const accessToken = await this.generateAccessToken(
+      user.id,
+      user.accessLevel as AccessLevel,
+    );
 
     return { accessToken };
   }
 
   async signup(signUpDto: SignupDto) {
-    const { name, email, password, accessLevel, rigId } = signUpDto;
+    const { name, email, password, accessLevel, rigId, contractId } = signUpDto;
 
     const isEmailTaken = await this.usersRepo.findUnique({
       where: { email },
@@ -75,6 +81,15 @@ export class AuthService {
       },
     });
 
+    if (contractId) {
+      await this.usersContractRepo.create({
+        data: {
+          userId: user.id,
+          contractId,
+        },
+      });
+    }
+
     if (rigId) {
       await this.usersRigRepo.create({
         data: {
@@ -84,14 +99,23 @@ export class AuthService {
       });
     }
 
-    const accessToken = await this.generateAccessToken(user.id);
+    const accessToken = await this.generateAccessToken(
+      user.id,
+      user.accessLevel as AccessLevel,
+    );
 
     return {
       accessToken,
     };
   }
 
-  private async generateAccessToken(userId: string) {
-    return await this.jwtService.signAsync({ sub: userId });
+  private async generateAccessToken(
+    userId: string,
+    userAccessLevel: AccessLevel,
+  ) {
+    return await this.jwtService.signAsync({
+      sub: userId,
+      role: userAccessLevel,
+    });
   }
 }

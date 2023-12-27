@@ -12,6 +12,7 @@ export const RigCard = ({data}: RigCardProps) => {
   const {handleOpenEditRigModal} = useBillingDashboard();
   const {total, rigname} = data;
 
+
   return (
     <div
       className="p-4 bg-white rounded-2xl h-[200px] flex flex-col justify-between border-b-4  border-teal-950"

@@ -1,9 +1,7 @@
 import {Button} from "../../components/Button";
 import {DatePickerInput} from "../../components/DatePickerInput";
 import {Header} from "../../components/Header";
-import {Select} from "../../components/Select";
 import {Spinner} from "../../components/Spinner";
-import {ListEfficienciesDataGrid} from "../../components/ListEfficienciesDataGrid";
 import {useBillingListController} from "./useBillingListController";
 import {ListBillingDataGrid} from "./components/ListBillingDataGrid";
 
@@ -26,7 +24,6 @@ export const ListBilling = () => {
         <div>
           <DatePickerInput
             placeholder="Data de Início"
-            className="h-[42px]"
             error={""}
             value={new Date(selectedStartDate)}
             onChange={(value) => handleStartDateChange(value)}
@@ -36,7 +33,6 @@ export const ListBilling = () => {
         <div>
           <DatePickerInput
             placeholder="Data de Fim"
-            className="h-[42px]"
             error={""}
             value={new Date(selectedEndDate)}
             onChange={(value) => handleEndDateChange(value)}

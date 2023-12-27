@@ -25,7 +25,7 @@
     "@nestjs/jwt": "^10.1.0",
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^10.0.0",
-    "@prisma/client": "^5.2.0",
+    "@prisma/client": "^5.3.0",
     "@types/bcryptjs": "^2.4.2",
     "bcryptjs": "^2.4.3",
     "class-transformer": "^0.5.1",
@@ -75,5 +75,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "engines": {
+    "node": ">=16"
   }
 }

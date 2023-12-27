@@ -8,6 +8,7 @@ body,
 #root,
 .app {
   font-family: "Sora", sans-serif;
+  box-sizing: border-box;
 }
 .ant-btn.ant-btn-primary {
   background-color: #1c7b7b; /* Substitua pela cor desejada */
@@ -18,4 +19,35 @@ body,
 .ant-btn.ant-btn-primary:focus {
   background-color: #155e5e; /* Cor de fundo quando hover ou foco */
   /* Outros estilos desejados */
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #77b0b0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1c7b7b;
+}
+
+::-webkit-scrollbar-track:hover {
+  background: #1c7b7b;
+}
+
+// Add this style to your css file
+.sticky-nav {
+  animation: sticky-nav 300ms;
+}
+
+@keyframes sticky-nav {
+  0% {
+    transform: translateY(-6em);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
 }

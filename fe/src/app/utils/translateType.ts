@@ -1,4 +1,6 @@
-export const translateType = (type: "DTM" | "GLOSS" | "REPAIR" | "WORKING") => {
+export const translateType = (
+  type: "DTM" | "GLOSS" | "REPAIR" | "WORKING" | "SCHEDULED_STOP"
+) => {
   if (type === "DTM") {
     return type;
   }
@@ -11,5 +13,9 @@ export const translateType = (type: "DTM" | "GLOSS" | "REPAIR" | "WORKING") => {
   }
   if (type === "WORKING") {
     return "Operando";
+  }
+
+  if (type === "SCHEDULED_STOP") {
+    return "Parada de Manutenção";
   }
 };

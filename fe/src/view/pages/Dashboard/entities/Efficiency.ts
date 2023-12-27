@@ -4,6 +4,7 @@ export type Efficiency = {
   availableHours: number;
   date: string | Date;
   id: string;
+  well: string;
   rigId: string;
   userId: string;
   user: {name: string};
@@ -13,9 +14,9 @@ export type Efficiency = {
     efficiencyId: string;
     startHour: string;
     endHour: string;
-    type: "WORKING" | "GLOSS" | "REPAIR" | "DTM";
+    type: string;
     classification: string;
-    description: string;
+    description: string | undefined;
   }[];
   equipmentRatio: {
     ratio: string;

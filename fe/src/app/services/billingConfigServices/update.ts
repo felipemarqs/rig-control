@@ -16,6 +16,25 @@ export interface BillingConfigResponse {
   equipmentRatioGt50Tax: number;
   readjustment: number;
   mobilization: number;
+  bobRentTax: number;
+  christmasTreeDisassemblyTax: number;
+  demobilization: number;
+  dtmHourTax: number;
+  extraTrailerTax: number;
+  generatorFuelTax: number;
+  mixTankDemobilizationTax: number;
+  mixTankDtmTax: number;
+  mixTankHourRentTax: number;
+  mixTankMobilizationTax: number;
+  mixTankMonthRentTax: number;
+  mixTankOperatorTax: number;
+  munckTax: number;
+  powerSwivelTax: number;
+  suckingTruckTax: number;
+  transportationTax: number;
+  truckCartRentTax: number;
+  truckKmTax: number;
+  truckTankTax: number;
 }
 
 export const update = async ({id, ...params}: BillingConfigResponse) => {

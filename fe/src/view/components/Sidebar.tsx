@@ -1,15 +1,19 @@
-import {MoreVertical, ChevronLast, ChevronFirst} from "lucide-react";
+import {ChevronLast, ChevronFirst} from "lucide-react";
 import React from "react";
 import whiteLogo from "../../assets/images/white-logo.png";
 import {useSidebarContext} from "../../app/contexts/SidebarContext";
 import {useAuth} from "../../app/hooks/useAuth";
+import {Button} from "./Button";
+import {useNavigate} from "react-router-dom";
+import {cn} from "../../app/utils/cn";
 
 export default function Sidebar({children}: {children: React.ReactNode}) {
   const {expanded, toggleVisibility} = useSidebarContext();
   const {signout, user} = useAuth();
+  const navigate = useNavigate();
 
   return (
-    <aside className="h-screen">
+    <aside className={cn("h-screen" /* hidden && "hidden" */)}>
       <nav className="h-full  flex flex-col bg-primary-500 border-r shadow-sm">
         <div className="p-4 pb-2 flex justify-between items-center">
           <img
@@ -31,21 +35,26 @@ export default function Sidebar({children}: {children: React.ReactNode}) {
 
         <div className="border-t flex justify-between items-center p-3">
           <div
+            onClick={() => navigate(`/users/${user?.id}`)}
             className={`
-              overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}
+              overflow-hidden cursor-pointer transition-all ${
+                expanded ? "w-52 ml-3" : "w-0"
+              }
           `}
           >
             <div className="leading-4">
               <h4 className="text-white font-semibold">{user?.name}</h4>
               <span className="text-xs  text-white">
-                {user?.rigs[0].rig.name}
+                {user?.accessLevel === "ADM"
+                  ? "ADMINISTRADOR"
+                  : user?.rigs[0].rig.name}
               </span>
             </div>
           </div>
 
-          <button onClick={() => signout()}>
-            <MoreVertical size={20} />
-          </button>
+          <Button className="p-2 bg-primary-600" onClick={() => signout()}>
+            Sair
+          </Button>
         </div>
       </nav>
     </aside>

@@ -1,4 +1,4 @@
-import {BaggageClaim, Truck} from "lucide-react";
+import {BaggageClaim, FilterIcon, Truck} from "lucide-react";
 import {Button} from "../../components/Button";
 import {DatePickerInput} from "../../components/DatePickerInput";
 import {Header} from "../../components/Header";
@@ -9,6 +9,9 @@ import {DashboardContext, DashboardProvider} from "./DashboardContext";
 import {LineChart} from "./components/LineChart";
 import {ListEfficienciesDataGrid} from "../../components/ListEfficienciesDataGrid";
 import {cn} from "../../../app/utils/cn";
+import {FilterType} from "../../../app/entities/FilterType";
+import {Modal} from "../../components/Modal";
+/* import {BarChart} from "./components/BarChart"; */
 
 export const Dashboard = () => {
   return (
@@ -17,6 +20,7 @@ export const Dashboard = () => {
         {({
           selectedRig,
           handleChangeRig,
+          handleChangePeriod,
           selectedEndDate,
           selectedStartDate,
           handleStartDateChange,
@@ -24,7 +28,6 @@ export const Dashboard = () => {
           handleApplyFilters,
           isFetchingEfficiencies,
           rigs,
-          signout,
           isEmpty,
           totalAvailableHours,
           availableHoursPercentage,
@@ -33,46 +36,84 @@ export const Dashboard = () => {
           totalDtms,
           totalMovimentations,
           efficiencies,
+          /*  isFetchingAverage, */
+          windowWidth,
+          months,
+          filterOptions,
+          handleToggleFilterType,
+          selectedFilterType,
+          selectedPeriod,
+          handleIsAlertSeen,
+          isAlertSeen,
         }) => (
-          <div className="w-full h-full overflow-y-scroll">
+          <div className="w-full  overflow-y-scroll">
             <Header title="DASHBOARD" subtitle="Página de início do usuário" />
-            <div className="w-full flex justify-end gap-4 px-4">
-              <div className="w-[123px]">
+            <div className="w-full flex flex-wrap justify-center items-center lg:justify-end gap-1 lg:px-4">
+              <div className="w-[113px] lg:w-[213px]">
+                <Select
+                  error={""}
+                  placeholder="Tipo de Filtro"
+                  value={selectedFilterType}
+                  onChange={(value) =>
+                    handleToggleFilterType(value as FilterType)
+                  }
+                  options={filterOptions}
+                />
+              </div>
+              <div className="w-[113px] lg:w-[123px]">
                 <Select
                   error={""}
                   placeholder="Sonda"
                   value={selectedRig}
                   onChange={(value) => handleChangeRig(value)}
                   options={rigs.map(({id, name}) => ({
-                    value: id,
-                    label: name,
+                    value: id ?? "",
+                    label: name ?? "",
                   }))}
                 />
               </div>
+              {selectedFilterType === FilterType.PERIOD && (
+                <>
+                  <div className="w-[113px] lg:w-[123px]">
+                    <Select
+                      error={""}
+                      placeholder="Período"
+                      value={selectedPeriod}
+                      onChange={(value) => handleChangePeriod(value)}
+                      options={months}
+                    />
+                  </div>
+                </>
+              )}
+
+              {selectedFilterType === FilterType.CUSTOM && (
+                <>
+                  <div>
+                    <DatePickerInput
+                      placeholder="Data de Início"
+                      error={""}
+                      value={new Date(selectedStartDate)}
+                      onChange={(value) => handleStartDateChange(value)}
+                    />
+                  </div>
+
+                  <div>
+                    <DatePickerInput
+                      placeholder="Data de Fim"
+                      error={""}
+                      value={new Date(selectedEndDate)}
+                      onChange={(value) => handleEndDateChange(value)}
+                    />
+                  </div>
+                </>
+              )}
 
               <div>
-                <DatePickerInput
-                  placeholder="Data de Início"
-                  className="h-[42px]"
-                  error={""}
-                  value={new Date(selectedStartDate)}
-                  onChange={(value) => handleStartDateChange(value)}
-                />
-              </div>
-
-              <div>
-                <DatePickerInput
-                  placeholder="Data de Fim"
-                  className="h-[42px]"
-                  error={""}
-                  value={new Date(selectedEndDate)}
-                  onChange={(value) => handleEndDateChange(value)}
-                />
-              </div>
-
-              <div>
-                <Button className="h-[42px]" onClick={handleApplyFilters}>
-                  Aplicar Filtros
+                <Button
+                  className="h-[32px] lg:h-[52px]"
+                  onClick={handleApplyFilters}
+                >
+                  {windowWidth <= 1024 ? <FilterIcon /> : "Aplicar Filtro"}
                 </Button>
               </div>
             </div>
@@ -137,7 +178,7 @@ export const Dashboard = () => {
                       </div>
                       <div className="stat-title text-primary-500">DTMs</div>
                       <div className="stat-desc text-primary-500">
-                        Total de DTMs no mês
+                        No período selecionado
                       </div>
                     </div>
 
@@ -154,7 +195,7 @@ export const Dashboard = () => {
                         Movimentações
                       </div>
                       <div className="stat-desc text-primary-500">
-                        Total de movimentações no mês
+                        No período selecionado
                       </div>
                     </div>
                   </>
@@ -162,7 +203,7 @@ export const Dashboard = () => {
               </div>
             </div>
 
-            <div className="min-w-[1300px]  mx-auto max-w-[715px] bg-gray-400 p-4 rounded-md">
+            <div className=" mx-auto max-w-[1024px] bg-gray-400  rounded-md lg:min-w-[1300px] lg:p-4">
               {isEmpty && (
                 <>
                   {isFetchingEfficiencies && (
@@ -185,8 +226,9 @@ export const Dashboard = () => {
                 <div className="grid grid-cols-12 auto-rows-[120px] gap-3">
                   <div
                     className={cn(
-                      " col-start-3 col-span-8 row-span-3 flex justify-center bg-gray-200 rounded-lg items-center",
-                      efficiencies.length > 15 && "col-start-1 col-span-12"
+                      "col-span-12 row-span-3 flex justify-center bg-gray-200 rounded-lg items-center lg:col-start-3 lg:col-span-8 lg:row-span-3",
+                      efficiencies.length > 15 &&
+                        "lg:col-start-0 lg:col-span-12"
                     )}
                   >
                     {isFetchingEfficiencies && <Spinner />}
@@ -198,7 +240,16 @@ export const Dashboard = () => {
                     {!isFetchingEfficiencies && <LineChart />}
                   </div>*/}
 
-                  <div className="col-start-2 col-span-10 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center">
+                  {/*  <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center lg:col-start-2 lg:col-span-10 lg:row-span-3">
+                    {isFetchingAverage && <Spinner />}
+                    {!isFetchingAverage && (
+                      <div className="w-full h-full">
+                        <BarChart />
+                      </div>
+                    )}
+                  </div> */}
+
+                  <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center lg:col-start-2 lg:col-span-10">
                     {isFetchingEfficiencies && <Spinner />}
                     {!isFetchingEfficiencies && (
                       <div className="w-full h-full">
@@ -212,7 +263,36 @@ export const Dashboard = () => {
                 </div>
               )}
             </div>
-            <button onClick={signout}>Sair</button>
+            <Modal
+              title="Explore as Novas Funcionalidades!"
+              open={!isAlertSeen}
+              onClose={handleIsAlertSeen}
+            >
+              <div className="text-gray-600">
+                <ul className="list-disc list-inside">
+                  <li className="block my-4">
+                    1. Agora você pode filtrar por período de medição, tornando
+                    a análise mais precisa.
+                  </li>
+                  <li className="block my-4">
+                    2. Os administradores têm a capacidade de editar os
+                    registros para melhor controle.
+                  </li>
+                  <li className="block my-4">
+                    3. Nova opção de TNF disponível nos formulários, ampliando
+                    as possibilidades de registro.
+                  </li>
+                  <li className="block my-4">
+                    4. O campo de descrição foi expandido para aceitar mais
+                    caracteres, permitindo detalhamentos mais completos.
+                  </li>
+                  <li className="block my-4">
+                    5. Corrigido o problema do Formulário não aparecer para os
+                    usuários.
+                  </li>
+                </ul>
+              </div>
+            </Modal>
           </div>
         )}
       </DashboardContext.Consumer>
