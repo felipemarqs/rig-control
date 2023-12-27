@@ -9,11 +9,21 @@ import {BillingConfigResponse} from "../../../../app/services/billingConfigServi
 import {useBillingByRigId} from "../../../../app/hooks/billings/useBillingByRigId";
 import {Rig} from "../../../../app/entities/Rig";
 import {useRigs} from "../../../../app/hooks/rigs/useRigs";
+import {filterOptions} from "../../../../app/utils/filterOptions";
+import {months} from "../../../../app/utils/months";
+import {SelectOptions} from "../../../../app/entities/SelectOptions";
+import {FilterType} from "../../../../app/entities/FilterType";
+import {getPeriodRange} from "../../../../app/utils/getPeriodRange";
+import {useSidebarContext} from "../../../../app/contexts/SidebarContext";
 
 interface BillingRigDetailDashboardContextValue {
   handleStartDateChange(date: Date): void;
   handleEndDateChange(date: Date): void;
   selectedEndDate: string;
+  handleToggleFilterType(filterType: FilterType): void;
+  selectedPeriod: string;
+  handleChangePeriod(period: string): void;
+  windowWidth: number;
   selectedStartDate: string;
   handleApplyFilters(): void;
   billings: Array<BillingResponse>;
@@ -60,6 +70,9 @@ interface BillingRigDetailDashboardContextValue {
   configBeingEdited: BillingConfigResponse | null;
   configs: Array<BillingConfigResponse>;
   handleChangeRig(rigId: string): void;
+  filterOptions: SelectOptions;
+  months: SelectOptions;
+  selectedFilterType: FilterType;
 }
 
 export const BillingRigDetailDashboardContext = createContext(
@@ -97,6 +110,9 @@ export const BillingRigDetailDashboardProvider = ({
   const [rigBeingEdited, setRigBeingEdited] = useState<null | BillingResponse>(
     null
   );
+  const {windowWidth} = useSidebarContext();
+
+  const [selectedPeriod, setSelectedPeriod] = useState("");
 
   const {rigs} = useRigs(true);
 
@@ -121,6 +137,10 @@ export const BillingRigDetailDashboardProvider = ({
     startDate: selectedStartDate,
     endDate: selectedEndDate,
   });
+
+  const [selectedFilterType, setSelectedFilterType] = useState<FilterType>(
+    FilterType.PERIOD
+  );
 
   //Edit Rig
   const handleCloseEditRigModal = useCallback(() => {
@@ -181,6 +201,28 @@ export const BillingRigDetailDashboardProvider = ({
     refetchBilling();
   };
 
+  const handleToggleFilterType = (filterType: FilterType) => {
+    setSelectedFilterType(filterType);
+
+    handleStartDateChange(new Date(formattedFirstDay));
+    handleEndDateChange(new Date(formattedLastDay));
+  };
+
+  const handleChangePeriod = (period: string) => {
+    setSelectedPeriod(period);
+
+    const periodFound = getPeriodRange(selectedRig);
+
+    if (periodFound) {
+      const monthPeriodSelected = periodFound.months.find((month) => {
+        return month.month === period;
+      });
+
+      handleStartDateChange(monthPeriodSelected?.startDate!);
+      handleEndDateChange(monthPeriodSelected?.endDate!);
+    }
+  };
+
   const handleStartDateChange = useCallback((date: Date) => {
     setSelectedStartDate(date.toISOString());
     setFilters((prevState) => ({
@@ -200,6 +242,13 @@ export const BillingRigDetailDashboardProvider = ({
   return (
     <BillingRigDetailDashboardContext.Provider
       value={{
+        windowWidth,
+        handleChangePeriod,
+        selectedPeriod,
+        selectedFilterType,
+        filterOptions,
+        months,
+        handleToggleFilterType,
         selectedStartDate,
         selectedEndDate,
         handleStartDateChange,

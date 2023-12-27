@@ -1,11 +1,12 @@
 import dayjs from "dayjs";
-import { DomainEfficiency } from "../../../entities/DomainEfficiency";
-import { differenceInMinutes, parse } from "date-fns";
-import { ToPersistanceEfficiency } from "../../../entities/PersistanceEfficiency";
-import { getTotalHoursFromTimeString } from "../../../utils/getTotalHoursFromTimeString";
+import {DomainEfficiency} from "../../../entities/DomainEfficiency";
+import {differenceInMinutes, parse} from "date-fns";
+import {ToPersistanceEfficiency} from "../../../entities/PersistanceEfficiency";
+import {getTotalHoursFromTimeString} from "../../../utils/getTotalHoursFromTimeString";
 
 export const toPersistence = (domainEfficiency: DomainEfficiency) => {
   let totalAvailableHours = 0;
+  let totalScheduledStopHours = 0;
 
   const christmasTreeDisassemblyHours = getTotalHoursFromTimeString(
     domainEfficiency.christmasTreeDisassemblyHours
@@ -41,12 +42,20 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
         return differenceInMinutes(endDate, horaInicial);
       };
 
-      if (type === "WORKING" || type === "DTM") {
-        const horaInicial = parse(startHour, "HH:mm", new Date());
-        const horaFinal = parse(endHour, "HH:mm", new Date());
+      const horaInicial = parse(startHour, "HH:mm", new Date());
+      const horaFinal = parse(endHour, "HH:mm", new Date());
+
+      if (type === "WORKING" || type === "DTM" || type === "SCHEDULED_STOP") {
         const diffInMinutes = getDiffInMinutes(horaFinal, horaInicial);
 
         totalAvailableHours += diffInMinutes / 60;
+      }
+
+      //temporarily
+      if (type === "SCHEDULED_STOP") {
+        const diffInMinutes = getDiffInMinutes(horaFinal, horaInicial);
+
+        totalScheduledStopHours += diffInMinutes / 60;
       }
 
       const startDateWithTime = dayjs()
@@ -103,7 +112,7 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
     isSuckingTruckSelected: domainEfficiency.isSuckingTruckSelected,
   };
 
-  domainEfficiency.periods.forEach(({ equipmentRatio, fluidRatio }) => {
+  domainEfficiency.periods.forEach(({equipmentRatio, fluidRatio}) => {
     if (equipmentRatio) {
       toPersistenceObj.equipmentRatio.push({
         ratio: equipmentRatio,
@@ -117,7 +126,7 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
     }
   });
 
-  return { toPersistenceObj };
+  return {toPersistenceObj};
 };
 
 /* export class PeriodDto {

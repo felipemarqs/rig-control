@@ -48,13 +48,15 @@ export const DesktopLayout = () => {
           />
         )}
 
-        {userAccessLevel == "USER" && (
-          <SidebarItem
-            icon={<FileText size={20} />}
-            text="Formulário"
-            urlText="form"
-            isActive={active === "Formulário"}
-          />
+        {userAccessLevel !== "VIEWER" && (
+          <>
+            <SidebarItem
+              icon={<FileText size={20} />}
+              text="Formulário"
+              urlText="form"
+              isActive={active === "Formulário"}
+            />
+          </>
         )}
 
         <SidebarItem

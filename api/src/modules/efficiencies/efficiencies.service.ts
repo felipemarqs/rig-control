@@ -164,6 +164,7 @@ export class EfficienciesService {
 
     let availableHourTotalHours = 0;
     let glossHourTotalHours = 0;
+    let scheduledStopTotalHours = 0;
     let dtmLt20TotalHours = 0;
     let dtmBt20And50TotalHours = 0;
     let dtmGt50TotalHours = 0;
@@ -230,6 +231,10 @@ export class EfficienciesService {
           dtmGt50TotalHours += diffInMinutes / 60;
         }
       }
+
+      if (type === 'SCHEDULED_STOP') {
+        scheduledStopTotalHours += diffInMinutes / 60;
+      }
     });
 
     if (equipmentRatio?.length) {
@@ -265,7 +270,12 @@ export class EfficienciesService {
     }
 
     const availableHourAmount =
-      availableHours * rigBillingConfiguration.availableHourTax;
+      (availableHours - scheduledStopTotalHours) *
+      rigBillingConfiguration.availableHourTax;
+
+    const scheduledStopAmount =
+      scheduledStopTotalHours *
+      (rigBillingConfiguration.availableHourTax * 0.8);
 
     const glossHourAmount =
       (24 - availableHours) * rigBillingConfiguration.glossHourTax;
@@ -375,8 +385,6 @@ export class EfficienciesService {
 
     truckKmTotalAmount = rigBillingConfiguration.truckKmTax * truckKm;
 
-    console.log(dtmGt50TotalAmount);
-
     const totalAmmount =
       (availableHourAmount +
         dtmHourAmount +
@@ -407,7 +415,8 @@ export class EfficienciesService {
         transportationTotalAmount +
         truckCartRentTotalAmount +
         bobRentTotalAmount +
-        truckKmTotalAmount) *
+        truckKmTotalAmount +
+        scheduledStopAmount) *
       rigBillingConfiguration.readjustment;
 
     efficiencyData['dtmHours'] =
@@ -440,6 +449,7 @@ export class EfficienciesService {
         truckCartRentAmount: truckCartRentTotalAmount, //Temporário
         truckKmAmount: truckKmTotalAmount, //Temporário
         availableHourAmount,
+        scheduledStopAmount,
         glossHourAmount,
         dtmLt20Amount,
         dtmBt20And50Amount,
@@ -560,6 +570,7 @@ export class EfficienciesService {
             classification: true,
             description: true,
             type: true,
+            repairClassification: true,
           },
           orderBy: { startHour: 'asc' },
         },

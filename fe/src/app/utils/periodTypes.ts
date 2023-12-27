@@ -15,4 +15,8 @@ export const periodTypes = [
     id: "DTM",
     type: "DTM",
   },
+  {
+    id: "SCHEDULED_STOP",
+    type: "Parada de Manutenção",
+  },
 ];

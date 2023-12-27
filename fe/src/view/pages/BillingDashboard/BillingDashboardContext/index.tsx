@@ -136,6 +136,8 @@ export const BillingDashboardProvider = ({
 
   const {billings, isFetchingBillings, refetchBillings} = useBillings(filters);
 
+  console.log("billgins", billings);
+
   const {configs, isFetchingConfig} = useConfigBillings();
 
   const isEmpty: boolean = billings.length === 0;

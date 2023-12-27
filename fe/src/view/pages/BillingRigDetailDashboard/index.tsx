@@ -16,6 +16,8 @@ import {RigBillingConfigCard} from "./components/RigBillingConfigCard/RigBilling
 import {EditConfigModal} from "./modals/EditConfigModal";
 import "swiper/css";
 import {Select} from "../../components/Select";
+import {FilterType} from "../../../app/entities/FilterType";
+import {FilterIcon} from "lucide-react";
 
 export const BillingRigDetailDashboard = () => {
   return (
@@ -38,49 +40,85 @@ export const BillingRigDetailDashboard = () => {
           handleChangeRig,
           selectedRig,
           rigs,
+          selectedFilterType,
+          handleToggleFilterType,
+          filterOptions,
+          selectedPeriod,
+          handleChangePeriod,
+          months,
+          windowWidth,
         }) => (
           <div className="w-full h-full overflow-y-scroll">
             <Header
               title="DASHBOARD DE FATURAMENTO2"
               subtitle="Página de visualização da previsão do faturamento geral"
             />
-            <div className="w-full flex justify-end gap-4 px-4">
-              <div className="w-[123px]">
+            <div className="w-full flex flex-wrap justify-center items-center lg:justify-end gap-1 lg:px-4">
+              <div className="w-[113px] lg:w-[213px]">
+                <Select
+                  error={""}
+                  placeholder="Tipo de Filtro"
+                  value={selectedFilterType}
+                  onChange={(value) =>
+                    handleToggleFilterType(value as FilterType)
+                  }
+                  options={filterOptions}
+                />
+              </div>
+              <div className="w-[113px] lg:w-[123px]">
                 <Select
                   error={""}
                   placeholder="Sonda"
                   value={selectedRig}
                   onChange={(value) => handleChangeRig(value)}
                   options={rigs.map(({id, name}) => ({
-                    value: id,
-                    label: name,
+                    value: id ?? "",
+                    label: name ?? "",
                   }))}
                 />
               </div>
+              {selectedFilterType === FilterType.PERIOD && (
+                <>
+                  <div className="w-[113px] lg:w-[123px]">
+                    <Select
+                      error={""}
+                      placeholder="Período"
+                      value={selectedPeriod}
+                      onChange={(value) => handleChangePeriod(value)}
+                      options={months}
+                    />
+                  </div>
+                </>
+              )}
+
+              {selectedFilterType === FilterType.CUSTOM && (
+                <>
+                  <div>
+                    <DatePickerInput
+                      placeholder="Data de Início"
+                      error={""}
+                      value={new Date(selectedStartDate)}
+                      onChange={(value) => handleStartDateChange(value)}
+                    />
+                  </div>
+
+                  <div>
+                    <DatePickerInput
+                      placeholder="Data de Fim"
+                      error={""}
+                      value={new Date(selectedEndDate)}
+                      onChange={(value) => handleEndDateChange(value)}
+                    />
+                  </div>
+                </>
+              )}
 
               <div>
-                <DatePickerInput
-                  placeholder="Data de Início"
-                  className="h-[42px]"
-                  error={""}
-                  value={new Date(selectedStartDate)}
-                  onChange={(value) => handleStartDateChange(value)}
-                />
-              </div>
-
-              <div>
-                <DatePickerInput
-                  placeholder="Data de Fim"
-                  className="h-[42px]"
-                  error={""}
-                  value={new Date(selectedEndDate)}
-                  onChange={(value) => handleEndDateChange(value)}
-                />
-              </div>
-
-              <div>
-                <Button className="h-[42px]" onClick={handleApplyFilters}>
-                  Aplicar Filtros
+                <Button
+                  className="h-[32px] lg:h-[52px]"
+                  onClick={handleApplyFilters}
+                >
+                  {windowWidth <= 1024 ? <FilterIcon /> : "Aplicar Filtro"}
                 </Button>
               </div>
             </div>
