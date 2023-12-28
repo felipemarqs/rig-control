@@ -3,13 +3,13 @@ import {useBillingRigDetailDashboard} from "../../BillingRigDetailDashboardConte
 import {formatCurrency} from "../../../../../app/utils/formatCurrency";
 
 export const useDataGrid = () => {
-  const {billings} = useBillingRigDetailDashboard();
+  const {billing} = useBillingRigDetailDashboard();
 
   const columns: GridColDef[] = [
     {
       field: "taxa",
       headerName: "Taxa",
-      flex: 0.7,
+      flex: 1,
       headerAlign: "center",
       align: "center",
       renderCell(params: GridRenderCellParams) {
@@ -24,7 +24,7 @@ export const useDataGrid = () => {
     },
   ];
 
-  billings.forEach(({rigname}) => {
+  billing.forEach(({rigname}) => {
     columns.push({
       field: rigname,
       headerName: rigname,
@@ -43,25 +43,46 @@ export const useDataGrid = () => {
     });
   });
 
-  const rigNames = Array.from(new Set(billings.map((item) => item.rigname)));
+  const rigNames = Array.from(new Set(billing.map((item) => item.rigname)));
 
   const taxaNames = [
     "availablehouramount",
-    "glosshouramount",
-    "dtmlt20amount",
+    "bobrentamount",
+    "christmastreedisassemblyamount",
+    "demobilizationamount",
+    "dtmhouramount",
     "dtmbt20and50amount",
     "dtmgt50amount",
-    "fluidlt20amount",
-    "fluidbt20and50amount",
-    "fluidgt50amount",
-    "equipmentlt20amount",
+    "dtmlt20amount",
     "equipmentbt20and50amount",
     "equipmentgt50amount",
+    "equipmentlt20amount",
+    "extratraileramount",
+    "fluidbt20and50amount",
+    "fluidgt50amount",
+    "fluidlt20amount",
+    "generatorfuelamount",
+    "glosshouramount",
+    "mixtankdemobilizationamount",
+    "mixtankdtmamount",
+    "mixtankhourrentamount",
+    "mixtankmobilizationamount",
+    "mixtankmonthrentamount",
+    "mixtankoperatoramount",
+    "mobilizationamount",
+    "munckamount",
+    "powerswivelamount",
+    "suckingtruckamount",
+    "transportationamount",
+    "truckcartrentamount",
+    "truckkmamount",
+    "trucktankamount",
   ];
 
   const taxaTranslation: Record<string, string> = {
     availablehouramount: "Horas Disponíveis",
     glosshouramount: "Horas Glosa",
+    dtmhouramount: "Horas DTM",
     dtmlt20amount: "DTM < 20",
     dtmbt20and50amount: "DTM 20-50",
     dtmgt50amount: "DTM > 50",
@@ -71,6 +92,25 @@ export const useDataGrid = () => {
     equipmentlt20amount: "Taxa de Equipamento < 20",
     equipmentbt20and50amount: "Taxa de Equipamento 20-50",
     equipmentgt50amount: "Taxa de Equipamento > 50",
+    bobrentamount: "Locação BOP",
+    christmastreedisassemblyamount: "Desmontagem de Árvode de Natal",
+    demobilizationamount: "Desmobilização",
+    extratraileramount: "Trailer Extra",
+    generatorfuelamount: "Combustível Gerador",
+    mixtankdemobilizationamount: "Desm. de Tanque Mix",
+    mixtankdtmamount: "DTM Tanque Mix ",
+    mixtankhourrentamount: "Loc. Tanque Mix em serviço",
+    mixtankmobilizationamount: "Mob. de Tanque Mix",
+    mixtankmonthrentamount: "Loc Tanque Mix Mensal",
+    mixtankoperatoramount: "Operadores de Tanque Mix",
+    mobilizationamount: "Mobilização",
+    munckamount: "Loc. Munk",
+    powerswivelamount: "Power Swivel",
+    suckingtruckamount: "Caminhão Sugador",
+    transportationamount: "Transporte",
+    truckcartrentamount: "Locação Caminhão + Carreta",
+    truckkmamount: "Km Caminhão",
+    trucktankamount: "Locação Caminhão + Tanque",
   };
 
   // Criar a tabela com as taxas como linhas e sondas como colunas
@@ -81,7 +121,7 @@ export const useDataGrid = () => {
       taxa: taxaTranslation[taxa] || taxa,
     };
     rigNames.forEach((rigname) => {
-      const rigData: any = billings.find((item) => item.rigname === rigname);
+      const rigData: any = billing.find((item) => item.rigname === rigname);
       rowData[rigname] = rigData ? rigData[taxa] : 0;
     });
     return rowData;

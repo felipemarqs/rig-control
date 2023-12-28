@@ -1,11 +1,8 @@
-import {createContext, useCallback, useMemo, useState} from "react";
+import {createContext, useCallback, useState} from "react";
 import React from "react";
 import {startOfMonth, endOfMonth, format} from "date-fns";
 import {useBillings} from "../../../../app/hooks/billings/useBillings";
 import {BillingResponse} from "../../../../app/services/billingServices/getAll";
-import {formatCurrency} from "../../../../app/utils/formatCurrency";
-import {useConfigBillings} from "../../../../app/hooks/useConfigBillings";
-import {BillingConfigResponse} from "../../../../app/services/billingConfigServices/getAll";
 import {useBillingByRigId} from "../../../../app/hooks/billings/useBillingByRigId";
 import {Rig} from "../../../../app/entities/Rig";
 import {useRigs} from "../../../../app/hooks/rigs/useRigs";
@@ -15,6 +12,7 @@ import {SelectOptions} from "../../../../app/entities/SelectOptions";
 import {FilterType} from "../../../../app/entities/FilterType";
 import {getPeriodRange} from "../../../../app/utils/getPeriodRange";
 import {useSidebarContext} from "../../../../app/contexts/SidebarContext";
+import {BillingByRigIdResponse} from "../../../../app/services/billingServices/getbyRigId";
 
 interface BillingRigDetailDashboardContextValue {
   handleStartDateChange(date: Date): void;
@@ -26,49 +24,18 @@ interface BillingRigDetailDashboardContextValue {
   windowWidth: number;
   selectedStartDate: string;
   handleApplyFilters(): void;
+  billing: Array<BillingByRigIdResponse>;
   billings: Array<BillingResponse>;
   isFetchingBillings: boolean;
-  isFetchingConfig: boolean;
   isEmpty: boolean;
-  totalAmount: number | string;
-  setSliderState({
-    isBeginning,
-    isEnd,
-  }: {
-    isBeginning: boolean;
-    isEnd: boolean;
-  }): void;
-  sliderState: {
-    isBeginning: boolean;
-    isEnd: boolean;
-  };
+  totalAmount: number;
   rigs:
     | Rig[]
     | {
         id: string;
         name: string;
       }[];
-  setConfigSliderState({
-    isBeginning,
-    isEnd,
-  }: {
-    isBeginning: boolean;
-    isEnd: boolean;
-  }): void;
-  configSliderState: {
-    isBeginning: boolean;
-    isEnd: boolean;
-  };
   selectedRig: string;
-  isEditRigModalOpen: boolean;
-  isEditConfigModalOpen: boolean;
-  handleCloseEditRigModal(): void;
-  handleOpenEditRigModal(data: BillingResponse): void;
-  handleCloseEditConfigModal(): void;
-  handleOpenEditConfigModal(data: BillingConfigResponse): void;
-  rigBeingEdited: BillingResponse | null;
-  configBeingEdited: BillingConfigResponse | null;
-  configs: Array<BillingConfigResponse>;
   handleChangeRig(rigId: string): void;
   filterOptions: SelectOptions;
   months: SelectOptions;
@@ -106,10 +73,7 @@ export const BillingRigDetailDashboardProvider = ({
   // Defina os estados iniciais
   const [selectedStartDate, setSelectedStartDate] = useState(formattedFirstDay);
   const [selectedEndDate, setSelectedEndDate] = useState(formattedLastDay);
-  const [isEditRigModalOpen, setIsEditRigModalOpen] = useState(false);
-  const [rigBeingEdited, setRigBeingEdited] = useState<null | BillingResponse>(
-    null
-  );
+
   const {windowWidth} = useSidebarContext();
 
   const [selectedPeriod, setSelectedPeriod] = useState("");
@@ -117,20 +81,6 @@ export const BillingRigDetailDashboardProvider = ({
   const {rigs} = useRigs(true);
 
   const [selectedRig, setSelectedRig] = useState<string>("");
-
-  const [isEditConfigModalOpen, setIsEditConfigModalOpen] = useState(false);
-  const [configBeingEdited, setConfigBeingEdited] =
-    useState<null | BillingConfigResponse>(null);
-
-  const [sliderState, setSliderState] = useState({
-    isBeginning: true,
-    isEnd: false,
-  });
-
-  const [configSliderState, setConfigSliderState] = useState({
-    isBeginning: true,
-    isEnd: false,
-  });
 
   const [filters, setFilters] = useState({
     rigId: selectedRig,
@@ -142,60 +92,25 @@ export const BillingRigDetailDashboardProvider = ({
     FilterType.PERIOD
   );
 
-  //Edit Rig
-  const handleCloseEditRigModal = useCallback(() => {
-    setIsEditRigModalOpen(false);
-    setRigBeingEdited(null);
-  }, []);
-
   const handleChangeRig = (rigId: string) => {
     setSelectedRig(rigId);
     setFilters((prevState) => ({...prevState, rigId: rigId}));
   };
 
-  const handleOpenEditRigModal = useCallback((data: BillingResponse) => {
-    setRigBeingEdited(data);
-
-    setIsEditRigModalOpen(true);
-  }, []);
   //=============================
 
   //Edit Config
-
-  const handleCloseEditConfigModal = useCallback(() => {
-    setConfigBeingEdited(null);
-
-    setIsEditConfigModalOpen(false);
-  }, []);
-  const handleOpenEditConfigModal = useCallback(
-    (data: BillingConfigResponse) => {
-      setConfigBeingEdited(data);
-      setIsEditConfigModalOpen(true);
-    },
-    []
-  );
 
   const {billings, isFetchingBillings} = useBillings(filters);
 
   const {billing, refetchBilling} = useBillingByRigId(filters);
 
-  console.log(`Billing from`, billing);
-
-  console.log(`Filters`, filters);
-  const {configs, isFetchingConfig} = useConfigBillings();
+  console.log("billing", billing);
 
   //Temporary Condition
-  const isEmpty: boolean = true; /* billings.length === 0 */
+  const isEmpty: boolean = billing.length === 0;
 
-  const totalAmount = useMemo(() => {
-    let totalBillings = 0;
-
-    billings.forEach(({total}) => {
-      totalBillings += total;
-    });
-
-    return formatCurrency(totalBillings);
-  }, [billings]);
+  const totalAmount: number = isEmpty ? 0 : billing[0].total;
 
   const handleApplyFilters = () => {
     refetchBilling();
@@ -248,6 +163,7 @@ export const BillingRigDetailDashboardProvider = ({
         selectedFilterType,
         filterOptions,
         months,
+        totalAmount,
         handleToggleFilterType,
         selectedStartDate,
         selectedEndDate,
@@ -256,22 +172,8 @@ export const BillingRigDetailDashboardProvider = ({
         handleApplyFilters,
         isFetchingBillings,
         billings,
+        billing,
         isEmpty,
-        totalAmount,
-        setSliderState,
-        sliderState,
-        isEditRigModalOpen,
-        handleCloseEditRigModal,
-        handleOpenEditRigModal,
-        rigBeingEdited,
-        isFetchingConfig,
-        configSliderState,
-        setConfigSliderState,
-        isEditConfigModalOpen,
-        handleCloseEditConfigModal,
-        handleOpenEditConfigModal,
-        configs,
-        configBeingEdited,
         handleChangeRig,
         selectedRig,
         rigs,

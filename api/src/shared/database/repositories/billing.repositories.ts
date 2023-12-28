@@ -72,6 +72,7 @@ export class BillingRepository {
     r.name AS rigName, 
     SUM(b.available_hour_amount) AS availableHourAmount,
     SUM(b.gloss_hour_amount) AS glossHourAmount,
+    SUM(b.dtm_hour_amount) AS dtmHourAmount,
     SUM(b.dtm_lt_20_amount) AS dtmLt20Amount,
     SUM(b.dtm_bt_20_and_50_amount) AS dtmBt20And50Amount,
     SUM(b.dtm_gt_50_amount) AS dtmGt50Amount,
