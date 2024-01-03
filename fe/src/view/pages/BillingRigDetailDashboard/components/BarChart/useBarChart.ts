@@ -1,9 +1,9 @@
 import {useBillingRigDetailDashboard} from "../../BillingRigDetailDashboardContext/useBillingDashboard";
 
 export const useBarChart = () => {
-  const {billings} = useBillingRigDetailDashboard();
+  const {billing} = useBillingRigDetailDashboard();
 
-  const data = billings.map(({rigname, total}) => {
+  const data = billing.map(({rigname, total}) => {
     return {
       rig: rigname,
       total: total,

@@ -78,7 +78,7 @@ export const useDataGrid = () => {
 
   // Criar a tabela com as taxas como linhas e sondas como colunas
 
-  const tableData = taxNames.map((taxa, index) => {
+  const tableData = taxNames.map((taxa) => {
     const rowData: any = {
       id: `${taxa}-total`,
       taxa: taxTranslation[taxa] || taxa,

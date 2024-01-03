@@ -26,6 +26,8 @@ interface BillingRigDetailDashboardContextValue {
   isFetchingBilling: boolean;
   selectedYear: string;
   handleYearChange(year: string): void;
+  years: SelectOptions;
+
   handleApplyFilters(): void;
   billing: Array<BillingByRigIdResponse>;
   isEmpty: boolean;
@@ -42,7 +44,6 @@ interface BillingRigDetailDashboardContextValue {
   filterOptions: SelectOptions;
   months: SelectOptions;
   selectedFilterType: FilterType;
-  years: SelectOptions;
   totals: totalsInterface;
 }
 
@@ -108,8 +109,7 @@ export const BillingRigDetailDashboardProvider = ({
   //Edit Config
   const {billing, refetchBilling, isFetchingBilling} =
     useBillingByRigId(filters);
-  const {efficiencies, isFetchingEfficiencies, refetchEffciencies} =
-    useEfficiencies(filters);
+  const {efficiencies, refetchEffciencies} = useEfficiencies(filters);
 
   const handleYearChange = (year: string) => {
     setSeletectedYear(year);
@@ -117,8 +117,6 @@ export const BillingRigDetailDashboardProvider = ({
 
   //console.log("efficiencies", efficiencies);
   const totals = getTotals(efficiencies);
-
-  console.log("Resultado do Reduce", totals);
 
   //Temporary Condition
   const isEmpty: boolean = billing.length === 0;

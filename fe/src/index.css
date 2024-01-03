@@ -11,14 +11,13 @@ body,
   box-sizing: border-box;
 }
 .ant-btn.ant-btn-primary {
-  background-color: #1c7b7b; /* Substitua pela cor desejada */
-  color: white; /* Defina a cor do texto para torná-lo visível na cor de fundo */
+  background-color: #1c7b7b;
+  color: white;
 }
 
 .ant-btn.ant-btn-primary:hover,
 .ant-btn.ant-btn-primary:focus {
-  background-color: #155e5e; /* Cor de fundo quando hover ou foco */
-  /* Outros estilos desejados */
+  background-color: #155e5e;
 }
 
 ::-webkit-scrollbar {
@@ -37,7 +36,6 @@ body,
   background: #1c7b7b;
 }
 
-// Add this style to your css file
 .sticky-nav {
   animation: sticky-nav 300ms;
 }
