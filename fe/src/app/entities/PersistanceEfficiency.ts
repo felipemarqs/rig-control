@@ -25,9 +25,11 @@ export type PersistanceEfficiency = {
   fluidRatio: {
     ratio: string;
   }[];
-  christmasTreeDisassemblyHours: boolean;
-  bobRentHours: boolean;
+  dtmHours: number;
+  christmasTreeDisassemblyHours: number;
+  bobRentHours: number;
   hasDemobilization: boolean;
+  hasMobilization: boolean | null;
   hasExtraTrailer: boolean;
   hasGeneratorFuel: boolean;
   hasMixTankDemobilization: boolean;
@@ -41,7 +43,7 @@ export type PersistanceEfficiency = {
   hasSuckingTruck: boolean;
   hasTransportation: boolean;
   hasTruckCartRent: boolean;
-  truckKmHours: boolean;
+  truckKmHours: number;
   hasTruckTank: boolean;
   Billing: {
     availableHourAmount: number;
