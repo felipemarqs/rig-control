@@ -80,7 +80,7 @@ export const Select = ({
                 <ChevronUpIcon />
               </RadixSelect.ScrollUpButton>
 
-              <RadixSelect.Viewport className="p-2">
+              <RadixSelect.Viewport className="p-2 top-auto">
                 {options.map((option) => (
                   <RadixSelect.Item
                     key={option.value}

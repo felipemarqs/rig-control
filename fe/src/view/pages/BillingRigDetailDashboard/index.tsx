@@ -8,16 +8,11 @@ import {
 import {Spinner} from "../../components/Spinner";
 import {NotFound} from "../../components/NotFound";
 import {ListBillingDataGrid} from "./components/ListBillingDataGrid";
-import {Swiper, SwiperSlide} from "swiper/react";
-import {RigsSliderNavigation} from "./components/RigCard/RigsSliderNavigation";
-import {cn} from "../../../app/utils/cn";
-import {EditRigModal} from "./modals/EditRigModal";
-import {RigBillingConfigCard} from "./components/RigBillingConfigCard/RigBillingConfigCard";
-import {EditConfigModal} from "./modals/EditConfigModal";
 import "swiper/css";
 import {Select} from "../../components/Select";
 import {FilterType} from "../../../app/entities/FilterType";
 import {FilterIcon} from "lucide-react";
+import {formatCurrency} from "../../../app/utils/formatCurrency";
 
 export const BillingRigDetailDashboard = () => {
   return (
@@ -30,23 +25,21 @@ export const BillingRigDetailDashboard = () => {
           handleEndDateChange,
           selectedEndDate,
           handleApplyFilters,
-          isFetchingBillings,
-          totalAmount,
-          setConfigSliderState,
-          configSliderState,
-          rigBeingEdited,
-          configs,
-          configBeingEdited,
+          isFetchingBilling,
           handleChangeRig,
           selectedRig,
           rigs,
+          totalAmount,
           selectedFilterType,
           handleToggleFilterType,
           filterOptions,
           selectedPeriod,
           handleChangePeriod,
           months,
+          years,
           windowWidth,
+          selectedYear,
+          handleYearChange,
         }) => (
           <div className="w-full h-full overflow-y-scroll">
             <Header
@@ -88,6 +81,16 @@ export const BillingRigDetailDashboard = () => {
                       options={months}
                     />
                   </div>
+
+                  <div className="w-[113px] lg:w-[123px]">
+                    <Select
+                      error={""}
+                      placeholder="Ano"
+                      value={selectedYear}
+                      onChange={(value) => handleYearChange(value)}
+                      options={years}
+                    />
+                  </div>
                 </>
               )}
 
@@ -122,9 +125,11 @@ export const BillingRigDetailDashboard = () => {
                 </Button>
               </div>
             </div>
-            <div className=" w-full flex justify-center my-6">
+
+            <div className=" w-full flex justify-center my-6 ">
+              {/*    {!isEmpty && ( */}
               <div className="stats  bg-gray-500">
-                {!isFetchingBillings && (
+                {!isFetchingBilling && (
                   <>
                     <div className="stat">
                       <div className="stat-figure text-white">
@@ -139,7 +144,7 @@ export const BillingRigDetailDashboard = () => {
                         Fat. Total
                       </div>
                       <div className="stat-value  text-primary-500">
-                        {totalAmount}
+                        {formatCurrency(totalAmount)}
                       </div>
                       <div className="stat-desc  text-primary-500">
                         Total de faturamento no período.
@@ -148,18 +153,19 @@ export const BillingRigDetailDashboard = () => {
                   </>
                 )}
               </div>
+              {/*  )} */}
             </div>
 
             <div className=" mx-auto max-w-[1024px] bg-gray-400  rounded-md lg:min-w-[1300px] lg:p-4">
               {isEmpty && (
                 <>
-                  {isFetchingBillings && (
+                  {isFetchingBilling && (
                     <div className="w-full h-full flex justify-center items-center">
                       <Spinner />
                     </div>
                   )}
 
-                  {!isFetchingBillings && (
+                  {!isFetchingBilling && (
                     <NotFound>
                       <strong>Não</strong> existem dados para a{" "}
                       <strong>sonda</strong> no <strong>período</strong>{" "}
@@ -171,56 +177,13 @@ export const BillingRigDetailDashboard = () => {
 
               {!isEmpty && (
                 <div className="grid grid-cols-12 auto-rows-[120px] gap-3">
-                  <div
-                    className={cn(
-                      " col-span-12 row-span-5 flex justify-center bg-primary-500 rounded-lg items-center p-4",
-                      configs.length <= 3 && "lg:p-[12rem]"
-                    )}
-                  >
-                    {isFetchingBillings && <Spinner />}
-                    {!isFetchingBillings && (
-                      <>
-                        <Swiper
-                          spaceBetween={16}
-                          slidesPerView={configs.length <= 2 ? 1 : 2}
-                          onSlideChange={(swiper) => {
-                            setConfigSliderState({
-                              isBeginning: swiper.isBeginning,
-                              isEnd: swiper.isEnd,
-                            });
-                          }}
-                        >
-                          <div
-                            className="flex items-center justify-between mb-2"
-                            slot="container-start"
-                          >
-                            <strong className="text-white tracking-[-1px] text-sm">
-                              Valores para cálculo de previsão:
-                            </strong>
-                            <RigsSliderNavigation
-                              isBeginning={configSliderState.isBeginning}
-                              isEnd={configSliderState.isEnd}
-                            />
-                          </div>
-                          {configs.map((config) => (
-                            <SwiperSlide key={config.id}>
-                              <RigBillingConfigCard data={config} />
-                            </SwiperSlide>
-                          ))}
-                        </Swiper>
-                      </>
-                    )}
-                  </div>
-
                   <div className="col-span-12  row-span-4 flex justify-center bg-gray-200 rounded-lg items-center">
-                    {isFetchingBillings && <Spinner />}
-                    {!isFetchingBillings && <ListBillingDataGrid />}
+                    {isFetchingBilling && <Spinner />}
+                    {!isFetchingBilling && <ListBillingDataGrid />}
                   </div>
                 </div>
               )}
             </div>
-            {rigBeingEdited && <EditRigModal />}
-            {configBeingEdited && <EditConfigModal />}
           </div>
         )}
       </BillingRigDetailDashboardContext.Consumer>

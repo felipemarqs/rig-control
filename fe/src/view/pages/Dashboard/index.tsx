@@ -45,6 +45,9 @@ export const Dashboard = () => {
           selectedPeriod,
           handleIsAlertSeen,
           isAlertSeen,
+          selectedYear,
+          handleYearChange,
+          years,
         }) => (
           <div className="w-full  overflow-y-scroll">
             <Header title="DASHBOARD" subtitle="Página de início do usuário" />
@@ -81,6 +84,16 @@ export const Dashboard = () => {
                       value={selectedPeriod}
                       onChange={(value) => handleChangePeriod(value)}
                       options={months}
+                    />
+                  </div>
+
+                  <div className="w-[113px] lg:w-[123px]">
+                    <Select
+                      error={""}
+                      placeholder="Ano"
+                      value={selectedYear}
+                      onChange={(value) => handleYearChange(value)}
+                      options={years}
                     />
                   </div>
                 </>

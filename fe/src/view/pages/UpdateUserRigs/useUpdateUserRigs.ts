@@ -56,8 +56,6 @@ export const useUpdateUserRigs = (id: string) => {
         )
       : [];
 
-    console.log(contractRigs);
-
     setAvailableRigs(availableRigs);
 
     setUserRigs(userRigs);

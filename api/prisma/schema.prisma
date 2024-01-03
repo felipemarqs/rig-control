@@ -118,6 +118,7 @@ model Efficiency {
   dtmHours       Float    @map("dtm_hours")
 
   hasDemobilization             Boolean           @map("has_demobilization")
+  hasMobilization               Boolean?          @map("has_mobilization")
   hasExtraTrailer               Boolean           @map("has_extra_trailer")
   hasPowerSwivel                Boolean           @map("has_power_swivel")
   hasTruckCartRent              Boolean           @map("has_truck_cart_rent")
