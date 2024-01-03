@@ -15,6 +15,7 @@ import {getPeriodRange} from "../../../../app/utils/getPeriodRange";
 import {months} from "../../../../app/utils/months";
 import {FilterType} from "../../../../app/entities/FilterType";
 import {filterOptions} from "../../../../app/utils/filterOptions";
+import {years} from "../../../../app/utils/years";
 
 interface DashboardContextValue {
   selectedRig: string;
@@ -30,6 +31,8 @@ interface DashboardContextValue {
   selectedStartDate: string;
   isFetchingEfficiencies: boolean;
   handleApplyFilters(): void;
+  handleYearChange(year: string): void;
+  selectedYear: string;
   selectedFilterType: FilterType;
   //handleTogglePeriodFilterType(): void;
   user: User | undefined;
@@ -54,6 +57,7 @@ interface DashboardContextValue {
   windowWidth: number;
   filterOptions: SelectOptions;
   months: SelectOptions;
+  years: SelectOptions;
 }
 
 export const DashboardContext = createContext({} as DashboardContextValue);
@@ -75,9 +79,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
       };
     }) || [];
 
-  const [selectedRig, setSelectedRig] = useState<string>(() => {
-    return isUserAdm ? "" : user?.rigs[0].rig.id!;
-  });
+  const [selectedRig, setSelectedRig] = useState<string>("");
 
   //Mudar as Rigs
 
@@ -113,6 +115,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   const [selectedEndDate, setSelectedEndDate] = useState(formattedLastDay);
 
   const [selectedPeriod, setSelectedPeriod] = useState("");
+  const [selectedYear, setSeletectedYear] = useState("2023");
 
   const [filters, setFilters] = useState({
     rigId: selectedRig,
@@ -162,7 +165,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   const handleChangePeriod = (period: string) => {
     setSelectedPeriod(period);
 
-    const periodFound = getPeriodRange(selectedRig);
+    const periodFound = getPeriodRange(selectedRig, selectedYear);
 
     if (periodFound) {
       const monthPeriodSelected = periodFound.months.find((month) => {
@@ -179,6 +182,11 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
 
     handleStartDateChange(new Date(formattedFirstDay));
     handleEndDateChange(new Date(formattedLastDay));
+  };
+
+  const handleYearChange = (year: string) => {
+    setSeletectedYear(year);
+    setSelectedPeriod("");
   };
 
   //Lopping para armazenar informações dos stats (colocar em um useMemo)
@@ -220,6 +228,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   return (
     <DashboardContext.Provider
       value={{
+        years,
         months,
         selectedRig,
         handleChangeRig,
@@ -250,6 +259,8 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         windowWidth,
         isAlertSeen,
         handleIsAlertSeen,
+        handleYearChange,
+        selectedYear,
       }}
     >
       {children}

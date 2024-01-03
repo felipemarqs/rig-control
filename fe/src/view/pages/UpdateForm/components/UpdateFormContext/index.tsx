@@ -146,8 +146,6 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
 
   const responseEfficiency = efficiency as PersistanceEfficiency;
 
-  // console.log("responseEfficiency", responseEfficiency);
-
   const initialPeriods = responseEfficiency?.periods?.map(
     ({
       startHour,
@@ -202,8 +200,6 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
       fluidRatio: responseEfficiency.fluidRatio[index].ratio,
     };
   }
-
-  console.log("initialPeriods", initialPeriods);
 
   const navigate = useNavigate();
   const [date, setDate] = useState<Date>(new Date(responseEfficiency.date));
@@ -497,8 +493,6 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   const selectedContract = user?.rigs.find(({rig: {id}}) => {
     return id === selectedRig;
   });
-
-  // console.log("selectedContract", selectedContract?.rig.contract.name);
 
   //Configurações de formulário adicionais
 
