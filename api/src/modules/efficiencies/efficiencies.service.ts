@@ -75,7 +75,6 @@ export class EfficienciesService {
       );
     }
 
-    console.log(periods);
     const efficiencyAlreadyExists = await this.efficiencyRepo.findFirst({
       where: { rigId, date },
     });
@@ -122,6 +121,7 @@ export class EfficienciesService {
       christmasTreeDisassemblyHours: christmasTreeDisassemblyHours,
       bobRentHours: bobRentHours,
       hasDemobilization: isDemobilizationSelected,
+      hasMobilization: isMobilizationSelected,
       hasExtraTrailer: isExtraTrailerSelected,
       hasGeneratorFuel: isFuelGeneratorSelected,
       hasMixTankDemobilization: isTankMixDemobilizationSelected,
@@ -504,6 +504,26 @@ export class EfficienciesService {
         date: true,
         availableHours: true,
         periods: true,
+        christmasTreeDisassemblyHours: true,
+        bobRentHours: true,
+        hasDemobilization: true,
+        hasMobilization: true,
+        hasExtraTrailer: true,
+        hasGeneratorFuel: true,
+        hasMixTankDemobilization: true,
+        hasMixTankDtm: true,
+        hasMixTankHourRent: true,
+        hasMixTankMobilization: true,
+        hasMixTankMonthRent: true,
+        hasMixTankOperator: true,
+        hasMunck: true,
+        hasPowerSwivel: true,
+        hasSuckingTruck: true,
+        hasTransportation: true,
+        hasTruckCartRent: true,
+        truckKmHours: true,
+        dtmHours: true,
+        hasTruckTank: true,
         user: { select: { name: true } },
         rig: { select: { name: true, state: true } },
         fluidRatio: {
@@ -571,6 +591,7 @@ export class EfficienciesService {
             classification: true,
             description: true,
             type: true,
+            repairClassification: true,
           },
           orderBy: { startHour: 'asc' },
         },

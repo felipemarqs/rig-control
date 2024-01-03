@@ -1,65 +1,49 @@
-import { createContext, useCallback, useMemo, useState } from "react";
+import {createContext, useCallback, useState} from "react";
 import React from "react";
-import { startOfMonth, endOfMonth, format } from "date-fns";
-import { useBillings } from "../../../../app/hooks/billings/useBillings";
-import { BillingResponse } from "../../../../app/services/billingServices/getAll";
-import { formatCurrency } from "../../../../app/utils/formatCurrency";
-import { useConfigBillings } from "../../../../app/hooks/useConfigBillings";
-import { BillingConfigResponse } from "../../../../app/services/billingConfigServices/getAll";
-import { useBillingByRigId } from "../../../../app/hooks/billings/useBillingByRigId";
-import { Rig } from "../../../../app/entities/Rig";
-import { useRigs } from "../../../../app/hooks/rigs/useRigs";
+import {startOfMonth, endOfMonth, format} from "date-fns";
+import {useBillingByRigId} from "../../../../app/hooks/billings/useBillingByRigId";
+import {Rig} from "../../../../app/entities/Rig";
+import {useRigs} from "../../../../app/hooks/rigs/useRigs";
+import {filterOptions} from "../../../../app/utils/filterOptions";
+import {months} from "../../../../app/utils/months";
+import {SelectOptions} from "../../../../app/entities/SelectOptions";
+import {FilterType} from "../../../../app/entities/FilterType";
+import {getPeriodRange} from "../../../../app/utils/getPeriodRange";
+import {useSidebarContext} from "../../../../app/contexts/SidebarContext";
+import {BillingByRigIdResponse} from "../../../../app/services/billingServices/getbyRigId";
+import {useEfficiencies} from "../../../../app/hooks/efficiencies/useEfficiencies";
+import {years} from "../../../../app/utils/years";
+import {getTotals, totalsInterface} from "../../../../app/utils/getTotals";
 
 interface BillingRigDetailDashboardContextValue {
   handleStartDateChange(date: Date): void;
   handleEndDateChange(date: Date): void;
   selectedEndDate: string;
+  handleToggleFilterType(filterType: FilterType): void;
+  handleChangePeriod(period: string): void;
+  windowWidth: number;
   selectedStartDate: string;
+  isFetchingBilling: boolean;
+  selectedYear: string;
+  handleYearChange(year: string): void;
   handleApplyFilters(): void;
-  billings: Array<BillingResponse>;
-  isFetchingBillings: boolean;
-  isFetchingConfig: boolean;
+  billing: Array<BillingByRigIdResponse>;
   isEmpty: boolean;
-  totalAmount: number | string;
-  setSliderState({
-    isBeginning,
-    isEnd,
-  }: {
-    isBeginning: boolean;
-    isEnd: boolean;
-  }): void;
-  sliderState: {
-    isBeginning: boolean;
-    isEnd: boolean;
-  };
+  totalAmount: number;
   rigs:
     | Rig[]
     | {
         id: string;
         name: string;
       }[];
-  setConfigSliderState({
-    isBeginning,
-    isEnd,
-  }: {
-    isBeginning: boolean;
-    isEnd: boolean;
-  }): void;
-  configSliderState: {
-    isBeginning: boolean;
-    isEnd: boolean;
-  };
   selectedRig: string;
-  isEditRigModalOpen: boolean;
-  isEditConfigModalOpen: boolean;
-  handleCloseEditRigModal(): void;
-  handleOpenEditRigModal(data: BillingResponse): void;
-  handleCloseEditConfigModal(): void;
-  handleOpenEditConfigModal(data: BillingConfigResponse): void;
-  rigBeingEdited: BillingResponse | null;
-  configBeingEdited: BillingConfigResponse | null;
-  configs: Array<BillingConfigResponse>;
+  selectedPeriod: string;
   handleChangeRig(rigId: string): void;
+  filterOptions: SelectOptions;
+  months: SelectOptions;
+  selectedFilterType: FilterType;
+  years: SelectOptions;
+  totals: totalsInterface;
 }
 
 export const BillingRigDetailDashboardContext = createContext(
@@ -89,32 +73,20 @@ export const BillingRigDetailDashboardProvider = ({
     lastDayOfMonth,
     "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
   );
+  console.log("renderizou");
 
   // Defina os estados iniciais
   const [selectedStartDate, setSelectedStartDate] = useState(formattedFirstDay);
   const [selectedEndDate, setSelectedEndDate] = useState(formattedLastDay);
-  const [isEditRigModalOpen, setIsEditRigModalOpen] = useState(false);
-  const [rigBeingEdited, setRigBeingEdited] = useState<null | BillingResponse>(
-    null
-  );
+  const [selectedYear, setSeletectedYear] = useState("2023");
 
-  const { rigs } = useRigs(true);
+  const {windowWidth} = useSidebarContext();
+
+  const [selectedPeriod, setSelectedPeriod] = useState("");
+
+  const {rigs} = useRigs(true);
 
   const [selectedRig, setSelectedRig] = useState<string>("");
-
-  const [isEditConfigModalOpen, setIsEditConfigModalOpen] = useState(false);
-  const [configBeingEdited, setConfigBeingEdited] =
-    useState<null | BillingConfigResponse>(null);
-
-  const [sliderState, setSliderState] = useState({
-    isBeginning: true,
-    isEnd: false,
-  });
-
-  const [configSliderState, setConfigSliderState] = useState({
-    isBeginning: true,
-    isEnd: false,
-  });
 
   const [filters, setFilters] = useState({
     rigId: selectedRig,
@@ -122,63 +94,62 @@ export const BillingRigDetailDashboardProvider = ({
     endDate: selectedEndDate,
   });
 
-  //Edit Rig
-  const handleCloseEditRigModal = useCallback(() => {
-    setIsEditRigModalOpen(false);
-    setRigBeingEdited(null);
-  }, []);
+  const [selectedFilterType, setSelectedFilterType] = useState<FilterType>(
+    FilterType.PERIOD
+  );
 
   const handleChangeRig = (rigId: string) => {
     setSelectedRig(rigId);
-    setFilters((prevState) => ({ ...prevState, rigId: rigId }));
+    setFilters((prevState) => ({...prevState, rigId: rigId}));
   };
 
-  const handleOpenEditRigModal = useCallback((data: BillingResponse) => {
-    setRigBeingEdited(data);
-
-    setIsEditRigModalOpen(true);
-  }, []);
   //=============================
 
   //Edit Config
+  const {billing, refetchBilling, isFetchingBilling} =
+    useBillingByRigId(filters);
+  const {efficiencies, isFetchingEfficiencies, refetchEffciencies} =
+    useEfficiencies(filters);
 
-  const handleCloseEditConfigModal = useCallback(() => {
-    setConfigBeingEdited(null);
+  const handleYearChange = (year: string) => {
+    setSeletectedYear(year);
+  };
 
-    setIsEditConfigModalOpen(false);
-  }, []);
-  const handleOpenEditConfigModal = useCallback(
-    (data: BillingConfigResponse) => {
-      setConfigBeingEdited(data);
-      setIsEditConfigModalOpen(true);
-    },
-    []
-  );
+  //console.log("efficiencies", efficiencies);
+  const totals = getTotals(efficiencies);
 
-  const { billings, isFetchingBillings } = useBillings(filters);
-
-  const { billing, refetchBilling } = useBillingByRigId(filters);
-
-  console.log(`Billing from`, billing);
-
-  console.log(`Filters`, filters);
-  const { configs, isFetchingConfig } = useConfigBillings();
+  console.log("Resultado do Reduce", totals);
 
   //Temporary Condition
-  const isEmpty: boolean = true; /* billings.length === 0 */
+  const isEmpty: boolean = billing.length === 0;
 
-  const totalAmount = useMemo(() => {
-    let totalBillings = 0;
-
-    billings.forEach(({ total }) => {
-      totalBillings += total;
-    });
-
-    return formatCurrency(totalBillings);
-  }, [billings]);
+  const totalAmount: number = isEmpty ? 0 : billing[0].total;
 
   const handleApplyFilters = () => {
     refetchBilling();
+    refetchEffciencies();
+  };
+
+  const handleToggleFilterType = (filterType: FilterType) => {
+    setSelectedFilterType(filterType);
+
+    handleStartDateChange(new Date(formattedFirstDay));
+    handleEndDateChange(new Date(formattedLastDay));
+  };
+
+  const handleChangePeriod = (period: string) => {
+    setSelectedPeriod(period);
+
+    const periodFound = getPeriodRange(selectedRig, selectedYear);
+
+    if (periodFound) {
+      const monthPeriodSelected = periodFound.months.find((month) => {
+        return month.month === period;
+      });
+
+      handleStartDateChange(monthPeriodSelected?.startDate!);
+      handleEndDateChange(monthPeriodSelected?.endDate!);
+    }
   };
 
   const handleStartDateChange = useCallback((date: Date) => {
@@ -200,29 +171,26 @@ export const BillingRigDetailDashboardProvider = ({
   return (
     <BillingRigDetailDashboardContext.Provider
       value={{
+        totals,
+        years,
+        windowWidth,
+        handleChangePeriod,
+        selectedPeriod,
+        selectedFilterType,
+        filterOptions,
+        months,
+        totalAmount,
+        handleToggleFilterType,
         selectedStartDate,
         selectedEndDate,
+        selectedYear,
+        handleYearChange,
+        isFetchingBilling,
         handleStartDateChange,
         handleEndDateChange,
         handleApplyFilters,
-        isFetchingBillings,
-        billings,
+        billing,
         isEmpty,
-        totalAmount,
-        setSliderState,
-        sliderState,
-        isEditRigModalOpen,
-        handleCloseEditRigModal,
-        handleOpenEditRigModal,
-        rigBeingEdited,
-        isFetchingConfig,
-        configSliderState,
-        setConfigSliderState,
-        isEditConfigModalOpen,
-        handleCloseEditConfigModal,
-        handleOpenEditConfigModal,
-        configs,
-        configBeingEdited,
         handleChangeRig,
         selectedRig,
         rigs,

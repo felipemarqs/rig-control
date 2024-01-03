@@ -1,15 +1,27 @@
 import {GridColDef, GridRenderCellParams} from "@mui/x-data-grid";
 import {useBillingRigDetailDashboard} from "../../BillingRigDetailDashboardContext/useBillingDashboard";
 import {formatCurrency} from "../../../../../app/utils/formatCurrency";
+import {totalsInterface} from "../../../../../app/utils/getTotals";
+import {
+  taxNames,
+  taxSuffix,
+  taxTranslation,
+} from "../../../../../app/utils/taxLabels";
 
 export const useDataGrid = () => {
-  const {billings} = useBillingRigDetailDashboard();
+  const {billing, totals} = useBillingRigDetailDashboard();
+
+  const getSuffix = (params: string) => {
+    taxSuffix;
+    let suffix = taxSuffix[params.split("-")[0]];
+    return suffix ?? "Und";
+  };
 
   const columns: GridColDef[] = [
     {
       field: "taxa",
       headerName: "Taxa",
-      flex: 0.7,
+      flex: 1,
       headerAlign: "center",
       align: "center",
       renderCell(params: GridRenderCellParams) {
@@ -22,12 +34,31 @@ export const useDataGrid = () => {
         );
       },
     },
+    {
+      field: "qtd",
+      headerName: "Quantidade",
+      flex: 0.5,
+      headerAlign: "center",
+      align: "center",
+      renderCell(params: GridRenderCellParams) {
+        //Função para retornar o tipo do Sufixo para mostrar na Data Table sendo 'Hrs' ou 'Und'
+        const suffix = getSuffix(params.row.id);
+
+        return (
+          <div className="w-full flex justify-center items-center">
+            <div className="text-white font-semibold  py-2 px-6 rounded-sm">
+              {`${params.value} ${suffix}`}
+            </div>
+          </div>
+        );
+      },
+    },
   ];
 
-  billings.forEach(({rigname}) => {
+  billing.forEach(({rigname}) => {
     columns.push({
       field: rigname,
-      headerName: rigname,
+      headerName: "VB (R$)",
       flex: 0.6,
       headerAlign: "center",
       align: "center",
@@ -43,49 +74,31 @@ export const useDataGrid = () => {
     });
   });
 
-  const rigNames = Array.from(new Set(billings.map((item) => item.rigname)));
-
-  const taxaNames = [
-    "availablehouramount",
-    "glosshouramount",
-    "dtmlt20amount",
-    "dtmbt20and50amount",
-    "dtmgt50amount",
-    "fluidlt20amount",
-    "fluidbt20and50amount",
-    "fluidgt50amount",
-    "equipmentlt20amount",
-    "equipmentbt20and50amount",
-    "equipmentgt50amount",
-  ];
-
-  const taxaTranslation: Record<string, string> = {
-    availablehouramount: "Horas Disponíveis",
-    glosshouramount: "Horas Glosa",
-    dtmlt20amount: "DTM < 20",
-    dtmbt20and50amount: "DTM 20-50",
-    dtmgt50amount: "DTM > 50",
-    fluidlt20amount: "Taxa de Fluido < 20",
-    fluidbt20and50amount: "Taxa de Fluido 20-50",
-    fluidgt50amount: "Taxa de Fluido > 50",
-    equipmentlt20amount: "Taxa de Equipamento < 20",
-    equipmentbt20and50amount: "Taxa de Equipamento 20-50",
-    equipmentgt50amount: "Taxa de Equipamento > 50",
-  };
+  const rigNames = Array.from(new Set(billing.map((item) => item.rigname)));
 
   // Criar a tabela com as taxas como linhas e sondas como colunas
 
-  const tableData = taxaNames.map((taxa) => {
+  const tableData = taxNames.map((taxa, index) => {
     const rowData: any = {
       id: `${taxa}-total`,
-      taxa: taxaTranslation[taxa] || taxa,
+      taxa: taxTranslation[taxa] || taxa,
     };
+    /*  if (index === 1) {
+      console.log("rigNames", rigNames);
+      console.log("billings", billing);
+    } */
+
     rigNames.forEach((rigname) => {
-      const rigData: any = billings.find((item) => item.rigname === rigname);
+      const rigData: any = billing.find((item) => item.rigname === rigname);
+
       rowData[rigname] = rigData ? rigData[taxa] : 0;
+      rowData["qtd"] = totals[taxa as keyof totalsInterface];
     });
+
     return rowData;
   });
+
+  // console.log("tableData", tableData);
 
   return {
     columns,

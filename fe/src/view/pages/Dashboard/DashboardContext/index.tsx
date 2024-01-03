@@ -3,6 +3,7 @@ import React from "react";
 import {useEfficiencies} from "../../../../app/hooks/efficiencies/useEfficiencies";
 import {useAuth} from "../../../../app/hooks/useAuth";
 import {User} from "../../../../app/entities/User";
+import {SelectOptions} from "../../../../app/entities/SelectOptions";
 import {startOfMonth, endOfMonth, format} from "date-fns";
 import {useRigs} from "../../../../app/hooks/rigs/useRigs";
 import {Rig} from "../../../../app/entities/Rig";
@@ -11,6 +12,10 @@ import {useEfficiencyAverage} from "../../../../app/hooks/efficiencies/useEffici
 import {AverageResponse} from "../../../../app/services/efficienciesService/getAverage";
 import {useSidebarContext} from "../../../../app/contexts/SidebarContext";
 import {getPeriodRange} from "../../../../app/utils/getPeriodRange";
+import {months} from "../../../../app/utils/months";
+import {FilterType} from "../../../../app/entities/FilterType";
+import {filterOptions} from "../../../../app/utils/filterOptions";
+import {years} from "../../../../app/utils/years";
 
 interface DashboardContextValue {
   selectedRig: string;
@@ -19,13 +24,21 @@ interface DashboardContextValue {
   handleChangePeriod(period: string): void;
   handleStartDateChange(date: Date): void;
   handleEndDateChange(date: Date): void;
+  handleToggleFilterType(filterType: FilterType): void;
+  isAlertSeen: boolean;
+  handleIsAlertSeen(): void;
   selectedEndDate: string;
   selectedStartDate: string;
   isFetchingEfficiencies: boolean;
   handleApplyFilters(): void;
+  handleYearChange(year: string): void;
+  selectedYear: string;
+  selectedFilterType: FilterType;
+  //handleTogglePeriodFilterType(): void;
   user: User | undefined;
   signout(): void;
   isEmpty: boolean;
+  // isCustomPeriodActive: boolean;
   rigs:
     | Rig[]
     | {
@@ -42,16 +55,15 @@ interface DashboardContextValue {
   isFetchingAverage: boolean;
   average: AverageResponse;
   windowWidth: number;
-  months: {
-    label: string;
-    value: string;
-  }[];
+  filterOptions: SelectOptions;
+  months: SelectOptions;
+  years: SelectOptions;
 }
 
 export const DashboardContext = createContext({} as DashboardContextValue);
 
 export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
-  const {user, signout} = useAuth();
+  const {user, signout, isAlertSeen, handleIsAlertSeen} = useAuth();
 
   const {windowWidth} = useSidebarContext();
 
@@ -67,9 +79,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
       };
     }) || [];
 
-  const [selectedRig, setSelectedRig] = useState<string>(() => {
-    return isUserAdm ? "" : user?.rigs[0].rig.id!;
-  });
+  const [selectedRig, setSelectedRig] = useState<string>("");
 
   //Mudar as Rigs
 
@@ -105,6 +115,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   const [selectedEndDate, setSelectedEndDate] = useState(formattedLastDay);
 
   const [selectedPeriod, setSelectedPeriod] = useState("");
+  const [selectedYear, setSeletectedYear] = useState("2023");
 
   const [filters, setFilters] = useState({
     rigId: selectedRig,
@@ -120,6 +131,10 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   );
 
   const isEmpty: boolean = efficiencies.length === 0;
+
+  const [selectedFilterType, setSelectedFilterType] = useState<FilterType>(
+    FilterType.PERIOD
+  );
 
   const handleApplyFilters = () => {
     refetchEffciencies();
@@ -150,7 +165,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   const handleChangePeriod = (period: string) => {
     setSelectedPeriod(period);
 
-    const periodFound = getPeriodRange(selectedRig);
+    const periodFound = getPeriodRange(selectedRig, selectedYear);
 
     if (periodFound) {
       const monthPeriodSelected = periodFound.months.find((month) => {
@@ -162,20 +177,17 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     }
   };
 
-  const months = [
-    {label: "Janeiro", value: "Janeiro"},
-    {label: "Fevereiro", value: "Fevereiro"},
-    {label: "Março", value: "Março"},
-    {label: "Abril", value: "Abril"},
-    {label: "Maio", value: "Maio"},
-    {label: "Junho", value: "Junho"},
-    {label: "Julho", value: "Julho"},
-    {label: "Agosto", value: "Agosto"},
-    {label: "Setembro", value: "Setembro"},
-    {label: "Outubro", value: "Outubro"},
-    {label: "Novembro", value: "Novembro"},
-    {label: "Dezembro", value: "Dezembro"},
-  ];
+  const handleToggleFilterType = (filterType: FilterType) => {
+    setSelectedFilterType(filterType);
+
+    handleStartDateChange(new Date(formattedFirstDay));
+    handleEndDateChange(new Date(formattedLastDay));
+  };
+
+  const handleYearChange = (year: string) => {
+    setSeletectedYear(year);
+    setSelectedPeriod("");
+  };
 
   //Lopping para armazenar informações dos stats (colocar em um useMemo)
 
@@ -216,11 +228,13 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   return (
     <DashboardContext.Provider
       value={{
+        years,
         months,
         selectedRig,
         handleChangeRig,
         selectedPeriod,
         handleChangePeriod,
+        handleToggleFilterType,
         selectedStartDate,
         selectedEndDate,
         handleStartDateChange,
@@ -230,6 +244,8 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         isFetchingEfficiencies,
         isFetchingAverage,
         user,
+        filterOptions,
+        selectedFilterType,
         rigs: isUserAdm ? rigs : userRigs,
         signout,
         isEmpty,
@@ -241,6 +257,10 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         totalMovimentations,
         average,
         windowWidth,
+        isAlertSeen,
+        handleIsAlertSeen,
+        handleYearChange,
+        selectedYear,
       }}
     >
       {children}

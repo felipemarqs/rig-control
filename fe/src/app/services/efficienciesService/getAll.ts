@@ -7,7 +7,7 @@ export type EfficienciesFilters = {
   endDate: string;
 };
 
-type EfficienciesResponse = Array<PersistanceEfficiency>;
+export type EfficienciesResponse = Array<PersistanceEfficiency>;
 
 export const getAll = async (filters: EfficienciesFilters) => {
   const {data} = await httpClient.get<EfficienciesResponse>(`/efficiencies/`, {

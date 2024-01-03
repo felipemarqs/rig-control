@@ -1,14 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { Prisma, PrismaClient } from '@prisma/client';
-import { isValid, parse } from 'date-fns';
+import { Injectable } from '@nestjs/common';
+
 import { BillingRepository } from 'src/shared/database/repositories/billing.repositories';
 
 @Injectable()
 export class BillingsService {
-  constructor(
-    private readonly billingRepo: BillingRepository,
-    private readonly prisma: PrismaClient,
-  ) {}
+  constructor(private readonly billingRepo: BillingRepository) {}
 
   async findByRigId({
     rigId,

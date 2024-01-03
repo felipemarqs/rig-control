@@ -1,6 +1,6 @@
 import {createContext, useCallback, useEffect, useState} from "react";
 import {useAuth} from "../../../../../app/hooks/useAuth";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {v4 as uuidv4} from "uuid";
 import {efficiencyMappers} from "../../../../../app/services/mappers/efficiencyMappers";
 import {customColorToast} from "../../../../../app/utils/customColorToast";
@@ -10,10 +10,13 @@ import {AxiosError} from "axios";
 import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
 import {Dayjs} from "dayjs";
 import {parse, differenceInMinutes} from "date-fns";
+import {useEfficiencyById} from "../../../../../app/hooks/efficiencies/useEfficiencyById";
+import {PersistanceEfficiency} from "../../../../../app/entities/PersistanceEfficiency";
+import {formatIsoStringToHours} from "../../../../../app/utils/formatIsoStringToHours";
 
 type ErrorArgs = {fieldName: string; message: string};
 
-interface FormContextValue {
+interface UpdateFormContextValue {
   date: Date | undefined;
   well: string;
   remainingMinutes: number | undefined;
@@ -86,6 +89,7 @@ interface FormContextValue {
   isTruckCartSelected: boolean;
   isTruckTankSelected: boolean;
   isMunckSelected: boolean;
+  isFetchingEfficiency: boolean;
   isTransportationSelected: boolean;
   truckKm: number;
   setError(arg0: ErrorArgs): void;
@@ -125,45 +129,92 @@ type Periods = {
   description: string;
 }[];
 
-export const FormContext = createContext({} as FormContextValue);
+export const UpdateFormContext = createContext({} as UpdateFormContextValue);
 
-export const FormProvider = ({children}: {children: React.ReactNode}) => {
+export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   const {user} = useAuth();
-  const isUserAdm = user?.accessLevel === "ADM";
-  const navigate = useNavigate();
-  const [date, setDate] = useState<Date>();
-  const [well, setWell] = useState<string>("");
-  const [selectedRig, setSelectedRig] = useState<string>(() => {
-    return isUserAdm ? "" : user?.rigs[0].rig.id!;
-  });
-  const [remainingMinutes, setRemainingMinutes] = useState<number>();
-  const [periods, setPeriods] = useState<
-    {
-      id: string;
-      startHour: string;
-      endHour: string;
-      type: string;
-      classification: string;
-      fluidRatio: string;
-      repairClassification: null | string;
-      equipmentRatio: string;
-      description: string;
-    }[]
-  >([
-    {
-      id: uuidv4(),
-      startHour: "00:00",
-      endHour: "00:00",
-      type: "",
-      classification: "",
-      fluidRatio: "",
-      repairClassification: null,
-      equipmentRatio: "",
-      description: "",
-    },
-  ]);
 
-  const {isLoading, mutateAsync} = useMutation(efficienciesService.create);
+  const {efficiencyId} = useParams<{efficiencyId: string}>();
+
+  if (typeof efficiencyId === "undefined") {
+    // Trate o erro de acordo com a necessidade do seu aplicativo
+    // Pode ser um redirecionamento, um erro lançado, ou até mesmo um log.
+    throw new Error("efficiencyId is undefined");
+  }
+
+  const {efficiency, isFetchingEfficiency} = useEfficiencyById(efficiencyId!);
+
+  const responseEfficiency = efficiency as PersistanceEfficiency;
+
+  const initialPeriods = responseEfficiency?.periods?.map(
+    ({
+      startHour,
+      endHour,
+      description,
+      type,
+      classification,
+      repairClassification,
+    }) => {
+      return {
+        id: uuidv4(),
+        startHour: formatIsoStringToHours(startHour),
+        endHour: formatIsoStringToHours(endHour),
+        type: type,
+        classification: classification,
+        repairClassification: repairClassification,
+        description: description,
+        equipmentRatio: "",
+        fluidRatio: "",
+      };
+    }
+  );
+
+  for (
+    let index = 0;
+    index < responseEfficiency?.equipmentRatio?.length;
+    index++
+  ) {
+    initialPeriods[index] = {
+      id: initialPeriods[index].id,
+      startHour: initialPeriods[index].startHour,
+      endHour: initialPeriods[index].endHour,
+      type: initialPeriods[index].type,
+      classification: initialPeriods[index].classification,
+      repairClassification: initialPeriods[index].repairClassification,
+      description: initialPeriods[index].description,
+      fluidRatio: initialPeriods[index].fluidRatio,
+      equipmentRatio: responseEfficiency.equipmentRatio[index].ratio,
+    };
+  }
+
+  for (let index = 0; index < responseEfficiency?.fluidRatio?.length; index++) {
+    initialPeriods[index] = {
+      id: initialPeriods[index].id,
+      startHour: initialPeriods[index].startHour,
+      endHour: initialPeriods[index].endHour,
+      type: initialPeriods[index].type,
+      classification: initialPeriods[index].classification,
+      repairClassification: initialPeriods[index].repairClassification,
+      description: initialPeriods[index].description,
+      equipmentRatio: initialPeriods[index].equipmentRatio,
+      fluidRatio: responseEfficiency.fluidRatio[index].ratio,
+    };
+  }
+
+  const navigate = useNavigate();
+  const [date, setDate] = useState<Date>(new Date(responseEfficiency.date));
+  const [well, setWell] = useState<string>(responseEfficiency.well);
+  const [selectedRig, setSelectedRig] = useState<string>(
+    responseEfficiency.rigId
+  );
+  const [remainingMinutes, setRemainingMinutes] = useState<number>();
+  const [periods, setPeriods] = useState<Periods>(initialPeriods);
+
+  // const tes = efficiency.periods.map()
+
+  const {isLoading: isLoadingEfficiency, mutateAsync} = useMutation(
+    efficienciesService.create
+  );
   const queryClient = useQueryClient();
 
   const [errors, setErrors] = useState<Array<ErrorArgs>>([]);
@@ -196,7 +247,19 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     return findErrorMessage;
   };
 
+  const {
+    isLoading: isLoadingRemoveEfficiency,
+    mutateAsync: mutateAsyncRemoveEfficiency,
+  } = useMutation(efficienciesService.remove);
+
   const handleSubmit = async (periods: Periods) => {
+    try {
+      await mutateAsyncRemoveEfficiency(efficiencyId!);
+      queryClient.invalidateQueries({queryKey: ["efficiencies"]});
+    } catch (error: any | typeof AxiosError) {
+      treatAxiosError(error);
+    }
+
     const {toPersistenceObj} = efficiencyMappers.toPersistance({
       rigId: selectedRig,
       date: date ?? new Date(),
@@ -566,7 +629,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   }, []);
 
   return (
-    <FormContext.Provider
+    <UpdateFormContext.Provider
       value={{
         date,
         handleChangeRig,
@@ -585,7 +648,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         handleDescription,
         handleSubmit,
         cleanFields,
-        isLoading,
+        isLoading: isLoadingEfficiency || isLoadingRemoveEfficiency,
         userRig,
         usersRigs,
         isPending,
@@ -636,9 +699,10 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         getErrorMessageByFildName,
         handleRepairClassification,
         selectedContract,
+        isFetchingEfficiency,
       }}
     >
       {children}
-    </FormContext.Provider>
+    </UpdateFormContext.Provider>
   );
 };

@@ -7,6 +7,8 @@ import {ListEfficienciesDataGrid} from "../../components/ListEfficienciesDataGri
 import {useListController} from "./useListController";
 import {FilterIcon} from "lucide-react";
 import {useSidebarContext} from "../../../app/contexts/SidebarContext";
+import {FilterType} from "../../../app/entities/FilterType";
+import {months} from "../../../app/utils/months";
 
 export const List = () => {
   const {
@@ -20,6 +22,11 @@ export const List = () => {
     selectedEndDate,
     selectedStartDate,
     isFetchingEfficiencies,
+    selectedFilterType,
+    handleToggleFilterType,
+    filterOptions,
+    selectedPeriod,
+    handleChangePeriod,
   } = useListController();
 
   const {windowWidth} = useSidebarContext();
@@ -29,6 +36,15 @@ export const List = () => {
       <Header title="LISTAGEM" subtitle="Listagem de efficienciências" />
 
       <div className="w-full flex flex-wrap justify-center items-center lg:justify-end gap-1 lg:px-4">
+        <div className="w-[113px] lg:w-[213px]">
+          <Select
+            error={""}
+            placeholder="Tipo de Filtro"
+            value={selectedFilterType}
+            onChange={(value) => handleToggleFilterType(value as FilterType)}
+            options={filterOptions}
+          />
+        </div>
         <div className="w-[113px] lg:w-[123px]">
           <Select
             error={""}
@@ -42,24 +58,41 @@ export const List = () => {
           />
         </div>
 
-        <div>
-          <DatePickerInput
-            placeholder="Data de Início"
-            error={""}
-            value={new Date(selectedStartDate)}
-            onChange={(value) => handleStartDateChange(value)}
-          />
-        </div>
+        {selectedFilterType === FilterType.PERIOD && (
+          <>
+            <div className="w-[113px] lg:w-[123px]">
+              <Select
+                error={""}
+                placeholder="Período"
+                value={selectedPeriod}
+                onChange={(value) => handleChangePeriod(value)}
+                options={months}
+              />
+            </div>
+          </>
+        )}
 
-        <div>
-          <DatePickerInput
-            placeholder="Data de Fim"
-            error={""}
-            value={new Date(selectedEndDate)}
-            onChange={(value) => handleEndDateChange(value)}
-          />
-        </div>
+        {selectedFilterType === FilterType.CUSTOM && (
+          <>
+            <div>
+              <DatePickerInput
+                placeholder="Data de Início"
+                error={""}
+                value={new Date(selectedStartDate)}
+                onChange={(value) => handleStartDateChange(value)}
+              />
+            </div>
 
+            <div>
+              <DatePickerInput
+                placeholder="Data de Fim"
+                error={""}
+                value={new Date(selectedEndDate)}
+                onChange={(value) => handleEndDateChange(value)}
+              />
+            </div>
+          </>
+        )}
         <div>
           <Button className="h-[32px] lg:h-[52px]" onClick={handleApplyFilters}>
             {windowWidth <= 1024 ? <FilterIcon /> : "Aplicar Filtro"}

@@ -12,7 +12,7 @@ import {
 } from "../../../../app/utils/periodClassifications";
 import {Button} from "../../../components/Button";
 import TextArea from "antd/es/input/TextArea";
-import {useForm} from "./FormContext/useForm";
+import {useForm} from "./UpdateFormContext/useForm";
 import {Input} from "../../../components/Input";
 
 export const PeriodsFormContainer = () => {
@@ -244,7 +244,7 @@ export const PeriodsFormContainer = () => {
               <div className="flex justify-between p-4  w-[90%] ">
                 <div className="flex justify-between items-center w-full gap-1">
                   <TextArea
-                    maxLength={5000}
+                    maxLength={1000}
                     style={{
                       height: 50,
                       resize: "vertical",

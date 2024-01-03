@@ -1,3 +1,4 @@
+import {Link} from "react-router-dom";
 import {formatDate} from "../../../app/utils/formatDate";
 import {Button} from "../../components/Button";
 import {Header} from "../../components/Header";
@@ -34,7 +35,7 @@ export const Details = () => {
           isDeletionRequestModalOpen,
         }) => (
           <div className="w-full h-full overflow-y-scroll">
-            <Header title="DETALHES" subtitle="Detalhes da  Operação" />
+            <Header title="DETALHES" subtitle={`Detalhes da  Operação`} />
             <div className="m-4">
               {!isFetchingEfficiency &&
                 efficiency &&
@@ -55,6 +56,15 @@ export const Details = () => {
                       </h1>
                       <h2 className="text-lg text-secondary-500">
                         {efficiency.well}
+                      </h2>
+                    </div>
+
+                    <div className="flex gap-1">
+                      <h1 className="text-xl font-bold text-primary-500">
+                        Sonda:
+                      </h1>
+                      <h2 className="text-lg text-secondary-500">
+                        {efficiency.rig.name}
                       </h2>
                     </div>
                   </div>
@@ -80,9 +90,9 @@ export const Details = () => {
               open={isDeletionRequestModalOpen}
               onClose={closeDeletionRequestModal}
             />
-            <div className="w-full h-full  mx-5 mt-5 max-w-[1400px] flex justify-start items-center gap-4 flex-col">
+            <div className="w-full h-full  lg:mx-5 lg:mt-5 max-w-[1400px] min-w-[1000px] flex justify-start items-center gap-4 flex-col">
               {isFetchingEfficiency && (
-                <div className="w-[70vw] h-[70vh] bg-primary-500 p-2 rounded-md flex justify-center items-center">
+                <div className="w-full h-full bg-primary-500 p-2 rounded-md flex justify-center items-center lg:w-[70vw] lg:h-[70vh]">
                   <Spinner className="h-12 w-12" />
                 </div>
               )}
@@ -90,7 +100,7 @@ export const Details = () => {
               {!isFetchingEfficiency &&
                 efficiency &&
                 !(efficiency instanceof Array) && (
-                  <div className="w-[70vw] h-[70vh] bg-primary-200 p-2 rounded-md flex justify-center items-center">
+                  <div className="w-full h-[70vh] bg-primary-200 p-2 rounded-md flex justify-center items-center lg:w-[70vw] ">
                     {/* <ListEfficienciesDataGrid data={efficiencies} isDashboard={false} /> */}
                     <PeriodsDataGrid
                       data={efficiency}
@@ -99,9 +109,22 @@ export const Details = () => {
                   </div>
                 )}
               {isUserAdm && (
-                <Button onClick={openDeleteModal} className="bg-redAccent-500">
-                  Deletar Registro
-                </Button>
+                <div className="flex justify-between w-3/4 lg:w-1/2">
+                  <Button
+                    onClick={openDeleteModal}
+                    className="bg-redAccent-500 hover:bg-redAccent-300"
+                  >
+                    Deletar Registro
+                  </Button>
+
+                  <Button>
+                    <Link to={`/form/${efficiencyId}`}>
+                      <span className="text-white tracking-[-0.5]  font-semibold cursor-pointer">
+                        Editar Registro
+                      </span>
+                    </Link>
+                  </Button>
+                </div>
               )}
 
               {!isUserAdm && (
