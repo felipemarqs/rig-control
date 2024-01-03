@@ -225,8 +225,6 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
       isSuckingTruckSelected,
     });
 
-    console.log(toPersistenceObj);
-
     try {
       await mutateAsync(toPersistenceObj);
       customColorToast("Dados Enviados com Sucesso!", "#1c7b7b", "success");
@@ -432,8 +430,6 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   const selectedContract = user?.rigs.find(({rig: {id}}) => {
     return id === selectedRig;
   });
-
-  // console.log("selectedContract", selectedContract?.rig.contract.name);
 
   //Configurações de formulário adicionais
 

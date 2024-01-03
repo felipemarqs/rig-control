@@ -1,8 +1,6 @@
 import {createContext, useCallback, useState} from "react";
 import React from "react";
 import {startOfMonth, endOfMonth, format} from "date-fns";
-import {useBillings} from "../../../../app/hooks/billings/useBillings";
-import {BillingResponse} from "../../../../app/services/billingServices/getAll";
 import {useBillingByRigId} from "../../../../app/hooks/billings/useBillingByRigId";
 import {Rig} from "../../../../app/entities/Rig";
 import {useRigs} from "../../../../app/hooks/rigs/useRigs";
@@ -13,20 +11,23 @@ import {FilterType} from "../../../../app/entities/FilterType";
 import {getPeriodRange} from "../../../../app/utils/getPeriodRange";
 import {useSidebarContext} from "../../../../app/contexts/SidebarContext";
 import {BillingByRigIdResponse} from "../../../../app/services/billingServices/getbyRigId";
+import {useEfficiencies} from "../../../../app/hooks/efficiencies/useEfficiencies";
+import {years} from "../../../../app/utils/years";
+import {getTotals, totalsInterface} from "../../../../app/utils/getTotals";
 
 interface BillingRigDetailDashboardContextValue {
   handleStartDateChange(date: Date): void;
   handleEndDateChange(date: Date): void;
   selectedEndDate: string;
   handleToggleFilterType(filterType: FilterType): void;
-  selectedPeriod: string;
   handleChangePeriod(period: string): void;
   windowWidth: number;
   selectedStartDate: string;
+  isFetchingBilling: boolean;
+  selectedYear: string;
+  handleYearChange(year: string): void;
   handleApplyFilters(): void;
   billing: Array<BillingByRigIdResponse>;
-  billings: Array<BillingResponse>;
-  isFetchingBillings: boolean;
   isEmpty: boolean;
   totalAmount: number;
   rigs:
@@ -36,10 +37,13 @@ interface BillingRigDetailDashboardContextValue {
         name: string;
       }[];
   selectedRig: string;
+  selectedPeriod: string;
   handleChangeRig(rigId: string): void;
   filterOptions: SelectOptions;
   months: SelectOptions;
   selectedFilterType: FilterType;
+  years: SelectOptions;
+  totals: totalsInterface;
 }
 
 export const BillingRigDetailDashboardContext = createContext(
@@ -69,10 +73,12 @@ export const BillingRigDetailDashboardProvider = ({
     lastDayOfMonth,
     "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
   );
+  console.log("renderizou");
 
   // Defina os estados iniciais
   const [selectedStartDate, setSelectedStartDate] = useState(formattedFirstDay);
   const [selectedEndDate, setSelectedEndDate] = useState(formattedLastDay);
+  const [selectedYear, setSeletectedYear] = useState("2023");
 
   const {windowWidth} = useSidebarContext();
 
@@ -100,12 +106,19 @@ export const BillingRigDetailDashboardProvider = ({
   //=============================
 
   //Edit Config
+  const {billing, refetchBilling, isFetchingBilling} =
+    useBillingByRigId(filters);
+  const {efficiencies, isFetchingEfficiencies, refetchEffciencies} =
+    useEfficiencies(filters);
 
-  const {billings, isFetchingBillings} = useBillings(filters);
+  const handleYearChange = (year: string) => {
+    setSeletectedYear(year);
+  };
 
-  const {billing, refetchBilling} = useBillingByRigId(filters);
+  //console.log("efficiencies", efficiencies);
+  const totals = getTotals(efficiencies);
 
-  console.log("billing", billing);
+  console.log("Resultado do Reduce", totals);
 
   //Temporary Condition
   const isEmpty: boolean = billing.length === 0;
@@ -114,6 +127,7 @@ export const BillingRigDetailDashboardProvider = ({
 
   const handleApplyFilters = () => {
     refetchBilling();
+    refetchEffciencies();
   };
 
   const handleToggleFilterType = (filterType: FilterType) => {
@@ -126,7 +140,7 @@ export const BillingRigDetailDashboardProvider = ({
   const handleChangePeriod = (period: string) => {
     setSelectedPeriod(period);
 
-    const periodFound = getPeriodRange(selectedRig);
+    const periodFound = getPeriodRange(selectedRig, selectedYear);
 
     if (periodFound) {
       const monthPeriodSelected = periodFound.months.find((month) => {
@@ -157,6 +171,8 @@ export const BillingRigDetailDashboardProvider = ({
   return (
     <BillingRigDetailDashboardContext.Provider
       value={{
+        totals,
+        years,
         windowWidth,
         handleChangePeriod,
         selectedPeriod,
@@ -167,11 +183,12 @@ export const BillingRigDetailDashboardProvider = ({
         handleToggleFilterType,
         selectedStartDate,
         selectedEndDate,
+        selectedYear,
+        handleYearChange,
+        isFetchingBilling,
         handleStartDateChange,
         handleEndDateChange,
         handleApplyFilters,
-        isFetchingBillings,
-        billings,
         billing,
         isEmpty,
         handleChangeRig,

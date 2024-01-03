@@ -6,10 +6,20 @@ import {BillingResponse} from "../../../../app/services/billingServices/getAll";
 import {formatCurrency} from "../../../../app/utils/formatCurrency";
 import {useConfigBillings} from "../../../../app/hooks/useConfigBillings";
 import {BillingConfigResponse} from "../../../../app/services/billingConfigServices/getAll";
+import {FilterType} from "../../../../app/entities/FilterType";
+import {filterOptions} from "../../../../app/utils/filterOptions";
+import {SelectOptions} from "../../../../app/entities/SelectOptions";
+import {useRigs} from "../../../../app/hooks/rigs/useRigs";
+import {Rig} from "../../../../app/entities/Rig";
+import {getPeriodRange} from "../../../../app/utils/getPeriodRange";
+import {months} from "../../../../app/utils/months";
+import {years} from "../../../../app/utils/years";
+import {useSidebarContext} from "../../../../app/contexts/SidebarContext";
 
 interface BillingDashboardContextValue {
   handleStartDateChange(date: Date): void;
   handleEndDateChange(date: Date): void;
+  handleYearChange(year: string): void;
   selectedEndDate: string;
   selectedStartDate: string;
   handleApplyFilters(): void;
@@ -40,20 +50,49 @@ interface BillingDashboardContextValue {
     isBeginning: boolean;
     isEnd: boolean;
   };
+  rigs:
+    | Rig[]
+    | {
+        id: string;
+        name: string;
+      }[];
   isEditRigModalOpen: boolean;
   isEditConfigModalOpen: boolean;
   handleCloseEditRigModal(): void;
   handleOpenEditRigModal(data: BillingResponse): void;
   handleCloseEditConfigModal(): void;
+  handleChangePeriod(period: string): void;
+  selectedPeriod: string;
   handleOpenEditConfigModal(data: BillingConfigResponse): void;
   rigBeingEdited: BillingResponse | null;
   configBeingEdited: BillingConfigResponse | null;
   configs: Array<BillingConfigResponse>;
+  selectedRig: string;
+  selectedFilterType: FilterType;
+  filterOptions: SelectOptions;
+  handleChangeRig(rigId: string): void;
+  months: SelectOptions;
+  years: SelectOptions;
+  selectedYear: string;
+  windowWidth: number;
+
+  handleToggleFilterType(filterType: FilterType): void;
 }
 
 export const BillingDashboardContext = createContext(
   {} as BillingDashboardContextValue
 );
+
+/* ,
+,
+,
+,
+,
+
+months,
+selectedYear,
+handleYearChange,
+years */
 
 export const BillingDashboardProvider = ({
   children,
@@ -79,6 +118,10 @@ export const BillingDashboardProvider = ({
     "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
   );
 
+  const {windowWidth} = useSidebarContext();
+
+  const {rigs} = useRigs(true);
+
   // Defina os estados iniciais
   const [selectedStartDate, setSelectedStartDate] = useState(formattedFirstDay);
   const [selectedEndDate, setSelectedEndDate] = useState(formattedLastDay);
@@ -86,10 +129,17 @@ export const BillingDashboardProvider = ({
   const [rigBeingEdited, setRigBeingEdited] = useState<null | BillingResponse>(
     null
   );
+  const [selectedRig, setSelectedRig] = useState<string>("");
+  const [selectedPeriod, setSelectedPeriod] = useState("");
+  const [selectedYear, setSeletectedYear] = useState("2023");
 
   const [isEditConfigModalOpen, setIsEditConfigModalOpen] = useState(false);
   const [configBeingEdited, setConfigBeingEdited] =
     useState<null | BillingConfigResponse>(null);
+
+  const [selectedFilterType, setSelectedFilterType] = useState<FilterType>(
+    FilterType.CUSTOM
+  );
 
   const [sliderState, setSliderState] = useState({
     isBeginning: true,
@@ -117,6 +167,33 @@ export const BillingDashboardProvider = ({
 
     setIsEditRigModalOpen(true);
   }, []);
+
+  const handleToggleFilterType = (filterType: FilterType) => {
+    setSelectedFilterType(filterType);
+
+    handleStartDateChange(new Date(formattedFirstDay));
+    handleEndDateChange(new Date(formattedLastDay));
+  };
+
+  const handleChangeRig = (rigId: string) => {
+    setSelectedRig(rigId);
+    setFilters((prevState) => ({...prevState, rigId: rigId}));
+  };
+
+  const handleChangePeriod = (period: string) => {
+    setSelectedPeriod(period);
+
+    const periodFound = getPeriodRange(selectedRig, selectedYear);
+
+    if (periodFound) {
+      const monthPeriodSelected = periodFound.months.find((month) => {
+        return month.month === period;
+      });
+
+      handleStartDateChange(monthPeriodSelected?.startDate!);
+      handleEndDateChange(monthPeriodSelected?.endDate!);
+    }
+  };
   //=============================
 
   //Edit Config
@@ -170,9 +247,27 @@ export const BillingDashboardProvider = ({
     }));
   };
 
+  const handleYearChange = (year: string) => {
+    setSeletectedYear(year);
+    setSelectedPeriod("");
+  };
+
   return (
     <BillingDashboardContext.Provider
       value={{
+        years,
+        windowWidth,
+        selectedYear,
+
+        handleYearChange,
+        months,
+        handleChangeRig,
+        selectedRig,
+        handleToggleFilterType,
+        selectedFilterType,
+        handleChangePeriod,
+        selectedPeriod,
+        filterOptions,
         selectedStartDate,
         selectedEndDate,
         handleStartDateChange,
@@ -196,6 +291,7 @@ export const BillingDashboardProvider = ({
         handleOpenEditConfigModal,
         configs,
         configBeingEdited,
+        rigs,
       }}
     >
       {children}

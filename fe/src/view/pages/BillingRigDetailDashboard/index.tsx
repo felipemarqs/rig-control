@@ -25,7 +25,7 @@ export const BillingRigDetailDashboard = () => {
           handleEndDateChange,
           selectedEndDate,
           handleApplyFilters,
-          isFetchingBillings,
+          isFetchingBilling,
           handleChangeRig,
           selectedRig,
           rigs,
@@ -36,7 +36,10 @@ export const BillingRigDetailDashboard = () => {
           selectedPeriod,
           handleChangePeriod,
           months,
+          years,
           windowWidth,
+          selectedYear,
+          handleYearChange,
         }) => (
           <div className="w-full h-full overflow-y-scroll">
             <Header
@@ -78,6 +81,16 @@ export const BillingRigDetailDashboard = () => {
                       options={months}
                     />
                   </div>
+
+                  <div className="w-[113px] lg:w-[123px]">
+                    <Select
+                      error={""}
+                      placeholder="Ano"
+                      value={selectedYear}
+                      onChange={(value) => handleYearChange(value)}
+                      options={years}
+                    />
+                  </div>
                 </>
               )}
 
@@ -116,7 +129,7 @@ export const BillingRigDetailDashboard = () => {
             <div className=" w-full flex justify-center my-6 ">
               {/*    {!isEmpty && ( */}
               <div className="stats  bg-gray-500">
-                {!isFetchingBillings && (
+                {!isFetchingBilling && (
                   <>
                     <div className="stat">
                       <div className="stat-figure text-white">
@@ -146,13 +159,13 @@ export const BillingRigDetailDashboard = () => {
             <div className=" mx-auto max-w-[1024px] bg-gray-400  rounded-md lg:min-w-[1300px] lg:p-4">
               {isEmpty && (
                 <>
-                  {isFetchingBillings && (
+                  {isFetchingBilling && (
                     <div className="w-full h-full flex justify-center items-center">
                       <Spinner />
                     </div>
                   )}
 
-                  {!isFetchingBillings && (
+                  {!isFetchingBilling && (
                     <NotFound>
                       <strong>Não</strong> existem dados para a{" "}
                       <strong>sonda</strong> no <strong>período</strong>{" "}
@@ -165,8 +178,8 @@ export const BillingRigDetailDashboard = () => {
               {!isEmpty && (
                 <div className="grid grid-cols-12 auto-rows-[120px] gap-3">
                   <div className="col-span-12  row-span-4 flex justify-center bg-gray-200 rounded-lg items-center">
-                    {isFetchingBillings && <Spinner />}
-                    {!isFetchingBillings && <ListBillingDataGrid />}
+                    {isFetchingBilling && <Spinner />}
+                    {!isFetchingBilling && <ListBillingDataGrid />}
                   </div>
                 </div>
               )}
