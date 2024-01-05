@@ -74,7 +74,6 @@ export const BillingRigDetailDashboardProvider = ({
     lastDayOfMonth,
     "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
   );
-  console.log("renderizou");
 
   // Defina os estados iniciais
   const [selectedStartDate, setSelectedStartDate] = useState(formattedFirstDay);
@@ -115,7 +114,6 @@ export const BillingRigDetailDashboardProvider = ({
     setSeletectedYear(year);
   };
 
-  //console.log("efficiencies", efficiencies);
   const totals = getTotals(efficiencies);
 
   //Temporary Condition

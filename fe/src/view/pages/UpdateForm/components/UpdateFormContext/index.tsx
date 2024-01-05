@@ -315,11 +315,10 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
 
   /*  <[{id:string, startHour:string,endHour:string,type: 'WORKING' | 'REPAIR' | '', classification: string}]> */
   const handleStartHourChange = (
-    time: Dayjs | null,
+    _time: Dayjs | null,
     timeString: string,
     id: string
   ) => {
-    console.log(time);
     const newPeriods = periods.map((period) => {
       return period.id === id ? {...period, startHour: timeString} : period;
     });
@@ -328,11 +327,10 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const handleEndHourChange = (
-    time: Dayjs | null,
+    _time: Dayjs | null,
     timeString: string,
     id: string
   ) => {
-    console.log(time);
     const newPeriods = periods.map((period) => {
       return period.id === id ? {...period, endHour: timeString} : period;
     });
@@ -559,8 +557,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   }, []);
 
   const handleBobRentHours = useCallback(
-    (time: Dayjs | null, timeString: string) => {
-      console.log(time);
+    (_time: Dayjs | null, timeString: string) => {
       setBobRentHours(timeString);
     },
     []
@@ -571,9 +568,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   }, []);
 
   const handleChristmasTreeDisassemblyHours = useCallback(
-    (time: Dayjs | null, timeString: string) => {
-      console.log(time);
-
+    (_time: Dayjs | null, timeString: string) => {
       setChristmasTreeDisassemblyHours(timeString);
     },
     []

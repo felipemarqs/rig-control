@@ -1,3 +1,4 @@
+// Importações de componentes e contextos necessários
 import {BaggageClaim, FilterIcon, Truck} from "lucide-react";
 import {Button} from "../../components/Button";
 import {DatePickerInput} from "../../components/DatePickerInput";

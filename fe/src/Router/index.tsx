@@ -1,3 +1,4 @@
+// Importando bibliotecas e componentes necessários
 import {Routes, Route, BrowserRouter} from "react-router-dom";
 import {AuthGuard} from "./AuthGuard";
 import {Login} from "../view/pages/Login";
@@ -30,6 +31,7 @@ export const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Rota para páginas não autenticadas */}
         <Route element={<AuthGuard isPrivate={false} />}>
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<Login />} />
@@ -37,7 +39,9 @@ export const Router = () => {
           </Route>
         </Route>
 
+        {/* Rota para páginas autenticadas */}
         <Route element={<AuthGuard isPrivate={true} />}>
+          {/* Define o layout baseado na largura da janela */}
           <Route
             element={windowWidth <= 1024 ? <MobileLayout /> : <DesktopLayout />}
           >

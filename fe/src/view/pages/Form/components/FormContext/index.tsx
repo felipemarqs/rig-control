@@ -10,8 +10,8 @@ import {AxiosError} from "axios";
 import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
 import {Dayjs} from "dayjs";
 import {parse, differenceInMinutes} from "date-fns";
-
-type ErrorArgs = {fieldName: string; message: string};
+import {ErrorArgs, useErrors} from "../../../../../app/hooks/useErrors";
+import {useSidebarContext} from "../../../../../app/contexts/SidebarContext";
 
 interface FormContextValue {
   date: Date | undefined;
@@ -128,28 +128,18 @@ type Periods = {
 export const FormContext = createContext({} as FormContextValue);
 
 export const FormProvider = ({children}: {children: React.ReactNode}) => {
-  const {user} = useAuth();
-  const isUserAdm = user?.accessLevel === "ADM";
+  //Custom Hooks
   const navigate = useNavigate();
+  const {user, isUserAdm} = useAuth();
+  const {setError, removeError, getErrorMessageByFildName} = useErrors();
+  const {handleToggleNavItem} = useSidebarContext();
   const [date, setDate] = useState<Date>();
   const [well, setWell] = useState<string>("");
   const [selectedRig, setSelectedRig] = useState<string>(() => {
     return isUserAdm ? "" : user?.rigs[0].rig.id!;
   });
   const [remainingMinutes, setRemainingMinutes] = useState<number>();
-  const [periods, setPeriods] = useState<
-    {
-      id: string;
-      startHour: string;
-      endHour: string;
-      type: string;
-      classification: string;
-      fluidRatio: string;
-      repairClassification: null | string;
-      equipmentRatio: string;
-      description: string;
-    }[]
-  >([
+  const [periods, setPeriods] = useState<Periods>([
     {
       id: uuidv4(),
       startHour: "00:00",
@@ -163,40 +153,12 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     },
   ]);
 
+  // Utilização de useMutation para obter isLoading e mutateAsync
   const {isLoading, mutateAsync} = useMutation(efficienciesService.create);
   const queryClient = useQueryClient();
 
-  const [errors, setErrors] = useState<Array<ErrorArgs>>([]);
-
-  const setError = ({fieldName, message}: ErrorArgs) => {
-    const errorAlreadyExists = errors.find(
-      (error) => error.fieldName === fieldName
-    );
-
-    if (errorAlreadyExists) return;
-
-    setErrors((prevState) => [...prevState, {fieldName, message}]);
-  };
-
-  const removeError = (fieldName: string) => {
-    setErrors((prevState) =>
-      prevState.filter((error) => error.fieldName !== fieldName)
-    );
-  };
-
-  const getErrorMessageByFildName = (fieldName: string) => {
-    let findErrorMessage = errors.find(
-      (error) => error.fieldName === fieldName
-    )?.message;
-
-    if (!findErrorMessage) {
-      findErrorMessage = "";
-    }
-
-    return findErrorMessage;
-  };
-
   const handleSubmit = async (periods: Periods) => {
+    // Criação do objeto de persistência utilizando o mapeamento dos dados
     const {toPersistenceObj} = efficiencyMappers.toPersistance({
       rigId: selectedRig,
       date: date ?? new Date(),
@@ -245,6 +207,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
       queryClient.invalidateQueries({queryKey: ["efficiencies", "average"]});
 
       navigate("/dashboard", {replace: true});
+      handleToggleNavItem("dashboard");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
     }
@@ -252,11 +215,10 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   /*  <[{id:string, startHour:string,endHour:string,type: 'WORKING' | 'REPAIR' | '', classification: string}]> */
   const handleStartHourChange = (
-    time: Dayjs | null,
+    _time: Dayjs | null,
     timeString: string,
     id: string
   ) => {
-    console.log(time);
     const newPeriods = periods.map((period) => {
       return period.id === id ? {...period, startHour: timeString} : period;
     });
@@ -265,11 +227,10 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const handleEndHourChange = (
-    time: Dayjs | null,
+    _time: Dayjs | null,
     timeString: string,
     id: string
   ) => {
-    console.log(time);
     const newPeriods = periods.map((period) => {
       return period.id === id ? {...period, endHour: timeString} : period;
     });
@@ -496,8 +457,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   }, []);
 
   const handleBobRentHours = useCallback(
-    (time: Dayjs | null, timeString: string) => {
-      console.log(time);
+    (_time: Dayjs | null, timeString: string) => {
       setBobRentHours(timeString);
     },
     []
@@ -508,9 +468,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   }, []);
 
   const handleChristmasTreeDisassemblyHours = useCallback(
-    (time: Dayjs | null, timeString: string) => {
-      console.log(time);
-
+    (_time: Dayjs | null, timeString: string) => {
       setChristmasTreeDisassemblyHours(timeString);
     },
     []

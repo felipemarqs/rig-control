@@ -83,10 +83,6 @@ export const useDataGrid = () => {
       id: `${taxa}-total`,
       taxa: taxTranslation[taxa] || taxa,
     };
-    /*  if (index === 1) {
-      console.log("rigNames", rigNames);
-      console.log("billings", billing);
-    } */
 
     rigNames.forEach((rigname) => {
       const rigData: any = billing.find((item) => item.rigname === rigname);
@@ -97,8 +93,6 @@ export const useDataGrid = () => {
 
     return rowData;
   });
-
-  // console.log("tableData", tableData);
 
   return {
     columns,
