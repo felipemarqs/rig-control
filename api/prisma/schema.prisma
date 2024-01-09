@@ -298,10 +298,18 @@ model Period {
   description          String?
   type                 PeriodType
   efficiencyId         String                @map("efficiency_id") @db.Uuid
+  wellId               String?               @map("user_id") @db.Uuid
 
+  well       Well?      @relation(fields: [wellId], references: [id])
   efficiency Efficiency @relation(fields: [efficiencyId], references: [id], onDelete: Cascade)
 
   @@map("periods")
+}
+
+model Well {
+  id      String   @id @default(uuid()) @db.Uuid
+  name    String   @unique
+  periods Period[]
 }
 
 enum Interval {

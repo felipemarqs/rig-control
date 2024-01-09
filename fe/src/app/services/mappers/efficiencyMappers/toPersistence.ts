@@ -24,6 +24,7 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
       type,
       description,
       repairClassification,
+      well,
     }) => {
       const [startHourString, startMinuteString] = startHour.split(":");
       const [endHourString, endMinuteString] = endHour.split(":");
@@ -77,13 +78,14 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
         repairClassification: repairClassification
           ? repairClassification
           : null,
+        wellId: well,
       };
     }
   );
 
   const toPersistenceObj: ToPersistanceEfficiency = {
     date: domainEfficiency.date,
-    well: domainEfficiency.well,
+    well: domainEfficiency.periods[0].well,
     availableHours: Number(totalAvailableHours.toFixed(2)),
     rigId: domainEfficiency.rigId!,
     periods: periodsArray,

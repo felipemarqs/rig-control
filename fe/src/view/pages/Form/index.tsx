@@ -45,21 +45,18 @@ export const Form = () => {
 
             {/* Componentes do formulário organizados em um layout flex */}
             <div className="w-full h-[80vh]  overflow-y-auto  flex-col justify-center flex gap-2  lg:h-[87vh] lg:flex-row lg:p-4">
-              <PeriodsFormContainer />
-
+              <PeriodsFormContainer />{" "}
               {/* Condicionalmente renderiza diferentes formulários com base no contrato selecionado */}
               {selectedContract?.rig.contract.name.toLocaleLowerCase() ===
                 "petrobrás" && <></>}
-
-              {selectedContract?.rig.contract.name.toLocaleLowerCase() ===
-                "braskem" && <BraskemFormContainer />}
-
+              {(selectedContract?.rig.contract.name.toLocaleLowerCase() ===
+                "braskem" ||
+                selectedContract?.rig.contract.name.toLocaleLowerCase() ===
+                  "braském") && <BraskemFormContainer />}
               {selectedContract?.rig.contract.name.toLocaleLowerCase() ===
                 "3r" && <TresRFormContainer />}
-
               {selectedContract?.rig.contract.name.toLocaleLowerCase() ===
                 "origem" && <OrigemContainer />}
-
               {selectedContract?.rig.contract.name.toLocaleLowerCase() ===
                 "carmo energy" && <CarmoEnergyContainer />}
             </div>

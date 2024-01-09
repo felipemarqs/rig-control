@@ -15,7 +15,6 @@ import {useSidebarContext} from "../../../../../app/contexts/SidebarContext";
 
 interface FormContextValue {
   date: Date | undefined;
-  well: string;
   remainingMinutes: number | undefined;
   periods: Periods;
   isLoading: boolean;
@@ -39,6 +38,7 @@ interface FormContextValue {
   handleEndHourChange(time: Dayjs | null, timeString: string, id: string): void;
   addPeriod(): void;
   handlePeriodType(id: string, type: string): void;
+  handlePeriodWell(id: string, well: string): void;
   handlePeriodClassification(id: string, classification: string): void;
   handleRepairClassification(id: string, repairClassification: string): void;
   handleFluidRatio(id: string, ratio: string | never): void;
@@ -68,7 +68,7 @@ interface FormContextValue {
   handlePowerSwivelCheckbox(): void;
   handleMobilizationPlace(value: string): void;
   handleSuckingTruckCheckbox(): void;
-  handleWellChange(value: string): void;
+
   isSuckingTruckSelected: boolean;
   usersRigs: {id: string; name: string}[];
   mobilizationPlace: string;
@@ -123,6 +123,7 @@ type Periods = {
   fluidRatio: string;
   equipmentRatio: string;
   description: string;
+  well: string;
 }[];
 
 export const FormContext = createContext({} as FormContextValue);
@@ -134,7 +135,6 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   const {setError, removeError, getErrorMessageByFildName} = useErrors();
   const {handleToggleNavItem} = useSidebarContext();
   const [date, setDate] = useState<Date>();
-  const [well, setWell] = useState<string>("");
   const [selectedRig, setSelectedRig] = useState<string>(() => {
     return isUserAdm ? "" : user?.rigs[0].rig.id!;
   });
@@ -150,6 +150,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
       repairClassification: null,
       equipmentRatio: "",
       description: "",
+      well: "",
     },
   ]);
 
@@ -157,12 +158,13 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   const {isLoading, mutateAsync} = useMutation(efficienciesService.create);
   const queryClient = useQueryClient();
 
+  console.log(periods);
   const handleSubmit = async (periods: Periods) => {
     // Criação do objeto de persistência utilizando o mapeamento dos dados
+
     const {toPersistenceObj} = efficiencyMappers.toPersistance({
       rigId: selectedRig,
       date: date ?? new Date(),
-      well,
       availableHours: 24,
       periods: periods,
       isMixTankSelected,
@@ -202,6 +204,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
           repairClassification: null,
           equipmentRatio: "",
           description: "",
+          well: "",
         },
       ]);
       queryClient.invalidateQueries({queryKey: ["efficiencies", "average"]});
@@ -238,16 +241,41 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     setPeriods(newPeriods);
   };
 
-  const handlePeriodType = (id: string, type: string) => {
+  const handlePeriodWell = (id: string, well: string) => {
     const newPeriods = periods.map((period) => {
       return period.id === id
         ? {
             ...period,
-            type: type,
-            classification: "",
-            repairClassification: null,
+            well: well,
           }
         : period;
+    });
+
+    setPeriods(newPeriods);
+  };
+
+  const handlePeriodType = (id: string, type: string) => {
+    const newPeriods = periods.map((period) => {
+      if (type === "DTM" && period.id === id) {
+        return {
+          ...period,
+          type: type,
+          classification: "",
+          repairClassification: null,
+          well: "",
+        };
+      }
+
+      if (period.id === id) {
+        return {
+          ...period,
+          type: type,
+          classification: "",
+          repairClassification: null,
+        };
+      }
+
+      return period;
     });
 
     setPeriods(newPeriods);
@@ -309,6 +337,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         repairClassification: null,
         equipmentRatio: "",
         description: "",
+        well: periods[periods.length - 1].well,
       },
     ]);
   };
@@ -514,15 +543,6 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     setIsSuckingTruckSelected((prevState) => !prevState);
   }, []);
 
-  const handleWellChange = useCallback((value: string) => {
-    setWell(value);
-    if (!value) {
-      setError({fieldName: "well", message: "Obrigatório!"});
-    } else {
-      removeError("well");
-    }
-  }, []);
-
   return (
     <FormContext.Provider
       value={{
@@ -547,6 +567,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         userRig,
         usersRigs,
         isPending,
+        handlePeriodWell,
         handleMixTankCheckBox,
         isMixTankSelected,
         handleMixTankOperatorsCheckBox,
@@ -586,8 +607,6 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         handleMobilizationPlace,
         isSuckingTruckSelected,
         handleSuckingTruckCheckbox,
-        well,
-        handleWellChange,
         selectedRig,
         setError,
         removeError,
