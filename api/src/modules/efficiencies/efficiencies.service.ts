@@ -4,24 +4,18 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Prisma, PrismaClient } from '@prisma/client';
+
 import { CreateEfficiencyDto } from './dto/create-efficiency.dto';
 import { UpdateEfficiencyDto } from './dto/update-efficiency.dto';
 import { EfficienciesRepository } from 'src/shared/database/repositories/efficiencies.repositories';
 import { UsersRigRepository } from 'src/shared/database/repositories/usersRig.repositories';
-import { isAfter, isBefore, parse, differenceInMinutes } from 'date-fns';
+import { isAfter, isBefore, differenceInMinutes } from 'date-fns';
 import { RigsRepository } from 'src/shared/database/repositories/rigs.repositories';
 import { BillingConfigurationsRepository } from 'src/shared/database/repositories/billingConfiguration.repositories';
 import { BillingRepository } from 'src/shared/database/repositories/billing.repositories';
 import { DeletionRequestRepository } from 'src/shared/database/repositories/deletionRequests.repositories';
 import { RequestStatus } from '../deletion-requests/entities/deletion-request.entity';
 import { WellsRepository } from 'src/shared/database/repositories/well.repositories';
-
-type EfficiencySubset = {
-  well: string; // Tipo da propriedade 'well'
-  periods: any[]; // Tipo da propriedade 'periods', substitua 'any[]' pelo tipo correto se possível
-  // Outras propriedades que você especificou no 'select', se houverem
-};
 
 @Injectable()
 export class EfficienciesService {
@@ -31,7 +25,6 @@ export class EfficienciesService {
     private readonly rigsRepo: RigsRepository,
     private readonly billingConfigRepo: BillingConfigurationsRepository,
     private readonly billingRepo: BillingRepository,
-    private readonly prisma: PrismaClient,
     private readonly wellsRepo: WellsRepository,
     private readonly deletionRequestRepo: DeletionRequestRepository,
   ) {}
@@ -181,8 +174,6 @@ export class EfficienciesService {
     //criando valores de faturamento
     // Talvez mudar isso aqui de lugar
 
-    let availableHourTotalHours = 0;
-    let glossHourTotalHours = 0;
     let scheduledStopTotalHours = 0;
     let dtmLt20TotalHours = 0;
     let dtmBt20And50TotalHours = 0;
@@ -653,188 +644,6 @@ export class EfficienciesService {
     }
 
     return efficiency;
-  }
-
-  async getDistinctWellNames() {
-    /*  const wellNames = await this.efficiencyRepo.findMany({
-      select: {
-        well: true,
-      },
-      distinct: 'well',
-    });
-
-    const wells = await this.wellsRepo.findAll({});
-
-    const wellMappedNames = wellNames.map(({ well }) => ({ name: well }));
-
-    //await this.wellsRepo.createMany({ data: wellMappedNames });
-    console.log('wellMappedNames', wellMappedNames);
-    console.log('wells', wells); */
-
-    const wellMappedNames = [
-      { name: '7-PIR-38-AL' },
-      { name: '7-PIR-24-AL' },
-      { name: '7-PIR-38-AL' },
-      { name: 'CP-133' },
-      { name: 'CP-883' },
-      { name: 'CP-699' },
-      { name: 'CP-1314' },
-      { name: 'CP-1545' },
-      { name: 'AG-180' },
-      { name: 'CP-1289' },
-      { name: 'AG-287' },
-      { name: 'TGA-5' },
-      { name: 'TQ-157' },
-      { name: 'MINA 18AD ' },
-      { name: 'CP-1289' },
-      { name: 'CP-1098' },
-      { name: 'CP-1098' },
-      { name: '7-PIR-193-AL' },
-      { name: 'CP-785' },
-      { name: 'CP-1341' },
-      { name: '7-TGA-5D-BA' },
-      { name: 'TQ-157-BA' },
-      { name: 'TQ-216D-BA' },
-      { name: 'CP-22' },
-      { name: 'CP-1699' },
-      { name: 'CP-1099' },
-      { name: 'CP-1227' },
-      { name: 'TQ-14-BA' },
-      { name: 'CP-1602' },
-      { name: 'CP-1465' },
-      { name: 'CP-1645' },
-      { name: 'CP-882' },
-      { name: 'CP-882' },
-      { name: 'CP-1315' },
-      { name: '7-PIR-193-AL' },
-      { name: 'BASE' },
-      { name: 'CP-1315' },
-      { name: 'CP-1503' },
-      { name: 'CP-699' },
-      { name: 'CP-055' },
-      { name: 'CP-1779' },
-      { name: 'CP-1779' },
-      { name: 'AG-0272' },
-      { name: '7-CP-0699-SE' },
-      { name: '7-CP-0712-SE' },
-      { name: '7-PIR-281-AL' },
-      { name: '7-CP-0712-SE' },
-      { name: '7-CP-0328-SE' },
-      { name: '7-CP-1503-SE' },
-    ];
-
-    const res = [
-      { name: '7-PIR-38-AL' },
-      { name: '7-PIR-24-AL' },
-      { name: 'CP-133' },
-      { name: 'CP-883' },
-      { name: 'CP-699' },
-      { name: 'CP-1314' },
-      { name: 'CP-1545' },
-      { name: 'AG-180' },
-      { name: 'CP-1289' },
-      { name: 'AG-287' },
-      { name: 'TGA-5' },
-      { name: 'TQ-157' },
-      { name: 'MINA 18AD ' },
-      { name: 'CP-1098' },
-      { name: '7-PIR-193-AL' },
-      { name: 'CP-785' },
-      { name: 'CP-1341' },
-      { name: '7-TGA-5D-BA' },
-      { name: 'TQ-157-BA' },
-      { name: 'TQ-216D-BA' },
-      { name: 'CP-22' },
-      { name: 'CP-1699' },
-      { name: 'CP-1099' },
-      { name: 'CP-1227' },
-      { name: 'TQ-14-BA' },
-      { name: 'CP-1602' },
-      { name: 'CP-1465' },
-      { name: 'CP-1645' },
-      { name: 'CP-882' },
-      { name: 'CP-1315' },
-      { name: 'BASE' },
-      { name: 'CP-1503' },
-      { name: 'CP-055' },
-      { name: 'CP-1779' },
-      { name: 'AG-0272' },
-      { name: '7-CP-0699-SE' },
-      { name: '7-CP-0712-SE' },
-      { name: '7-PIR-281-AL' },
-      { name: '7-CP-0328-SE' },
-      { name: '7-CP-1503-SE' },
-    ];
-
-    function getUniqueWells(wells) {
-      return Array.from(new Set(wells.map(({ name }) => name)));
-    }
-
-    const uniqueWells = getUniqueWells(wellMappedNames);
-    console.log(uniqueWells.map((wellName) => ({ name: wellName })));
-
-    /*     const wellsThatDoesNotExist = wellMappedNames.filter(
-      (well) => !wells.some((item) => item.name === well.name),
-    );
-
-    console.log('wellsThatDoesNotExist', wellsThatDoesNotExist.length); */
-
-    return await this.wellsRepo.createMany({ data: res });
-  }
-
-  async syncWelltoPeriods() {
-    const efficiencies = await this.efficiencyRepo.findMany({
-      select: {
-        well: true,
-        periods: true,
-      },
-    });
-
-    const wells = await this.wellsRepo.findAll({});
-
-    console.log('efficiencies', efficiencies);
-    console.log('wells', wells);
-
-    // @ts-ignore
-    for (const { well, periods } of efficiencies) {
-      const wellFound = wells.find(({ name }) => well === name);
-      //console.log(wellFound?.id);
-
-      for (const period of periods) {
-        try {
-          /* await this.prisma.period.update({
-            where: {
-              id: period.id,
-            },
-            data: {
-              wellId: wellId,
-            },
-          }); */
-
-          if (wellFound) {
-            await this.prisma.period.update({
-              where: {
-                id: period.id,
-              },
-              data: {
-                wellId: wellFound.id,
-              },
-            });
-            console.log(`Período vinculado ao poço: ${wellFound?.name}`);
-          }
-
-          if (!wellFound) {
-            console.log('POço escrito errado', wellFound);
-          }
-        } catch (error) {
-          console.error(`Erro ao vincular o período ao poço: ${error}`);
-        }
-
-        period.wellId = wellFound?.id;
-      }
-    }
-
-    return efficiencies;
   }
 
   async remove(efficiencyId: string) {
