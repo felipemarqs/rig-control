@@ -32,4 +32,8 @@ export class PeriodDto {
   @IsEnum(RepairClassification)
   @IsOptional()
   repairClassification: RepairClassification;
+
+  @IsString()
+  @IsNotEmpty()
+  wellId: string;
 }

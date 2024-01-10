@@ -1,7 +1,6 @@
 export interface DomainEfficiency {
   rigId: string | undefined;
   date: string | Date;
-  well: string;
   availableHours: number;
   periods: {
     id: string;
@@ -13,6 +12,7 @@ export interface DomainEfficiency {
     fluidRatio: string;
     equipmentRatio: string;
     repairClassification: string | null;
+    well: string;
   }[];
   christmasTreeDisassemblyHours?: string;
   isMixTankSelected?: boolean;

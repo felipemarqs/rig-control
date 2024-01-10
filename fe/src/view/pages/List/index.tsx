@@ -27,6 +27,9 @@ export const List = () => {
     filterOptions,
     selectedPeriod,
     handleChangePeriod,
+    selectedYear,
+    years,
+    handleYearChange,
   } = useListController();
 
   const {windowWidth} = useSidebarContext();
@@ -57,7 +60,6 @@ export const List = () => {
             }))}
           />
         </div>
-
         {selectedFilterType === FilterType.PERIOD && (
           <>
             <div className="w-[113px] lg:w-[123px]">
@@ -67,6 +69,16 @@ export const List = () => {
                 value={selectedPeriod}
                 onChange={(value) => handleChangePeriod(value)}
                 options={months}
+              />
+            </div>
+
+            <div className="w-[113px] lg:w-[123px]">
+              <Select
+                error={""}
+                placeholder="Ano"
+                value={selectedYear}
+                onChange={(value) => handleYearChange(value)}
+                options={years}
               />
             </div>
           </>
@@ -93,6 +105,7 @@ export const List = () => {
             </div>
           </>
         )}
+
         <div>
           <Button className="h-[32px] lg:h-[52px]" onClick={handleApplyFilters}>
             {windowWidth <= 1024 ? <FilterIcon /> : "Aplicar Filtro"}

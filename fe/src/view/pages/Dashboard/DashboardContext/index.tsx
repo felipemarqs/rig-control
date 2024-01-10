@@ -1,5 +1,4 @@
-import {createContext, useState} from "react";
-import React from "react";
+import React, {createContext, useState} from "react";
 import {useEfficiencies} from "../../../../app/hooks/efficiencies/useEfficiencies";
 import {useAuth} from "../../../../app/hooks/useAuth";
 import {User} from "../../../../app/entities/User";
@@ -17,6 +16,7 @@ import {FilterType} from "../../../../app/entities/FilterType";
 import {filterOptions} from "../../../../app/utils/filterOptions";
 import {years} from "../../../../app/utils/years";
 
+// Definição do tipo do contexto
 interface DashboardContextValue {
   selectedRig: string;
   selectedPeriod: string;
@@ -34,17 +34,10 @@ interface DashboardContextValue {
   handleYearChange(year: string): void;
   selectedYear: string;
   selectedFilterType: FilterType;
-  //handleTogglePeriodFilterType(): void;
   user: User | undefined;
   signout(): void;
   isEmpty: boolean;
-  // isCustomPeriodActive: boolean;
-  rigs:
-    | Rig[]
-    | {
-        id: string;
-        name: string;
-      }[];
+  rigs: Rig[] | {id: string; name: string}[];
   efficiencies: Efficiency[];
   totalAvailableHours: number;
   availableHoursPercentage: number;
@@ -60,47 +53,25 @@ interface DashboardContextValue {
   years: SelectOptions;
 }
 
+// Criação do contexto
 export const DashboardContext = createContext({} as DashboardContextValue);
 
 export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
+  // Utilização dos hooks para autenticação e contexto da barra lateral
   const {user, signout, isAlertSeen, handleIsAlertSeen} = useAuth();
-
   const {windowWidth} = useSidebarContext();
 
+  // Verificação se o usuário é administrador para exibir as rigs corretas
   const isUserAdm = user?.accessLevel === "ADM";
-
   const {rigs} = useRigs(isUserAdm);
 
-  const userRigs =
-    user?.rigs.map(({rig: {id, name}}) => {
-      return {
-        id,
-        name,
-      };
-    }) || [];
+  // Mapeamento das rigs do usuário para exibir apenas as autorizadas
+  const userRigs = user?.rigs.map(({rig: {id, name}}) => ({id, name})) || [];
 
-  const [selectedRig, setSelectedRig] = useState<string>("");
-
-  //Mudar as Rigs
-
-  /*   const [selectedStartDate, setSelectedStartDate] = useState(
-    new Date().toISOString()
-  );
-  const [selectedEndDate, setSelectedEndDate] = useState(
-    new Date().toISOString()
-  );
- */
-
-  // Obtenha a data atual
+  // Estados iniciais para as datas (primeiro e último dia do mês atual)
   const currentDate = new Date();
-
-  // Obtenha o primeiro dia do mês atual
   const firstDayOfMonth = startOfMonth(currentDate);
-
-  // Obtenha o último dia do mês atual
   const lastDayOfMonth = endOfMonth(currentDate);
-
-  // Formate as datas como strings no formato ISO (ou qualquer formato desejado)
   const formattedFirstDay = format(
     firstDayOfMonth,
     "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
@@ -110,32 +81,31 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
   );
 
-  // Defina os estados iniciais
-  const [selectedStartDate, setSelectedStartDate] = useState(formattedFirstDay);
-  const [selectedEndDate, setSelectedEndDate] = useState(formattedLastDay);
-
-  const [selectedPeriod, setSelectedPeriod] = useState("");
-  const [selectedYear, setSeletectedYear] = useState("2023");
-
+  const [selectedRig, setSelectedRig] = useState<string>("");
+  const [selectedStartDate, setSelectedStartDate] =
+    useState<string>(formattedFirstDay);
+  const [selectedEndDate, setSelectedEndDate] =
+    useState<string>(formattedLastDay);
+  const [selectedPeriod, setSelectedPeriod] = useState<string>("");
+  const [selectedYear, setSeletectedYear] = useState<string>("2023");
   const [filters, setFilters] = useState({
     rigId: selectedRig,
     startDate: selectedStartDate,
     endDate: selectedEndDate,
   });
 
+  // Utilização dos hooks para eficiências e médias de eficiência
   const {efficiencies, isFetchingEfficiencies, refetchEffciencies} =
     useEfficiencies(filters);
-
   const {average, refetchAverage, isFetchingAverage} = useEfficiencyAverage(
     filters.rigId
   );
-
   const isEmpty: boolean = efficiencies.length === 0;
-
   const [selectedFilterType, setSelectedFilterType] = useState<FilterType>(
     FilterType.PERIOD
   );
 
+  // Funções para manipulação das datas e filtros
   const handleApplyFilters = () => {
     refetchEffciencies();
     refetchAverage();
@@ -148,29 +118,22 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleStartDateChange = (date: Date) => {
     setSelectedStartDate(date.toISOString());
-    setFilters((prevState) => ({
-      ...prevState,
-      startDate: date.toISOString(),
-    }));
+    setFilters((prevState) => ({...prevState, startDate: date.toISOString()}));
   };
 
   const handleEndDateChange = (date: Date) => {
     setSelectedEndDate(date.toISOString());
-    setFilters((prevState) => ({
-      ...prevState,
-      endDate: date.toISOString(),
-    }));
+    setFilters((prevState) => ({...prevState, endDate: date.toISOString()}));
   };
 
   const handleChangePeriod = (period: string) => {
     setSelectedPeriod(period);
-
     const periodFound = getPeriodRange(selectedRig, selectedYear);
 
     if (periodFound) {
-      const monthPeriodSelected = periodFound.months.find((month) => {
-        return month.month === period;
-      });
+      const monthPeriodSelected = periodFound.months.find(
+        (month) => month.month === period
+      );
 
       handleStartDateChange(monthPeriodSelected?.startDate!);
       handleEndDateChange(monthPeriodSelected?.endDate!);
@@ -179,7 +142,6 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleToggleFilterType = (filterType: FilterType) => {
     setSelectedFilterType(filterType);
-
     handleStartDateChange(new Date(formattedFirstDay));
     handleEndDateChange(new Date(formattedLastDay));
   };
@@ -189,8 +151,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     setSelectedPeriod("");
   };
 
-  //Lopping para armazenar informações dos stats (colocar em um useMemo)
-
+  // Cálculos para estatísticas das eficiências
   let totalAvailableHours: number = 0;
   let totalUnavailableHours: number = 0;
   let totalDtms: number = 0;
@@ -200,24 +161,16 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     totalAvailableHours += efficiency.availableHours;
     totalUnavailableHours += 24 - efficiency.availableHours;
 
-    //Somando as movimentações
-
     totalMovimentations +=
       efficiency.fluidRatio.length + efficiency.equipmentRatio.length;
 
-    const dtmFound = efficiency.periods.find(({type}) => {
-      if (type === "DTM") {
-        return type;
-      }
-    });
-
+    const dtmFound = efficiency.periods.find(({type}) => type === "DTM");
     if (dtmFound) {
       totalDtms++;
     }
   });
 
   const totalHours: number = totalAvailableHours + totalUnavailableHours;
-
   let availableHoursPercentage: number = Number(
     ((totalAvailableHours * 100) / totalHours).toFixed(2)
   );
@@ -225,6 +178,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     ((totalUnavailableHours * 100) / totalHours).toFixed(2)
   );
 
+  // Retorno do provedor do contexto com os valores e funções necessárias
   return (
     <DashboardContext.Provider
       value={{

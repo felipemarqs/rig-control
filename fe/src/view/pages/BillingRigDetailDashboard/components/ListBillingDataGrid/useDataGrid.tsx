@@ -78,15 +78,11 @@ export const useDataGrid = () => {
 
   // Criar a tabela com as taxas como linhas e sondas como colunas
 
-  const tableData = taxNames.map((taxa, index) => {
+  const tableData = taxNames.map((taxa) => {
     const rowData: any = {
       id: `${taxa}-total`,
       taxa: taxTranslation[taxa] || taxa,
     };
-    /*  if (index === 1) {
-      console.log("rigNames", rigNames);
-      console.log("billings", billing);
-    } */
 
     rigNames.forEach((rigname) => {
       const rigData: any = billing.find((item) => item.rigname === rigname);
@@ -97,8 +93,6 @@ export const useDataGrid = () => {
 
     return rowData;
   });
-
-  // console.log("tableData", tableData);
 
   return {
     columns,

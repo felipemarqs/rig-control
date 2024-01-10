@@ -539,12 +539,10 @@ export const getPeriodRange = (selectedRig: string, selectedYear: string) => {
       ],
     },
   ];
-  console.log("selectedYear", selectedYear);
+
   const periodFound = periods.find((period) => {
     return period.rigId === selectedRig;
   });
-
-  console.log("periodFound", periodFound);
 
   return periodFound;
 };

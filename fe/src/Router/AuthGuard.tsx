@@ -6,6 +6,7 @@ interface AuthGuardProps {
   isPrivate: Boolean;
 }
 export const AuthGuard = ({isPrivate}: AuthGuardProps) => {
+  // Obtém o estado de autenticação do contexto
   const {signedIn} = useAuth();
 
   if (!signedIn && isPrivate) {
@@ -15,5 +16,7 @@ export const AuthGuard = ({isPrivate}: AuthGuardProps) => {
   if (signedIn && !isPrivate) {
     return <Navigate to="/" replace />;
   }
+  // Se estiver autenticado e a rota for privada, permite o acesso à rota privada
+  // Se não estiver autenticado e a rota não for privada, permite o acesso à rota pública
   return <Outlet />;
 };

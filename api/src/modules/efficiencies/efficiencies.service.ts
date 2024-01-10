@@ -15,6 +15,13 @@ import { BillingConfigurationsRepository } from 'src/shared/database/repositorie
 import { BillingRepository } from 'src/shared/database/repositories/billing.repositories';
 import { DeletionRequestRepository } from 'src/shared/database/repositories/deletionRequests.repositories';
 import { RequestStatus } from '../deletion-requests/entities/deletion-request.entity';
+import { WellsRepository } from 'src/shared/database/repositories/well.repositories';
+
+type EfficiencySubset = {
+  well: string; // Tipo da propriedade 'well'
+  periods: any[]; // Tipo da propriedade 'periods', substitua 'any[]' pelo tipo correto se possível
+  // Outras propriedades que você especificou no 'select', se houverem
+};
 
 @Injectable()
 export class EfficienciesService {
@@ -25,6 +32,7 @@ export class EfficienciesService {
     private readonly billingConfigRepo: BillingConfigurationsRepository,
     private readonly billingRepo: BillingRepository,
     private readonly prisma: PrismaClient,
+    private readonly wellsRepo: WellsRepository,
     private readonly deletionRequestRepo: DeletionRequestRepository,
   ) {}
 
@@ -73,6 +81,16 @@ export class EfficienciesService {
       throw new UnauthorizedException(
         'O usuário não é vinculado a sonda selecionada!',
       );
+    }
+
+    for (const { wellId } of periods) {
+      const wellExist = await this.wellsRepo.findFirst({
+        where: { name: wellId },
+      });
+
+      if (!wellExist) {
+        await this.wellsRepo.create({ data: { name: wellId } });
+      }
     }
 
     const efficiencyAlreadyExists = await this.efficiencyRepo.findFirst({
@@ -198,45 +216,55 @@ export class EfficienciesService {
     let suckingTruckTotalAmount = 0;
     let christmasTreeDisassemblyTotalAmount = 0;
 
-    periods.forEach(({ type, startHour, endHour, classification }) => {
-      const horaInicial = new Date(startHour);
-      const horaFinal = new Date(endHour);
+    const wells = await this.wellsRepo.findAll({});
 
-      const getDiffInMinutes = (horaFinal: Date, horaInicial: Date) => {
-        //Refact
-        //GetISOHour ---
-        const isoHour = horaFinal.toISOString().split('T')[1];
+    periods.forEach(
+      ({ type, startHour, endHour, classification, wellId }, index) => {
+        const { id: wellIdFound } = wells.find(({ name }) => well === name);
 
-        let endDate = horaFinal;
-        if (isoHour.slice(0, 5) === '23:59') {
-          return differenceInMinutes(endDate, horaInicial) + 1;
+        periods[index].wellId = wellIdFound;
+        console.log('Well', wellId);
+        const horaInicial = new Date(startHour);
+        const horaFinal = new Date(endHour);
+
+        const getDiffInMinutes = (horaFinal: Date, horaInicial: Date) => {
+          //Refact
+          //GetISOHour ---
+          const isoHour = horaFinal.toISOString().split('T')[1];
+
+          let endDate = horaFinal;
+          if (isoHour.slice(0, 5) === '23:59') {
+            return differenceInMinutes(endDate, horaInicial) + 1;
+          }
+
+          return differenceInMinutes(endDate, horaInicial);
+        };
+        const diffInMinutes = getDiffInMinutes(horaFinal, horaInicial);
+
+        if (type === 'DTM') {
+          if (classification === 'LT20') {
+            dtmLt20TotalAmmount = 1;
+            dtmLt20TotalHours += diffInMinutes / 60;
+          }
+
+          if (classification === 'BT20AND50') {
+            dtmBt20and50TotalAmmout = 1;
+            dtmBt20And50TotalHours += diffInMinutes / 60;
+          }
+
+          if (classification === 'GT50') {
+            dtmGt50TotalAmount = 1;
+            dtmGt50TotalHours += diffInMinutes / 60;
+          }
         }
 
-        return differenceInMinutes(endDate, horaInicial);
-      };
-      const diffInMinutes = getDiffInMinutes(horaFinal, horaInicial);
-
-      if (type === 'DTM') {
-        if (classification === 'LT20') {
-          dtmLt20TotalAmmount = 1;
-          dtmLt20TotalHours += diffInMinutes / 60;
+        if (type === 'SCHEDULED_STOP') {
+          scheduledStopTotalHours += diffInMinutes / 60;
         }
+      },
+    );
 
-        if (classification === 'BT20AND50') {
-          dtmBt20and50TotalAmmout = 1;
-          dtmBt20And50TotalHours += diffInMinutes / 60;
-        }
-
-        if (classification === 'GT50') {
-          dtmGt50TotalAmount = 1;
-          dtmGt50TotalHours += diffInMinutes / 60;
-        }
-      }
-
-      if (type === 'SCHEDULED_STOP') {
-        scheduledStopTotalHours += diffInMinutes / 60;
-      }
-    });
+    console.log(efficiencyData.periods.createMany.data);
 
     if (equipmentRatio?.length) {
       equipmentRatio.forEach(({ ratio }) => {
@@ -592,6 +620,7 @@ export class EfficienciesService {
             description: true,
             type: true,
             repairClassification: true,
+            well: true,
           },
           orderBy: { startHour: 'asc' },
         },
@@ -624,6 +653,188 @@ export class EfficienciesService {
     }
 
     return efficiency;
+  }
+
+  async getDistinctWellNames() {
+    /*  const wellNames = await this.efficiencyRepo.findMany({
+      select: {
+        well: true,
+      },
+      distinct: 'well',
+    });
+
+    const wells = await this.wellsRepo.findAll({});
+
+    const wellMappedNames = wellNames.map(({ well }) => ({ name: well }));
+
+    //await this.wellsRepo.createMany({ data: wellMappedNames });
+    console.log('wellMappedNames', wellMappedNames);
+    console.log('wells', wells); */
+
+    const wellMappedNames = [
+      { name: '7-PIR-38-AL' },
+      { name: '7-PIR-24-AL' },
+      { name: '7-PIR-38-AL' },
+      { name: 'CP-133' },
+      { name: 'CP-883' },
+      { name: 'CP-699' },
+      { name: 'CP-1314' },
+      { name: 'CP-1545' },
+      { name: 'AG-180' },
+      { name: 'CP-1289' },
+      { name: 'AG-287' },
+      { name: 'TGA-5' },
+      { name: 'TQ-157' },
+      { name: 'MINA 18AD ' },
+      { name: 'CP-1289' },
+      { name: 'CP-1098' },
+      { name: 'CP-1098' },
+      { name: '7-PIR-193-AL' },
+      { name: 'CP-785' },
+      { name: 'CP-1341' },
+      { name: '7-TGA-5D-BA' },
+      { name: 'TQ-157-BA' },
+      { name: 'TQ-216D-BA' },
+      { name: 'CP-22' },
+      { name: 'CP-1699' },
+      { name: 'CP-1099' },
+      { name: 'CP-1227' },
+      { name: 'TQ-14-BA' },
+      { name: 'CP-1602' },
+      { name: 'CP-1465' },
+      { name: 'CP-1645' },
+      { name: 'CP-882' },
+      { name: 'CP-882' },
+      { name: 'CP-1315' },
+      { name: '7-PIR-193-AL' },
+      { name: 'BASE' },
+      { name: 'CP-1315' },
+      { name: 'CP-1503' },
+      { name: 'CP-699' },
+      { name: 'CP-055' },
+      { name: 'CP-1779' },
+      { name: 'CP-1779' },
+      { name: 'AG-0272' },
+      { name: '7-CP-0699-SE' },
+      { name: '7-CP-0712-SE' },
+      { name: '7-PIR-281-AL' },
+      { name: '7-CP-0712-SE' },
+      { name: '7-CP-0328-SE' },
+      { name: '7-CP-1503-SE' },
+    ];
+
+    const res = [
+      { name: '7-PIR-38-AL' },
+      { name: '7-PIR-24-AL' },
+      { name: 'CP-133' },
+      { name: 'CP-883' },
+      { name: 'CP-699' },
+      { name: 'CP-1314' },
+      { name: 'CP-1545' },
+      { name: 'AG-180' },
+      { name: 'CP-1289' },
+      { name: 'AG-287' },
+      { name: 'TGA-5' },
+      { name: 'TQ-157' },
+      { name: 'MINA 18AD ' },
+      { name: 'CP-1098' },
+      { name: '7-PIR-193-AL' },
+      { name: 'CP-785' },
+      { name: 'CP-1341' },
+      { name: '7-TGA-5D-BA' },
+      { name: 'TQ-157-BA' },
+      { name: 'TQ-216D-BA' },
+      { name: 'CP-22' },
+      { name: 'CP-1699' },
+      { name: 'CP-1099' },
+      { name: 'CP-1227' },
+      { name: 'TQ-14-BA' },
+      { name: 'CP-1602' },
+      { name: 'CP-1465' },
+      { name: 'CP-1645' },
+      { name: 'CP-882' },
+      { name: 'CP-1315' },
+      { name: 'BASE' },
+      { name: 'CP-1503' },
+      { name: 'CP-055' },
+      { name: 'CP-1779' },
+      { name: 'AG-0272' },
+      { name: '7-CP-0699-SE' },
+      { name: '7-CP-0712-SE' },
+      { name: '7-PIR-281-AL' },
+      { name: '7-CP-0328-SE' },
+      { name: '7-CP-1503-SE' },
+    ];
+
+    function getUniqueWells(wells) {
+      return Array.from(new Set(wells.map(({ name }) => name)));
+    }
+
+    const uniqueWells = getUniqueWells(wellMappedNames);
+    console.log(uniqueWells.map((wellName) => ({ name: wellName })));
+
+    /*     const wellsThatDoesNotExist = wellMappedNames.filter(
+      (well) => !wells.some((item) => item.name === well.name),
+    );
+
+    console.log('wellsThatDoesNotExist', wellsThatDoesNotExist.length); */
+
+    return await this.wellsRepo.createMany({ data: res });
+  }
+
+  async syncWelltoPeriods() {
+    const efficiencies = await this.efficiencyRepo.findMany({
+      select: {
+        well: true,
+        periods: true,
+      },
+    });
+
+    const wells = await this.wellsRepo.findAll({});
+
+    console.log('efficiencies', efficiencies);
+    console.log('wells', wells);
+
+    // @ts-ignore
+    for (const { well, periods } of efficiencies) {
+      const wellFound = wells.find(({ name }) => well === name);
+      //console.log(wellFound?.id);
+
+      for (const period of periods) {
+        try {
+          /* await this.prisma.period.update({
+            where: {
+              id: period.id,
+            },
+            data: {
+              wellId: wellId,
+            },
+          }); */
+
+          if (wellFound) {
+            await this.prisma.period.update({
+              where: {
+                id: period.id,
+              },
+              data: {
+                wellId: wellFound.id,
+              },
+            });
+            console.log(`Período vinculado ao poço: ${wellFound?.name}`);
+          }
+
+          if (!wellFound) {
+            console.log('POço escrito errado', wellFound);
+          }
+        } catch (error) {
+          console.error(`Erro ao vincular o período ao poço: ${error}`);
+        }
+
+        period.wellId = wellFound?.id;
+      }
+    }
+
+    return efficiencies;
   }
 
   async remove(efficiencyId: string) {

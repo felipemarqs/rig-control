@@ -14,6 +14,10 @@ import {Button} from "../../../components/Button";
 import TextArea from "antd/es/input/TextArea";
 import {useForm} from "./FormContext/useForm";
 import {Input} from "../../../components/Input";
+/* import {NewBraskemFormContainer} from "./NewBraskemForm";
+import {TresRFormContainer} from "./TresRForm";
+import {OrigemContainer} from "./OrigemForm";
+import {CarmoEnergyContainer} from "./CarmoEnergyForm"; */
 
 export const PeriodsFormContainer = () => {
   const {
@@ -34,11 +38,12 @@ export const PeriodsFormContainer = () => {
     handleSubmit,
     cleanFields,
     isLoading,
-    handleWellChange,
     selectedRig,
     handleChangeRig,
     usersRigs,
     getErrorMessageByFildName,
+    /*  selectedContract, */
+    handlePeriodWell,
   } = useForm();
 
   const format = "HH:mm";
@@ -51,14 +56,14 @@ export const PeriodsFormContainer = () => {
           onChange={(value) => handleDateChange(value)}
         />
 
-        <Input
+        {/* <Input
           onChange={(value) => handleWellChange(value.target.value)}
           name="well"
           error={getErrorMessageByFildName("well")}
           placeholder="Poço"
           labelStyles="text-black"
           className="border-1 text-black border-black bg-white hover:bg-white"
-        />
+        /> */}
 
         <div className="w-[123px]">
           <Select
@@ -73,6 +78,27 @@ export const PeriodsFormContainer = () => {
           />
         </div>
       </div>
+
+      {/* Condicionalmente renderiza diferentes formulários com base no contrato selecionado */}
+      {/* {selectedContract?.rig.contract.name.toLocaleLowerCase() ===
+        "petrobrás" && <></>}
+
+      {selectedContract?.rig.contract.name.toLocaleLowerCase() === "braskem" ||
+        (selectedContract?.rig.contract.name.toLowerCase() === "braském" && (
+          <NewBraskemFormContainer />
+        ))}
+
+      {selectedContract?.rig.contract.name.toLocaleLowerCase() === "3r" && (
+        <TresRFormContainer />
+      )}
+
+      {selectedContract?.rig.contract.name.toLocaleLowerCase() === "origem" && (
+        <OrigemContainer />
+      )}
+
+      {selectedContract?.rig.contract.name.toLocaleLowerCase() ===
+        "carmo energy" && <CarmoEnergyContainer />} */}
+      {/*  <NewBraskemFormContainer /> */}
       {periods.map(
         ({
           id,
@@ -84,94 +110,111 @@ export const PeriodsFormContainer = () => {
           equipmentRatio,
           description,
           repairClassification,
+          well,
         }) => (
           <React.Fragment key={id}>
             <div className="flex justify-center flex-col items-center  py-4  my-4 rounded-xl bg-gray-400 ">
-              <div className="flex justify-between p-4  w-[90%] ">
-                <div className="flex justify-between flex-col items-center gap-1">
-                  <span className="text-black text-xs  font-semibold tracking-[-0.5px]">
-                    Horário Inicial:
-                  </span>
-                  <TimePicker
-                    className="bg-gray-200 border rounded-md px-2 py-1 text-gray-800"
-                    style={{
-                      color: "black",
-                    }}
-                    popupClassName="custom-timepicker-popup"
-                    defaultValue={dayjs(startHour, format)}
-                    onChange={(time, timeString) =>
-                      handleStartHourChange(time, timeString, id)
-                    }
-                    format={format}
-                    disabledTime={() => {
-                      let minHour = 0;
-                      let minMinute = 0;
-                      if (periods.length > 1) {
-                        const [hourString, minString] =
-                          periods[periods.length - 2].endHour.split(":");
-
-                        minHour = Number(hourString); // Defina o valor mínimo da hora aqui
-                        minMinute = Number(minString);
+              <div className="flex justify-between items-end p-4 w-[90%]">
+                <div className="flex justify-between gap-4  w-[45%]">
+                  <div className="flex justify-between flex-col items-center  flex-1 gap-1">
+                    <span className="text-black text-xs  font-semibold tracking-[-0.5px] ">
+                      Horário Inicial:
+                    </span>
+                    <TimePicker
+                      className="bg-gray-200 border rounded-md px-2 py-1 text-gray-800 w-full h-[52px]"
+                      style={{
+                        color: "black",
+                      }}
+                      popupClassName="custom-timepicker-popup"
+                      defaultValue={dayjs(startHour, format)}
+                      onChange={(time, timeString) =>
+                        handleStartHourChange(time, timeString, id)
                       }
-                      // Defina o valor mínimo dos minutos aqui
+                      format={format}
+                      disabledTime={() => {
+                        let minHour = 0;
+                        let minMinute = 0;
+                        if (periods.length > 1) {
+                          const [hourString, minString] =
+                            periods[periods.length - 2].endHour.split(":");
 
-                      return {
-                        disabledHours: () => {
-                          const disabledHours = Array.from(
-                            {length: 24},
-                            (_, hour) => (hour < minHour ? hour : -1)
-                          );
-                          return disabledHours;
-                        },
-                        disabledMinutes: (selectedHour) => {
-                          if (selectedHour === minHour) {
-                            // Desativar minutos antes do horário mínimo
-                            return Array.from({length: 60}, (_, minute) =>
-                              minute < minMinute ? minute : -1
+                          minHour = Number(hourString); // Defina o valor mínimo da hora aqui
+                          minMinute = Number(minString);
+                        }
+                        // Defina o valor mínimo dos minutos aqui
+
+                        return {
+                          disabledHours: () => {
+                            const disabledHours = Array.from(
+                              {length: 24},
+                              (_, hour) => (hour < minHour ? hour : -1)
                             );
-                          }
-                          return [];
-                        },
-                      };
-                    }}
-                  />
+                            return disabledHours;
+                          },
+                          disabledMinutes: (selectedHour) => {
+                            if (selectedHour === minHour) {
+                              // Desativar minutos antes do horário mínimo
+                              return Array.from({length: 60}, (_, minute) =>
+                                minute < minMinute ? minute : -1
+                              );
+                            }
+                            return [];
+                          },
+                        };
+                      }}
+                    />
+                  </div>
+
+                  <div className="flex justify-between flex-col  items-center gap-1  flex-1 ">
+                    <span className="text-black font-semibold text-xs tracking-[-0.5px]">
+                      Horário Final:
+                    </span>
+                    <TimePicker
+                      className="bg-gray-200 border rounded-md px-2 py-1 text-gray-800 w-full h-[52px]"
+                      defaultValue={dayjs(endHour, format)}
+                      onChange={(time, timeString) =>
+                        handleEndHourChange(time, timeString, id)
+                      }
+                      format={format}
+                      disabledTime={() => {
+                        const [hourString, minuteString] = startHour.split(":");
+
+                        const minHour = Number(hourString); // Defina o valor mínimo da hora aqui
+                        const minMinute = Number(minuteString); // Defina o valor mínimo dos minutos aqui
+                        return {
+                          disabledHours: () => {
+                            const disabledHours = Array.from(
+                              {length: 24},
+                              (_, hour) => (hour < minHour ? hour : -1)
+                            );
+                            return disabledHours;
+                          },
+                          disabledMinutes: (selectedHour) => {
+                            if (selectedHour === minHour) {
+                              // Desativar minutos antes do horário mínimo
+                              return Array.from({length: 60}, (_, minute) =>
+                                minute < minMinute ? minute : -1
+                              );
+                            }
+                            return [];
+                          },
+                        };
+                      }}
+                    />
+                  </div>
                 </div>
 
-                {}
-                <div className="flex justify-between flex-col  items-center gap-1  ">
-                  <span className="text-black font-semibold text-xs tracking-[-0.5px]">
-                    Horário Final:
-                  </span>
-                  <TimePicker
-                    defaultValue={dayjs(endHour, format)}
-                    onChange={(time, timeString) =>
-                      handleEndHourChange(time, timeString, id)
+                <div className="w-[45%] ">
+                  <Input
+                    onChange={(value) =>
+                      handlePeriodWell(id, value.target.value)
                     }
-                    format={format}
-                    disabledTime={() => {
-                      const [hourString, minuteString] = startHour.split(":");
-
-                      const minHour = Number(hourString); // Defina o valor mínimo da hora aqui
-                      const minMinute = Number(minuteString); // Defina o valor mínimo dos minutos aqui
-                      return {
-                        disabledHours: () => {
-                          const disabledHours = Array.from(
-                            {length: 24},
-                            (_, hour) => (hour < minHour ? hour : -1)
-                          );
-                          return disabledHours;
-                        },
-                        disabledMinutes: (selectedHour) => {
-                          if (selectedHour === minHour) {
-                            // Desativar minutos antes do horário mínimo
-                            return Array.from({length: 60}, (_, minute) =>
-                              minute < minMinute ? minute : -1
-                            );
-                          }
-                          return [];
-                        },
-                      };
-                    }}
+                    value={well}
+                    name="well"
+                    error={getErrorMessageByFildName("well")}
+                    placeholder={type === "DTM" ? "Poço de Destino" : "Poço"}
+                    labelStyles="text-black"
+                    className="border-1 text-black border-black bg-white hover:bg-white w-[100%]"
                   />
                 </div>
               </div>
@@ -223,7 +266,7 @@ export const PeriodsFormContainer = () => {
               )}
 
               <div className="flex justify-between p-4  w-[90%]">
-                <div className="w-full lg:w-[33%]">
+                <div className="w-full lg:w-[45%]">
                   <Select
                     placeholder="Movimentação de Fluido"
                     value={fluidRatio}
@@ -232,9 +275,9 @@ export const PeriodsFormContainer = () => {
                   />
                 </div>
 
-                <div className="w-full lg:w-[33%]">
+                <div className="w-full lg:w-[45%]">
                   <Select
-                    placeholder="Movimentação de Equip."
+                    placeholder="Movimentação de Equipamento"
                     value={equipmentRatio}
                     onChange={(value) => handleEquipmentRatio(id, value)}
                     options={getPeriodClassification("DTM")}
@@ -246,7 +289,7 @@ export const PeriodsFormContainer = () => {
                   <TextArea
                     maxLength={5000}
                     style={{
-                      height: 50,
+                      height: 100,
                       resize: "vertical",
                       border: "none",
                     }}

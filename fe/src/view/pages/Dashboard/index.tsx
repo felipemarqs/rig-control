@@ -1,3 +1,4 @@
+// Importações de componentes e contextos necessários
 import {BaggageClaim, FilterIcon, Truck} from "lucide-react";
 import {Button} from "../../components/Button";
 import {DatePickerInput} from "../../components/DatePickerInput";
@@ -277,31 +278,14 @@ export const Dashboard = () => {
               )}
             </div>
             <Modal
-              title="Explore as Novas Funcionalidades!"
+              title="Explore a Nova Funcionalidade!"
               open={!isAlertSeen}
               onClose={handleIsAlertSeen}
             >
               <div className="text-gray-600">
                 <ul className="list-disc list-inside">
                   <li className="block my-4">
-                    1. Agora você pode filtrar por período de medição, tornando
-                    a análise mais precisa.
-                  </li>
-                  <li className="block my-4">
-                    2. Os administradores têm a capacidade de editar os
-                    registros para melhor controle.
-                  </li>
-                  <li className="block my-4">
-                    3. Nova opção de TNF disponível nos formulários, ampliando
-                    as possibilidades de registro.
-                  </li>
-                  <li className="block my-4">
-                    4. O campo de descrição foi expandido para aceitar mais
-                    caracteres, permitindo detalhamentos mais completos.
-                  </li>
-                  <li className="block my-4">
-                    5. Corrigido o problema do Formulário não aparecer para os
-                    usuários.
+                    Nova página de visualização de faturamento!
                   </li>
                 </ul>
               </div>
