@@ -10,12 +10,11 @@ import {AxiosError} from "axios";
 import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
 import {Dayjs} from "dayjs";
 import {parse, differenceInMinutes} from "date-fns";
-
-type ErrorArgs = {fieldName: string; message: string};
+import {ErrorArgs, useErrors} from "../../../../../app/hooks/useErrors";
+import {useSidebarContext} from "../../../../../app/contexts/SidebarContext";
 
 interface FormContextValue {
   date: Date | undefined;
-  well: string;
   remainingMinutes: number | undefined;
   periods: Periods;
   isLoading: boolean;
@@ -39,6 +38,7 @@ interface FormContextValue {
   handleEndHourChange(time: Dayjs | null, timeString: string, id: string): void;
   addPeriod(): void;
   handlePeriodType(id: string, type: string): void;
+  handlePeriodWell(id: string, well: string): void;
   handlePeriodClassification(id: string, classification: string): void;
   handleRepairClassification(id: string, repairClassification: string): void;
   handleFluidRatio(id: string, ratio: string | never): void;
@@ -68,7 +68,7 @@ interface FormContextValue {
   handlePowerSwivelCheckbox(): void;
   handleMobilizationPlace(value: string): void;
   handleSuckingTruckCheckbox(): void;
-  handleWellChange(value: string): void;
+
   isSuckingTruckSelected: boolean;
   usersRigs: {id: string; name: string}[];
   mobilizationPlace: string;
@@ -123,33 +123,23 @@ type Periods = {
   fluidRatio: string;
   equipmentRatio: string;
   description: string;
+  well: string;
 }[];
 
 export const FormContext = createContext({} as FormContextValue);
 
 export const FormProvider = ({children}: {children: React.ReactNode}) => {
-  const {user} = useAuth();
-  const isUserAdm = user?.accessLevel === "ADM";
+  //Custom Hooks
   const navigate = useNavigate();
+  const {user, isUserAdm} = useAuth();
+  const {setError, removeError, getErrorMessageByFildName} = useErrors();
+  const {handleToggleNavItem} = useSidebarContext();
   const [date, setDate] = useState<Date>();
-  const [well, setWell] = useState<string>("");
   const [selectedRig, setSelectedRig] = useState<string>(() => {
     return isUserAdm ? "" : user?.rigs[0].rig.id!;
   });
   const [remainingMinutes, setRemainingMinutes] = useState<number>();
-  const [periods, setPeriods] = useState<
-    {
-      id: string;
-      startHour: string;
-      endHour: string;
-      type: string;
-      classification: string;
-      fluidRatio: string;
-      repairClassification: null | string;
-      equipmentRatio: string;
-      description: string;
-    }[]
-  >([
+  const [periods, setPeriods] = useState<Periods>([
     {
       id: uuidv4(),
       startHour: "00:00",
@@ -160,47 +150,21 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
       repairClassification: null,
       equipmentRatio: "",
       description: "",
+      well: "",
     },
   ]);
 
+  // Utilização de useMutation para obter isLoading e mutateAsync
   const {isLoading, mutateAsync} = useMutation(efficienciesService.create);
   const queryClient = useQueryClient();
 
-  const [errors, setErrors] = useState<Array<ErrorArgs>>([]);
-
-  const setError = ({fieldName, message}: ErrorArgs) => {
-    const errorAlreadyExists = errors.find(
-      (error) => error.fieldName === fieldName
-    );
-
-    if (errorAlreadyExists) return;
-
-    setErrors((prevState) => [...prevState, {fieldName, message}]);
-  };
-
-  const removeError = (fieldName: string) => {
-    setErrors((prevState) =>
-      prevState.filter((error) => error.fieldName !== fieldName)
-    );
-  };
-
-  const getErrorMessageByFildName = (fieldName: string) => {
-    let findErrorMessage = errors.find(
-      (error) => error.fieldName === fieldName
-    )?.message;
-
-    if (!findErrorMessage) {
-      findErrorMessage = "";
-    }
-
-    return findErrorMessage;
-  };
-
+  console.log(periods);
   const handleSubmit = async (periods: Periods) => {
+    // Criação do objeto de persistência utilizando o mapeamento dos dados
+
     const {toPersistenceObj} = efficiencyMappers.toPersistance({
       rigId: selectedRig,
       date: date ?? new Date(),
-      well,
       availableHours: 24,
       periods: periods,
       isMixTankSelected,
@@ -240,11 +204,13 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
           repairClassification: null,
           equipmentRatio: "",
           description: "",
+          well: "",
         },
       ]);
       queryClient.invalidateQueries({queryKey: ["efficiencies", "average"]});
 
       navigate("/dashboard", {replace: true});
+      handleToggleNavItem("dashboard");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
     }
@@ -252,11 +218,10 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   /*  <[{id:string, startHour:string,endHour:string,type: 'WORKING' | 'REPAIR' | '', classification: string}]> */
   const handleStartHourChange = (
-    time: Dayjs | null,
+    _time: Dayjs | null,
     timeString: string,
     id: string
   ) => {
-    console.log(time);
     const newPeriods = periods.map((period) => {
       return period.id === id ? {...period, startHour: timeString} : period;
     });
@@ -265,11 +230,10 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const handleEndHourChange = (
-    time: Dayjs | null,
+    _time: Dayjs | null,
     timeString: string,
     id: string
   ) => {
-    console.log(time);
     const newPeriods = periods.map((period) => {
       return period.id === id ? {...period, endHour: timeString} : period;
     });
@@ -277,16 +241,41 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     setPeriods(newPeriods);
   };
 
-  const handlePeriodType = (id: string, type: string) => {
+  const handlePeriodWell = (id: string, well: string) => {
     const newPeriods = periods.map((period) => {
       return period.id === id
         ? {
             ...period,
-            type: type,
-            classification: "",
-            repairClassification: null,
+            well: well,
           }
         : period;
+    });
+
+    setPeriods(newPeriods);
+  };
+
+  const handlePeriodType = (id: string, type: string) => {
+    const newPeriods = periods.map((period) => {
+      if (type === "DTM" && period.id === id) {
+        return {
+          ...period,
+          type: type,
+          classification: "",
+          repairClassification: null,
+          well: "",
+        };
+      }
+
+      if (period.id === id) {
+        return {
+          ...period,
+          type: type,
+          classification: "",
+          repairClassification: null,
+        };
+      }
+
+      return period;
     });
 
     setPeriods(newPeriods);
@@ -348,6 +337,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         repairClassification: null,
         equipmentRatio: "",
         description: "",
+        well: periods[periods.length - 1].well,
       },
     ]);
   };
@@ -496,8 +486,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   }, []);
 
   const handleBobRentHours = useCallback(
-    (time: Dayjs | null, timeString: string) => {
-      console.log(time);
+    (_time: Dayjs | null, timeString: string) => {
       setBobRentHours(timeString);
     },
     []
@@ -508,9 +497,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   }, []);
 
   const handleChristmasTreeDisassemblyHours = useCallback(
-    (time: Dayjs | null, timeString: string) => {
-      console.log(time);
-
+    (_time: Dayjs | null, timeString: string) => {
       setChristmasTreeDisassemblyHours(timeString);
     },
     []
@@ -556,15 +543,6 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     setIsSuckingTruckSelected((prevState) => !prevState);
   }, []);
 
-  const handleWellChange = useCallback((value: string) => {
-    setWell(value);
-    if (!value) {
-      setError({fieldName: "well", message: "Obrigatório!"});
-    } else {
-      removeError("well");
-    }
-  }, []);
-
   return (
     <FormContext.Provider
       value={{
@@ -589,6 +567,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         userRig,
         usersRigs,
         isPending,
+        handlePeriodWell,
         handleMixTankCheckBox,
         isMixTankSelected,
         handleMixTankOperatorsCheckBox,
@@ -628,8 +607,6 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         handleMobilizationPlace,
         isSuckingTruckSelected,
         handleSuckingTruckCheckbox,
-        well,
-        handleWellChange,
         selectedRig,
         setError,
         removeError,

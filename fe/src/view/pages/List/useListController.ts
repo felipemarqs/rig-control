@@ -5,6 +5,7 @@ import {endOfMonth, format, startOfMonth} from "date-fns";
 import {useEfficiencies} from "../../../app/hooks/efficiencies/useEfficiencies";
 import {FilterType} from "../../../app/entities/FilterType";
 import {getPeriodRange} from "../../../app/utils/getPeriodRange";
+import {years} from "../../../app/utils/years";
 
 export const useListController = () => {
   const {user, signout} = useAuth();
@@ -24,6 +25,8 @@ export const useListController = () => {
   const [selectedRig, setSelectedRig] = useState<string>(() => {
     return isUserAdm ? "" : user?.rigs[0].rig.id!;
   });
+
+  const [selectedYear, setSeletectedYear] = useState("2023");
 
   // Obtenha a data atual
   const currentDate = new Date();
@@ -69,6 +72,10 @@ export const useListController = () => {
     refetchEffciencies();
   };
 
+  const handleYearChange = (year: string) => {
+    setSeletectedYear(year);
+  };
+
   const handleChangeRig = (rigId: string) => {
     setSelectedRig(rigId);
     setFilters((prevState) => ({...prevState, rigId: rigId}));
@@ -93,7 +100,7 @@ export const useListController = () => {
   const handleChangePeriod = (period: string) => {
     setSelectedPeriod(period);
 
-    const periodFound = getPeriodRange(selectedRig);
+    const periodFound = getPeriodRange(selectedRig, selectedYear);
 
     if (periodFound) {
       const monthPeriodSelected = periodFound.months.find((month) => {
@@ -136,5 +143,8 @@ export const useListController = () => {
     selectedPeriod,
     handleChangePeriod,
     handleToggleFilterType,
+    handleYearChange,
+    selectedYear,
+    years,
   };
 };

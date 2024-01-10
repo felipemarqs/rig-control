@@ -9,9 +9,9 @@ import { EfficienciesModule } from './modules/efficiencies/efficiencies.module';
 import { BillingsModule } from './modules/billings/billings.module';
 import { BillingsConfigurationModule } from './modules/billings-configuration/billings-configuration.module';
 import { ContractsModule } from './modules/contracts/contracts.module';
-
 import { UsersRigModule } from './modules/users-rig/users-rig.module';
 import { DeletionRequestsModule } from './modules/deletion-requests/deletion-requests.module';
+import { WellsModule } from './modules/wells/wells.module';
 
 @Module({
   imports: [
@@ -25,6 +25,7 @@ import { DeletionRequestsModule } from './modules/deletion-requests/deletion-req
     ContractsModule,
     UsersRigModule,
     DeletionRequestsModule,
+    WellsModule,
   ],
   controllers: [],
   providers: [

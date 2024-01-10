@@ -22,7 +22,6 @@ interface DetailsContextValues {
   isLoadingRemoveEfficiency: boolean;
   handleDeleteEfficiency: () => Promise<void>;
   isUserAdm: boolean;
-
   closeDeletionRequestModal: () => void;
   openDeletionRequestModal: () => void;
   isDeletionRequestModalOpen: boolean;

@@ -1,11 +1,11 @@
-import { PlusIcon } from "@radix-ui/react-icons";
-import { Header } from "../../components/Header";
-import { Spinner } from "../../components/Spinner";
-import { useListUsers } from "./useListUsers";
-import { Link } from "react-router-dom";
+import {PlusIcon} from "@radix-ui/react-icons";
+import {Header} from "../../components/Header";
+import {Spinner} from "../../components/Spinner";
+import {useListUsers} from "./useListUsers";
+import {Link} from "react-router-dom";
 
 export const ListUsers = () => {
-  const { users, isFetchingUsers, navigate } = useListUsers();
+  const {users, isFetchingUsers, navigate} = useListUsers();
 
   return (
     <div className="w-full h-full overflow-y-scroll">
@@ -82,7 +82,7 @@ export const ListUsers = () => {
                   </div>
 
                   <div className="col-span-12 row-span-1  flex flex-wrap justify-end">
-                    {user.accessLevel !== "ADM" && (
+                    {user.accessLevel !== "VIEWER" && (
                       <Link
                         className="text-primary-500 tracking-[-0.5] underline font-semibold px-2"
                         to={`/users/update-rigs/${user.id}`}
