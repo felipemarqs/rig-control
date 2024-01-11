@@ -46,6 +46,13 @@ interface FormContextValue {
   handleDescription(id: string, text: string): void;
   handleSubmit(periods: Periods): Promise<void>;
   cleanFields(id: string): void;
+  updatePeriodState(
+    id: string,
+    state: boolean
+  ): {
+    periodId: string;
+    isCollapsed: boolean;
+  }[];
   isFormValid: boolean;
   isPending: boolean;
   selectedRig: string;
@@ -92,6 +99,7 @@ interface FormContextValue {
   removeError(fieldName: string): void;
   getErrorMessageByFildName(fieldName: string): string;
   isExtraTrailerSelected: boolean;
+  getPeriodState(periodId: string): boolean;
   handleBobRentHours(time: Dayjs | null, timeString: string): void;
   handleChristmasTreeDisassemblyHours(
     time: Dayjs | null,
@@ -153,6 +161,25 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
       well: "",
     },
   ]);
+
+  const [periodsState, setPeriodsState] = useState([
+    {
+      periodId: periods[0].id,
+      isCollapsed: false,
+    },
+  ]);
+
+  const getPeriodState = (periodId: string) => {
+    const periodState = periodsState.find(
+      (period) => period.periodId === periodId
+    );
+
+    /*   if (periodState) {
+      return periodState.isCollapsed;
+    } */
+
+    return periodState?.isCollapsed ?? false;
+  };
 
   // Utilização de useMutation para obter isLoading e mutateAsync
   const {isLoading, mutateAsync} = useMutation(efficienciesService.create);
@@ -324,11 +351,29 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     setPeriods(newPeriods);
   };
 
+  console.log("periods", periods);
+  console.log("states", periodsState);
+
+  const updatePeriodState = (id: string, state: boolean) => {
+    const newStates = periodsState.map(({periodId, isCollapsed}) => {
+      return periodId === id
+        ? {periodId, isCollapsed: state}
+        : {periodId, isCollapsed};
+    });
+
+    //console.log("newStates", newStates);
+
+    setPeriodsState(newStates);
+
+    return newStates;
+  };
+
   const addPeriod = () => {
+    const newId = uuidv4();
     setPeriods([
       ...periods,
       {
-        id: uuidv4(),
+        id: newId,
         startHour: periods[periods.length - 1].endHour,
         endHour: "00:00",
         type: "",
@@ -340,6 +385,10 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         well: periods[periods.length - 1].well,
       },
     ]);
+
+    const newStates = updatePeriodState(periods[periods.length - 1].id, true);
+
+    setPeriodsState([...newStates, {periodId: newId, isCollapsed: false}]);
   };
 
   const cleanFields = (id: string) => {
@@ -613,6 +662,8 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         getErrorMessageByFildName,
         handleRepairClassification,
         selectedContract,
+        getPeriodState,
+        updatePeriodState,
       }}
     >
       {children}

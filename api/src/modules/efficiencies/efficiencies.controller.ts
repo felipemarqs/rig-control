@@ -61,20 +61,6 @@ export class EfficienciesController {
     return this.efficienciesService.remove(efficiencyId);
   }
 
-  @Get('/test/get-distinct-name')
-  createTest() {
-    console.log('EWIRJWEIURJEWIOJR');
-    return this.efficienciesService.getDistinctWellNames();
-    //return this.efficienciesService.create(createEfficiencyDto, userId);
-  }
-
-  @Get('/test/sync-wells')
-  syncWells() {
-    console.log('EWIRJWEIURJEWIOJR');
-    return this.efficienciesService.syncWelltoPeriods();
-    //return this.efficienciesService.create(createEfficiencyDto, userId);
-  }
-
   @Get('/average/:rigId')
   getAverage(@Param('rigId') rigId: string) {
     return this.efficienciesService.getAverage(rigId);
