@@ -95,8 +95,12 @@ interface FormContextValue {
   isMunckSelected: boolean;
   isTransportationSelected: boolean;
   truckKm: number;
+  isVisible: boolean;
+  isConfigsConfirmed: boolean;
   setError(arg0: ErrorArgs): void;
   removeError(fieldName: string): void;
+  toggleVisibility(): void;
+  handleConfirmButton(): void;
   getErrorMessageByFildName(fieldName: string): string;
   isExtraTrailerSelected: boolean;
   getPeriodState(periodId: string): boolean;
@@ -169,15 +173,23 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     },
   ]);
 
+  const [isVisible, setIsVisible] = useState(true);
+
+  const [isConfigsConfirmed, setConfigsConfirmed] = useState(false);
+
+  const toggleVisibility = () => {
+    setIsVisible(!isVisible);
+  };
+
+  const handleConfirmButton = () => {
+    toggleVisibility();
+    setConfigsConfirmed(true);
+  };
+
   const getPeriodState = (periodId: string) => {
     const periodState = periodsState.find(
       (period) => period.periodId === periodId
     );
-
-    /*   if (periodState) {
-      return periodState.isCollapsed;
-    } */
-
     return periodState?.isCollapsed ?? false;
   };
 
@@ -185,7 +197,6 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   const {isLoading, mutateAsync} = useMutation(efficienciesService.create);
   const queryClient = useQueryClient();
 
-  console.log(periods);
   const handleSubmit = async (periods: Periods) => {
     // Criação do objeto de persistência utilizando o mapeamento dos dados
 
@@ -351,17 +362,12 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     setPeriods(newPeriods);
   };
 
-  console.log("periods", periods);
-  console.log("states", periodsState);
-
   const updatePeriodState = (id: string, state: boolean) => {
     const newStates = periodsState.map(({periodId, isCollapsed}) => {
       return periodId === id
         ? {periodId, isCollapsed: state}
         : {periodId, isCollapsed};
     });
-
-    //console.log("newStates", newStates);
 
     setPeriodsState(newStates);
 
@@ -401,6 +407,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
             fluidRatio: "",
             equipmentRatio: "",
             description: "",
+            well: "",
           }
         : period;
     });
@@ -637,6 +644,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         isTankMixDTMSelected,
         bobRentHours,
         handleBobRentHours,
+        toggleVisibility,
         handleChristmasTreeDisassemblyHours,
         isTruckCartSelected,
         handleTruckCartCheckbox,
@@ -658,12 +666,15 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         handleSuckingTruckCheckbox,
         selectedRig,
         setError,
+        handleConfirmButton,
+        isConfigsConfirmed,
         removeError,
         getErrorMessageByFildName,
         handleRepairClassification,
         selectedContract,
         getPeriodState,
         updatePeriodState,
+        isVisible,
       }}
     >
       {children}

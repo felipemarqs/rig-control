@@ -1,20 +1,20 @@
-import { createContext, useCallback, useEffect, useState } from "react";
-import { useAuth } from "../../../../../app/hooks/useAuth";
-import { useNavigate, useParams } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
-import { efficiencyMappers } from "../../../../../app/services/mappers/efficiencyMappers";
-import { customColorToast } from "../../../../../app/utils/customColorToast";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { efficienciesService } from "../../../../../app/services/efficienciesService";
-import { AxiosError } from "axios";
-import { treatAxiosError } from "../../../../../app/utils/treatAxiosError";
-import { Dayjs } from "dayjs";
-import { parse, differenceInMinutes } from "date-fns";
-import { useEfficiencyById } from "../../../../../app/hooks/efficiencies/useEfficiencyById";
-import { PersistanceEfficiency } from "../../../../../app/entities/PersistanceEfficiency";
-import { formatIsoStringToHours } from "../../../../../app/utils/formatIsoStringToHours";
+import {createContext, useCallback, useEffect, useState} from "react";
+import {useAuth} from "../../../../../app/hooks/useAuth";
+import {useNavigate, useParams} from "react-router-dom";
+import {v4 as uuidv4} from "uuid";
+import {efficiencyMappers} from "../../../../../app/services/mappers/efficiencyMappers";
+import {customColorToast} from "../../../../../app/utils/customColorToast";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {efficienciesService} from "../../../../../app/services/efficienciesService";
+import {AxiosError} from "axios";
+import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
+import {Dayjs} from "dayjs";
+import {parse, differenceInMinutes} from "date-fns";
+import {useEfficiencyById} from "../../../../../app/hooks/efficiencies/useEfficiencyById";
+import {PersistanceEfficiency} from "../../../../../app/entities/PersistanceEfficiency";
+import {formatIsoStringToHours} from "../../../../../app/utils/formatIsoStringToHours";
 
-type ErrorArgs = { fieldName: string; message: string };
+type ErrorArgs = {fieldName: string; message: string};
 
 interface UpdateFormContextValue {
   date: Date | undefined;
@@ -71,8 +71,12 @@ interface UpdateFormContextValue {
   handleMobilizationPlace(value: string): void;
   handleSuckingTruckCheckbox(): void;
   handlePeriodWell(id: string, well: string): void;
+  toggleVisibility(): void;
+  handleConfirmButton(): void;
+  getPeriodState(periodId: string): boolean;
+  isConfigsConfirmed: boolean;
   isSuckingTruckSelected: boolean;
-  usersRigs: { id: string; name: string }[];
+  usersRigs: {id: string; name: string}[];
   mobilizationPlace: string;
   isPowerSwivelSelected: boolean;
   isMixTankSelected: boolean;
@@ -91,10 +95,18 @@ interface UpdateFormContextValue {
   isFetchingEfficiency: boolean;
   isTransportationSelected: boolean;
   truckKm: number;
+  isVisible: boolean;
   setError(arg0: ErrorArgs): void;
   removeError(fieldName: string): void;
   getErrorMessageByFildName(fieldName: string): string;
   isExtraTrailerSelected: boolean;
+  updatePeriodState(
+    id: string,
+    state: boolean
+  ): {
+    periodId: string;
+    isCollapsed: boolean;
+  }[];
   handleBobRentHours(time: Dayjs | null, timeString: string): void;
   handleChristmasTreeDisassemblyHours(
     time: Dayjs | null,
@@ -131,14 +143,10 @@ type Periods = {
 
 export const UpdateFormContext = createContext({} as UpdateFormContextValue);
 
-export const UpdateFormProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  const { user } = useAuth();
+export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
+  const {user} = useAuth();
 
-  const { efficiencyId } = useParams<{ efficiencyId: string }>();
+  const {efficiencyId} = useParams<{efficiencyId: string}>();
 
   if (typeof efficiencyId === "undefined") {
     // Trate o erro de acordo com a necessidade do seu aplicativo
@@ -146,7 +154,7 @@ export const UpdateFormProvider = ({
     throw new Error("efficiencyId is undefined");
   }
 
-  const { efficiency, isFetchingEfficiency } = useEfficiencyById(efficiencyId!);
+  const {efficiency, isFetchingEfficiency} = useEfficiencyById(efficiencyId!);
 
   const responseEfficiency = efficiency as PersistanceEfficiency;
 
@@ -219,21 +227,25 @@ export const UpdateFormProvider = ({
 
   // const tes = efficiency.periods.map()
 
-  const { isLoading: isLoadingEfficiency, mutateAsync } = useMutation(
+  const {isLoading: isLoadingEfficiency, mutateAsync} = useMutation(
     efficienciesService.create
   );
   const queryClient = useQueryClient();
 
+  const [periodsState, setPeriodsState] = useState(() => {
+    return initialPeriods.map(({id}) => ({periodId: id, isCollapsed: true}));
+  });
+
   const [errors, setErrors] = useState<Array<ErrorArgs>>([]);
 
-  const setError = ({ fieldName, message }: ErrorArgs) => {
+  const setError = ({fieldName, message}: ErrorArgs) => {
     const errorAlreadyExists = errors.find(
       (error) => error.fieldName === fieldName
     );
 
     if (errorAlreadyExists) return;
 
-    setErrors((prevState) => [...prevState, { fieldName, message }]);
+    setErrors((prevState) => [...prevState, {fieldName, message}]);
   };
 
   const removeError = (fieldName: string) => {
@@ -254,6 +266,19 @@ export const UpdateFormProvider = ({
     return findErrorMessage;
   };
 
+  const [isVisible, setIsVisible] = useState(true);
+
+  const [isConfigsConfirmed, setConfigsConfirmed] = useState(false);
+
+  const toggleVisibility = () => {
+    setIsVisible(!isVisible);
+  };
+
+  const handleConfirmButton = () => {
+    toggleVisibility();
+    setConfigsConfirmed(true);
+  };
+
   const {
     isLoading: isLoadingRemoveEfficiency,
     mutateAsync: mutateAsyncRemoveEfficiency,
@@ -262,12 +287,12 @@ export const UpdateFormProvider = ({
   const handleSubmit = async (periods: Periods) => {
     try {
       await mutateAsyncRemoveEfficiency(efficiencyId!);
-      queryClient.invalidateQueries({ queryKey: ["efficiencies"] });
+      queryClient.invalidateQueries({queryKey: ["efficiencies"]});
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
     }
 
-    const { toPersistenceObj } = efficiencyMappers.toPersistance({
+    const {toPersistenceObj} = efficiencyMappers.toPersistance({
       rigId: selectedRig,
       date: date ?? new Date(),
       availableHours: 24,
@@ -312,9 +337,9 @@ export const UpdateFormProvider = ({
           well: "",
         },
       ]);
-      queryClient.invalidateQueries({ queryKey: ["efficiencies", "average"] });
+      queryClient.invalidateQueries({queryKey: ["efficiencies", "average"]});
 
-      navigate("/dashboard", { replace: true });
+      navigate("/dashboard", {replace: true});
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
     }
@@ -327,7 +352,7 @@ export const UpdateFormProvider = ({
     id: string
   ) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? { ...period, startHour: timeString } : period;
+      return period.id === id ? {...period, startHour: timeString} : period;
     });
 
     setPeriods(newPeriods);
@@ -339,7 +364,7 @@ export const UpdateFormProvider = ({
     id: string
   ) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? { ...period, endHour: timeString } : period;
+      return period.id === id ? {...period, endHour: timeString} : period;
     });
 
     setPeriods(newPeriods);
@@ -380,7 +405,7 @@ export const UpdateFormProvider = ({
   ) => {
     const newPeriods = periods.map((period) => {
       return period.id === id
-        ? { ...period, repairClassification: repairClassification }
+        ? {...period, repairClassification: repairClassification}
         : period;
     });
 
@@ -402,7 +427,7 @@ export const UpdateFormProvider = ({
 
   const handleFluidRatio = (id: string, ratio: string | never) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? { ...period, fluidRatio: ratio } : period;
+      return period.id === id ? {...period, fluidRatio: ratio} : period;
     });
 
     setPeriods(newPeriods);
@@ -410,17 +435,37 @@ export const UpdateFormProvider = ({
 
   const handleEquipmentRatio = (id: string, ratio: string | never) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? { ...period, equipmentRatio: ratio } : period;
+      return period.id === id ? {...period, equipmentRatio: ratio} : period;
     });
 
     setPeriods(newPeriods);
   };
 
+  const getPeriodState = (periodId: string) => {
+    const periodState = periodsState.find(
+      (period) => period.periodId === periodId
+    );
+    return periodState?.isCollapsed ?? false;
+  };
+
+  const updatePeriodState = (id: string, state: boolean) => {
+    const newStates = periodsState.map(({periodId, isCollapsed}) => {
+      return periodId === id
+        ? {periodId, isCollapsed: state}
+        : {periodId, isCollapsed};
+    });
+
+    setPeriodsState(newStates);
+
+    return newStates;
+  };
+
   const addPeriod = () => {
+    const newId = uuidv4();
     setPeriods([
       ...periods,
       {
-        id: uuidv4(),
+        id: newId,
         startHour: periods[periods.length - 1].endHour,
         endHour: "00:00",
         type: "",
@@ -432,6 +477,10 @@ export const UpdateFormProvider = ({
         well: periods[periods.length - 1].well,
       },
     ]);
+
+    const newStates = updatePeriodState(periods[periods.length - 1].id, true);
+
+    setPeriodsState([...newStates, {periodId: newId, isCollapsed: false}]);
   };
 
   const cleanFields = (id: string) => {
@@ -454,7 +503,7 @@ export const UpdateFormProvider = ({
   const handleDateChange = (date: Date) => {
     setDate(date);
     if (new Date(date) >= new Date()) {
-      setError({ fieldName: "date", message: "Data Inválida!" });
+      setError({fieldName: "date", message: "Data Inválida!"});
     } else {
       removeError("date");
     }
@@ -468,7 +517,7 @@ export const UpdateFormProvider = ({
 
   const handleDescription = (id: string, text: string) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? { ...period, description: text } : period;
+      return period.id === id ? {...period, description: text} : period;
     });
 
     setPeriods(newPeriods);
@@ -502,14 +551,14 @@ export const UpdateFormProvider = ({
   const userRig = user?.rigs[0].rig!;
 
   const usersRigs =
-    user?.rigs.map(({ rig: { id, name } }) => {
+    user?.rigs.map(({rig: {id, name}}) => {
       return {
         id,
         name,
       };
     }) || [];
 
-  const selectedContract = user?.rigs.find(({ rig: { id } }) => {
+  const selectedContract = user?.rigs.find(({rig: {id}}) => {
     return id === selectedRig;
   });
 
@@ -687,10 +736,15 @@ export const UpdateFormProvider = ({
         handleTruckTankCheckbox,
         isMunckSelected,
         handleMunckCheckbox,
+        handleConfirmButton,
+        isConfigsConfirmed,
+        updatePeriodState,
         isTransportationSelected,
         handleTransportationCheckbox,
         handleTruckKmChange,
         truckKm,
+        isVisible,
+        toggleVisibility,
         handleExtraTrailerCheckbox,
         isExtraTrailerSelected,
         isPowerSwivelSelected,
@@ -706,6 +760,7 @@ export const UpdateFormProvider = ({
         handleRepairClassification,
         selectedContract,
         isFetchingEfficiency,
+        getPeriodState,
       }}
     >
       {children}

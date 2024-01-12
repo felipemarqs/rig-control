@@ -51,7 +51,6 @@ export class EfficienciesController {
 
   @Get(':efficiencyId')
   findById(@Param('efficiencyId', ParseUUIDPipe) efficiencyId: string) {
-    console.log('efficiencyId', efficiencyId);
     return this.efficienciesService.findById(efficiencyId);
   }
 

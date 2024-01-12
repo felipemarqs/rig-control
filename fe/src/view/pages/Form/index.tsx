@@ -10,30 +10,18 @@ import {CarmoEnergyContainer} from "./components/CarmoEnergyForm";
 import {Button} from "../../components/Button";
 import {Select} from "../../components/Select";
 import {DatePickerInput} from "../../components/DatePickerInput";
-import {NewBraskemFormContainer} from "./components/NewBraskemForm";
+import {BraskemFormContainer} from "./components/BraskemFormContainer";
 import {ChevronDown, ChevronUp} from "lucide-react";
 import {useState} from "react";
 import {useSpring, animated} from "@react-spring/web";
 
 // Componente principal Form
 export const Form = () => {
-  const [isVisible, setIsVisible] = useState(true);
-
-  const [isConfigsConfirmed, setConfigsConfirmed] = useState(false);
-
   /*  const {height, opacity} = useSpring({
     from: {height: isVisible ? 0 : "auto", opacity: isVisible ? 0 : 1},
     to: {height: isVisible ? "auto" : 0, opacity: isVisible ? 1 : 0},
   }); */
 
-  const toggleVisibility = () => {
-    setIsVisible(!isVisible);
-  };
-
-  const handleConfirmButton = () => {
-    toggleVisibility();
-    setConfigsConfirmed(true);
-  };
   return (
     // Fornecer o contexto do formulário
     <FormProvider>
@@ -53,6 +41,10 @@ export const Form = () => {
           handleDateChange,
           date,
           usersRigs,
+          toggleVisibility,
+          isVisible,
+          handleConfirmButton,
+          isConfigsConfirmed,
         }) => (
           // Estrutura principal do formulário
           <div className="w-full h-full overflow-y-scroll lg:min-w-[1000px]">
@@ -81,7 +73,7 @@ export const Form = () => {
             >
               <header
                 className={cn(
-                  `w-full p-6  flex justify-between items-center transition-all ease-in-out duration-500 ${
+                  `w-full p-4  flex justify-between items-center transition-all ease-in-out duration-500 ${
                     isVisible ? "border-b-2 border-primary-500" : ""
                   }`
                 )}
@@ -146,7 +138,7 @@ export const Form = () => {
                   {(selectedContract?.rig.contract.name.toLocaleLowerCase() ===
                     "braskem" ||
                     selectedContract?.rig.contract.name.toLocaleLowerCase() ===
-                      "braském") && <NewBraskemFormContainer />}
+                      "braském") && <BraskemFormContainer />}
                   {selectedContract?.rig.contract.name.toLocaleLowerCase() ===
                     "3r" && <TresRFormContainer />}
                   {selectedContract?.rig.contract.name.toLocaleLowerCase() ===
@@ -156,6 +148,7 @@ export const Form = () => {
                 </div>
                 <div className="flex justify-end w-full py-4 px-8">
                   <Button
+                    disabled={!(selectedRig && date)}
                     className="bg-primary-500  w-1/2 lg:w-1/5 "
                     onClick={() => handleConfirmButton()}
                   >
@@ -164,6 +157,7 @@ export const Form = () => {
                 </div>
               </div>
             </div>
+
             {/* Componentes do formulário organizados em um layout flex */}
             <div className="h-[80vh] mx-10   flex-col justify-center flex   lg:flex-row ">
               {isConfigsConfirmed && <PeriodsFormContainer />}{" "}

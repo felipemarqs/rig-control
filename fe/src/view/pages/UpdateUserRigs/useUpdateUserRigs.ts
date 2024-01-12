@@ -8,6 +8,7 @@ import {useNavigate} from "react-router-dom";
 import {treatAxiosError} from "../../../app/utils/treatAxiosError";
 import {AxiosError} from "axios";
 import {useRigs} from "../../../app/hooks/rigs/useRigs";
+import {useSidebarContext} from "../../../app/contexts/SidebarContext";
 
 interface Rig {
   id: string;
@@ -19,6 +20,7 @@ export const useUpdateUserRigs = (id: string) => {
   const {user} = useAuth();
   const navigate = useNavigate();
   const [filters] = useState({contractId: ""});
+  const {handleToggleNavItem} = useSidebarContext();
 
   const [userRigs, setUserRigs] = useState<Array<Rig>>([]);
   const [availableRigs, setAvailableRigs] = useState<Array<Rig>>([]);
@@ -59,7 +61,7 @@ export const useUpdateUserRigs = (id: string) => {
     setAvailableRigs(availableRigs);
 
     setUserRigs(userRigs);
-  }, []);
+  }, [userBeingEdited, rigs]);
 
   const handleLinkRig = (rigId: string) => {
     const rig = availableRigs.find((rig) => rig.id === rigId)!;
@@ -81,6 +83,7 @@ export const useUpdateUserRigs = (id: string) => {
     try {
       await mutateAsync(body);
       navigate("/users");
+      handleToggleNavItem("Usuários");
       customColorToast("Sondas editadas com sucesso!", "#1c7b7b", "success");
       queryClient.invalidateQueries({queryKey: ["users"]});
     } catch (error: any | typeof AxiosError) {

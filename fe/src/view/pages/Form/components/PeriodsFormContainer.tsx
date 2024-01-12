@@ -15,6 +15,7 @@ import TextArea from "antd/es/input/TextArea";
 import {useForm} from "./FormContext/useForm";
 import {Input} from "../../../components/Input";
 import {ChevronDown, ChevronUp, TrashIcon} from "lucide-react";
+import {periodType, translateType} from "../../../../app/utils/translateType";
 /* import {NewBraskemFormContainer} from "./NewBraskemForm";
 import {TresRFormContainer} from "./TresRForm";
 import {OrigemContainer} from "./OrigemForm";
@@ -82,18 +83,50 @@ export const PeriodsFormContainer = () => {
                   getPeriodState(id) ? "" : "border-b border-primary-500"
                 }`}
               >
-                <h2 className="text-primary-500 font-bold">
-                  Período {index + 1}
-                </h2>
+                <div>
+                  <h2 className="text-primary-500 font-bold">
+                    Período {index + 1}
+                  </h2>
+                  <div
+                    className={cn(
+                      `flex flex-col transition-all duration-500 ${
+                        getPeriodState(id) ? "" : "hidden"
+                      }`
+                    )}
+                  >
+                    <div>
+                      <span className="text-sm">Hora Inicial:</span>{" "}
+                      <span className="text-sm">{startHour}</span>
+                    </div>
+                    <div>
+                      <span className="text-sm">Hora Final:</span>{" "}
+                      <span className="text-sm">{endHour}</span>
+                    </div>
+                    <div>
+                      <span className="text-sm">Poço:</span>{" "}
+                      <span className="text-sm">{well}</span>
+                    </div>
+                    <div>
+                      <span className="text-sm">Tipo:</span>{" "}
+                      <span className="text-sm">
+                        {translateType(type as periodType)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
                 <div className="flex gap-4 items-center justify-center">
                   {getPeriodState(id) && (
-                    <button className="text-white bg-redAccent-500 w-12 h-12 flex justify-center items-center rounded-full">
-                      <TrashIcon />
+                    <button
+                      className="text-white bg-redAccent-500 w-12 h-12 flex justify-center items-center rounded-full hover:bg-redAccent-400 duration-250 active:bg-redAccent-700 transition-all "
+                      onClick={() => handleDeletePeriod(id)}
+                    >
+                      <TrashIcon className="text-white" />
                     </button>
                   )}
                   {!getPeriodState(id) && (
                     <Button
-                      className="bg-transparent border border-primary-500 text-primary-500 rounded-md hover:bg-primary-500 hover:text-white"
+                      variant="ghost"
+                      //className="bg-transparent border border-primary-500 text-primary-500 rounded-md hover:bg-primary-500 hover:text-white"
                       onClick={() => cleanFields(id)}
                     >
                       Limpar campos
@@ -333,7 +366,7 @@ export const PeriodsFormContainer = () => {
         )
       )}
 
-      {/*  <div className="hidden lg:flex lg:justify-center lg:mt-6 ">
+      <div className="lg:flex lg:justify-center pb-6 lg:my-6 ">
         <Button
           disabled={!isFormValid || isLoading}
           className="bg-secondary-500 w-2/3 "
@@ -341,7 +374,7 @@ export const PeriodsFormContainer = () => {
         >
           Enviar dados
         </Button>
-      </div> */}
+      </div>
     </div>
   );
 };
