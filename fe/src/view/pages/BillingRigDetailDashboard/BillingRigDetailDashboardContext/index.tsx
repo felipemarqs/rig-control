@@ -112,6 +112,7 @@ export const BillingRigDetailDashboardProvider = ({
 
   const handleYearChange = (year: string) => {
     setSeletectedYear(year);
+    setSelectedPeriod("");
   };
 
   const totals = getTotals(efficiencies);
