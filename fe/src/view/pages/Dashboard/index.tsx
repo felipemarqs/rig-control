@@ -37,7 +37,6 @@ export const Dashboard = () => {
           totalDtms,
           totalMovimentations,
           efficiencies,
-          /*  isFetchingAverage, */
           windowWidth,
           months,
           filterOptions,
@@ -45,7 +44,6 @@ export const Dashboard = () => {
           selectedFilterType,
           selectedPeriod,
           handleIsAlertSeen,
-          isAlertSeen,
           selectedYear,
           handleYearChange,
           years,
@@ -279,7 +277,7 @@ export const Dashboard = () => {
             </div>
             <Modal
               title="Explore a Nova Funcionalidade!"
-              open={!isAlertSeen}
+              open={false}
               onClose={handleIsAlertSeen}
             >
               <div className="text-gray-600">

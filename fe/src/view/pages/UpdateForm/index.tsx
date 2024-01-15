@@ -22,10 +22,6 @@ export const UpdateForm = () => {
         {({
           isPending,
           remainingMinutes,
-          isFormValid,
-          handleSubmit,
-          periods,
-          isLoading,
           handleDateChange,
           selectedRig,
           usersRigs,

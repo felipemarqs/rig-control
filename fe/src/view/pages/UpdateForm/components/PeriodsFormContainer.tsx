@@ -1,7 +1,5 @@
 import React from "react";
 import {cn} from "../../../../app/utils/cn";
-import {DatePickerInput} from "../../../components/DatePickerInput";
-
 import {TimePicker} from "antd";
 import dayjs from "dayjs";
 import {Select} from "../../../components/Select";
@@ -29,17 +27,12 @@ export const PeriodsFormContainer = () => {
     handleRepairClassification,
     handleFluidRatio,
     handleEquipmentRatio,
-    handleDateChange,
-    date,
     isFormValid,
     handleDescription,
     handleSubmit,
     cleanFields,
     isLoading,
     handlePeriodWell,
-    selectedRig,
-    handleChangeRig,
-    usersRigs,
     getPeriodState,
     updatePeriodState,
     getErrorMessageByFildName,

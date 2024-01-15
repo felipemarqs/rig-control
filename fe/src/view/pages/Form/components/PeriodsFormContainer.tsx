@@ -1,7 +1,5 @@
 import React from "react";
 import {cn} from "../../../../app/utils/cn";
-import {DatePickerInput} from "../../../components/DatePickerInput";
-
 import {TimePicker} from "antd";
 import dayjs from "dayjs";
 import {Select} from "../../../components/Select";
@@ -14,7 +12,7 @@ import {Button} from "../../../components/Button";
 import TextArea from "antd/es/input/TextArea";
 import {useForm} from "./FormContext/useForm";
 import {Input} from "../../../components/Input";
-import {ChevronDown, ChevronUp, TrashIcon} from "lucide-react";
+import {ChevronUp, TrashIcon} from "lucide-react";
 import {periodType, translateType} from "../../../../app/utils/translateType";
 /* import {NewBraskemFormContainer} from "./NewBraskemForm";
 import {TresRFormContainer} from "./TresRForm";
@@ -33,19 +31,13 @@ export const PeriodsFormContainer = () => {
     handleRepairClassification,
     handleFluidRatio,
     handleEquipmentRatio,
-    handleDateChange,
-    date,
     isFormValid,
     handleDescription,
     handleSubmit,
     cleanFields,
     isLoading,
-    selectedRig,
-    handleChangeRig,
-    usersRigs,
     updatePeriodState,
     getErrorMessageByFildName,
-    /*  selectedContract, */
     handlePeriodWell,
     getPeriodState,
   } = useForm();

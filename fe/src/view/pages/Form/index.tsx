@@ -11,9 +11,7 @@ import {Button} from "../../components/Button";
 import {Select} from "../../components/Select";
 import {DatePickerInput} from "../../components/DatePickerInput";
 import {BraskemFormContainer} from "./components/BraskemFormContainer";
-import {ChevronDown, ChevronUp} from "lucide-react";
-import {useState} from "react";
-import {useSpring, animated} from "@react-spring/web";
+import {ChevronDown} from "lucide-react";
 
 // Componente principal Form
 export const Form = () => {
@@ -30,10 +28,6 @@ export const Form = () => {
         {({
           isPending,
           remainingMinutes,
-          isFormValid,
-          handleSubmit,
-          periods,
-          isLoading,
           selectedContract,
           selectedRig,
           handleChangeRig,

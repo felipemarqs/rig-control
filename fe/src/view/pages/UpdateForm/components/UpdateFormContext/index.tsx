@@ -268,7 +268,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
 
   const [isVisible, setIsVisible] = useState(true);
 
-  const [isConfigsConfirmed, setConfigsConfirmed] = useState(false);
+  const [isConfigsConfirmed, setConfigsConfirmed] = useState(true);
 
   const toggleVisibility = () => {
     setIsVisible(!isVisible);

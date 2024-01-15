@@ -26,6 +26,7 @@ interface DetailsContextValues {
   openDeletionRequestModal: () => void;
   isDeletionRequestModalOpen: boolean;
   efficiencyId: string;
+  canUserEdit: boolean;
 }
 export const DetailsContext = createContext({} as DetailsContextValues);
 
@@ -46,7 +47,11 @@ export const DetailsContextProvider = ({
 
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const {isUserAdm} = useAuth();
+  const {isUserAdm, user} = useAuth();
+
+  //Temporário
+  const canUserEdit =
+    isUserAdm || user?.email === "alissonmenezes@conterp.com.br";
 
   const [isDetailModalOpen, setIsDetailModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -114,6 +119,7 @@ export const DetailsContextProvider = ({
         isLoadingRemoveEfficiency,
         handleDeleteEfficiency,
         isUserAdm,
+        canUserEdit,
         efficiencyId,
         closeDeletionRequestModal,
         openDeletionRequestModal,
