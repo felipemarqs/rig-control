@@ -214,7 +214,7 @@ export class EfficienciesService {
         const { id: wellIdFound } = wells.find(({ name }) => well === name);
 
         periods[index].wellId = wellIdFound;
-        console.log('Well', wellId);
+
         const horaInicial = new Date(startHour);
         const horaFinal = new Date(endHour);
 
@@ -254,8 +254,6 @@ export class EfficienciesService {
         }
       },
     );
-
-    console.log(efficiencyData.periods.createMany.data);
 
     if (equipmentRatio?.length) {
       equipmentRatio.forEach(({ ratio }) => {

@@ -10,8 +10,8 @@ export const OrigemContainer = () => {
   } = useForm();
 
   return (
-    <div className=" max-h-[90vh] overflow-y-scroll flex-1 max-w-[800px]  bg-primary-500 p-4 ">
-      <div className="border p-4 rounded-xl flex flex-col gap-2">
+    <div className="  bg-primary-500 py-4  my-4  rounded-xl ">
+      <div className="p-4 rounded-xl flex flex-col gap-2">
         <div className="flex flex-col gap-2">
           <Checkbox
             checked={isExtraTrailerSelected}

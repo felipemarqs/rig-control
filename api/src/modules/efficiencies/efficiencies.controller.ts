@@ -51,7 +51,6 @@ export class EfficienciesController {
 
   @Get(':efficiencyId')
   findById(@Param('efficiencyId', ParseUUIDPipe) efficiencyId: string) {
-    console.log('efficiencyId', efficiencyId);
     return this.efficienciesService.findById(efficiencyId);
   }
 
@@ -59,20 +58,6 @@ export class EfficienciesController {
   @Delete(':efficiencyId')
   remove(@Param('efficiencyId', ParseUUIDPipe) efficiencyId: string) {
     return this.efficienciesService.remove(efficiencyId);
-  }
-
-  @Get('/test/get-distinct-name')
-  createTest() {
-    console.log('EWIRJWEIURJEWIOJR');
-    return this.efficienciesService.getDistinctWellNames();
-    //return this.efficienciesService.create(createEfficiencyDto, userId);
-  }
-
-  @Get('/test/sync-wells')
-  syncWells() {
-    console.log('EWIRJWEIURJEWIOJR');
-    return this.efficienciesService.syncWelltoPeriods();
-    //return this.efficienciesService.create(createEfficiencyDto, userId);
   }
 
   @Get('/average/:rigId')
