@@ -1,7 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+  Query,
+} from '@nestjs/common';
 import { PeriodsService } from './periods.service';
 import { CreatePeriodDto } from './dto/create-period.dto';
 import { UpdatePeriodDto } from './dto/update-period.dto';
+import { PeriodType } from '../efficiencies/entities/PeriodType';
+import { PeriodTypeValidationPipe } from 'src/shared/pipes/PeriodTypeValidationPipe';
 
 @Controller('periods')
 export class PeriodsController {
@@ -13,8 +25,11 @@ export class PeriodsController {
   }
 
   @Get()
-  findAll() {
-    return this.periodsService.findAll();
+  async findByRepairType(
+    @Query('rigId', ParseUUIDPipe) rigId: string,
+    @Query('periodType', PeriodTypeValidationPipe) periodType: PeriodType,
+  ) {
+    return await this.periodsService.findRepairs(rigId, periodType);
   }
 
   @Get(':id')
