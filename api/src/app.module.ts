@@ -12,6 +12,7 @@ import { ContractsModule } from './modules/contracts/contracts.module';
 import { UsersRigModule } from './modules/users-rig/users-rig.module';
 import { DeletionRequestsModule } from './modules/deletion-requests/deletion-requests.module';
 import { WellsModule } from './modules/wells/wells.module';
+import { PeriodsModule } from './modules/periods/periods.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { WellsModule } from './modules/wells/wells.module';
     UsersRigModule,
     DeletionRequestsModule,
     WellsModule,
+    PeriodsModule,
   ],
   controllers: [],
   providers: [
