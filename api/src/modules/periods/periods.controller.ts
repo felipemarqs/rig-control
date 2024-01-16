@@ -14,6 +14,8 @@ import { CreatePeriodDto } from './dto/create-period.dto';
 import { UpdatePeriodDto } from './dto/update-period.dto';
 import { PeriodType } from '../efficiencies/entities/PeriodType';
 import { PeriodTypeValidationPipe } from 'src/shared/pipes/PeriodTypeValidationPipe';
+import { OrderByType } from './entities/OrderByType';
+import { OrderByValidationPipe } from 'src/shared/pipes/OrderByValidationPipe';
 
 @Controller('periods')
 export class PeriodsController {
@@ -25,11 +27,16 @@ export class PeriodsController {
   }
 
   @Get()
-  async findByRepairType(
+  async findByPeriodType(
     @Query('rigId', ParseUUIDPipe) rigId: string,
     @Query('periodType', PeriodTypeValidationPipe) periodType: PeriodType,
+    @Query('orderBy', OrderByValidationPipe) orderBy: OrderByType,
   ) {
-    return await this.periodsService.findRepairs(rigId, periodType);
+    return await this.periodsService.findByPeriodType(
+      rigId,
+      periodType,
+      orderBy,
+    );
   }
 
   @Get(':id')

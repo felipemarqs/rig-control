@@ -4,6 +4,7 @@ import { UpdatePeriodDto } from './dto/update-period.dto';
 import { PeriodsRepository } from 'src/shared/database/repositories/period.repositories';
 import { RepairClassification } from '../efficiencies/entities/RepairClassification';
 import { PeriodType } from '../efficiencies/entities/PeriodType';
+import { OrderByType } from './entities/OrderByType';
 
 @Injectable()
 export class PeriodsService {
@@ -12,12 +13,17 @@ export class PeriodsService {
     return 'This action adds a new period';
   }
 
-  async findRepairs(rigId: string, repairType: PeriodType) {
+  async findByPeriodType(
+    rigId: string,
+    periodType: PeriodType,
+    orderBy: OrderByType,
+  ) {
     return await this.periodsRepo.findMany({
       where: {
-        type: repairType,
+        type: periodType,
         efficiency: { rigId },
       },
+      orderBy: { startHour: orderBy },
     });
   }
 
