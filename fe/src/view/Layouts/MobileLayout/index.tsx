@@ -8,6 +8,7 @@ import {
   ArchiveX,
   Building2,
   Construction,
+  StickyNote,
 } from "lucide-react";
 
 import {useSidebarContext} from "../../../app/contexts/SidebarContext";
@@ -99,6 +100,15 @@ export const MobileLayout = () => {
             text="Deleção"
             urlText="deletion-requests"
             isActive={active === "Deleção"}
+          />
+        )}
+
+        {isUserAdm && (
+          <NavbarItem
+            icon={<StickyNote size={20} />}
+            text="Relatórios"
+            urlText="reports"
+            isActive={active === "Relatórios"}
           />
         )}
 
