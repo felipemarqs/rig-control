@@ -31,11 +31,19 @@ export class PeriodsController {
     @Query('rigId', ParseUUIDPipe) rigId: string,
     @Query('periodType', PeriodTypeValidationPipe) periodType: PeriodType,
     @Query('orderBy', OrderByValidationPipe) orderBy: OrderByType,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+    @Query('pageSize') pageSize: string,
+    @Query('pageIndex') pageIndex: string,
   ) {
     return await this.periodsService.findByPeriodType(
       rigId,
       periodType,
       orderBy,
+      startDate,
+      endDate,
+      pageSize,
+      pageIndex,
     );
   }
 

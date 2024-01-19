@@ -9,7 +9,7 @@ export const useGetByPeriodType = (filters: GetByPeriodTypeFilters) => {
   });
 
   return {
-    periods: data ?? [],
+    periodsResponse: data ?? {data: [], totalItems: 0},
     isFetchingPeriods: isFetching,
     refetchPeriods: refetch,
   };

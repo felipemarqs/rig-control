@@ -14,6 +14,10 @@ export class PeriodsRepository {
     return await this.prismaService.period.findMany(findManyDto);
   }
 
+  async count(countDto: Prisma.PeriodCountArgs) {
+    return await this.prismaService.period.count(countDto);
+  }
+
   async update(
     updateBillingsConfigurationDto: Prisma.BillingConfigurationUpdateArgs,
   ) {

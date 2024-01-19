@@ -17,14 +17,36 @@ export class PeriodsService {
     rigId: string,
     periodType: PeriodType,
     orderBy: OrderByType,
+    startDate: string,
+    endDate: string,
+    pageSize: string,
+    pageIndex: string,
   ) {
-    return await this.periodsRepo.findMany({
+    console.log('Tipo do PageIndex', typeof +pageIndex);
+    console.log('Tipo do PageSize', typeof pageSize);
+
+    const totalItems = await this.periodsRepo.count({
       where: {
+        startHour: { gte: new Date(startDate) },
+        endHour: { lte: new Date(endDate) },
+        type: periodType,
+        efficiency: { rigId: rigId },
+      },
+    });
+
+    const periods = await this.periodsRepo.findMany({
+      where: {
+        startHour: { gte: new Date(startDate) },
+        endHour: { lte: new Date(endDate) },
         type: periodType,
         efficiency: { rigId },
       },
       orderBy: { startHour: orderBy },
+      skip: (Number(pageIndex) - 1) * Number(pageSize),
+      take: Number(pageSize),
     });
+
+    return { data: periods, totalItems };
   }
 
   findOne(id: number) {
