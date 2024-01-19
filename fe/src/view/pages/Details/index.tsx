@@ -28,10 +28,9 @@ export const Details = () => {
           isDeleteModalOpen,
           isLoadingRemoveEfficiency,
           handleDeleteEfficiency,
-          isUserAdm,
+          canUserEdit,
           efficiencyId,
           closeDeletionRequestModal,
-          openDeletionRequestModal,
           isDeletionRequestModalOpen,
         }) => (
           <div className="w-full h-full overflow-y-scroll">
@@ -108,7 +107,7 @@ export const Details = () => {
                     />
                   </div>
                 )}
-              {isUserAdm && (
+              {canUserEdit && (
                 <div className="flex justify-between w-3/4 lg:w-1/2">
                   <Button
                     onClick={openDeleteModal}
@@ -127,14 +126,14 @@ export const Details = () => {
                 </div>
               )}
 
-              {!isUserAdm && (
+              {/*   {!isUserAdm && (
                 <Button
                   onClick={openDeletionRequestModal}
                   className="bg-redAccent-500"
                 >
                   Solicitar Exclusão
                 </Button>
-              )}
+              )} */}
             </div>
           </div>
         )}

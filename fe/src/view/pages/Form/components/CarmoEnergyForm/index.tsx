@@ -13,8 +13,8 @@ export const CarmoEnergyContainer = () => {
   } = useForm();
 
   return (
-    <div className=" max-h-[90vh] overflow-y-scroll flex-1 max-w-[800px]  bg-primary-500 p-4 rounded-xl">
-      <div className="border p-4 rounded-xl flex flex-col gap-2">
+    <div className="bg-primary-500 py-4  w-1/2 my-4  rounded-xl ">
+      <div className="p-4 rounded-xl flex flex-col gap-2">
         <div className="flex gap-2 items-center justify-center">
           <div className="flex-1">
             <Checkbox
