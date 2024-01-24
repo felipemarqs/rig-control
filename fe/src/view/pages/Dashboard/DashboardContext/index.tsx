@@ -58,11 +58,10 @@ export const DashboardContext = createContext({} as DashboardContextValue);
 
 export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   // Utilização dos hooks para autenticação e contexto da barra lateral
-  const {user, signout, isAlertSeen, handleIsAlertSeen} = useAuth();
+  const {user, signout, isAlertSeen, handleIsAlertSeen, isUserAdm} = useAuth();
   const {windowWidth} = useSidebarContext();
 
   // Verificação se o usuário é administrador para exibir as rigs corretas
-  const isUserAdm = user?.accessLevel === "ADM";
   const {rigs} = useRigs(isUserAdm);
 
   // Mapeamento das rigs do usuário para exibir apenas as autorizadas

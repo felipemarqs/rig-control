@@ -47,7 +47,7 @@ export const BillingRigDetailDashboard = () => {
               subtitle="Página de visualização da previsão do faturamento geral da sonda"
             />
             <div className="w-full flex flex-wrap justify-center items-center lg:justify-end gap-1 lg:px-4">
-              <div className="w-[113px] lg:w-[213px]">
+              <div className="w-[113px] lg:w-[250px]">
                 <Select
                   error={""}
                   placeholder="Tipo de Filtro"

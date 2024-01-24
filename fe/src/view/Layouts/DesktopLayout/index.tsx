@@ -11,6 +11,7 @@ import {
   Receipt,
   Building2,
   Construction,
+  StickyNote,
 } from "lucide-react";
 
 import {useSidebarContext} from "../../../app/contexts/SidebarContext";
@@ -108,6 +109,15 @@ export const DesktopLayout = () => {
             text="Deleção"
             urlText="deletion-requests"
             isActive={active === "Deleção"}
+          />
+        )}
+
+        {isUserAdm && (
+          <SidebarItem
+            icon={<StickyNote size={20} />}
+            text="Relatórios"
+            urlText="reports"
+            isActive={active === "Relatórios"}
           />
         )}
       </Sidebar>

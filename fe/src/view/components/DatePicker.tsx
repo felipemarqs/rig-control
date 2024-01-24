@@ -24,7 +24,7 @@ export function DatePicker({value, onChange}: DatePickerProps) {
           "text-primary-500 flex items-center justify-center !bg-transparent",
         head_cell: "uppercase text-xs text-primary-500 font-medium pt-1 pb-2",
         button:
-          "text-primary-500 cursor-pointer w-10 h-10 hover:bg-primary-400 rounded-full",
+          "text-primary-500 cursor-pointer w-10 h-10 hover:bg-primary-400 hover:text-white rounded-full",
         day_today: "bg-gray-100 font-bold text-primary-500",
         day_selected: "!bg-primary-500 text-white font-medium",
       }}
