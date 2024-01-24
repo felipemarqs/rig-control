@@ -1,11 +1,11 @@
-import {createContext, useState} from "react";
+import {createContext, useCallback, useEffect, useState} from "react";
 import {useAuth} from "../../../../../app/hooks/useAuth";
 import {useRigs} from "../../../../../app/hooks/rigs/useRigs";
 import {Rig} from "../../../../../app/entities/Rig";
 import {PeriodType} from "../../../../../app/entities/PeriodType";
 import {OrderByType} from "../../../../../app/entities/OrderBy";
 import {useGetByPeriodType} from "../../../../../app/hooks/periods/useGetByPeriodType";
-import {GetByPeriodIdResponse} from "../../../../../app/services/periodsService/getByPeriodType";
+import {GetByPeriodTypeFilters} from "../../../../../app/services/periodsService/getByPeriodType";
 import {endOfMonth, format, startOfMonth} from "date-fns";
 import {SelectOptions} from "../../../../../app/entities/SelectOptions";
 import {filterOptions} from "../../../../../app/utils/filterOptions";
@@ -16,6 +16,10 @@ import {years} from "../../../../../app/utils/years";
 import {useSidebarContext} from "../../../../../app/contexts/SidebarContext";
 import {periodTypes} from "../../../../../app/utils/periodTypes";
 import {Period} from "../../../../../app/entities/Period";
+import {PeriodClassification} from "../../../../../app/entities/PeriodClassification";
+import {RepairClassification} from "../../../../../app/entities/RepairClassification";
+import {periodClassifications} from "../../../../../app/utils/periodClassifications";
+import {GridPaginationModel} from "@mui/x-data-grid";
 
 interface ReportContextValues {
   rigs: Rig[] | {id: string; name: string}[];
@@ -31,18 +35,34 @@ interface ReportContextValues {
   handleToggleFilterType(filterType: FilterType): void;
   handleTogglePeriodType(type: PeriodType): void;
   handleApplyFilters(): void;
+  toggleFilterContainerVisibility(): void;
+  handleClearFilters(): void;
+  handleChangePageSize(pageSize: number | string): void;
+  handleChangePageIndex(pageIndex: number | string): void;
+  handlePeriodClassification(classification: PeriodClassification): void;
+  handleRepairClassification(repairClassification: RepairClassification): void;
+  onPaginationModelChange(model: GridPaginationModel): void;
+
   selectedRig: string;
   selectedPeriod: string;
   handleChangeRig(rigId: string): void;
   months: SelectOptions;
   years: SelectOptions;
   periodTypeOptions: SelectOptions;
+  periodClassificationOptions: SelectOptions | null;
+  repairClassificationOptions: SelectOptions | null;
+  emptyOptions: SelectOptions;
+  selectedPeriodClassification: string;
   selectedEndDate: string;
   selectedStartDate: string;
   windowWidth: number;
+  isFilterContainerVisible: boolean;
   selectedPeriodType: PeriodType;
   isEmpty: boolean;
   isFetchingPeriods: boolean;
+  filters: GetByPeriodTypeFilters;
+  totalItems: number;
+  isFiltersValid: boolean;
 }
 
 export const ReportContext = createContext({} as ReportContextValues);
@@ -60,15 +80,17 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
     lastDayOfMonth,
     "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
   );
-  const {user, isUserAdm} = useAuth();
+  const {isUserAdm} = useAuth();
   const {windowWidth} = useSidebarContext();
 
   // Mapeamento das rigs do usuário para exibir apenas as autorizadas
-  const userRigs = user?.rigs.map(({rig: {id, name}}) => ({id, name})) || [];
   const {rigs} = useRigs(isUserAdm);
 
-  //estado dos filtros
+  const emptyOptions = [{value: "", label: ""}];
 
+  //estado dos filtros
+  const [isFilterContainerVisible, setIsFilterContainerVisible] =
+    useState(true);
   const [selectedRig, setSelectedRig] = useState<string>("");
   const [selectedStartDate, setSelectedStartDate] =
     useState<string>(formattedFirstDay);
@@ -78,17 +100,33 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
   const [selectedPeriodType, setSelectedPeriodType] = useState<PeriodType>(
     PeriodType.WORKING
   );
+  const [selectedPeriodClassification, setSelectedPeriodClassification] =
+    useState<PeriodClassification | string>(PeriodClassification.WORKING);
+  const [periodClassificationOptions, setPeriodClassificationOptions] =
+    useState<null | SelectOptions>([
+      {
+        label: "Operadndo",
+        value: PeriodClassification.WORKING,
+      },
+    ]);
+
+  const [repairClassificationOptions, setRepairClassificationOptions] =
+    useState<null | SelectOptions>(null);
   const [selectedYear, setSeletectedYear] = useState<string>("2023");
 
   const [selectedFilterType, setSelectedFilterType] = useState<FilterType>(
     FilterType.PERIOD
   );
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<GetByPeriodTypeFilters>({
     rigId: "",
     periodType: PeriodType.WORKING,
+    periodClassification: "WORKING",
+    repairClassification: null,
     orderBy: OrderByType.ASC,
     startDate: selectedStartDate,
     endDate: selectedEndDate,
+    pageSize: "100",
+    pageIndex: "1",
   });
 
   const {periodsResponse, refetchPeriods, isFetchingPeriods} =
@@ -101,9 +139,46 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
     value: id,
   }));
 
+  const toggleFilterContainerVisibility = () => {
+    setIsFilterContainerVisible((prevState) => !prevState);
+  };
+
+  const getPeriodClassificationsByType = (type: PeriodType) => {
+    return periodClassifications[type].map(({id, classification}) => ({
+      value: id,
+      label: classification,
+    }));
+  };
+
+  const getRepairClassification = (repairType: string) => {
+    return periodClassifications.REPAIR.find(({id}) => id === repairType)
+      ?.repairClassification;
+  };
+  /* 
+  const periodClassificationOptions = allClassifications.map(
+    ({id, classification}) => ({
+      value: id,
+      label: classification,
+    })
+  ); */
+
   // Funções para manipulação das datas e filtros
   const handleApplyFilters = () => {
     refetchPeriods();
+  };
+
+  const handleClearFilters = () => {
+    setFilters({
+      rigId: "",
+      periodType: PeriodType.WORKING,
+      periodClassification: PeriodClassification.WORKING,
+      repairClassification: null,
+      orderBy: OrderByType.ASC,
+      startDate: selectedStartDate,
+      endDate: selectedEndDate,
+      pageSize: "500",
+      pageIndex: "1",
+    });
   };
 
   const handleChangeRig = (rigId: string) => {
@@ -122,8 +197,64 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const handleTogglePeriodType = (type: PeriodType) => {
+    const periodClassificationOptions = getPeriodClassificationsByType(type);
+    setPeriodClassificationOptions(
+      periodClassificationOptions ? periodClassificationOptions : null
+    );
+    setSelectedPeriodClassification("");
     setSelectedPeriodType(type);
-    setFilters((prevState) => ({...prevState, periodType: type}));
+    setFilters((prevState) => ({
+      ...prevState,
+      periodType: type,
+      periodClassification: "",
+      repairClassification: null,
+    }));
+  };
+
+  const [onPaginationModelChangeListener, setOnPaginationModelChangeListener] =
+    useState(false);
+  const onPaginationModelChange = useCallback((model: GridPaginationModel) => {
+    setOnPaginationModelChangeListener((prev) => !prev);
+    setFilters((prevState) => ({
+      ...prevState,
+      pageIndex: (model.page + 1).toString(),
+      pageSize: model.pageSize.toString(),
+    }));
+  }, []);
+
+  useEffect(() => {
+    refetchPeriods();
+  }, [onPaginationModelChangeListener]);
+
+  const handlePeriodClassification = (classification: PeriodClassification) => {
+    setSelectedPeriodClassification(classification);
+    const repairClassificationOptions = getRepairClassification(classification);
+    setFilters((prevState) => ({
+      ...prevState,
+      repairClassification: null,
+      periodClassification: classification,
+    }));
+    setRepairClassificationOptions(repairClassificationOptions ?? null);
+  };
+
+  const isFiltersValid = Boolean(
+    filters.startDate &&
+      filters.endDate &&
+      filters.orderBy &&
+      filters.pageIndex &&
+      filters.pageSize &&
+      filters.periodType &&
+      filters.rigId &&
+      filters.periodClassification
+  );
+
+  const handleRepairClassification = (
+    repairClassification: RepairClassification
+  ) => {
+    setFilters((prevState) => ({
+      ...prevState,
+      repairClassification: repairClassification,
+    }));
   };
 
   const handleChangePeriod = (period: string) => {
@@ -151,20 +282,46 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
     setSelectedPeriod("");
   };
 
+  const handleChangePageSize = (pageSize: number | string) => {
+    setFilters((prevState) => ({...prevState, pageSize: pageSize.toString()}));
+  };
+
+  const handleChangePageIndex = (pageIndex: number | string) => {
+    setFilters((prevState) => ({
+      ...prevState,
+      pageIndex: pageIndex.toString(),
+    }));
+  };
+
   return (
     <ReportContext.Provider
       value={{
+        isFiltersValid,
+        emptyOptions,
         rigs,
+        filters,
+        selectedPeriodClassification,
+        periodClassificationOptions,
         periods: periodsResponse.data,
+        totalItems: periodsResponse.totalItems,
         selectedPeriod,
         selectedYear,
         filterOptions,
-        handleChangePeriod,
         selectedFilterType,
+        repairClassificationOptions,
+        isFilterContainerVisible,
+        handleClearFilters,
         handleToggleFilterType,
+        handleChangePeriod,
+        handlePeriodClassification,
+        handleRepairClassification,
         handleYearChange,
         handleChangeRig,
         handleApplyFilters,
+        handleChangePageSize,
+        handleChangePageIndex,
+        toggleFilterContainerVisibility,
+        onPaginationModelChange,
         selectedRig,
         months,
         years,

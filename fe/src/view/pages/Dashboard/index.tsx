@@ -51,7 +51,7 @@ export const Dashboard = () => {
           <div className="w-full  overflow-y-scroll">
             <Header title="DASHBOARD" subtitle="Página de início do usuário" />
             <div className="w-full flex flex-wrap justify-center items-center lg:justify-end gap-1 lg:px-4">
-              <div className="w-[113px] lg:w-[213px]">
+              <div className="w-[113px] lg:w-[250px]">
                 <Select
                   error={""}
                   placeholder="Tipo de Filtro"
