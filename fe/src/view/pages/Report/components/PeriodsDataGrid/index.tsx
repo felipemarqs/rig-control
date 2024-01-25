@@ -66,8 +66,7 @@ export const PeriodsDataGrid = ({
     {
       field: "classification",
       headerName: "Classificação",
-      width: 100,
-      maxWidth: 250,
+      flex: 0.2,
       headerAlign: "center",
       align: "center",
       renderCell(params: GridRenderCellParams) {
