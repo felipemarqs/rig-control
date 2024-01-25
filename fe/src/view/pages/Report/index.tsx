@@ -11,6 +11,7 @@ import {NotFound} from "../../components/NotFound";
 import {PeriodsDataGrid} from "./components/PeriodsDataGrid";
 import {PeriodClassification} from "../../../app/entities/PeriodClassification";
 import {RepairClassification} from "../../../app/entities/RepairClassification";
+import {CleanFieldContainer} from "../../components/CleanFieldContainer";
 
 export const Report = () => {
   return (
@@ -46,6 +47,8 @@ export const Report = () => {
           handlePeriodClassification,
           handleTogglePeriodType,
           handleClearFilters,
+          handleClearSelectedPeriodClassification,
+          handleClearSelectedRepairClassification,
           repairClassificationOptions,
           isEmpty,
           filters,
@@ -98,9 +101,7 @@ export const Report = () => {
                   {periodClassificationOptions && (
                     <div className="w-full lg:w-[300px]">
                       <Select
-                        error={
-                          !filters.periodClassification ? "Obrigatório" : ""
-                        }
+                        error={""}
                         onChange={(value) =>
                           handlePeriodClassification(
                             value as PeriodClassification
@@ -110,6 +111,12 @@ export const Report = () => {
                         value={selectedPeriodClassification}
                         options={periodClassificationOptions}
                       />
+                      {selectedPeriodClassification && (
+                        <CleanFieldContainer
+                          label="Limpar Campo"
+                          onClick={handleClearSelectedPeriodClassification}
+                        />
+                      )}
                     </div>
                   )}
 
@@ -127,6 +134,12 @@ export const Report = () => {
                           value={filters.repairClassification ?? ""}
                           options={repairClassificationOptions}
                         />
+                        {filters.repairClassification && (
+                          <CleanFieldContainer
+                            label="Limpar Campo"
+                            onClick={handleClearSelectedRepairClassification}
+                          />
+                        )}
                       </div>
                     )}
                 </div>

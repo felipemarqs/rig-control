@@ -13,6 +13,7 @@ import {Period} from "../../../../../app/entities/Period";
 import {formatDate} from "../../../../../app/utils/formatDate";
 import {localeTextDataGridConfig} from "../../../../../app/utils/localeTextDataGridConfig";
 import {GetByPeriodTypeFilters} from "../../../../../app/services/periodsService/getByPeriodType";
+import {translateRepairClassification} from "../../../../../app/utils/translateRepairClassification";
 
 interface ListPeriodsDataGridProps {
   periods: Array<Period>;
@@ -33,7 +34,7 @@ export const PeriodsDataGrid = ({
     {
       field: "startHour",
       headerName: "Data",
-      flex: 0.2,
+      width: 150,
       headerAlign: "center",
       align: "center",
       renderCell(params: GridRenderCellParams) {
@@ -49,7 +50,7 @@ export const PeriodsDataGrid = ({
     {
       field: "type",
       headerName: "Tipo",
-      flex: 0.2,
+      width: 150,
       headerAlign: "center",
       align: "center",
       renderCell(params: GridRenderCellParams) {
@@ -85,10 +86,33 @@ export const PeriodsDataGrid = ({
       headerAlign: "center",
       align: "center",
       renderCell(params: GridRenderCellParams) {
-        return <div className="w-full text-white">{params.value}</div>;
+        return (
+          <div className="w-full text-white flex justify-center">
+            {params.value}
+          </div>
+        );
       },
     },
   ];
+
+  if (filters.periodType === "REPAIR") {
+    columns.splice(3, 0, {
+      field: "repairClassification",
+      headerName: "Reparo",
+      flex: 0.2,
+      headerAlign: "center",
+      align: "center",
+      renderCell(params: GridRenderCellParams) {
+        return (
+          <div className="w-full flex justify-center items-center">
+            <div className="text-white  bg-primary-500 py-1 px-4 rounded-sm">
+              {translateRepairClassification(params.value)}
+            </div>
+          </div>
+        );
+      },
+    });
+  }
 
   const NotFoundDataGrid = () => {
     return (

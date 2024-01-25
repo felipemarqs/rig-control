@@ -37,6 +37,8 @@ interface ReportContextValues {
   handleApplyFilters(): void;
   toggleFilterContainerVisibility(): void;
   handleClearFilters(): void;
+  handleClearSelectedPeriodClassification(): void;
+  handleClearSelectedRepairClassification(): void;
   handleChangePageSize(pageSize: number | string): void;
   handleChangePageIndex(pageIndex: number | string): void;
   handlePeriodClassification(classification: PeriodClassification): void;
@@ -105,7 +107,7 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
   const [periodClassificationOptions, setPeriodClassificationOptions] =
     useState<null | SelectOptions>([
       {
-        label: "Operadndo",
+        label: "Operando",
         value: PeriodClassification.WORKING,
       },
     ]);
@@ -125,7 +127,7 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
     orderBy: OrderByType.ASC,
     startDate: selectedStartDate,
     endDate: selectedEndDate,
-    pageSize: "100",
+    pageSize: "50",
     pageIndex: "1",
   });
 
@@ -168,6 +170,10 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const handleClearFilters = () => {
+    setSelectedPeriodClassification("");
+    setSelectedRig("");
+    setSelectedPeriod("");
+
     setFilters({
       rigId: "",
       periodType: PeriodType.WORKING,
@@ -176,24 +182,45 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
       orderBy: OrderByType.ASC,
       startDate: selectedStartDate,
       endDate: selectedEndDate,
-      pageSize: "500",
+      pageSize: "50",
       pageIndex: "1",
     });
   };
 
+  const handleClearSelectedPeriodClassification = () => {
+    setFilters((prev) => ({...prev, periodClassification: "", pageIndex: "1"}));
+    setSelectedPeriodClassification("");
+  };
+
+  const handleClearSelectedRepairClassification = () => {
+    setFilters((prev) => ({
+      ...prev,
+      repairClassification: null,
+      pageIndex: "1",
+    }));
+  };
+
   const handleChangeRig = (rigId: string) => {
     setSelectedRig(rigId);
-    setFilters((prevState) => ({...prevState, rigId: rigId}));
+    setFilters((prevState) => ({...prevState, rigId: rigId, pageIndex: "1"}));
   };
 
   const handleStartDateChange = (date: Date) => {
     setSelectedStartDate(date.toISOString());
-    setFilters((prevState) => ({...prevState, startDate: date.toISOString()}));
+    setFilters((prevState) => ({
+      ...prevState,
+      startDate: date.toISOString(),
+      pageIndex: "1",
+    }));
   };
 
   const handleEndDateChange = (date: Date) => {
     setSelectedEndDate(date.toISOString());
-    setFilters((prevState) => ({...prevState, endDate: date.toISOString()}));
+    setFilters((prevState) => ({
+      ...prevState,
+      endDate: date.toISOString(),
+      pageIndex: "1",
+    }));
   };
 
   const handleTogglePeriodType = (type: PeriodType) => {
@@ -205,6 +232,7 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
     setSelectedPeriodType(type);
     setFilters((prevState) => ({
       ...prevState,
+      pageIndex: "1",
       periodType: type,
       periodClassification: "",
       repairClassification: null,
@@ -233,11 +261,12 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
       ...prevState,
       repairClassification: null,
       periodClassification: classification,
+      pageIndex: "1",
     }));
     setRepairClassificationOptions(repairClassificationOptions ?? null);
   };
 
-  const isFiltersValid = Boolean(
+  const isFiltersValid = true; /* Boolean(
     filters.startDate &&
       filters.endDate &&
       filters.orderBy &&
@@ -246,7 +275,7 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
       filters.periodType &&
       filters.rigId &&
       filters.periodClassification
-  );
+  ); */
 
   const handleRepairClassification = (
     repairClassification: RepairClassification
@@ -254,6 +283,7 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
     setFilters((prevState) => ({
       ...prevState,
       repairClassification: repairClassification,
+      pageIndex: "1",
     }));
   };
 
@@ -310,6 +340,8 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
         selectedFilterType,
         repairClassificationOptions,
         isFilterContainerVisible,
+        handleClearSelectedPeriodClassification,
+        handleClearSelectedRepairClassification,
         handleClearFilters,
         handleToggleFilterType,
         handleChangePeriod,

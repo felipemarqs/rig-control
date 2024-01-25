@@ -10,11 +10,7 @@ import { PeriodType } from 'src/modules/efficiencies/entities/PeriodType';
 export class PeriodTypeValidationPipe implements PipeTransform {
   transform(value: any, metadata: ArgumentMetadata) {
     if (!this.isValidPeriodType(value)) {
-      throw new BadRequestException(
-        `Tipo de período inválido. Deveria ser um dos seguintes valores: ${Object.values(
-          PeriodType,
-        ).join(', ')}`,
-      );
+      throw new BadRequestException(`Tipo de período inválido.`);
     }
     return value;
   }
