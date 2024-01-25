@@ -34,8 +34,8 @@ export class PeriodsController {
   async findByPeriodType(
     @Query('rigId', ParseUUIDPipe) rigId: string,
     @Query('periodType', PeriodTypeValidationPipe) periodType: PeriodType,
-    @Query('periodClassification', PeriodClassificationValidationPipe)
-    periodClassification: PeriodClassification,
+    @Query('periodClassification')
+    periodClassification: PeriodClassification | null,
     @Query('repairClassification')
     repairClassification: RepairClassification | null,
     @Query('orderBy', OrderByValidationPipe) orderBy: OrderByType,

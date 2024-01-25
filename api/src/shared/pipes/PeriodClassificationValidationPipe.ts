@@ -11,9 +11,7 @@ export class PeriodClassificationValidationPipe implements PipeTransform {
   transform(value: any, metadata: ArgumentMetadata) {
     if (!this.isValidPeriodType(value)) {
       throw new BadRequestException(
-        `Tipo de período inválido. Deveria ser um dos seguintes valores: ${Object.values(
-          PeriodClassification,
-        ).join(', ')}`,
+        `Tipo de classificação do período inválido.`,
       );
     }
     return value;

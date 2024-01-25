@@ -27,22 +27,25 @@ export class PeriodsService {
   ) {
     let whereClause = {};
 
+    whereClause = {
+      startHour: { gte: new Date(startDate) },
+      endHour: { lte: new Date(endDate) },
+      type: periodType,
+
+      efficiency: { rigId: rigId },
+    };
+
+    if (periodClassification) {
+      whereClause = {
+        ...whereClause,
+        classification: periodClassification,
+      };
+    }
+
     if (repairClassification) {
       whereClause = {
-        startHour: { gte: new Date(startDate) },
-        endHour: { lte: new Date(endDate) },
-        type: periodType,
-        classification: periodClassification,
-        efficiency: { rigId: rigId },
+        ...whereClause,
         repairClassification: repairClassification,
-      };
-    } else {
-      whereClause = {
-        startHour: { gte: new Date(startDate) },
-        endHour: { lte: new Date(endDate) },
-        type: periodType,
-        classification: periodClassification,
-        efficiency: { rigId: rigId },
       };
     }
     const totalItems = await this.periodsRepo.count({
