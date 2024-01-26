@@ -76,11 +76,11 @@ export const Report = () => {
                 </button>
               </div>
               <div
-                className={`w-10/12 flex flex-wrap justify-center flex-col border border-gray-500 p-4 items-center lg:justify-end gap-2 transition-all overflow-hidden ${
+                className={`w-10/12 flex flex-wrap justify-center flex-col border border-gray-500  items-center lg:justify-end gap-2 transition-all overflow-hidden ${
                   isFilterContainerVisible
-                    ? "max-h-[1000px]"
-                    : "max-h-0 p-0 border-0 border-t-2"
-                } ease-in-out duration-500`}
+                    ? "max-h-[9000px] p-4"
+                    : "max-h-0 p-0 border-0 border-t-2 "
+                } ease-in-out duration-500 transition-height`}
               >
                 <div
                   className={`${
@@ -147,7 +147,7 @@ export const Report = () => {
                 <div
                   className={`${
                     isFilterContainerVisible ? "flex" : "hidden"
-                  } flex-col w-full justify-center gap-6 lg:flex-row transition-all ease-in-out duration-500`}
+                  } flex-col w-full justify-center gap-6 lg:flex-row transition-all ease-in-out duration-500 overflow-hidden`}
                 >
                   <div className="w-full lg:w-[250px]">
                     <Select
@@ -223,7 +223,7 @@ export const Report = () => {
                 <div
                   className={`${
                     isFilterContainerVisible ? "flex" : "hidden"
-                  } w-full justify-end gap-6 mt-4 transition-all ease-in-out duration-500`}
+                  } w-full justify-end gap-6 mt-4 transition-all ease-in-out duration-500 overflow-hidden`}
                 >
                   <Button
                     variant="ghost"
