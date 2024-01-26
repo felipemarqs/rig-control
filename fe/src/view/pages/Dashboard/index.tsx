@@ -12,6 +12,7 @@ import {ListEfficienciesDataGrid} from "../../components/ListEfficienciesDataGri
 import {cn} from "../../../app/utils/cn";
 import {FilterType} from "../../../app/entities/FilterType";
 import {Modal} from "../../components/Modal";
+import {AddFiles} from "../../components/AddFiles";
 /* import {BarChart} from "./components/BarChart"; */
 
 export const Dashboard = () => {
@@ -38,6 +39,7 @@ export const Dashboard = () => {
           totalMovimentations,
           efficiencies,
           windowWidth,
+          user,
           months,
           filterOptions,
           handleToggleFilterType,
@@ -45,6 +47,7 @@ export const Dashboard = () => {
           selectedPeriod,
           handleIsAlertSeen,
           selectedYear,
+          isAlertSeen,
           handleYearChange,
           years,
         }) => (
@@ -276,16 +279,43 @@ export const Dashboard = () => {
               )}
             </div>
             <Modal
-              title="Explore a Nova Funcionalidade!"
-              open={false}
+              title="Novidades e Melhorias Recentes!!"
+              maxWidth="1000px"
+              open={!isAlertSeen}
               onClose={handleIsAlertSeen}
             >
-              <div className="text-gray-600">
-                <ul className="list-disc list-inside">
-                  <li className="block my-4">
-                    Nova página de visualização de faturamento!
-                  </li>
-                </ul>
+              <div className="text-gray-600 flex items-center">
+                <div className=" flex-1 flex items-center justify-center">
+                  <AddFiles className="h-60 w-60" />
+                </div>
+                <div className=" flex-1">
+                  <span className="block text-gray-800 font-semibold">
+                    Olá {user?.name},
+                  </span>
+
+                  <span className="text-gray-800 font-semibold">
+                    Confira as últimas{" "}
+                    <span className="text-primary-500">atualizações</span> e
+                    melhorias que fizemos no sistema para aprimorar ainda mais
+                    sua <span className="text-primary-500">experiência</span>.
+                    Confira as novidades:
+                  </span>
+                  <ul className="list-disc list-inside">
+                    <li className="my-4">Nova Página de Relatórios!</li>
+                    <span>
+                      Apresentamos uma nova página de relatórios que facilitará
+                      sua análise de dados. Agora, é possível organizar períodos
+                      com base em tipo e classificação, proporcionando uma
+                      visualização mais detalhada e personalizada das
+                      informações.
+                    </span>
+                    <li className="my-4">Correções de Bugs:</li>
+                    <span>
+                      Corrigido diversos bugs para garantir um desempenho mais
+                      estável e confiável.
+                    </span>
+                  </ul>
+                </div>
               </div>
             </Modal>
           </div>
