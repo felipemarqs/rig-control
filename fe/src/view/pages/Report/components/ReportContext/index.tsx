@@ -71,6 +71,7 @@ export const ReportContext = createContext({} as ReportContextValues);
 
 export const ReportProvider = ({children}: {children: React.ReactNode}) => {
   const currentDate = new Date();
+  const {user} = useAuth();
 
   const firstDayOfMonth = startOfMonth(currentDate);
   const lastDayOfMonth = endOfMonth(currentDate);
@@ -87,6 +88,8 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
 
   // Mapeamento das rigs do usuário para exibir apenas as autorizadas
   const {rigs} = useRigs(isUserAdm);
+
+  const userRigs = user?.rigs.map(({rig: {id, name}}) => ({id, name})) || [];
 
   const emptyOptions = [{value: "", label: ""}];
 
@@ -265,17 +268,15 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
     }));
     setRepairClassificationOptions(repairClassificationOptions ?? null);
   };
-
-  const isFiltersValid = true; /* Boolean(
+  const isFiltersValid = Boolean(
     filters.startDate &&
       filters.endDate &&
       filters.orderBy &&
       filters.pageIndex &&
       filters.pageSize &&
       filters.periodType &&
-      filters.rigId &&
-      filters.periodClassification
-  ); */
+      filters.rigId
+  );
 
   const handleRepairClassification = (
     repairClassification: RepairClassification
@@ -328,7 +329,7 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
       value={{
         isFiltersValid,
         emptyOptions,
-        rigs,
+        rigs: isUserAdm ? rigs : userRigs,
         filters,
         selectedPeriodClassification,
         periodClassificationOptions,

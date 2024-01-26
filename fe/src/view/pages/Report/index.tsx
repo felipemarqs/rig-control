@@ -223,7 +223,7 @@ export const Report = () => {
                 <div
                   className={`${
                     isFilterContainerVisible ? "flex" : "hidden"
-                  } w-full justify-end gap-6 mt-4`}
+                  } w-full justify-end gap-6 mt-4 transition-all ease-in-out duration-500`}
                 >
                   <Button
                     variant="ghost"

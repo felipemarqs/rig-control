@@ -93,14 +93,12 @@ export const DesktopLayout = () => {
           />
         )}
 
-        {isUserAdm && (
-          <SidebarItem
-            icon={<StickyNote size={20} />}
-            text="Relatórios"
-            urlText="reports"
-            isActive={active === "Relatórios"}
-          />
-        )}
+        <SidebarItem
+          icon={<StickyNote size={20} />}
+          text="Relatórios"
+          urlText="reports"
+          isActive={active === "Relatórios"}
+        />
       </Sidebar>
       <Outlet />
     </div>
