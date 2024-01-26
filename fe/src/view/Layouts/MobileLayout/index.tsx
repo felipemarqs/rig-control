@@ -36,7 +36,7 @@ export const MobileLayout = () => {
           <NavbarItem
             icon={<CircleDollarSignIcon size={20} />}
             text="Faturamento"
-            urlText="invoicing-dashboard"
+            urlText="invoicing"
             isActive={active === "Faturamento"}
           />
         )}
@@ -61,18 +61,9 @@ export const MobileLayout = () => {
         {isUserAdm && (
           <NavbarItem
             icon={<Construction size={20} />}
-            text="Sonda"
-            urlText="rig"
-            isActive={active === "Sonda"}
-          />
-        )}
-
-        {isUserAdm && (
-          <NavbarItem
-            icon={<Construction size={20} />}
-            text="Listar Sondas"
+            text="Sondas"
             urlText="list-rigs"
-            isActive={active === "Listar Sondas"}
+            isActive={active === "Sondas"}
           />
         )}
 

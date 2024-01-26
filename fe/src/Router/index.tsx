@@ -26,6 +26,7 @@ import {BillingRigDetailDashboard} from "../view/pages/BillingRigDetailDashboard
 //import { InDevelopmentPage } from "../view/pages/InDevelopmentPage";
 import {UpdateForm} from "../view/pages/UpdateForm";
 import {Report} from "../view/pages/Report";
+import {InvoicingMenu} from "../view/pages/InvoicingMenu";
 
 export const Router = () => {
   const {windowWidth} = useSidebarContext();
@@ -58,8 +59,10 @@ export const Router = () => {
               element={<BillingRigDetailDashboard />}
             />
             <Route path="/invoicing-list" element={<ListBilling />} />
+            <Route path="/invoicing" element={<InvoicingMenu />} />
+
             <Route path="/details/:efficiencyId" element={<Details />} />
-            <Route path="/rig" element={<CreateRig />} />
+            <Route path="/create-rig" element={<CreateRig />} />
             <Route path="/list-rigs" element={<ListRigs />} />
             <Route path="/create-contract" element={<CreateContract />} />
             <Route path="/contracts" element={<Contract />} />

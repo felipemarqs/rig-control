@@ -1,10 +1,10 @@
-import { PlusIcon } from "@radix-ui/react-icons";
-import { Header } from "../../components/Header";
-import { Spinner } from "../../components/Spinner";
+import {PlusIcon} from "@radix-ui/react-icons";
+import {Header} from "../../components/Header";
+import {Spinner} from "../../components/Spinner";
 
-import { cn } from "../../../app/utils/cn";
-import { EditRigModal } from "./modals/EditRigModal";
-import { ListRigsContext, ListRigsProvider } from "./ListRigsContext";
+import {cn} from "../../../app/utils/cn";
+import {EditRigModal} from "./modals/EditRigModal";
+import {ListRigsContext, ListRigsProvider} from "./ListRigsContext";
 
 export const ListRigs = () => {
   return (
@@ -33,7 +33,7 @@ export const ListRigs = () => {
                 {!isFetchingRigs && (
                   <div className="p-8 flex flex-col h-full gap-4 lg:items-center">
                     <div
-                      onClick={() => navigate("/rig")}
+                      onClick={() => navigate("/create-rig")}
                       className="p-4 bg-white rounded-2xl shadow-[0_1px_2px] flex  h-20 gap-4 justify-center items-center border-l-4  border-primary-500 lg:w-2/5 cursor-pointer"
                     >
                       <div className="h-11 w-11 rounded-full border-2 border-dashed border-gray-600 flex justify-center items-center">
@@ -43,7 +43,7 @@ export const ListRigs = () => {
                         Adicionar Sonda
                       </span>
                     </div>
-                    {rigs.map(({ id, name, state, isActive }) => (
+                    {rigs.map(({id, name, state, isActive}) => (
                       <div
                         key={id}
                         className="p-4 bg-white rounded-2xl shadow-[0_1px_2px] flex flex-col gap-2 justify-between border-l-4  border-primary-500 lg:w-2/5"
