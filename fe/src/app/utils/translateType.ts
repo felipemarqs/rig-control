@@ -1,11 +1,6 @@
-export type periodType =
-  | "DTM"
-  | "GLOSS"
-  | "REPAIR"
-  | "WORKING"
-  | "SCHEDULED_STOP";
+import {PeriodType} from "../entities/PeriodType";
 
-export const translateType = (type: periodType) => {
+export const translateType = (type: PeriodType) => {
   if (type === "DTM") {
     return type;
   }

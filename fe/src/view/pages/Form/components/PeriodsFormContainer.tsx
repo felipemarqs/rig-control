@@ -13,7 +13,8 @@ import TextArea from "antd/es/input/TextArea";
 import {useForm} from "./FormContext/useForm";
 import {Input} from "../../../components/Input";
 import {ChevronUp, TrashIcon} from "lucide-react";
-import {periodType, translateType} from "../../../../app/utils/translateType";
+import {translateType} from "../../../../app/utils/translateType";
+import {PeriodType} from "../../../../app/entities/PeriodType";
 /* import {NewBraskemFormContainer} from "./NewBraskemForm";
 import {TresRFormContainer} from "./TresRForm";
 import {OrigemContainer} from "./OrigemForm";
@@ -101,7 +102,7 @@ export const PeriodsFormContainer = () => {
                     <div>
                       <span className="text-sm">Tipo:</span>{" "}
                       <span className="text-sm">
-                        {translateType(type as periodType)}
+                        {translateType(type as PeriodType)}
                       </span>
                     </div>
                   </div>

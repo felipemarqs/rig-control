@@ -8,9 +8,9 @@ import {
   FileText,
   CircleDollarSignIcon,
   ArchiveX,
-  Receipt,
   Building2,
   Construction,
+  StickyNote,
 } from "lucide-react";
 
 import {useSidebarContext} from "../../../app/contexts/SidebarContext";
@@ -32,19 +32,10 @@ export const DesktopLayout = () => {
 
         {isUserAdm && (
           <SidebarItem
-            icon={<Receipt size={20} />}
-            text="Faturamento Total"
-            urlText="invoicing-dashboard"
-            isActive={active === "Faturamento Total"}
-          />
-        )}
-
-        {isUserAdm && (
-          <SidebarItem
             icon={<CircleDollarSignIcon size={20} />}
-            text="Faturamento Sonda"
-            urlText="invoicing-rig-dashboard"
-            isActive={active === "Faturamento Sonda"}
+            text="Faturamento"
+            urlText="invoicing"
+            isActive={active === "Faturamento"}
           />
         )}
 
@@ -69,18 +60,9 @@ export const DesktopLayout = () => {
         {isUserAdm && (
           <SidebarItem
             icon={<Construction size={20} />}
-            text="Cadastrar Sonda"
-            urlText="rig"
-            isActive={active === "Cadastrar Sonda"}
-          />
-        )}
-
-        {isUserAdm && (
-          <SidebarItem
-            icon={<Construction size={20} />}
-            text="Listar Sondas"
+            text="Sondas"
             urlText="list-rigs"
-            isActive={active === "Listar Sondas"}
+            isActive={active === "Sondas"}
           />
         )}
 
@@ -110,6 +92,13 @@ export const DesktopLayout = () => {
             isActive={active === "Deleção"}
           />
         )}
+
+        <SidebarItem
+          icon={<StickyNote size={20} />}
+          text="Relatórios"
+          urlText="reports"
+          isActive={active === "Relatórios"}
+        />
       </Sidebar>
       <Outlet />
     </div>

@@ -8,6 +8,7 @@ import {
   ArchiveX,
   Building2,
   Construction,
+  StickyNote,
 } from "lucide-react";
 
 import {useSidebarContext} from "../../../app/contexts/SidebarContext";
@@ -35,7 +36,7 @@ export const MobileLayout = () => {
           <NavbarItem
             icon={<CircleDollarSignIcon size={20} />}
             text="Faturamento"
-            urlText="invoicing-dashboard"
+            urlText="invoicing"
             isActive={active === "Faturamento"}
           />
         )}
@@ -60,18 +61,9 @@ export const MobileLayout = () => {
         {isUserAdm && (
           <NavbarItem
             icon={<Construction size={20} />}
-            text="Sonda"
-            urlText="rig"
-            isActive={active === "Sonda"}
-          />
-        )}
-
-        {isUserAdm && (
-          <NavbarItem
-            icon={<Construction size={20} />}
-            text="Listar Sondas"
+            text="Sondas"
             urlText="list-rigs"
-            isActive={active === "Listar Sondas"}
+            isActive={active === "Sondas"}
           />
         )}
 
@@ -99,6 +91,15 @@ export const MobileLayout = () => {
             text="Deleção"
             urlText="deletion-requests"
             isActive={active === "Deleção"}
+          />
+        )}
+
+        {isUserAdm && (
+          <NavbarItem
+            icon={<StickyNote size={20} />}
+            text="Relatórios"
+            urlText="reports"
+            isActive={active === "Relatórios"}
           />
         )}
 

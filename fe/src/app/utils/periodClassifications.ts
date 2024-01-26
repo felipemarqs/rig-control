@@ -1,3 +1,23 @@
+interface PeriodClassification {
+  id: string;
+  classification: string;
+}
+
+interface RepairClassification {
+  id: string;
+  classification: string;
+  repairClassification: {value: string; label: string}[];
+}
+
+interface PeriodClassifications {
+  WORKING: PeriodClassification[];
+  REPAIR: RepairClassification[];
+  INTERVAL: PeriodClassification[];
+  DTM: PeriodClassification[];
+  GLOSS: PeriodClassification[];
+  SCHEDULED_STOP: PeriodClassification[];
+}
+
 const WORKING = [{id: "WORKING", classification: "Operando"}];
 
 const REPAIR = [
@@ -294,25 +314,6 @@ const REPAIR = [
   },
 ];
 
-/* 
-RIG_CAR = 'RIG_CAR',🆗
-  MUD_BOMB = 'MUD_BOMB',🆗
-  OPERATION_EQUIPMENT = 'OPERATION_EQUIPMENT',🆗
-  ESCP = 'ESCP',🆗
-  BOP_DRIVE_UNIT = 'BOP_DRIVE_UNIT',🆗
-  UCI = 'UCI',🆗
-  MUD_TANK = 'MUD_TANK',🆗
-  POWER_SWIVEL = 'POWER_SWIVEL',🆗
-  GEOLOGRAPH = 'GEOLOGRAPH',🆗
-  PIPE_RACK = 'PIPE_RACK',🆗
-  TOOL_BOX = 'TOOL_BOX',🆗
-  GENERATOR = 'GENERATOR',🆗
-  SMS = 'SMS',🆗
-  TRAILER = 'TRAILER',🆗
-  CYLINDRICAL_TANK = 'CYLINDRICAL_TANK',🆗
-  SUPPORT_PLATE = 'SUPPORT_PLATE',
-  SUPPORT_VEHICLES = 'SUPPORT_VEHICLES', */
-
 const GLOSS = [
   {id: "LABOR", classification: "Mão de Obra"},
   {id: "PROCESS", classification: "Processo"},
@@ -330,12 +331,13 @@ const SCHEDULED_STOP = [
   {id: "SCHEDULED_STOP", classification: "Parada de Manutenção"},
 ];
 
-export const periodClassifications = {
+export const periodClassifications: PeriodClassifications = {
   WORKING: WORKING,
   REPAIR: REPAIR,
   INTERVAL: INTERVAL,
   GLOSS: GLOSS,
   SCHEDULED_STOP: SCHEDULED_STOP,
+  DTM: INTERVAL,
 };
 
 export const allClassifications = WORKING.concat(
