@@ -1,7 +1,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import { cn } from "../../app/utils/cn";
+import {cn} from "../../app/utils/cn";
 import React from "react";
-import { Cross2Icon } from "@radix-ui/react-icons";
+import {Cross2Icon} from "@radix-ui/react-icons";
 
 interface ModalProps {
   open: boolean;
@@ -9,6 +9,7 @@ interface ModalProps {
   title: string;
   rightAction?: React.ReactNode;
   onClose?(): void;
+  maxWidth?: string;
 }
 
 export const Modal = ({
@@ -17,6 +18,7 @@ export const Modal = ({
   title,
   rightAction,
   onClose,
+  maxWidth,
 }: ModalProps) => {
   return (
     <Dialog.Root open={open} onOpenChange={onClose}>
@@ -31,7 +33,9 @@ export const Modal = ({
             "data-[state=open]:animate-contentShow",
             "fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 z-[99]",
             "p-6 space-y-10 bg-white rounded-2xl",
-            "shadow=[0px_11px_20px_0px_rgba(0,0,0,0.10)] w-full max-w-[700px] outline-none"
+            `shadow=[0px_11px_20px_0px_rgba(0,0,0,0.10)] w-full max-w-[${
+              maxWidth ? maxWidth : "700px"
+            }] outline-none`
           )}
         >
           <header className="h-12 flex items-center  justify-between text-gray-800">
