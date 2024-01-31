@@ -4,13 +4,36 @@ import {useBarChart} from "./useBarChart";
 export const BarChart = () => {
   const {data} = useBarChart();
 
+  const titleLayer = () => (
+    <g transform={`translate(165, -10)`} textAnchor="middle">
+      <text
+        style={{
+          fontSize: "18px",
+          fontWeight: "bold",
+          fill: "#1c7b7b", // Adjust the color as needed
+        }}
+      >
+        Reparos de Equipamentos
+      </text>
+    </g>
+  );
   return (
     <ResponsiveBar
       data={data}
-      keys={["avg"]}
-      indexBy="month"
-      margin={{top: 50, right: 60, bottom: 50, left: 60}}
+      keys={["qty"]}
+      indexBy="equipment"
+      layout="horizontal"
+      margin={{top: 50, right: 60, bottom: 20, left: 150}}
       padding={0.3}
+      layers={[
+        titleLayer,
+        "grid",
+        "axes",
+        "bars",
+        "markers",
+        "legends",
+        "annotations",
+      ]}
       valueScale={{type: "linear"}}
       indexScale={{type: "band", round: true}}
       colors="#1c7b7b"
@@ -54,14 +77,7 @@ export const BarChart = () => {
       }}
       axisTop={null}
       axisRight={null}
-      axisBottom={{
-        tickSize: 5,
-        tickPadding: 5,
-        tickRotation: 0,
-        legend: "Eficiência Mensal",
-        legendPosition: "middle",
-        legendOffset: 32,
-      }}
+      axisBottom={null}
       axisLeft={{
         tickSize: 5,
         tickPadding: 5,
@@ -97,7 +113,7 @@ export const BarChart = () => {
           ],
         },
       ]} */
-      valueFormat={(value) => `${value}%`}
+      valueFormat={(value) => `${value}`}
       role="application"
       ariaLabel=""
       barAriaLabel={(e) =>
