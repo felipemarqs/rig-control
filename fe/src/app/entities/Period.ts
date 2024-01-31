@@ -9,5 +9,8 @@ export type Period = {
   description: string;
   type: PeriodType;
   efficiencyId: string;
-  wellId: string;
+  well: {
+    id:string,
+    name:string
+  }
 };

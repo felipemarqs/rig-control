@@ -2,7 +2,6 @@
 import {BaggageClaim, FilterIcon, Truck} from "lucide-react";
 import {Button} from "../../components/Button";
 import {DatePickerInput} from "../../components/DatePickerInput";
-import {Header} from "../../components/Header";
 import {NotFound} from "../../components/NotFound";
 import {Select} from "../../components/Select";
 import {Spinner} from "../../components/Spinner";
@@ -13,7 +12,7 @@ import {cn} from "../../../app/utils/cn";
 import {FilterType} from "../../../app/entities/FilterType";
 import {Modal} from "../../components/Modal";
 import {AddFiles} from "../../components/AddFiles";
-/* import {BarChart} from "./components/BarChart"; */
+import {BarChart} from "./components/BarChart";
 
 export const Dashboard = () => {
   return (
@@ -48,11 +47,11 @@ export const Dashboard = () => {
           handleIsAlertSeen,
           selectedYear,
           isAlertSeen,
+          repairPeriods,
           handleYearChange,
           years,
         }) => (
-          <div className="w-full  overflow-y-scroll">
-            <Header title="DASHBOARD" subtitle="Página de início do usuário" />
+          <div className="w-full  pt-10 overflow-y-scroll">
             <div className="w-full flex flex-wrap justify-center items-center lg:justify-end gap-1 lg:px-4">
               <div className="w-[113px] lg:w-[250px]">
                 <Select
@@ -218,7 +217,7 @@ export const Dashboard = () => {
               </div>
             </div>
 
-            <div className=" mx-auto max-w-[1024px] bg-gray-400  rounded-md lg:min-w-[1300px] lg:p-4">
+            <div className=" mx-auto max-w-[1024px] bg-gray-400 min-h-[450px] rounded-md lg:min-w-[1300px] lg:p-4 flex justify-center items-center">
               {isEmpty && (
                 <>
                   {isFetchingEfficiencies && (
@@ -228,17 +227,19 @@ export const Dashboard = () => {
                   )}
 
                   {!isFetchingEfficiencies && (
-                    <NotFound>
-                      <strong>Não</strong> existem dados para a{" "}
-                      <strong>sonda</strong> no <strong>período</strong>{" "}
-                      selecionado!
-                    </NotFound>
+                    <div className="w-full h-full flex justify-center items-center">
+                      <NotFound>
+                        <strong>Não</strong> existem dados para a{" "}
+                        <strong>sonda</strong> no <strong>período</strong>{" "}
+                        selecionado!
+                      </NotFound>
+                    </div>
                   )}
                 </>
               )}
 
               {!isEmpty && (
-                <div className="grid grid-cols-12 auto-rows-[120px] gap-3">
+                <div className=" flex-1 grid grid-cols-12 auto-rows-[120px] gap-3">
                   <div
                     className={cn(
                       "col-span-12 row-span-3 flex justify-center bg-gray-200 rounded-lg items-center lg:col-start-3 lg:col-span-8 lg:row-span-3",
@@ -255,17 +256,27 @@ export const Dashboard = () => {
                     {!isFetchingEfficiencies && <LineChart />}
                   </div>*/}
 
-                  {/*  <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center lg:col-start-2 lg:col-span-10 lg:row-span-3">
-                    {isFetchingAverage && <Spinner />}
-                    {!isFetchingAverage && (
+                  <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6 lg:row-span-3">
+                    {isFetchingEfficiencies && <Spinner />}
+                    {repairPeriods.length === 0 && !isFetchingEfficiencies && (
+                      <div className="flex justify-center items-center">
+                        <NotFound>
+                          <strong>Não</strong> existem dados para a{" "}
+                          <strong>sonda</strong> no <strong>período</strong>{" "}
+                          selecionado!
+                        </NotFound>
+                      </div>
+                    )}
+                    {!isFetchingEfficiencies && repairPeriods.length > 0 && (
                       <div className="w-full h-full">
                         <BarChart />
                       </div>
                     )}
-                  </div> */}
+                  </div>
 
-                  <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center lg:col-start-2 lg:col-span-10">
+                  <div className="col-span-12 row-span-3 flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6">
                     {isFetchingEfficiencies && <Spinner />}
+
                     {!isFetchingEfficiencies && (
                       <div className="w-full h-full">
                         <ListEfficienciesDataGrid

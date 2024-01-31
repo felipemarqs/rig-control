@@ -520,7 +520,23 @@ export class EfficienciesService {
         userId: true,
         date: true,
         availableHours: true,
-        periods: true,
+        periods: {
+          select: {
+            id: true,
+            startHour: true,
+            endHour: true,
+            classification: true,
+            repairClassification: true,
+            description: true,
+            type: true,
+            well: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
         christmasTreeDisassemblyHours: true,
         bobRentHours: true,
         hasDemobilization: true,
