@@ -34,7 +34,7 @@ export const Modal = ({
             "fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 z-[99]",
             "p-6 space-y-10 bg-white rounded-2xl",
             `shadow=[0px_11px_20px_0px_rgba(0,0,0,0.10)] w-full max-w-[${
-              maxWidth ? maxWidth : "700px"
+              maxWidth ? maxWidth : "800px"
             }] outline-none`
           )}
         >

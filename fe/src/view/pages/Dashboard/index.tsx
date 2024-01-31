@@ -312,6 +312,12 @@ export const Dashboard = () => {
                     Confira as novidades:
                   </span>
                   <ul className="list-disc list-inside">
+                    <li className="my-4">Novidades no Dashboard!</li>
+                    <span>
+                      Adicionado novo um gráfico ao Dashboard 📊, exibindo a
+                      quantidade de reparos realizados em equipamentos durante o
+                      período selecionado!
+                    </span>
                     <li className="my-4">Nova Página de Relatórios!</li>
                     <span>
                       Apresentamos uma nova página de relatórios que facilitará
@@ -319,11 +325,6 @@ export const Dashboard = () => {
                       com base em tipo e classificação, proporcionando uma
                       visualização mais detalhada e personalizada das
                       informações.
-                    </span>
-                    <li className="my-4">Correções de Bugs:</li>
-                    <span>
-                      Corrigido diversos bugs para garantir um desempenho mais
-                      estável e confiável.
                     </span>
                   </ul>
                 </div>
