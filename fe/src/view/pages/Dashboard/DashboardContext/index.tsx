@@ -7,14 +7,15 @@ import {startOfMonth, endOfMonth, format} from "date-fns";
 import {useRigs} from "../../../../app/hooks/rigs/useRigs";
 import {Rig} from "../../../../app/entities/Rig";
 import {Efficiency} from "../entities/Efficiency";
-import {useEfficiencyAverage} from "../../../../app/hooks/efficiencies/useEfficiencyAverage";
-import {AverageResponse} from "../../../../app/services/efficienciesService/getAverage";
 import {useSidebarContext} from "../../../../app/contexts/SidebarContext";
 import {getPeriodRange} from "../../../../app/utils/getPeriodRange";
 import {months} from "../../../../app/utils/months";
 import {FilterType} from "../../../../app/entities/FilterType";
 import {filterOptions} from "../../../../app/utils/filterOptions";
 import {years} from "../../../../app/utils/years";
+import {EfficienciesResponse} from "../../../../app/services/efficienciesService/getAll";
+import {getRepairPeriods} from "../../../../app/utils/getRepairPeriods";
+import {Period} from "../../../../app/entities/Period";
 
 // Definição do tipo do contexto
 interface DashboardContextValue {
@@ -38,15 +39,14 @@ interface DashboardContextValue {
   signout(): void;
   isEmpty: boolean;
   rigs: Rig[] | {id: string; name: string}[];
-  efficiencies: Efficiency[];
+  repairPeriods: Period[] | never[];
+  efficiencies: EfficienciesResponse;
   totalAvailableHours: number;
   availableHoursPercentage: number;
   totalUnavailableHours: number;
   unavailableHoursPercentage: number;
   totalDtms: number;
   totalMovimentations: number;
-  isFetchingAverage: boolean;
-  average: AverageResponse;
   windowWidth: number;
   filterOptions: SelectOptions;
   months: SelectOptions;
@@ -96,9 +96,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   // Utilização dos hooks para eficiências e médias de eficiência
   const {efficiencies, isFetchingEfficiencies, refetchEffciencies} =
     useEfficiencies(filters);
-  const {average, refetchAverage, isFetchingAverage} = useEfficiencyAverage(
-    filters.rigId
-  );
+
   const isEmpty: boolean = efficiencies.length === 0;
   const [selectedFilterType, setSelectedFilterType] = useState<FilterType>(
     FilterType.PERIOD
@@ -107,7 +105,6 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   // Funções para manipulação das datas e filtros
   const handleApplyFilters = () => {
     refetchEffciencies();
-    refetchAverage();
   };
 
   const handleChangeRig = (rigId: string) => {
@@ -150,6 +147,10 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     setSelectedPeriod("");
   };
 
+  const repairPeriods = getRepairPeriods(efficiencies);
+
+  console.log("repairPeriods", repairPeriods);
+
   // Cálculos para estatísticas das eficiências
   let totalAvailableHours: number = 0;
   let totalUnavailableHours: number = 0;
@@ -190,12 +191,12 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         handleToggleFilterType,
         selectedStartDate,
         selectedEndDate,
+        repairPeriods,
         handleStartDateChange,
         handleEndDateChange,
         handleApplyFilters,
         efficiencies,
         isFetchingEfficiencies,
-        isFetchingAverage,
         user,
         filterOptions,
         selectedFilterType,
@@ -208,7 +209,6 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         unavailableHoursPercentage,
         totalDtms,
         totalMovimentations,
-        average,
         windowWidth,
         isAlertSeen,
         handleIsAlertSeen,

@@ -29,7 +29,7 @@ export const ListEfficienciesDataGrid = ({
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-white font-semibold bg-primary-500 py-2 px-6 rounded-md">
+            <div className="text-primary-500 font-semibold">
               {params.value.name}
             </div>
           </div>
@@ -41,7 +41,7 @@ export const ListEfficienciesDataGrid = ({
       headerName: "Data",
       headerAlign: "center",
       type: "date",
-      flex: 0.5,
+      flex: 0.2,
       valueGetter: (params: GridValueGetterParams) => {
         // Supondo que o valor de data seja uma string no formato ISO8601
         return new Date(params.value);
@@ -49,9 +49,9 @@ export const ListEfficienciesDataGrid = ({
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-white font-semibold bg-primary-500 py-2 px-6 rounded-md">
+            <div className="text-primary-500 font-semibold">
               {" "}
-              {formatDate(new Date(params.value))}
+              {formatDate(new Date(params.value)).slice(0, 5)}
             </div>
           </div>
         );
@@ -65,22 +65,20 @@ export const ListEfficienciesDataGrid = ({
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-white font-semibold bg-primary-500 py-2 px-6 rounded-md">
-              {params.value}
-            </div>
+            <div className="text-primary-500 font-semibold">{params.value}</div>
           </div>
         );
       },
     },
     {
       field: "availableHours",
-      headerName: "Horas Disponíveis",
+      headerName: "Hrs Disp.",
       headerAlign: "center",
-      flex: 0.5,
+      flex: 0.2,
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-white font-semibold bg-primary-500 py-2 px-6 rounded-md">
+            <div className="text-primary-500 font-semibold ">
               {params.value}Hrs
             </div>
           </div>
@@ -98,7 +96,7 @@ export const ListEfficienciesDataGrid = ({
         return (
           <div className="w-full flex justify-center items-center">
             <Link to={`/details/${params.value}`} className="w-[35%] ">
-              <Button className="bg-secondary-500 rounded-md h-[25px]">
+              <Button className="bg-primary-500 rounded-md h-[25px]">
                 Ver Mais
               </Button>
             </Link>
@@ -111,7 +109,7 @@ export const ListEfficienciesDataGrid = ({
   const NotFoundDataGrid = () => {
     return (
       <NotFound>
-        <span className="text-white">
+        <span className="text-primary-500">
           <strong>Não</strong> existem dados para a <strong>sonda</strong> no{" "}
           <strong>período</strong> selecionado!
         </span>
@@ -192,19 +190,29 @@ export const ListEfficienciesDataGrid = ({
           border: "none",
         },
         "& .MuiDataGrid-cell": {
-          borderBottom: "none",
-          borderRightColor: "black",
+          borderBottomColor: "#1c7b7b",
+          borderWidth: "1px",
         },
         "& .MuiDataGrid-columnHeaders": {
+          fontWeight: "bold",
           backgroundColor: "#1c7b7b",
           color: "#fff",
-          borderBottom: "none",
+          // borderBottom: "#1c7b7b",
+          borderBottomColor: "#1c7b7b",
+          borderWidth: "1px",
+        },
+        "& .MuiDataGrid-columnHeaderTitle": {
+          fontWeight: "bold",
+        },
+        "& .MuiTablePagination-root": {
+          color: "#1c7b7b",
         },
         "& .MuiDataGrid-virtualScroller": {
-          backgroundColor: "#499595",
+          backgroundColor: "#E9ECEF",
+          padding: 0,
         },
         "& .MuiDataGrid-footerContainer": {
-          backgroundColor: "#1c7b7b",
+          backgroundColor: "#E9ECEF",
           color: "#fff",
           borderTop: "none",
         },

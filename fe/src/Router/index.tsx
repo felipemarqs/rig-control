@@ -27,6 +27,7 @@ import {BillingRigDetailDashboard} from "../view/pages/BillingRigDetailDashboard
 import {UpdateForm} from "../view/pages/UpdateForm";
 import {Report} from "../view/pages/Report";
 import {InvoicingMenu} from "../view/pages/InvoicingMenu";
+import { MyResponsivePie } from "../view/components/Test";
 
 export const Router = () => {
   const {windowWidth} = useSidebarContext();
@@ -72,6 +73,10 @@ export const Router = () => {
             <Route path="/users/update-rigs/:id" element={<UpdateUserRigs />} />
             <Route path="/deletion-requests" element={<DeletionRequests />} />
             <Route path="/reports" element={<Report />} />
+  
+
+
+          
           </Route>
         </Route>
       </Routes>
