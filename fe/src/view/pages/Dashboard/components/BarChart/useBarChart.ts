@@ -17,13 +17,11 @@ export const useBarChart = () => {
       );
 
       if (foundIndex === -1) {
-        // If not found, add a new item to the array
         acc.push({
           equipment: current.classification,
           qty: 1,
         });
       } else {
-        // If found, update the quantity
         acc[foundIndex].qty += 1;
       }
 
