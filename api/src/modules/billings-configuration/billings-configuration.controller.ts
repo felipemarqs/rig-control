@@ -7,10 +7,12 @@ import {
   Param,
   Delete,
   Put,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { BillingsConfigurationService } from './billings-configuration.service';
 import { CreateBillingsConfigurationDto } from './dto/create-billings-configuration.dto';
 import { UpdateBillingsConfigurationDto } from './dto/update-billings-configuration.dto';
+import { IsUserAdm } from 'src/shared/decorators/IsUserAdm';
 
 @Controller('billings-config')
 export class BillingsConfigurationController {
@@ -28,12 +30,18 @@ export class BillingsConfigurationController {
   }
 
   @Get()
-  findAll() {
+  findAll(@IsUserAdm() isUserAdm: boolean) {
+    if (!isUserAdm) {
+      throw new UnauthorizedException('Acesso Restrito!');
+    }
     return this.billingsConfigurationService.findAll();
   }
 
   @Get(':rigId')
-  findOne(@Param('rigId') rigId: string) {
+  findOne(@IsUserAdm() isUserAdm: boolean, @Param('rigId') rigId: string) {
+    if (!isUserAdm) {
+      throw new UnauthorizedException('Acesso Restrito!');
+    }
     return this.billingsConfigurationService.findUnique(rigId);
   }
 
