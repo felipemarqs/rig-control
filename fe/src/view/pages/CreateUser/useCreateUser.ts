@@ -51,7 +51,9 @@ export const useCreateUser = () => {
   }, [selectedContract]);
 
   const queryClient = useQueryClient();
-  const {isLoading, mutateAsync} = useMutation(usersService.create);
+  const {isPending: isLoading, mutateAsync} = useMutation({
+    mutationFn: usersService.create,
+  });
 
   const handleSubmit = hookFormHandleSubmit(async (data) => {
     try {

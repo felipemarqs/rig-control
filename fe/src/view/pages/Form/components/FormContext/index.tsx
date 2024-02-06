@@ -194,7 +194,9 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   // Utilização de useMutation para obter isLoading e mutateAsync
-  const {isLoading, mutateAsync} = useMutation(efficienciesService.create);
+  const {isPending: isLoading, mutateAsync} = useMutation({
+    mutationFn: efficienciesService.create,
+  });
   const queryClient = useQueryClient();
 
   const handleSubmit = async (periods: Periods) => {

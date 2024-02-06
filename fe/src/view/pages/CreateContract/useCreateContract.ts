@@ -9,7 +9,7 @@ import {contractsService} from "../../../app/services/contractsService";
 import {useNavigate} from "react-router-dom";
 
 const schema = z.object({
-  name: z.string().nonempty("Nome é obrigatório"),
+  name: z.string().min(1, "Nome é obrigatório"),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -28,7 +28,9 @@ export const useCreateContract = () => {
   });
 
   const queryClient = useQueryClient();
-  const {isLoading, mutateAsync} = useMutation(contractsService.create);
+  const {isPending: isLoading, mutateAsync} = useMutation({
+    mutationFn: contractsService.create,
+  });
 
   const handleSubmit = hookFormHandleSubmit(async (data) => {
     try {

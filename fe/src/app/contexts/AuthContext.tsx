@@ -1,6 +1,6 @@
 import {createContext, useCallback, useEffect, useState} from "react";
 import {localStorageKeys} from "../config/localStorageKeys";
-import {useQuery} from "@tanstack/react-query";
+import {useQuery, useQueryClient} from "@tanstack/react-query";
 import {usersService} from "../services/usersService";
 import {User} from "../entities/User";
 import {treatAxiosError} from "../utils/treatAxiosError";
@@ -30,6 +30,8 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     return !!storedAccessToken;
   });
 
+  const queryClient = useQueryClient();
+
   const [isAlertSeen, setIsAlertSeen] = useState(false);
 
   const signin = useCallback((accessToken: string) => {
@@ -41,13 +43,13 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
   const signout = useCallback(() => {
     localStorage.removeItem(localStorageKeys.ACCESS_TOKEN);
     setSignedIn(false);
-    remove();
+    queryClient.invalidateQueries({queryKey: ["me"]});
   }, []);
 
   const handleIsAlertSeen = () => [setIsAlertSeen(true)];
 
-  const {data, isError, error, isFetching, isSuccess, remove} = useQuery({
-    queryKey: ["users", "me"],
+  const {data, isError, error, isFetching, isSuccess} = useQuery({
+    queryKey: ["me"],
     queryFn: () => usersService.me(),
     enabled: signedIn,
     staleTime: Infinity,

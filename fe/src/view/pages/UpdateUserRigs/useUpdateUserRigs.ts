@@ -33,9 +33,9 @@ export const useUpdateUserRigs = (id: string) => {
 
   const {users, isFetchingUsers} = useUsers(filters);
 
-  const {isLoading: isLoadingUpdateRigs, mutateAsync} = useMutation(
-    usersService.updateRigs
-  );
+  const {isPending: isLoadingUpdateRigs, mutateAsync} = useMutation({
+    mutationFn: usersService.updateRigs,
+  });
 
   const userBeingEdited = useMemo(() => {
     return users.find((user) => user.id === id);
