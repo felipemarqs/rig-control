@@ -687,4 +687,36 @@ export class EfficienciesService {
 
     return await this.efficiencyRepo.getAverage(rigId, year);
   }
+
+  async getRigsAvailableHoursAverage(filters: {
+    startDate: string;
+    endDate: string;
+  }) {
+    const rigs = await this.rigsRepo.findAll();
+
+    const average = await this.efficiencyRepo.groupBy({
+      by: ['rigId'],
+      _avg: {
+        availableHours: true,
+      },
+      where: {
+        date: {
+          gte: new Date(filters.startDate),
+          lte: new Date(filters.endDate),
+        },
+      },
+    });
+
+    const result = average.map(({ _avg, rigId }) => {
+      const rigFound = rigs.find((rig) => rig.id === rigId);
+
+      return {
+        rigId,
+        rig: rigFound.name,
+        avg: _avg.availableHours,
+      };
+    });
+
+    return result;
+  }
 }
