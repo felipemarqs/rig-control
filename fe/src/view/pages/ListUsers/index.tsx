@@ -82,14 +82,12 @@ export const ListUsers = () => {
                   </div>
 
                   <div className="col-span-12 row-span-1  flex flex-wrap justify-end">
-                    {user.accessLevel !== "VIEWER" && (
-                      <Link
-                        className="text-primary-500 tracking-[-0.5] underline font-semibold px-2"
-                        to={`/users/update-rigs/${user.id}`}
-                      >
-                        Visualizar Sondas
-                      </Link>
-                    )}
+                    <Link
+                      className="text-primary-500 tracking-[-0.5] underline font-semibold px-2"
+                      to={`/users/update-rigs/${user.id}`}
+                    >
+                      Visualizar Sondas
+                    </Link>
                   </div>
                 </div>
               ))}
