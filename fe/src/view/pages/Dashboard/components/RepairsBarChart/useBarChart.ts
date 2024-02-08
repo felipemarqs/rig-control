@@ -37,6 +37,8 @@ export const useBarChart = () => {
     }))
     .sort((a, b) => a.qty - b.qty);
 
+  console.log(convertedResult);
+
   return {
     data: convertedResult,
   };

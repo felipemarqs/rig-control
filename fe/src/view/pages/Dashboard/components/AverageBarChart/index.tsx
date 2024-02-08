@@ -1,42 +1,30 @@
 import {ResponsiveBar} from "@nivo/bar";
-import {useBarChart} from "./useBarChart";
+import {useAverageBarChart} from "./useAverageBarChart";
 
-export const BarChart = () => {
-  const {data} = useBarChart();
+export const AverageBarChart = () => {
+  const {data, selectedRig} = useAverageBarChart();
 
-  const titleLayer = () => (
-    <g transform={`translate(165, -10)`} textAnchor="middle">
-      <text
-        style={{
-          fontSize: "18px",
-          fontWeight: "bold",
-          fill: "#1c7b7b", // Adjust the color as needed
-        }}
-      >
-        Reparos de Equipamentos
-      </text>
-    </g>
-  );
   return (
     <ResponsiveBar
       data={data}
-      keys={["qty"]}
-      indexBy="equipment"
-      layout="horizontal"
-      margin={{top: 50, right: 60, bottom: 20, left: 150}}
+      keys={["avg"]}
+      indexBy="rig"
+      layout="vertical"
+      margin={{top: 50, right: 60, bottom: 50, left: 40}}
       padding={0.3}
       layers={[
-        titleLayer,
         "grid",
         "axes",
         "bars",
         "markers",
         "legends",
-        "annotations",
+        "annotations", // Adiciona uma camada de rótulos
       ]}
       valueScale={{type: "linear"}}
       indexScale={{type: "band", round: true}}
-      colors="#1c7b7b"
+      colors={(params) => {
+        return params.data.rigId === selectedRig ? "#38bcb2" : "#1c7b7b";
+      }}
       defs={[
         {
           id: "dots",
@@ -70,6 +58,11 @@ export const BarChart = () => {
           },
           id: "lines",
         },
+
+        {
+          match: (bar) => bar.data.data.rigId === selectedRig,
+          id: "highlight-color", // ID para referenciar o estilo de cor de destaque
+        },
       ]}
       borderColor={{
         from: "color",
@@ -77,8 +70,7 @@ export const BarChart = () => {
       }}
       axisTop={null}
       axisRight={null}
-      axisBottom={null}
-      axisLeft={{
+      axisBottom={{
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
@@ -86,6 +78,7 @@ export const BarChart = () => {
         legendPosition: "middle",
         legendOffset: -40,
       }}
+      axisLeft={null}
       labelSkipWidth={12}
       labelSkipHeight={12}
       labelTextColor="#fff"
@@ -113,7 +106,7 @@ export const BarChart = () => {
           ],
         },
       ]} */
-      valueFormat={(value) => `${value}`}
+      valueFormat={(value) => `${value} %`}
       role="application"
       ariaLabel=""
       barAriaLabel={(e) =>
