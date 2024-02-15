@@ -40,7 +40,9 @@ export const useUpdateUser = () => {
   });
 
   const queryClient = useQueryClient();
-  const {isLoading, mutateAsync} = useMutation(usersService.update);
+  const {isPending: isLoading, mutateAsync} = useMutation({
+    mutationFn: usersService.update,
+  });
 
   const handleSubmit = hookFormHandleSubmit(async (data) => {
     try {

@@ -95,7 +95,10 @@ export const ListEfficienciesDataGrid = ({
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <Link to={`/details/${params.value}`} className="w-[35%] ">
+            <Link
+              to={`/details/${params.value}`}
+              className="w-full flex justify-center items-center"
+            >
               <Button className="bg-primary-500 rounded-md h-[25px]">
                 Ver Mais
               </Button>

@@ -1,24 +1,48 @@
-import {ResponsiveBar} from "@nivo/bar";
 import {useBarChart} from "./useBarChart";
+import {cn} from "../../../../../app/utils/cn";
 
-export const BarChart = () => {
-  const {data} = useBarChart();
+export const GrouppedRepairs = () => {
+  const {repairGroupedData} = useBarChart();
 
-  const titleLayer = () => (
-    <g transform={`translate(165, -10)`} textAnchor="middle">
-      <text
-        style={{
-          fontSize: "18px",
-          fontWeight: "bold",
-          fill: "#1c7b7b", // Adjust the color as needed
-        }}
-      >
-        Reparos de Equipamentos
-      </text>
-    </g>
-  );
+  console.log("repairGroupedData", repairGroupedData.groupedData.length === 3);
+
   return (
-    <ResponsiveBar
+    <div
+      className={cn(
+        `max-h-full ${
+          repairGroupedData.groupedData.length <= 3 ? "" : "overflow-y-scroll"
+        }`
+      )}
+    >
+      <header className="bg-primary-500 text-white p-2 rounded-t-lg justify-center flex">
+        <span className="text-white font-semibold">Reparos</span>
+      </header>
+      <div className="flex flex-col gap-2  ">
+        {repairGroupedData.groupedData.map((data) => (
+          <div
+            className="p-4 bg-white rounded-sm flex flex-col justify-between border-y-2 gap-4 border-primary-500"
+            key={data.equipment}
+          >
+            <div className="flex gap-2">
+              <span className="text-primary-500"> Equipamento:</span>
+
+              <span className="text-primary-500 font-semibold italic">
+                {data.equipment}
+              </span>
+            </div>
+
+            <div className="flex gap-2">
+              <span className="text-primary-500"> Tempo em Reparo:</span>
+
+              <span className="text-primary-500 font-semibold italic">
+                {data.totalHours} Hrs
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+    /*  <ResponsiveBar
       data={data}
       keys={["qty"]}
       indexBy="equipment"
@@ -112,7 +136,7 @@ export const BarChart = () => {
             },
           ],
         },
-      ]} */
+      ]}
       valueFormat={(value) => `${value}`}
       role="application"
       ariaLabel=""
@@ -164,6 +188,6 @@ export const BarChart = () => {
           },
         },
       }}
-    />
+    /> */
   );
 };

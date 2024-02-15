@@ -28,7 +28,7 @@ export const useRequestDeleteModal = (efficiencyId: string) => {
     resolver: zodResolver(schema),
   });
 
-  const {isLoading: isLoadingDeletionRequest, mutateAsync} = useMutation({
+  const {isPending: isLoadingDeletionRequest, mutateAsync} = useMutation({
     mutationKey: ["deletion-request"],
     mutationFn: async (data: ToPersistenceDeletionRequest) => {
       return await deletionRequestsServices.create(data);

@@ -3,6 +3,7 @@ import {DomainEfficiency} from "../../../entities/DomainEfficiency";
 import {differenceInMinutes, parse} from "date-fns";
 import {ToPersistanceEfficiency} from "../../../entities/PersistanceEfficiency";
 import {getTotalHoursFromTimeString} from "../../../utils/getTotalHoursFromTimeString";
+import {getDiffInMinutes} from "../../../utils/getDiffInMinutes";
 
 export const toPersistence = (domainEfficiency: DomainEfficiency) => {
   let totalAvailableHours = 0;
@@ -31,30 +32,18 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
 
       //Soomando as horas totais caso seja operando
 
-      const getDiffInMinutes = (horaFinal: Date, horaInicial: Date) => {
-        const isoEndDate = horaFinal.toISOString().split("T")[0];
-        const isoHour = horaFinal.toISOString().split("T")[1];
-
-        let endDate = horaFinal;
-        if (isoHour === "02:59:00.000Z") {
-          endDate = new Date(`${isoEndDate}T03:00:00.000Z`);
-        }
-
-        return differenceInMinutes(endDate, horaInicial);
-      };
-
-      const horaInicial = parse(startHour, "HH:mm", new Date());
-      const horaFinal = parse(endHour, "HH:mm", new Date());
+      const parsedStartHour = parse(startHour, "HH:mm", new Date());
+      const parsedEndHour = parse(endHour, "HH:mm", new Date());
 
       if (type === "WORKING" || type === "DTM" || type === "SCHEDULED_STOP") {
-        const diffInMinutes = getDiffInMinutes(horaFinal, horaInicial);
+        const diffInMinutes = getDiffInMinutes(parsedEndHour, parsedStartHour);
 
         totalAvailableHours += diffInMinutes / 60;
       }
 
       //temporarily
       if (type === "SCHEDULED_STOP") {
-        const diffInMinutes = getDiffInMinutes(horaFinal, horaInicial);
+        const diffInMinutes = getDiffInMinutes(parsedEndHour, parsedStartHour);
 
         totalScheduledStopHours += diffInMinutes / 60;
       }

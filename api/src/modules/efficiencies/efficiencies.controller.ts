@@ -20,35 +20,18 @@ import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
 export class EfficienciesController {
   constructor(private readonly efficienciesService: EfficienciesService) {}
 
-  @Post()
-  create(
-    @ActiveUserId() userId: string,
-    @Body() createEfficiencyDto: CreateEfficiencyDto,
-  ) {
-    return this.efficienciesService.create(createEfficiencyDto, userId);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateEfficiencyDto: UpdateEfficiencyDto,
-  ) {
-    return this.efficienciesService.update(+id, updateEfficiencyDto);
-  }
-
-  @Get()
-  findAll(
-    @Query('rigId', ParseUUIDPipe) rigId: string,
+  @Get('/average')
+  getAverageEfficiency(
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
   ) {
-    return this.efficienciesService.findAllByRigId({
-      rigId,
+    return this.efficienciesService.getRigsAvailableHoursAverage({
       startDate,
       endDate,
     });
   }
 
+  // Rotas com parâmetros de caminho (mais específicas)
   @Get(':efficiencyId')
   findById(@Param('efficiencyId', ParseUUIDPipe) efficiencyId: string) {
     return this.efficienciesService.findById(efficiencyId);
@@ -63,5 +46,36 @@ export class EfficienciesController {
   @Get('/average/:rigId')
   getAverage(@Param('rigId') rigId: string) {
     return this.efficienciesService.getAverage(rigId);
+  }
+
+  // Rotas com parâmetros de consulta (menos específicas)
+  @Get()
+  findAll(
+    @Query('rigId', ParseUUIDPipe) rigId: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    return this.efficienciesService.findAllByRigId({
+      rigId,
+      startDate,
+      endDate,
+    });
+  }
+
+  // Demais rotas
+  @Post()
+  create(
+    @ActiveUserId() userId: string,
+    @Body() createEfficiencyDto: CreateEfficiencyDto,
+  ) {
+    return this.efficienciesService.create(createEfficiencyDto, userId);
+  }
+
+  @Patch(':id')
+  update(
+    @Param('id') id: string,
+    @Body() updateEfficiencyDto: UpdateEfficiencyDto,
+  ) {
+    return this.efficienciesService.update(+id, updateEfficiencyDto);
   }
 }
