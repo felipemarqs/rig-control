@@ -1,4 +1,3 @@
-import {BarDatum} from "@nivo/bar";
 import {useDashboard} from "../../DashboardContext/useDashboard";
 import {translateClassification} from "../../../../../app/utils/translateClassification";
 import {getDiffInMinutes} from "../../../../../app/utils/getDiffInMinutes";
@@ -23,7 +22,8 @@ export const useBarChart = () => {
   const repairGroupedData: GrouppedEquipmentData = repairPeriods.reduce(
     (acc: GrouppedEquipmentData, current) => {
       const foundIndex = acc.groupedData.findIndex(
-        (item) => item.equipment === current.classification
+        (item) =>
+          item.equipment === translateClassification(current.classification)
       );
 
       const parsedStartHour = parse(
@@ -57,14 +57,9 @@ export const useBarChart = () => {
     {totalRepairHours: 0, groupedData: []}
   );
 
-  //console.log("Result", result);
-
-  const convertedResult: BarDatum[] = repairGroupedData.groupedData
-    .map((item) => ({
-      equipment: translateClassification(item.equipment)!,
-      qty: item.qty,
-    }))
-    .sort((a, b) => a.qty - b.qty);
+  const convertedResult = repairGroupedData.groupedData.sort(
+    (a, b) => b.totalHours - a.totalHours
+  );
 
   return {
     data: convertedResult,

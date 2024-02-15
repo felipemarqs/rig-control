@@ -4,7 +4,7 @@ import {cn} from "../../../../../app/utils/cn";
 export const GrouppedRepairs = () => {
   const {repairGroupedData} = useBarChart();
 
-  console.log("repairGroupedData", repairGroupedData.groupedData.length === 3);
+  //console.log("repairGroupedData", repairGroupedData.groupedData.length === 3);
 
   return (
     <div

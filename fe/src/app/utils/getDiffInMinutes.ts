@@ -1,7 +1,6 @@
 import {differenceInMinutes} from "date-fns";
 
 export const getDiffInMinutes = (horaFinal: Date, horaInicial: Date) => {
-  console.log("hora final", horaFinal);
   const isoEndDate = horaFinal.toISOString().split("T")[0];
   const isoHour = horaFinal.toISOString().split("T")[1];
 
