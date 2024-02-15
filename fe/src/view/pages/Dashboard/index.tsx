@@ -12,7 +12,9 @@ import {cn} from "../../../app/utils/cn";
 import {FilterType} from "../../../app/entities/FilterType";
 import {Modal} from "../../components/Modal";
 import {AddFiles} from "../../components/AddFiles";
-import {BarChart} from "./components/BarChart";
+import {GrouppedRepairs} from "./components/GrouppedRepairs";
+import {AccessLevel} from "../../../app/entities/AccessLevel";
+import {AverageBarChart} from "./components/AverageBarChart";
 
 export const Dashboard = () => {
   return (
@@ -28,6 +30,8 @@ export const Dashboard = () => {
           handleEndDateChange,
           handleApplyFilters,
           isFetchingEfficiencies,
+          isFetchingRigsAverage,
+          rigsAverage,
           rigs,
           isEmpty,
           totalAvailableHours,
@@ -256,23 +260,45 @@ export const Dashboard = () => {
                     {!isFetchingEfficiencies && <LineChart />}
                   </div>*/}
 
-                  <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6 lg:row-span-3">
+                  <div
+                    className={`col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-4  `}
+                  >
                     {isFetchingEfficiencies && <Spinner />}
                     {repairPeriods.length === 0 && !isFetchingEfficiencies && (
-                      <div className="flex justify-center items-center">
+                      <div className="flex justify-center  items-center">
                         <NotFound>
-                          <strong>Não</strong> existem dados para a{" "}
-                          <strong>sonda</strong> no <strong>período</strong>{" "}
-                          selecionado!
+                          <strong>Não</strong> existem dados de{" "}
+                          <strong>reparos</strong> para a <strong>sonda</strong>{" "}
+                          no <strong>período</strong> selecionado!
                         </NotFound>
                       </div>
                     )}
                     {!isFetchingEfficiencies && repairPeriods.length > 0 && (
                       <div className="w-full h-full">
-                        <BarChart />
+                        <GrouppedRepairs />
                       </div>
                     )}
                   </div>
+
+                  {user?.accessLevel === AccessLevel.ADM && (
+                    <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-8 lg:row-span-3">
+                      {isFetchingRigsAverage && <Spinner />}
+                      {rigsAverage.length === 0 && !isFetchingRigsAverage && (
+                        <div className="flex justify-center items-center">
+                          <NotFound>
+                            <strong>Não</strong> existem dados para a{" "}
+                            <strong>sonda</strong> no <strong>período</strong>{" "}
+                            selecionado!
+                          </NotFound>
+                        </div>
+                      )}
+                      {!isFetchingRigsAverage && rigsAverage.length > 0 && (
+                        <div className="w-full h-full">
+                          <AverageBarChart />
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   <div className="col-span-12 row-span-3 flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6">
                     {isFetchingEfficiencies && <Spinner />}

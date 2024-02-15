@@ -141,7 +141,9 @@ export const useCreateRig = () => {
     resolver: zodResolver(schema),
   });
 
-  const {isLoading, mutateAsync} = useMutation(rigsService.create);
+  const {isPending: isLoading, mutateAsync} = useMutation({
+    mutationFn: rigsService.create,
+  });
 
   const {contracts, isFetchingContracts} = useContracts(isUserAdm);
 

@@ -16,6 +16,8 @@ import {years} from "../../../../app/utils/years";
 import {EfficienciesResponse} from "../../../../app/services/efficienciesService/getAll";
 import {getRepairPeriods} from "../../../../app/utils/getRepairPeriods";
 import {Period} from "../../../../app/entities/Period";
+import {useEfficienciesRigsAverage} from "../../../../app/hooks/efficiencies/useEfficienciesRigsAverage";
+import {RigsAverageResponse} from "../../../../app/services/efficienciesService/getRigsAverage";
 
 // Definição do tipo do contexto
 interface DashboardContextValue {
@@ -51,6 +53,8 @@ interface DashboardContextValue {
   filterOptions: SelectOptions;
   months: SelectOptions;
   years: SelectOptions;
+  rigsAverage: RigsAverageResponse;
+  isFetchingRigsAverage: boolean;
 }
 
 // Criação do contexto
@@ -97,6 +101,15 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   const {efficiencies, isFetchingEfficiencies, refetchEffciencies} =
     useEfficiencies(filters);
 
+  const {rigsAverage, refetchRigsAverage, isFetchingRigsAverage} =
+    useEfficienciesRigsAverage(
+      {
+        startDate: filters.startDate,
+        endDate: filters.endDate,
+      },
+      isUserAdm
+    );
+
   const isEmpty: boolean = efficiencies.length === 0;
   const [selectedFilterType, setSelectedFilterType] = useState<FilterType>(
     FilterType.PERIOD
@@ -105,6 +118,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   // Funções para manipulação das datas e filtros
   const handleApplyFilters = () => {
     refetchEffciencies();
+    refetchRigsAverage();
   };
 
   const handleChangeRig = (rigId: string) => {
@@ -148,8 +162,6 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const repairPeriods = getRepairPeriods(efficiencies);
-
-  console.log("repairPeriods", repairPeriods);
 
   // Cálculos para estatísticas das eficiências
   let totalAvailableHours: number = 0;
@@ -214,6 +226,8 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         handleIsAlertSeen,
         handleYearChange,
         selectedYear,
+        rigsAverage,
+        isFetchingRigsAverage,
       }}
     >
       {children}

@@ -41,7 +41,7 @@ export const BraskemFormContainer = () => {
               }}
               popupClassName="custom-timepicker-popup"
               onChange={(time, timeString) =>
-                handleBobRentHours(time, timeString)
+                handleBobRentHours(time, timeString as string)
               }
               format={format}
             />
@@ -57,7 +57,7 @@ export const BraskemFormContainer = () => {
               }}
               popupClassName="custom-timepicker-popup"
               onChange={(time, timeString) =>
-                handleChristmasTreeDisassemblyHours(time, timeString)
+                handleChristmasTreeDisassemblyHours(time, timeString as string)
               }
               format={format}
             />

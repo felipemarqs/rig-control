@@ -1,16 +1,16 @@
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { RequestStatus } from "../../../app/entities/RequestStatus";
-import { useDeletionRequests } from "../../../app/hooks/useDeletionRequests";
-import { deletionRequestsServices } from "../../../app/services/deletionRequestsServices";
-import { treatAxiosError } from "../../../app/utils/treatAxiosError";
-import { AxiosError } from "axios";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { DeletionRequest } from "../../../app/entities/DeletionRequest";
+import {useNavigate} from "react-router-dom";
+import {useState} from "react";
+import {RequestStatus} from "../../../app/entities/RequestStatus";
+import {useDeletionRequests} from "../../../app/hooks/useDeletionRequests";
+import {deletionRequestsServices} from "../../../app/services/deletionRequestsServices";
+import {treatAxiosError} from "../../../app/utils/treatAxiosError";
+import {AxiosError} from "axios";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {DeletionRequest} from "../../../app/entities/DeletionRequest";
 
 export const useDeletionRequestsController = () => {
   const navigate = useNavigate();
-  const [filters, setFilters] = useState({ status: RequestStatus.PENDING });
+  const [filters, setFilters] = useState({status: RequestStatus.PENDING});
   const [reasonTextModal, setReasonTextModal] = useState("");
   const requestStatusTraslated = {
     PENDENTE: "PENDING",
@@ -44,13 +44,13 @@ export const useDeletionRequestsController = () => {
   );
 
   const translanteStatus = (status: RequestStatus) => {
-    const res = selectOptions.find(({ value }) => value === status)!;
+    const res = selectOptions.find(({value}) => value === status)!;
 
     return res.label;
   };
 
   const handleStatusChange = (value: RequestStatus) => {
-    setFilters({ status: value });
+    setFilters({status: value});
   };
 
   const handleApplyFilters = () => {
@@ -58,7 +58,9 @@ export const useDeletionRequestsController = () => {
   };
 
   const queryClient = useQueryClient();
-  const { mutateAsync } = useMutation(deletionRequestsServices.update);
+  const {mutateAsync} = useMutation({
+    mutationFn: deletionRequestsServices.update,
+  });
 
   const handleRejectRequest = (deletionRequest: DeletionRequest) => {
     try {
@@ -69,7 +71,7 @@ export const useDeletionRequestsController = () => {
         status: RequestStatus.REJECTED,
       });
 
-      queryClient.invalidateQueries({ queryKey: ["deletion-requests"] });
+      queryClient.invalidateQueries({queryKey: ["deletion-requests"]});
       handleApplyFilters();
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);

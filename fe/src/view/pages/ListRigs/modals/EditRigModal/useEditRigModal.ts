@@ -1,13 +1,13 @@
-import { useForm } from "react-hook-form";
-import { useListRigs } from "../../ListRigsContext/useListRigs";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { UF } from "../../../../../app/entities/Rig";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { rigsService } from "../../../../../app/services/rigsService";
-import { treatAxiosError } from "../../../../../app/utils/treatAxiosError";
-import { AxiosError } from "axios";
-import { customColorToast } from "../../../../../app/utils/customColorToast";
+import {useForm} from "react-hook-form";
+import {useListRigs} from "../../ListRigsContext/useListRigs";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {z} from "zod";
+import {UF} from "../../../../../app/entities/Rig";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {rigsService} from "../../../../../app/services/rigsService";
+import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
+import {AxiosError} from "axios";
+import {customColorToast} from "../../../../../app/utils/customColorToast";
 
 const schema = z.object({
   name: z.string().nonempty("Nome é obrigatório"),
@@ -29,7 +29,7 @@ const isActiveOptions = [
 ];
 
 export const useEditRigModal = () => {
-  const { rigBeingEdited, isEditRigModalOpen, handleCloseEditRigModal } =
+  const {rigBeingEdited, isEditRigModalOpen, handleCloseEditRigModal} =
     useListRigs();
 
   const queryClient = useQueryClient();
@@ -39,7 +39,7 @@ export const useEditRigModal = () => {
     register,
     control,
     reset,
-    formState: { errors },
+    formState: {errors},
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -49,7 +49,9 @@ export const useEditRigModal = () => {
     },
   });
 
-  const { isLoading, mutateAsync } = useMutation(rigsService.update);
+  const {isPending: isLoading, mutateAsync} = useMutation({
+    mutationFn: rigsService.update,
+  });
 
   const handleSubmit = hookFormHandleSubmit(async (data) => {
     try {
@@ -64,7 +66,7 @@ export const useEditRigModal = () => {
       reset();
       handleCloseEditRigModal();
 
-      queryClient.invalidateQueries({ queryKey: ["rigs"] });
+      queryClient.invalidateQueries({queryKey: ["rigs"]});
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
       console.log(error);

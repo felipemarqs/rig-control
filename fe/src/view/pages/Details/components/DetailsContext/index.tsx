@@ -61,9 +61,9 @@ export const DetailsContextProvider = ({
   const [modalDescription, setModalDescription] = useState<string>("");
 
   const {
-    isLoading: isLoadingRemoveEfficiency,
+    isPending: isLoadingRemoveEfficiency,
     mutateAsync: mutateAsyncRemoveEfficiency,
-  } = useMutation(efficienciesService.remove);
+  } = useMutation({mutationFn: efficienciesService.remove});
 
   const handleDeleteEfficiency = async () => {
     try {

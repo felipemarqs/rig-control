@@ -227,9 +227,9 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
 
   // const tes = efficiency.periods.map()
 
-  const {isLoading: isLoadingEfficiency, mutateAsync} = useMutation(
-    efficienciesService.create
-  );
+  const {isPending: isLoadingEfficiency, mutateAsync} = useMutation({
+    mutationFn: efficienciesService.create,
+  });
   const queryClient = useQueryClient();
 
   const [periodsState, setPeriodsState] = useState(() => {
@@ -280,9 +280,9 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const {
-    isLoading: isLoadingRemoveEfficiency,
+    isPending: isLoadingRemoveEfficiency,
     mutateAsync: mutateAsyncRemoveEfficiency,
-  } = useMutation(efficienciesService.remove);
+  } = useMutation({mutationFn: efficienciesService.remove});
 
   const handleSubmit = async (periods: Periods) => {
     try {
@@ -351,6 +351,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
     timeString: string,
     id: string
   ) => {
+    console.log("timestring", timeString);
     const newPeriods = periods.map((period) => {
       return period.id === id ? {...period, startHour: timeString} : period;
     });

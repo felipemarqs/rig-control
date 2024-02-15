@@ -154,7 +154,7 @@ export const PeriodsFormContainer = () => {
                         popupClassName="custom-timepicker-popup"
                         defaultValue={dayjs(startHour, format)}
                         onChange={(time, timeString) =>
-                          handleStartHourChange(time, timeString, id)
+                          handleStartHourChange(time, timeString as string, id)
                         }
                         format={format}
                         disabledTime={() => {
@@ -199,7 +199,7 @@ export const PeriodsFormContainer = () => {
                         className="bg-gray-200 border rounded-md px-2 py-1 text-gray-800 w-full h-[52px]"
                         defaultValue={dayjs(endHour, format)}
                         onChange={(time, timeString) =>
-                          handleEndHourChange(time, timeString, id)
+                          handleEndHourChange(time, timeString as string, id)
                         }
                         format={format}
                         disabledTime={() => {
