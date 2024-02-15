@@ -1,9 +1,8 @@
-import {ResponsiveBar} from "@nivo/bar";
 import {useBarChart} from "./useBarChart";
 import {cn} from "../../../../../app/utils/cn";
 
-export const RepairsBarChart = () => {
-  const {data, repairGroupedData} = useBarChart();
+export const GrouppedRepairs = () => {
+  const {repairGroupedData} = useBarChart();
 
   console.log("repairGroupedData", repairGroupedData.groupedData.length === 3);
 
