@@ -710,10 +710,13 @@ export class EfficienciesService {
     const result = average.map(({ _avg, rigId }) => {
       const rigFound = rigs.find((rig) => rig.id === rigId);
 
+      console.log('rigFound', rigFound);
+
       return {
         rigId,
         rig: rigFound.name,
         avg: _avg.availableHours,
+        state: rigFound.state,
       };
     });
 

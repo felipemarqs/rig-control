@@ -27,6 +27,7 @@ import {BillingRigDetailDashboard} from "../view/pages/BillingRigDetailDashboard
 import {UpdateForm} from "../view/pages/UpdateForm";
 import {Report} from "../view/pages/Report";
 import {InvoicingMenu} from "../view/pages/InvoicingMenu";
+import {GlobalDashboard} from "../view/pages/GlobalDashboard";
 
 export const Router = () => {
   const {windowWidth} = useSidebarContext();
@@ -48,6 +49,8 @@ export const Router = () => {
             element={windowWidth <= 1024 ? <MobileLayout /> : <DesktopLayout />}
           >
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/global-dashboard" element={<GlobalDashboard />} />
+
             <Route path="/" element={<Dashboard />} />
             <Route path="/form" element={<Form />} />
             <Route path="/form/:efficiencyId" element={<UpdateForm />} />

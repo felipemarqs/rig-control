@@ -11,6 +11,7 @@ import {
   Building2,
   Construction,
   StickyNote,
+  LayoutDashboardIcon,
 } from "lucide-react";
 
 import {useSidebarContext} from "../../../app/contexts/SidebarContext";
@@ -98,6 +99,13 @@ export const DesktopLayout = () => {
           text="Relatórios"
           urlText="reports"
           isActive={active === "Relatórios"}
+        />
+
+        <SidebarItem
+          icon={<LayoutDashboardIcon size={20} />}
+          text="Global"
+          urlText="global-dashboard"
+          isActive={active === "Global"}
         />
       </Sidebar>
       <Outlet />

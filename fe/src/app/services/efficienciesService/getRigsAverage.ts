@@ -1,9 +1,11 @@
+import {UF} from "../../entities/Rig";
 import {httpClient} from "../httpClient";
 
 export type RigsAverageResponse = {
   rigId: string;
   rig: string;
   avg: number;
+  state: UF;
 }[];
 
 export type filters = {
