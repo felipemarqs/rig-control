@@ -246,9 +246,7 @@ export const Dashboard = () => {
                 <div className=" flex-1 grid grid-cols-12 auto-rows-[120px] gap-3">
                   <div
                     className={cn(
-                      "col-span-12 row-span-3 flex justify-center bg-gray-200 rounded-lg items-center lg:col-start-3 lg:col-span-8 lg:row-span-3",
-                      efficiencies.length > 15 &&
-                        "lg:col-start-0 lg:col-span-12"
+                      "col-span-12 row-span-3 flex justify-center bg-gray-200 rounded-lg items-center  lg:row-span-3 lg:col-start-0 lg:col-span-12"
                     )}
                   >
                     {isFetchingEfficiencies && <Spinner />}

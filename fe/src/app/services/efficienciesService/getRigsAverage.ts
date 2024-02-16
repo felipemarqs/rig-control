@@ -6,6 +6,7 @@ export type RigsAverageResponse = {
   rig: string;
   avg: number;
   state: UF;
+  count: number;
 }[];
 
 export type filters = {

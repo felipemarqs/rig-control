@@ -31,9 +31,15 @@ export class EfficienciesRepository {
 
   async groupBy(
     groupByDto: Prisma.EfficiencyGroupByArgs,
-  ): Promise<{ _avg: { availableHours: number }; rigId: string }[]> {
+  ): Promise<
+    { _avg: { availableHours: number }; rigId: string; _count: number }[]
+  > {
     //@ts-ignore
     return await this.prismaService.efficiency.groupBy(groupByDto);
+  }
+
+  async count(countDto: Prisma.EfficiencyCountArgs) {
+    return await this.prismaService.efficiency.count(countDto);
   }
 
   async getAverage(rigId: string, year: number) {

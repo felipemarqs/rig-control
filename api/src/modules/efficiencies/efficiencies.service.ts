@@ -575,10 +575,6 @@ export class EfficienciesService {
     return efficiencies;
   }
 
-  update(id: number, updateEfficiencyDto: UpdateEfficiencyDto) {
-    return `This action updates a #${id} efficiency`;
-  }
-
   async findById(efficiencyId: string) {
     const efficiency = await this.efficiencyRepo.findUnique({
       where: {
@@ -705,17 +701,21 @@ export class EfficienciesService {
           lte: new Date(filters.endDate),
         },
       },
+      _count: true,
     });
 
-    const result = average.map(({ _avg, rigId }) => {
+    console.log('average', average);
+
+    const result = average.map(({ _avg, rigId, _count }) => {
       const rigFound = rigs.find((rig) => rig.id === rigId);
 
-      console.log('rigFound', rigFound);
+      //console.log('rigFound', rigFound);
 
       return {
         rigId,
         rig: rigFound.name,
         avg: _avg.availableHours,
+        count: _count,
         state: rigFound.state,
       };
     });

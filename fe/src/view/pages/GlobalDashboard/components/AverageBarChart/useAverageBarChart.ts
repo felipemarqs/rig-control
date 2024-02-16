@@ -2,7 +2,7 @@ import {BarDatum} from "@nivo/bar";
 import {useGlobalDashboard} from "../../GlobalDashboardContext/useDashboard";
 
 export const useAverageBarChart = () => {
-  const {rigsAverage, selectedRig} = useGlobalDashboard();
+  const {rigsAverage} = useGlobalDashboard();
 
   const convertedResult: BarDatum[] = rigsAverage.map(({avg, rig, rigId}) => ({
     rigId,
@@ -12,6 +12,5 @@ export const useAverageBarChart = () => {
 
   return {
     data: convertedResult,
-    selectedRig,
   };
 };

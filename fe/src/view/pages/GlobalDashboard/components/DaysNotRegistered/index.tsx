@@ -1,41 +1,49 @@
-import {useBarChart} from "./useBarChart";
+import {useDaysNotRegistered} from "./useDaysNotRegistered";
 import {cn} from "../../../../../app/utils/cn";
+import {AlertTriangle} from "lucide-react";
 
-export const GrouppedRepairs = () => {
-  const {repairGroupedData} = useBarChart();
+export const DaysNotRegistered = () => {
+  const {mappedRigsAverage} = useDaysNotRegistered();
 
   //console.log("repairGroupedData", repairGroupedData.groupedData.length === 3);
 
   return (
     <div
       className={cn(
-        `max-h-full ${
-          repairGroupedData.groupedData.length <= 3 ? "" : "overflow-y-scroll"
-        }`
+        `max-h-full ${mappedRigsAverage.length <= 3 ? "" : "overflow-y-scroll"}`
       )}
     >
       <header className="bg-primary-500 text-white p-2 rounded-t-lg justify-center flex">
-        <span className="text-white font-semibold">Reparos</span>
+        <span className="text-white font-semibold">
+          Dias sem registros de eficiência por sonda
+        </span>
       </header>
       <div className="flex flex-col gap-2  ">
-        {repairGroupedData.groupedData.map((data) => (
+        {mappedRigsAverage.map(({rig, daysNotRegistered, rigId}) => (
           <div
-            className="p-4 bg-white rounded-sm flex flex-col justify-between border-y-2 gap-4 border-primary-500"
-            key={data.equipment}
+            className="p-4 bg-white rounded-sm flex flex-col justify-between border-y-2 gap-4 border-primary-100"
+            key={rigId}
           >
             <div className="flex gap-2">
-              <span className="text-primary-500"> Equipamento:</span>
+              <span className="text-primary-500"> Sonda:</span>
 
               <span className="text-primary-500 font-semibold italic">
-                {data.equipment}
+                {rig}
               </span>
             </div>
 
             <div className="flex gap-2">
-              <span className="text-primary-500"> Tempo em Reparo:</span>
+              <span className="text-primary-500"> Dias sem registros:</span>
 
-              <span className="text-primary-500 font-semibold italic">
-                {data.totalHours} Hrs
+              <span
+                className={`${
+                  daysNotRegistered > 3
+                    ? "text-redAccent-500"
+                    : "text-primary-500"
+                } font-semibold italic flex justify-center items-center gap-2`}
+              >
+                {daysNotRegistered} Dias{" "}
+                {daysNotRegistered > 5 && <AlertTriangle />}
               </span>
             </div>
           </div>
