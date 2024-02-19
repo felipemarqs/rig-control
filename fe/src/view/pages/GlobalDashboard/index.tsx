@@ -155,7 +155,7 @@ export const GlobalDashboard = () => {
 
               {!isEmpty && (
                 <div className=" flex-1 grid grid-cols-12 auto-rows-[120px] gap-3">
-                  <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-8 lg:row-span-3">
+                  <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:row-span-3">
                     {isFetchingRigsAverage && <Spinner />}
                     {rigsAverage.length === 0 && !isFetchingRigsAverage && (
                       <div className="flex justify-center items-center">
