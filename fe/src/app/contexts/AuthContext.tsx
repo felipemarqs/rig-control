@@ -7,6 +7,7 @@ import {treatAxiosError} from "../utils/treatAxiosError";
 import {AxiosError} from "axios";
 import {PageLoader} from "../../view/components/PageLoader";
 import {AccessLevel} from "../entities/AccessLevel";
+import {QueryKeys} from "../entities/QueryKeys";
 
 interface AuthContextValue {
   signedIn: boolean;
@@ -43,13 +44,13 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
   const signout = useCallback(() => {
     localStorage.removeItem(localStorageKeys.ACCESS_TOKEN);
     setSignedIn(false);
-    queryClient.invalidateQueries({queryKey: ["me"]});
+    queryClient.invalidateQueries({queryKey: [QueryKeys.ME]});
   }, []);
 
   const handleIsAlertSeen = () => [setIsAlertSeen(true)];
 
   const {data, isError, error, isFetching, isSuccess} = useQuery({
-    queryKey: ["me"],
+    queryKey: [QueryKeys.ME],
     queryFn: () => usersService.me(),
     enabled: signedIn,
     staleTime: Infinity,

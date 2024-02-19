@@ -6,11 +6,11 @@ import {startOfMonth, endOfMonth, format, differenceInDays} from "date-fns";
 import {useRigs} from "../../../../app/hooks/rigs/useRigs";
 import {Rig} from "../../../../app/entities/Rig";
 import {useSidebarContext} from "../../../../app/contexts/SidebarContext";
-import {months} from "../../../../app/utils/months";
 import {filterOptions} from "../../../../app/utils/filterOptions";
-import {years} from "../../../../app/utils/years";
 import {useEfficienciesRigsAverage} from "../../../../app/hooks/efficiencies/useEfficienciesRigsAverage";
 import {RigsAverageResponse} from "../../../../app/services/efficienciesService/getRigsAverage";
+import {useGetUnbilledPeriods} from "../../../../app/hooks/periods/useGetUnbilledPeriods";
+import {GetUnbilledPeriodsResponse} from "../../../../app/services/periodsService/getUnbilledPeriods";
 
 // Definição do tipo do contexto
 interface GlobalDashboardContextValue {
@@ -23,18 +23,16 @@ interface GlobalDashboardContextValue {
   selectedEndDate: string;
   selectedStartDate: string;
   handleApplyFilters(): void;
-  handleYearChange(year: string): void;
-  selectedYear: string;
   user: User | undefined;
   signout(): void;
   rigs: Rig[] | {id: string; name: string}[];
   windowWidth: number;
   filterOptions: SelectOptions;
-  months: SelectOptions;
-  years: SelectOptions;
   rigsAverage: RigsAverageResponse;
   isFetchingRigsAverage: boolean;
   totalDaysSelected: number;
+  unbilledPeriods: GetUnbilledPeriodsResponse;
+  isFetchingUnbilledPeriods: boolean;
 }
 
 // Criação do contexto
@@ -75,7 +73,7 @@ export const GlobalDashboardProvider = ({
   const [selectedEndDate, setSelectedEndDate] =
     useState<string>(formattedLastDay);
   const [selectedPeriod, setSelectedPeriod] = useState<string>("");
-  const [selectedYear, setSeletectedYear] = useState<string>("2023");
+
   const [filters, setFilters] = useState({
     startDate: selectedStartDate,
     endDate: selectedEndDate,
@@ -92,9 +90,15 @@ export const GlobalDashboardProvider = ({
       isUserAdm
     );
 
+  const {unbilledPeriods, refetchUnbilledPeriods, isFetchingUnbilledPeriods} =
+    useGetUnbilledPeriods({
+      startDate: filters.startDate,
+      endDate: filters.endDate,
+    });
+
   const isEmpty: boolean = rigsAverage.length === 0;
 
-  console.log("rigsAverage", rigsAverage);
+  console.log("UnbilledPeriods: ", unbilledPeriods);
 
   const totalDaysSelected =
     differenceInDays(filters.endDate, filters.startDate) + 1;
@@ -102,6 +106,7 @@ export const GlobalDashboardProvider = ({
   // Funções para manipulação das datas e filtros
   const handleApplyFilters = () => {
     refetchRigsAverage();
+    refetchUnbilledPeriods();
   };
 
   const handleStartDateChange = (date: Date) => {
@@ -114,17 +119,12 @@ export const GlobalDashboardProvider = ({
     setFilters((prevState) => ({...prevState, endDate: date.toISOString()}));
   };
 
-  const handleYearChange = (year: string) => {
-    setSeletectedYear(year);
-    setSelectedPeriod("");
-  };
-
   // Retorno do provedor do contexto com os valores e funções necessárias
   return (
     <GlobalDashboardContext.Provider
       value={{
-        years,
-        months,
+        unbilledPeriods,
+        isFetchingUnbilledPeriods,
         selectedPeriod,
         selectedStartDate,
         selectedEndDate,
@@ -139,8 +139,7 @@ export const GlobalDashboardProvider = ({
         isAlertSeen,
         handleIsAlertSeen,
         totalDaysSelected,
-        handleYearChange,
-        selectedYear,
+
         rigsAverage,
         isFetchingRigsAverage,
         isEmpty,

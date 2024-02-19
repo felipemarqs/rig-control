@@ -11,8 +11,9 @@ import {
   GlobalDashboardContext,
   GlobalDashboardProvider,
 } from "./GlobalDashboardContext";
-import {MyResponsivePie} from "./components/PieChart";
+import {UnbilledPeriodsPieChart} from "./components/UnbilledPeriodsPieChart";
 import {DaysNotRegistered} from "./components/DaysNotRegistered";
+import {RepairPeriodsPieChart} from "./components/RepairPeriodsPieChart";
 
 export const GlobalDashboard = () => {
   return (
@@ -30,14 +31,11 @@ export const GlobalDashboard = () => {
           isEmpty,
           windowWidth,
           user,
-          months,
           filterOptions,
           selectedPeriod,
           handleIsAlertSeen,
-          selectedYear,
           isAlertSeen,
-          handleYearChange,
-          years,
+          isFetchingUnbilledPeriods,
         }) => (
           <div className="w-full  pt-10 overflow-y-scroll">
             <div className="w-full flex flex-wrap justify-center items-center mb-10 lg:justify-end gap-1 lg:px-4">
@@ -195,7 +193,7 @@ export const GlobalDashboard = () => {
 
                   <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-8 lg:row-span-3">
                     {isFetchingRigsAverage && <Spinner />}
-                    {rigsAverage.length === 0 && !isFetchingRigsAverage && (
+                    {rigsAverage.length === 0 && !isFetchingUnbilledPeriods && (
                       <div className="flex justify-center items-center">
                         <NotFound>
                           <strong>Não</strong> existem dados para a{" "}
@@ -204,9 +202,27 @@ export const GlobalDashboard = () => {
                         </NotFound>
                       </div>
                     )}
-                    {!isFetchingRigsAverage && rigsAverage.length > 0 && (
+                    {!isFetchingUnbilledPeriods && rigsAverage.length > 0 && (
                       <div className="w-full h-full">
-                        <MyResponsivePie />
+                        <UnbilledPeriodsPieChart />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-8 lg:row-span-3">
+                    {isFetchingUnbilledPeriods && <Spinner />}
+                    {rigsAverage.length === 0 && !isFetchingUnbilledPeriods && (
+                      <div className="flex justify-center items-center">
+                        <NotFound>
+                          <strong>Não</strong> existem dados para a{" "}
+                          <strong>sonda</strong> no <strong>período</strong>{" "}
+                          selecionado!
+                        </NotFound>
+                      </div>
+                    )}
+                    {!isFetchingUnbilledPeriods && rigsAverage.length > 0 && (
+                      <div className="w-full h-full">
+                        <RepairPeriodsPieChart />
                       </div>
                     )}
                   </div>

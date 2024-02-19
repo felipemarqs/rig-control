@@ -1,28 +1,16 @@
 import {ResponsivePie} from "@nivo/pie";
+import {useRepairPeriodsPieChart} from "./useRepairPeriodsPieChart";
 
 // make sure parent container have a defined height when using
 // responsive component, otherwise height will be 0 and
 // no chart will be rendered.
 // website examples showcase many properties,
 // you'll often use just a few of them.
-export const MyResponsivePie = () => {
-  const data = [
-    {
-      id: "c",
-      label: "c",
-      value: 432,
-      color: "#1c7b7b",
-    },
-    {
-      id: "go",
-      label: "go",
-      value: 51,
-      color: "#81c460",
-    },
-  ];
+export const RepairPeriodsPieChart = () => {
+  const {chartData} = useRepairPeriodsPieChart();
   return (
     <ResponsivePie
-      data={data}
+      data={chartData}
       theme={{
         axis: {
           domain: {
@@ -66,6 +54,7 @@ export const MyResponsivePie = () => {
         from: "color",
         modifiers: [["darker", 0.2]],
       }}
+      //onClick={(event) => handleChartClick(event.id as string)}
       enableArcLinkLabels={true}
       arcLinkLabelsTextColor={"#679d4d"}
       arcLinkLabelsThickness={2}
