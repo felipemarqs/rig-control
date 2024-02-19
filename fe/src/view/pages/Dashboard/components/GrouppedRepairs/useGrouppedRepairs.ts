@@ -14,7 +14,7 @@ interface GrouppedEquipmentData {
   groupedData: EquipmentData[];
 }
 
-export const useBarChart = () => {
+export const useGrouppedRepairs = () => {
   const {repairPeriods} = useDashboard();
 
   // console.log("repairPeriods", repairPeriods);

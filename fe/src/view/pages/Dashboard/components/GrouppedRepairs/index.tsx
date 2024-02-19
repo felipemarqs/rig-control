@@ -1,8 +1,8 @@
-import {useBarChart} from "./useBarChart";
+import {useGrouppedRepairs} from "./useGrouppedRepairs";
 import {cn} from "../../../../../app/utils/cn";
 
 export const GrouppedRepairs = () => {
-  const {repairGroupedData} = useBarChart();
+  const {repairGroupedData} = useGrouppedRepairs();
 
   //console.log("repairGroupedData", repairGroupedData.groupedData.length === 3);
 
