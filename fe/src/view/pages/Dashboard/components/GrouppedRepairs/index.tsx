@@ -20,7 +20,7 @@ export const GrouppedRepairs = () => {
       <div className="flex flex-col gap-2  ">
         {repairGroupedData.groupedData.map((data) => (
           <div
-            className="p-4 bg-white rounded-sm flex flex-col justify-between border-y-2 gap-4 border-primary-500"
+            className="p-4 bg-white rounded-sm flex flex-col justify-between border-y-2 gap-4 border-primary-100"
             key={data.equipment}
           >
             <div className="flex gap-2">

@@ -3,132 +3,63 @@ import {BaggageClaim, FilterIcon, Truck} from "lucide-react";
 import {Button} from "../../components/Button";
 import {DatePickerInput} from "../../components/DatePickerInput";
 import {NotFound} from "../../components/NotFound";
-import {Select} from "../../components/Select";
 import {Spinner} from "../../components/Spinner";
-
-import {LineChart} from "./components/LineChart";
-import {ListEfficienciesDataGrid} from "../../components/ListEfficienciesDataGrid";
-import {cn} from "../../../app/utils/cn";
-import {FilterType} from "../../../app/entities/FilterType";
 import {Modal} from "../../components/Modal";
 import {AddFiles} from "../../components/AddFiles";
-import {GrouppedRepairs} from "./components/GrouppedRepairs";
-import {AccessLevel} from "../../../app/entities/AccessLevel";
 import {AverageBarChart} from "./components/AverageBarChart";
 import {
   GlobalDashboardContext,
   GlobalDashboardProvider,
 } from "./GlobalDashboardContext";
+import {MyResponsivePie} from "./components/PieChart";
+import {DaysNotRegistered} from "./components/DaysNotRegistered";
 
 export const GlobalDashboard = () => {
   return (
     <GlobalDashboardProvider>
       <GlobalDashboardContext.Consumer>
         {({
-          selectedRig,
-          handleChangeRig,
-          handleChangePeriod,
           selectedEndDate,
           selectedStartDate,
           handleStartDateChange,
           handleEndDateChange,
           handleApplyFilters,
-          isFetchingEfficiencies,
           isFetchingRigsAverage,
           rigsAverage,
           rigs,
           isEmpty,
-          totalAvailableHours,
-          availableHoursPercentage,
-          totalUnavailableHours,
-          unavailableHoursPercentage,
-          totalDtms,
-          totalMovimentations,
-          efficiencies,
           windowWidth,
           user,
           months,
           filterOptions,
-          handleToggleFilterType,
-          selectedFilterType,
           selectedPeriod,
           handleIsAlertSeen,
           selectedYear,
           isAlertSeen,
-          repairPeriods,
           handleYearChange,
           years,
         }) => (
           <div className="w-full  pt-10 overflow-y-scroll">
             <div className="w-full flex flex-wrap justify-center items-center mb-10 lg:justify-end gap-1 lg:px-4">
-              <div className="w-[113px] lg:w-[250px]">
-                <Select
-                  error={""}
-                  placeholder="Tipo de Filtro"
-                  value={selectedFilterType}
-                  onChange={(value) =>
-                    handleToggleFilterType(value as FilterType)
-                  }
-                  options={filterOptions}
-                />
-              </div>
-              <div className="w-[113px] lg:w-[123px]">
-                <Select
-                  error={""}
-                  placeholder="Sonda"
-                  value={selectedRig}
-                  onChange={(value) => handleChangeRig(value)}
-                  options={rigs.map(({id, name}) => ({
-                    value: id ?? "",
-                    label: name ?? "",
-                  }))}
-                />
-              </div>
-              {selectedFilterType === FilterType.PERIOD && (
-                <>
-                  <div className="w-[113px] lg:w-[123px]">
-                    <Select
-                      error={""}
-                      placeholder="Período"
-                      value={selectedPeriod}
-                      onChange={(value) => handleChangePeriod(value)}
-                      options={months}
-                    />
-                  </div>
+              <>
+                <div>
+                  <DatePickerInput
+                    placeholder="Data de Início"
+                    error={""}
+                    value={new Date(selectedStartDate)}
+                    onChange={(value) => handleStartDateChange(value)}
+                  />
+                </div>
 
-                  <div className="w-[113px] lg:w-[123px]">
-                    <Select
-                      error={""}
-                      placeholder="Ano"
-                      value={selectedYear}
-                      onChange={(value) => handleYearChange(value)}
-                      options={years}
-                    />
-                  </div>
-                </>
-              )}
-
-              {selectedFilterType === FilterType.CUSTOM && (
-                <>
-                  <div>
-                    <DatePickerInput
-                      placeholder="Data de Início"
-                      error={""}
-                      value={new Date(selectedStartDate)}
-                      onChange={(value) => handleStartDateChange(value)}
-                    />
-                  </div>
-
-                  <div>
-                    <DatePickerInput
-                      placeholder="Data de Fim"
-                      error={""}
-                      value={new Date(selectedEndDate)}
-                      onChange={(value) => handleEndDateChange(value)}
-                    />
-                  </div>
-                </>
-              )}
+                <div>
+                  <DatePickerInput
+                    placeholder="Data de Fim"
+                    error={""}
+                    value={new Date(selectedEndDate)}
+                    onChange={(value) => handleEndDateChange(value)}
+                  />
+                </div>
+              </>
 
               <div>
                 <Button
@@ -140,16 +71,77 @@ export const GlobalDashboard = () => {
               </div>
             </div>
 
-            <div className=" mx-auto max-w-[1024px] bg-gray-400 min-h-[450px] rounded-md lg:min-w-[1300px] lg:p-4 flex justify-center items-center">
+            <div className=" w-full flex justify-center my-6">
+              <div className="stats  bg-gray-500">
+                {!isFetchingRigsAverage && (
+                  <>
+                    <div className="stat  border-r border-primary-500">
+                      <div className="stat-title  text-primary-500">
+                        Sondas Cadastradas
+                      </div>
+                      <div className="stat-value  text-primary-500">9</div>
+                      <div className="stat-desc  text-primary-500">
+                        Lorem ipsum dolor, adipisicing elit.
+                      </div>
+                    </div>
+
+                    <div className="stat">
+                      <div className="stat-figure text-red"></div>
+                      <div className="stat-title text-redAccent-500">
+                        Horas Indisp.
+                      </div>
+                      <div className="stat-value text-redAccent-500">
+                        {81}Hrs
+                      </div>
+                      <div className="stat-desc text-redAccent-500">
+                        Total de não horas faturadas pela sonda
+                      </div>
+                    </div>
+
+                    <div className="stat">
+                      <div className="stat-figure text-primary-500">
+                        <div className="w-16 rounded-full">
+                          <div className="w-16 h-16 flex items-center justify-center rounded-full bg-white">
+                            <Truck size={50} />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="stat-value text-primary-500">{81}</div>
+                      <div className="stat-title text-primary-500">DTMs</div>
+                      <div className="stat-desc text-primary-500">
+                        No período selecionado
+                      </div>
+                    </div>
+
+                    <div className="stat">
+                      <div className="stat-figure text-primary-500">
+                        <div className="w-16 h-16 flex items-center justify-center rounded-full bg-white">
+                          <BaggageClaim size={50} />
+                        </div>
+                      </div>
+                      <div className="stat-value text-primary-500">{81}</div>
+                      <div className="stat-title text-primary-500">
+                        Movimentações
+                      </div>
+                      <div className="stat-desc text-primary-500">
+                        No período selecionado
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div className=" mx-auto max-w-[1300px] bg-gray-400 min-h-[450px] rounded-md  lg:p-4 flex justify-center items-center">
               {isEmpty && (
                 <>
-                  {isFetchingEfficiencies && (
+                  {isFetchingRigsAverage && (
                     <div className="w-full h-full flex justify-center items-center">
                       <Spinner />
                     </div>
                   )}
 
-                  {!isFetchingEfficiencies && (
+                  {!isFetchingRigsAverage && (
                     <div className="w-full h-full flex justify-center items-center">
                       <NotFound>
                         <strong>Não</strong> existem dados para a{" "}
@@ -163,7 +155,7 @@ export const GlobalDashboard = () => {
 
               {!isEmpty && (
                 <div className=" flex-1 grid grid-cols-12 auto-rows-[120px] gap-3">
-                  <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-8 lg:row-span-3">
+                  <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:row-span-3">
                     {isFetchingRigsAverage && <Spinner />}
                     {rigsAverage.length === 0 && !isFetchingRigsAverage && (
                       <div className="flex justify-center items-center">
@@ -177,6 +169,44 @@ export const GlobalDashboard = () => {
                     {!isFetchingRigsAverage && rigsAverage.length > 0 && (
                       <div className="w-full h-full">
                         <AverageBarChart />
+                      </div>
+                    )}
+                  </div>
+
+                  <div
+                    className={`col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-4  `}
+                  >
+                    {isFetchingRigsAverage && <Spinner />}
+                    {isEmpty && !isFetchingRigsAverage && (
+                      <div className="flex justify-center  items-center">
+                        <NotFound>
+                          <strong>Não</strong> existem dados de{" "}
+                          <strong>reparos</strong> para a <strong>sonda</strong>{" "}
+                          no <strong>período</strong> selecionado!
+                        </NotFound>
+                      </div>
+                    )}
+                    {!isFetchingRigsAverage && !isEmpty && (
+                      <div className="w-full h-full">
+                        <DaysNotRegistered />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-8 lg:row-span-3">
+                    {isFetchingRigsAverage && <Spinner />}
+                    {rigsAverage.length === 0 && !isFetchingRigsAverage && (
+                      <div className="flex justify-center items-center">
+                        <NotFound>
+                          <strong>Não</strong> existem dados para a{" "}
+                          <strong>sonda</strong> no <strong>período</strong>{" "}
+                          selecionado!
+                        </NotFound>
+                      </div>
+                    )}
+                    {!isFetchingRigsAverage && rigsAverage.length > 0 && (
+                      <div className="w-full h-full">
+                        <MyResponsivePie />
                       </div>
                     )}
                   </div>

@@ -4,9 +4,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-
 import { CreateEfficiencyDto } from './dto/create-efficiency.dto';
-import { UpdateEfficiencyDto } from './dto/update-efficiency.dto';
 import { EfficienciesRepository } from 'src/shared/database/repositories/efficiencies.repositories';
 import { UsersRigRepository } from 'src/shared/database/repositories/usersRig.repositories';
 import { isAfter, isBefore, differenceInMinutes } from 'date-fns';
@@ -16,6 +14,7 @@ import { BillingRepository } from 'src/shared/database/repositories/billing.repo
 import { DeletionRequestRepository } from 'src/shared/database/repositories/deletionRequests.repositories';
 import { RequestStatus } from '../deletion-requests/entities/deletion-request.entity';
 import { WellsRepository } from 'src/shared/database/repositories/well.repositories';
+import { PeriodDto } from './dto/create-period-dto';
 
 @Injectable()
 export class EfficienciesService {
@@ -33,6 +32,31 @@ export class EfficienciesService {
     const startTime = new Date(startHour);
     const endTime = new Date(endHour);
     return isBefore(startTime, endTime);
+  }
+
+  private validatePeriodsTime(periods: PeriodDto[]) {
+    for (let i = 0; i < periods.length; i++) {
+      const currentPeriod = periods[i];
+
+      if (i > 0) {
+        const previousPeriod = periods[i - 1];
+        if (
+          isAfter(
+            new Date(currentPeriod.startHour),
+            new Date(previousPeriod.endHour),
+          )
+        ) {
+          throw new ConflictException(
+            'Horários de período se sobrepõem ou são inválidos.',
+          );
+        }
+      }
+      if (!this.isTimeValid(currentPeriod.startHour, currentPeriod.endHour)) {
+        throw new ConflictException(
+          'Horário inválido. A hora de início deve ser antes da hora final.',
+        );
+      }
+    }
   }
 
   async create(createEfficiencyDto: CreateEfficiencyDto, userId: string) {
@@ -66,6 +90,12 @@ export class EfficienciesService {
       isSuckingTruckSelected,
     } = createEfficiencyDto;
 
+    /**
+     * Checks if the provided rig ID belongs to the specified user.
+     * If the rig doesn't belong to the user, it throws an UnauthorizedException.
+     * @param rigId The ID of the rig.
+     * @param userId The ID of the user.
+     */
     const rigBelongsToUser = await this.userRigsRepo.findFirst({
       where: { userId, rigId },
     });
@@ -76,6 +106,25 @@ export class EfficienciesService {
       );
     }
 
+    /**
+     * Checks if an efficiency entry already exists for the given rig ID and date.
+     * If an entry already exists, it throws a ConflictException.
+     * @param rigId The ID of the rig.
+     * @param date The date for which to check the existence of an efficiency entry.
+     */
+    const efficiencyAlreadyExists = await this.efficiencyRepo.findFirst({
+      where: { rigId, date },
+    });
+
+    if (efficiencyAlreadyExists) {
+      throw new ConflictException('Data já preenchida!');
+    }
+
+    /**
+     * Checks if each well in the provided periods exists in the database.
+     * If a well doesn't exist, it creates a new entry for it.
+     * @param periods The array of periods containing well IDs.
+     */
     for (const { wellId } of periods) {
       const wellExist = await this.wellsRepo.findFirst({
         where: { name: wellId },
@@ -86,42 +135,25 @@ export class EfficienciesService {
       }
     }
 
-    const efficiencyAlreadyExists = await this.efficiencyRepo.findFirst({
-      where: { rigId, date },
-    });
-
-    if (efficiencyAlreadyExists) {
-      throw new ConflictException('Data já preenchida!');
-    }
-
+    /**
+     * Retrieves the billing configuration for the specified rig.
+     * @param rigId The ID of the rig for which to retrieve the billing configuration.
+     */
     const rigBillingConfiguration = await this.billingConfigRepo.findFisrt({
       where: { rigId },
     });
 
-    for (let i = 0; i < periods.length; i++) {
-      const currentPeriod = periods[i];
+    /**
+     * Checks if the periods provided overlap or are invalid.
+     * @param periods The array of periods to check.
+     */
+    this.validatePeriodsTime(periods);
 
-      if (i > 0) {
-        const previousPeriod = periods[i - 1];
-        if (
-          isAfter(
-            new Date(currentPeriod.startHour),
-            new Date(previousPeriod.endHour),
-          )
-        ) {
-          throw new ConflictException(
-            'Horários de período se sobrepõem ou são inválidos.',
-          );
-        }
-      }
-
-      if (!this.isTimeValid(currentPeriod.startHour, currentPeriod.endHour)) {
-        throw new ConflictException(
-          'Horário inválido. A hora de início deve ser antes da hora final.',
-        );
-      }
-    }
-
+    /**
+     * Constructs the efficiency data object with the provided information.
+     * @param createEfficiencyDto The DTO containing the information to construct the efficiency data object.
+     * @returns The constructed efficiency data object.
+     */
     const efficiencyData = {
       date,
       well,
@@ -205,33 +237,47 @@ export class EfficienciesService {
     let mixTankMobilizationTotalAmount = 0;
     let mixTankDemobilizationTotalAmount = 0;
     let suckingTruckTotalAmount = 0;
-    let christmasTreeDisassemblyTotalAmount = 0;
 
     const wells = await this.wellsRepo.findAll({});
 
+    /**
+     * Iterates through each period, updating wellId based on the name found in wells array.
+     * Calculates the difference in minutes between start and end hour for each period.
+     * Updates total amounts and hours based on period type and classification.
+     * @param periods The array of periods to iterate through.
+     * @param wells The array of wells to search for matching names.
+     */
     periods.forEach(
       ({ type, startHour, endHour, classification, wellId }, index) => {
+        // Find the corresponding well ID in the wells array
         const { id: wellIdFound } = wells.find(({ name }) => well === name);
 
+        // Update wellId for the current period
         periods[index].wellId = wellIdFound;
 
+        // Convert startHour and endHour to Date objects
         const horaInicial = new Date(startHour);
         const horaFinal = new Date(endHour);
 
-        const getDiffInMinutes = (horaFinal: Date, horaInicial: Date) => {
-          //Refact
-          //GetISOHour ---
-          const isoHour = horaFinal.toISOString().split('T')[1];
+        // Function to calculate the difference in minutes between two dates
+        const getDiffInMinutes = (finalHour: Date, initialHour: Date) => {
+          // Get the ISO hour from the finalHour
+          const isoHour = finalHour.toISOString().split('T')[1];
 
-          let endDate = horaFinal;
+          // Adjust endDate if isoHour is '23:59'
+          let endDate = finalHour;
           if (isoHour.slice(0, 5) === '23:59') {
-            return differenceInMinutes(endDate, horaInicial) + 1;
+            return differenceInMinutes(endDate, initialHour) + 1; // Adding 1 minute
           }
 
-          return differenceInMinutes(endDate, horaInicial);
+          // Return the difference in minutes between endDate and initialHour
+          return differenceInMinutes(endDate, initialHour);
         };
+
+        // Calculate the difference in minutes between start and end hour
         const diffInMinutes = getDiffInMinutes(horaFinal, horaInicial);
 
+        // Update total amounts and hours based on period type and classification
         if (type === 'DTM') {
           if (classification === 'LT20') {
             dtmLt20TotalAmmount = 1;
@@ -334,70 +380,88 @@ export class EfficienciesService {
       christmasTreeDisassemblyHours *
       rigBillingConfiguration.christmasTreeDisassemblyTax;
 
-    if (isTankMixDemobilizationSelected) {
-      mixTankDemobilizationTotalAmount =
-        rigBillingConfiguration.mixTankDemobilizationTax;
-    }
+    const calculateSelectedValues = (selection: boolean, taxString: string) => {
+      return selection ? rigBillingConfiguration[taxString] : 0;
+    };
 
-    if (isTankMixMobilizationSelected) {
-      mixTankMobilizationTotalAmount =
-        rigBillingConfiguration.mixTankMobilizationTax;
-    }
+    powerSwivelTotalAmount = calculateSelectedValues(
+      isPowerSwivelSelected,
+      'powerSwivelTax',
+    );
 
-    if (isTankMixDTMSelected) {
-      mixTankDTMTotalAmount = rigBillingConfiguration.mixTankDtmTax;
-    }
+    mixTankDemobilizationTotalAmount = calculateSelectedValues(
+      isTankMixDemobilizationSelected,
+      'mixTankDemobilizationTax',
+    );
 
-    if (isMixTankOperatorsSelected) {
-      mixTankOperatorTotalAmount = rigBillingConfiguration.mixTankOperatorTax;
-    }
-    if (isMixTankMonthSelected) {
-      mixTankMonthRentTotalAmount = rigBillingConfiguration.mixTankMonthRentTax;
-    }
+    mixTankMobilizationTotalAmount = calculateSelectedValues(
+      isTankMixMobilizationSelected,
+      'mixTankMobilizationTax',
+    );
 
-    if (isMixTankSelected) {
-      mixTankHourRentTotalAmount = rigBillingConfiguration.mixTankHourRentTax;
-    }
+    mixTankDTMTotalAmount = calculateSelectedValues(
+      isTankMixDTMSelected,
+      'mixTankDtmTax',
+    );
 
-    if (isFuelGeneratorSelected) {
-      generatorFuelTotalAmount = rigBillingConfiguration.generatorFuelTax;
-    }
+    mixTankOperatorTotalAmount = calculateSelectedValues(
+      isMixTankOperatorsSelected,
+      'mixTankOperatorTax',
+    );
 
-    if (isMunckSelected) {
-      munckTotalAmount = rigBillingConfiguration.munckTax;
-    }
+    mixTankMonthRentTotalAmount = calculateSelectedValues(
+      isMixTankMonthSelected,
+      'mixTankMonthRentTax',
+    );
 
-    if (isTruckTankSelected) {
-      truckTankTotalAmount = rigBillingConfiguration.truckTankTax;
-    }
+    mixTankHourRentTotalAmount = calculateSelectedValues(
+      isMixTankSelected,
+      'mixTankHourRentTax',
+    );
 
-    if (isMobilizationSelected) {
-      mobilizationTotalAmount = rigBillingConfiguration.mobilization;
-    }
+    generatorFuelTotalAmount = calculateSelectedValues(
+      isFuelGeneratorSelected,
+      'generatorFuelTax',
+    );
 
-    if (isDemobilizationSelected) {
-      demobilizationTotalAmount = rigBillingConfiguration.demobilization;
-    }
+    munckTotalAmount = calculateSelectedValues(isMunckSelected, 'munckTax');
 
-    if (isExtraTrailerSelected) {
-      extraTrailerTotalAmount = rigBillingConfiguration.extraTrailerTax;
-    }
+    truckTankTotalAmount = calculateSelectedValues(
+      isTruckTankSelected,
+      'truckTankTax',
+    );
 
-    if (isPowerSwivelSelected) {
-      powerSwivelTotalAmount = rigBillingConfiguration.powerSwivelTax;
-    }
+    console.log(isTruckTankSelected, isMunckSelected);
 
-    if (isSuckingTruckSelected) {
-      suckingTruckTotalAmount = rigBillingConfiguration.suckingTruckTax;
-    }
+    mobilizationTotalAmount = calculateSelectedValues(
+      isMobilizationSelected,
+      'mobilization',
+    );
 
-    if (isTransportationSelected) {
-      transportationTotalAmount = rigBillingConfiguration.transportationTax;
-    }
+    demobilizationTotalAmount = calculateSelectedValues(
+      isDemobilizationSelected,
+      'demobilization',
+    );
 
-    if (isTruckCartSelected) {
-      truckCartRentTotalAmount = rigBillingConfiguration.truckCartRentTax;
-    }
+    extraTrailerTotalAmount = calculateSelectedValues(
+      isExtraTrailerSelected,
+      'extraTrailerTax',
+    );
+
+    suckingTruckTotalAmount = calculateSelectedValues(
+      isSuckingTruckSelected,
+      'suckingTruckTax',
+    );
+
+    transportationTotalAmount = calculateSelectedValues(
+      isTransportationSelected,
+      'transportationTax',
+    );
+
+    truckCartRentTotalAmount = calculateSelectedValues(
+      isTruckCartSelected,
+      'truckCartRentTax',
+    );
 
     bobRentTotalAmount = rigBillingConfiguration.bobRentTax * bobRentHours;
 
@@ -453,19 +517,19 @@ export class EfficienciesService {
         mixTankOperatorAmount: mixTankOperatorTotalAmount,
         munckAmount: munckTotalAmount,
         truckTankAmount: truckTankTotalAmount,
-        bobRentAmount: bobRentTotalAmount, //Temporário
-        demobilizationAmount: demobilizationTotalAmount, //Temporário
+        bobRentAmount: bobRentTotalAmount,
+        demobilizationAmount: demobilizationTotalAmount,
+        extraTrailerAmount: extraTrailerTotalAmount,
+        generatorFuelAmount: generatorFuelTotalAmount,
+        mixTankHourRentAmount: mixTankHourRentTotalAmount,
+        mixTankMonthRentAmount: mixTankMonthRentTotalAmount,
+        mobilizationAmount: mobilizationTotalAmount,
+        powerSwivelAmount: powerSwivelTotalAmount,
+        suckingTruckAmount: suckingTruckTotalAmount,
+        transportationAmount: transportationTotalAmount,
+        truckCartRentAmount: truckCartRentTotalAmount,
+        truckKmAmount: truckKmTotalAmount,
         dtmHourAmount,
-        extraTrailerAmount: extraTrailerTotalAmount, //Temporário
-        generatorFuelAmount: generatorFuelTotalAmount, //Temporário //Temporário
-        mixTankHourRentAmount: mixTankHourRentTotalAmount, //Temporário
-        mixTankMonthRentAmount: mixTankMonthRentTotalAmount, //Temporário
-        mobilizationAmount: mobilizationTotalAmount, //Temporário
-        powerSwivelAmount: powerSwivelTotalAmount, //Temporário
-        suckingTruckAmount: suckingTruckTotalAmount, //Temporário
-        transportationAmount: transportationTotalAmount, //Temporário
-        truckCartRentAmount: truckCartRentTotalAmount, //Temporário
-        truckKmAmount: truckKmTotalAmount, //Temporário
         availableHourAmount,
         scheduledStopAmount,
         glossHourAmount,
@@ -488,6 +552,11 @@ export class EfficienciesService {
     return efficiency;
   }
 
+  /**
+   * Returns all efficiencies for a given rig and date range.
+   * @param filters - The filters to apply to the query.
+   * @returns The efficiencies that match the specified criteria.
+   */
   async findAllByRigId(filters: {
     rigId: string;
     startDate: string;
@@ -573,10 +642,6 @@ export class EfficienciesService {
     });
 
     return efficiencies;
-  }
-
-  update(id: number, updateEfficiencyDto: UpdateEfficiencyDto) {
-    return `This action updates a #${id} efficiency`;
   }
 
   async findById(efficiencyId: string) {
@@ -705,17 +770,16 @@ export class EfficienciesService {
           lte: new Date(filters.endDate),
         },
       },
+      _count: true,
     });
 
-    const result = average.map(({ _avg, rigId }) => {
+    const result = average.map(({ _avg, rigId, _count }) => {
       const rigFound = rigs.find((rig) => rig.id === rigId);
-
-      console.log('rigFound', rigFound);
-
       return {
         rigId,
         rig: rigFound.name,
         avg: _avg.availableHours,
+        count: _count,
         state: rigFound.state,
       };
     });

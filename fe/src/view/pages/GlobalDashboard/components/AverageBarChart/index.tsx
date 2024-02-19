@@ -2,7 +2,7 @@ import {ResponsiveBar} from "@nivo/bar";
 import {useAverageBarChart} from "./useAverageBarChart";
 
 export const AverageBarChart = () => {
-  const {data, selectedRig} = useAverageBarChart();
+  const {data} = useAverageBarChart();
 
   return (
     <div className="w-full h-full">
@@ -30,7 +30,7 @@ export const AverageBarChart = () => {
           valueScale={{type: "linear"}}
           indexScale={{type: "band", round: true}}
           colors={(params) => {
-            return params.data.rigId === selectedRig ? "#38bcb2" : "#1c7b7b";
+            return params.data.rigId === "" ? "#1c7b7b" : "#1c7b7b";
           }}
           defs={[
             {
@@ -64,11 +64,6 @@ export const AverageBarChart = () => {
                 id: "sandwich",
               },
               id: "lines",
-            },
-
-            {
-              match: (bar) => bar.data.data.rigId === selectedRig,
-              id: "highlight-color", // ID para referenciar o estilo de cor de destaque
             },
           ]}
           borderColor={{
