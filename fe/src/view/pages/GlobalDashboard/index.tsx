@@ -1,5 +1,5 @@
 // Importações de componentes e contextos necessários
-import {BaggageClaim, FilterIcon, Truck} from "lucide-react";
+import {FilterIcon} from "lucide-react";
 import {Button} from "../../components/Button";
 import {DatePickerInput} from "../../components/DatePickerInput";
 import {NotFound} from "../../components/NotFound";
@@ -13,13 +13,14 @@ import {
 } from "./GlobalDashboardContext";
 import {UnbilledPeriodsPieChart} from "./components/UnbilledPeriodsPieChart";
 import {DaysNotRegistered} from "./components/DaysNotRegistered";
-import {RepairPeriodsPieChart} from "./components/RepairPeriodsPieChart";
+import {PeriodsDetailsPieChart} from "./components/PeriodsDetailsPieChart";
 
 export const GlobalDashboard = () => {
   return (
     <GlobalDashboardProvider>
       <GlobalDashboardContext.Consumer>
         {({
+          isDetailsGraphVisible,
           selectedEndDate,
           selectedStartDate,
           handleStartDateChange,
@@ -27,14 +28,13 @@ export const GlobalDashboard = () => {
           handleApplyFilters,
           isFetchingRigsAverage,
           rigsAverage,
-          rigs,
+          isChartDataEmpty,
           isEmpty,
           windowWidth,
           user,
-          filterOptions,
-          selectedPeriod,
           handleIsAlertSeen,
           isAlertSeen,
+          statBox,
           isFetchingUnbilledPeriods,
         }) => (
           <div className="w-full  pt-10 overflow-y-scroll">
@@ -71,58 +71,38 @@ export const GlobalDashboard = () => {
 
             <div className=" w-full flex justify-center my-6">
               <div className="stats  bg-gray-500">
-                {!isFetchingRigsAverage && (
+                {!isFetchingRigsAverage && !(rigsAverage.length === 0) && (
                   <>
-                    <div className="stat  border-r border-primary-500">
+                    <div className="stat">
+                      <div className="stat-figure text-white">
+                        <div
+                          className="radial-progress text-primary-500"
+                          style={
+                            {
+                              "--value": statBox.averageHoursPercentage,
+                            } as any
+                          }
+                        >
+                          {statBox.averageHoursPercentage || 0}%
+                        </div>
+                      </div>
+                      <div className="stat-title  text-primary-500">
+                        Disp. Diária
+                      </div>
+                      <div className="stat-value  text-primary-500">
+                        {statBox.averageHours} Hrs
+                      </div>
+                      <div className="stat-desc  text-primary-500">
+                        Média de disponibilidade diária
+                      </div>
+                    </div>
+                    <div className="stat  border-r border-primary-300">
                       <div className="stat-title  text-primary-500">
                         Sondas Cadastradas
                       </div>
                       <div className="stat-value  text-primary-500">9</div>
                       <div className="stat-desc  text-primary-500">
-                        Lorem ipsum dolor, adipisicing elit.
-                      </div>
-                    </div>
-
-                    <div className="stat">
-                      <div className="stat-figure text-red"></div>
-                      <div className="stat-title text-redAccent-500">
-                        Horas Indisp.
-                      </div>
-                      <div className="stat-value text-redAccent-500">
-                        {81}Hrs
-                      </div>
-                      <div className="stat-desc text-redAccent-500">
-                        Total de não horas faturadas pela sonda
-                      </div>
-                    </div>
-
-                    <div className="stat">
-                      <div className="stat-figure text-primary-500">
-                        <div className="w-16 rounded-full">
-                          <div className="w-16 h-16 flex items-center justify-center rounded-full bg-white">
-                            <Truck size={50} />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="stat-value text-primary-500">{81}</div>
-                      <div className="stat-title text-primary-500">DTMs</div>
-                      <div className="stat-desc text-primary-500">
-                        No período selecionado
-                      </div>
-                    </div>
-
-                    <div className="stat">
-                      <div className="stat-figure text-primary-500">
-                        <div className="w-16 h-16 flex items-center justify-center rounded-full bg-white">
-                          <BaggageClaim size={50} />
-                        </div>
-                      </div>
-                      <div className="stat-value text-primary-500">{81}</div>
-                      <div className="stat-title text-primary-500">
-                        Movimentações
-                      </div>
-                      <div className="stat-desc text-primary-500">
-                        No período selecionado
+                        Sondas Cadastradas no sistema
                       </div>
                     </div>
                   </>
@@ -171,8 +151,53 @@ export const GlobalDashboard = () => {
                     )}
                   </div>
 
+                  {!isChartDataEmpty && (
+                    <>
+                      <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6 lg:row-span-3">
+                        {isFetchingRigsAverage && <Spinner />}
+                        {rigsAverage.length === 0 &&
+                          !isFetchingUnbilledPeriods && (
+                            <div className="flex justify-center items-center">
+                              <NotFound>
+                                <strong>Não</strong> existem dados para a{" "}
+                                <strong>sonda</strong> no{" "}
+                                <strong>período</strong> selecionado!
+                              </NotFound>
+                            </div>
+                          )}
+                        {!isFetchingUnbilledPeriods &&
+                          rigsAverage.length > 0 && (
+                            <div className="w-full h-full">
+                              <UnbilledPeriodsPieChart />
+                            </div>
+                          )}
+                      </div>
+
+                      {isDetailsGraphVisible && (
+                        <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6 lg:row-span-3">
+                          {isFetchingUnbilledPeriods && <Spinner />}
+                          {rigsAverage.length === 0 &&
+                            !isFetchingUnbilledPeriods && (
+                              <div className="flex justify-center items-center">
+                                <NotFound>
+                                  <strong>Não</strong> existem dados para a{" "}
+                                  <strong>sonda</strong> no{" "}
+                                  <strong>período</strong> selecionado!
+                                </NotFound>
+                              </div>
+                            )}
+                          {!isFetchingUnbilledPeriods &&
+                            rigsAverage.length > 0 && (
+                              <div className="w-full h-full">
+                                <PeriodsDetailsPieChart />
+                              </div>
+                            )}
+                        </div>
+                      )}
+                    </>
+                  )}
                   <div
-                    className={`col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-4  `}
+                    className={`col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6  `}
                   >
                     {isFetchingRigsAverage && <Spinner />}
                     {isEmpty && !isFetchingRigsAverage && (
@@ -187,42 +212,6 @@ export const GlobalDashboard = () => {
                     {!isFetchingRigsAverage && !isEmpty && (
                       <div className="w-full h-full">
                         <DaysNotRegistered />
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-8 lg:row-span-3">
-                    {isFetchingRigsAverage && <Spinner />}
-                    {rigsAverage.length === 0 && !isFetchingUnbilledPeriods && (
-                      <div className="flex justify-center items-center">
-                        <NotFound>
-                          <strong>Não</strong> existem dados para a{" "}
-                          <strong>sonda</strong> no <strong>período</strong>{" "}
-                          selecionado!
-                        </NotFound>
-                      </div>
-                    )}
-                    {!isFetchingUnbilledPeriods && rigsAverage.length > 0 && (
-                      <div className="w-full h-full">
-                        <UnbilledPeriodsPieChart />
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-8 lg:row-span-3">
-                    {isFetchingUnbilledPeriods && <Spinner />}
-                    {rigsAverage.length === 0 && !isFetchingUnbilledPeriods && (
-                      <div className="flex justify-center items-center">
-                        <NotFound>
-                          <strong>Não</strong> existem dados para a{" "}
-                          <strong>sonda</strong> no <strong>período</strong>{" "}
-                          selecionado!
-                        </NotFound>
-                      </div>
-                    )}
-                    {!isFetchingUnbilledPeriods && rigsAverage.length > 0 && (
-                      <div className="w-full h-full">
-                        <RepairPeriodsPieChart />
                       </div>
                     )}
                   </div>

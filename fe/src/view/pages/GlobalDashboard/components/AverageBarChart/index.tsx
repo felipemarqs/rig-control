@@ -2,10 +2,10 @@ import {ResponsiveBar} from "@nivo/bar";
 import {useAverageBarChart} from "./useAverageBarChart";
 
 export const AverageBarChart = () => {
-  const {data} = useAverageBarChart();
+  const {data, getBarColor} = useAverageBarChart();
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full relative">
       <header className="bg-primary-500 text-white p-2 rounded-t-lg justify-center flex">
         <span className="text-white font-semibold">
           Eficiência Média das Sondas
@@ -17,7 +17,7 @@ export const AverageBarChart = () => {
           keys={["avg"]}
           indexBy="rig"
           layout="vertical"
-          margin={{top: 50, right: 40, bottom: 80, left: 40}}
+          margin={{top: 30, right: 40, bottom: 110, left: 40}}
           padding={0.3}
           layers={[
             "grid",
@@ -29,9 +29,7 @@ export const AverageBarChart = () => {
           ]}
           valueScale={{type: "linear"}}
           indexScale={{type: "band", round: true}}
-          colors={(params) => {
-            return params.data.rigId === "" ? "#1c7b7b" : "#1c7b7b";
-          }}
+          colors={getBarColor}
           defs={[
             {
               id: "dots",
@@ -161,6 +159,10 @@ export const AverageBarChart = () => {
           }}
         />
       </div>
+      <small className="flex items-center justify-center gap-2 absolute bottom-2 right-10 italic text-gray-700">
+        <div className="bg-red-500 p-1 w-3 h-3"></div>{" "}
+        <span> Sondas com dias pendentes durante o periodo selecionado</span>
+      </small>
     </div>
   );
 };

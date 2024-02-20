@@ -1,6 +1,5 @@
 import {createContext, useCallback, useMemo, useState} from "react";
 import React from "react";
-import {startOfMonth, endOfMonth, format} from "date-fns";
 import {useBillings} from "../../../../app/hooks/billings/useBillings";
 import {BillingResponse} from "../../../../app/services/billingServices/getAll";
 import {formatCurrency} from "../../../../app/utils/formatCurrency";
@@ -15,6 +14,7 @@ import {getPeriodRange} from "../../../../app/utils/getPeriodRange";
 import {months} from "../../../../app/utils/months";
 import {years} from "../../../../app/utils/years";
 import {useSidebarContext} from "../../../../app/contexts/SidebarContext";
+import {useFiltersContext} from "../../../../app/hooks/useFiltersContext";
 
 interface BillingDashboardContextValue {
   handleStartDateChange(date: Date): void;
@@ -99,39 +99,33 @@ export const BillingDashboardProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const {
+    filters,
+    selectedEndDate,
+    selectedPeriod,
+    selectedRig,
+    selectedStartDate,
+    selectedYear,
+    setFilters,
+    setSelectedEndDate,
+    setSelectedPeriod,
+    setSelectedRig,
+    setSelectedStartDate,
+    setSeletectedYear,
+    formattedFirstDay,
+    formattedLastDay,
+  } = useFiltersContext();
   // Obtenha a data atual
-  const currentDate = new Date();
-
-  // Obtenha o primeiro dia do mês atual
-  const firstDayOfMonth = startOfMonth(currentDate);
-
-  // Obtenha o último dia do mês atual
-  const lastDayOfMonth = endOfMonth(currentDate);
-
-  // Formate as datas como strings no formato ISO (ou qualquer formato desejado)
-  const formattedFirstDay = format(
-    firstDayOfMonth,
-    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
-  );
-  const formattedLastDay = format(
-    lastDayOfMonth,
-    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
-  );
-
   const {windowWidth} = useSidebarContext();
 
   const {rigs} = useRigs(true);
 
   // Defina os estados iniciais
-  const [selectedStartDate, setSelectedStartDate] = useState(formattedFirstDay);
-  const [selectedEndDate, setSelectedEndDate] = useState(formattedLastDay);
+
   const [isEditRigModalOpen, setIsEditRigModalOpen] = useState(false);
   const [rigBeingEdited, setRigBeingEdited] = useState<null | BillingResponse>(
     null
   );
-  const [selectedRig, setSelectedRig] = useState<string>("");
-  const [selectedPeriod, setSelectedPeriod] = useState("");
-  const [selectedYear, setSeletectedYear] = useState("2023");
 
   const [isEditConfigModalOpen, setIsEditConfigModalOpen] = useState(false);
   const [configBeingEdited, setConfigBeingEdited] =
@@ -149,11 +143,6 @@ export const BillingDashboardProvider = ({
   const [configSliderState, setConfigSliderState] = useState({
     isBeginning: true,
     isEnd: false,
-  });
-
-  const [filters, setFilters] = useState({
-    startDate: selectedStartDate,
-    endDate: selectedEndDate,
   });
 
   //Edit Rig
@@ -258,7 +247,6 @@ export const BillingDashboardProvider = ({
         years,
         windowWidth,
         selectedYear,
-
         handleYearChange,
         months,
         handleChangeRig,

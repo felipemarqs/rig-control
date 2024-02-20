@@ -1,9 +1,8 @@
-import React, {createContext, useState} from "react";
+import React, {createContext} from "react";
 import {useEfficiencies} from "../../../../app/hooks/efficiencies/useEfficiencies";
 import {useAuth} from "../../../../app/hooks/useAuth";
 import {User} from "../../../../app/entities/User";
 import {SelectOptions} from "../../../../app/entities/SelectOptions";
-import {startOfMonth, endOfMonth, format} from "date-fns";
 import {useRigs} from "../../../../app/hooks/rigs/useRigs";
 import {Rig} from "../../../../app/entities/Rig";
 import {Efficiency} from "../entities/Efficiency";
@@ -18,6 +17,7 @@ import {getRepairPeriods} from "../../../../app/utils/getRepairPeriods";
 import {Period} from "../../../../app/entities/Period";
 import {useEfficienciesRigsAverage} from "../../../../app/hooks/efficiencies/useEfficienciesRigsAverage";
 import {RigsAverageResponse} from "../../../../app/services/efficienciesService/getRigsAverage";
+import {useFiltersContext} from "../../../../app/hooks/useFiltersContext";
 
 // Definição do tipo do contexto
 interface DashboardContextValue {
@@ -72,48 +72,36 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   const userRigs = user?.rigs.map(({rig: {id, name}}) => ({id, name})) || [];
 
   // Estados iniciais para as datas (primeiro e último dia do mês atual)
-  const currentDate = new Date();
-  const firstDayOfMonth = startOfMonth(currentDate);
-  const lastDayOfMonth = endOfMonth(currentDate);
-  const formattedFirstDay = format(
-    firstDayOfMonth,
-    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
-  );
-  const formattedLastDay = format(
-    lastDayOfMonth,
-    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
-  );
-
-  const [selectedRig, setSelectedRig] = useState<string>("");
-  const [selectedStartDate, setSelectedStartDate] =
-    useState<string>(formattedFirstDay);
-  const [selectedEndDate, setSelectedEndDate] =
-    useState<string>(formattedLastDay);
-  const [selectedPeriod, setSelectedPeriod] = useState<string>("");
-  const [selectedYear, setSeletectedYear] = useState<string>("2023");
-  const [filters, setFilters] = useState({
-    rigId: selectedRig,
-    startDate: selectedStartDate,
-    endDate: selectedEndDate,
-  });
+  const {
+    filters,
+    selectedEndDate,
+    selectedPeriod,
+    selectedRig,
+    selectedStartDate,
+    selectedYear,
+    setFilters,
+    setSelectedEndDate,
+    setSelectedPeriod,
+    setSelectedRig,
+    setSelectedStartDate,
+    setSeletectedYear,
+    formattedFirstDay,
+    formattedLastDay,
+    selectedFilterType,
+    setSelectedFilterType,
+  } = useFiltersContext();
 
   // Utilização dos hooks para eficiências e médias de eficiência
   const {efficiencies, isFetchingEfficiencies, refetchEffciencies} =
     useEfficiencies(filters);
 
   const {rigsAverage, refetchRigsAverage, isFetchingRigsAverage} =
-    useEfficienciesRigsAverage(
-      {
-        startDate: filters.startDate,
-        endDate: filters.endDate,
-      },
-      isUserAdm
-    );
+    useEfficienciesRigsAverage({
+      startDate: filters.startDate,
+      endDate: filters.endDate,
+    });
 
   const isEmpty: boolean = efficiencies.length === 0;
-  const [selectedFilterType, setSelectedFilterType] = useState<FilterType>(
-    FilterType.PERIOD
-  );
 
   // Funções para manipulação das datas e filtros
   const handleApplyFilters = () => {

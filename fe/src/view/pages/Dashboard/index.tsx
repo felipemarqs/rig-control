@@ -137,7 +137,7 @@ export const Dashboard = () => {
             </div>
             <div className=" w-full flex justify-center my-6">
               <div className="stats  bg-gray-500">
-                {!isFetchingEfficiencies && (
+                {!isFetchingEfficiencies && !isEmpty && (
                   <>
                     <div className="stat">
                       <div className="stat-figure text-white">

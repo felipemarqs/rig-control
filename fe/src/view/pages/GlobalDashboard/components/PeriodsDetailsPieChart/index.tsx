@@ -1,19 +1,17 @@
 import {ResponsivePie} from "@nivo/pie";
-import {useUnbilledPeriodsPieChart} from "./useUnbilledPeriodsPieChart";
-import {PeriodType} from "../../../../../app/entities/PeriodType";
+import {usePeriodsDetailsPieChart} from "./usePeriodsDetailsPieChart";
+import {translateType} from "../../../../../app/utils/translateType";
 import {ChartHeader} from "../../../../components/ChartHeader";
 
-// make sure parent container have a defined height when using
-// responsive component, otherwise height will be 0 and
-// no chart will be rendered.
-// website examples showcase many properties,
-// you'll often use just a few of them.
-export const UnbilledPeriodsPieChart = () => {
-  const {chartData, handleSelectedPieChartViewChange} =
-    useUnbilledPeriodsPieChart();
+export const PeriodsDetailsPieChart = () => {
+  const {chartData, selectedPieChartView, handleCloseDetailsGraph} =
+    usePeriodsDetailsPieChart();
   return (
-    <div className="w-full h-full relative">
-      <ChartHeader>Horas não faturadas</ChartHeader>
+    <div className="w-full h-full">
+      <ChartHeader onClose={handleCloseDetailsGraph}>
+        Detalhes dos periodos de {translateType(selectedPieChartView)}
+      </ChartHeader>
+
       <ResponsivePie
         data={chartData}
         theme={{
@@ -38,7 +36,6 @@ export const UnbilledPeriodsPieChart = () => {
               },
             },
           },
-
           labels: {
             text: {
               fontSize: 14,
@@ -69,17 +66,15 @@ export const UnbilledPeriodsPieChart = () => {
           from: "color",
           modifiers: [["darker", 0.2]],
         }}
-        onClick={(event) =>
-          handleSelectedPieChartViewChange(event.id as PeriodType)
-        }
-        valueFormat={(value) => `${value} Hrs`}
-        enableArcLinkLabels={true}
-        arcLinkLabelsTextColor={"#679d4d"}
+        //onClick={(event) => handleChartClick(event.id as string)}
+        enableArcLinkLabels={false}
+        arcLinkLabelsTextColor={"#1c7b7b"}
         arcLinkLabelsThickness={3}
         arcLinkLabelsColor={{from: "color"}}
-        arcLabelsTextColor="#fff"
         arcLabelsSkipAngle={10}
-        /* legends={[
+        arcLabelsTextColor="#fff"
+        valueFormat={(value) => `${value} Hrs`}
+        legends={[
           {
             anchor: "bottom",
             direction: "column",
@@ -103,11 +98,8 @@ export const UnbilledPeriodsPieChart = () => {
               },
             ],
           },
-        ]} */
+        ]}
       />
-      <small className="absolute bottom-5 right-10 italic text-gray-700">
-        * Clique no gráfico para ver detalhes
-      </small>
     </div>
   );
 };

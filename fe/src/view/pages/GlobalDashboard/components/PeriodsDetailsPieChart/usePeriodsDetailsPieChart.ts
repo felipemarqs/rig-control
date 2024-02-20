@@ -1,7 +1,7 @@
-import { differenceInMinutes, parse } from "date-fns";
-import { useGlobalDashboard } from "../../GlobalDashboardContext/useDashboard";
+import {differenceInMinutes, parse} from "date-fns";
+import {useGlobalDashboard} from "../../GlobalDashboardContext/useDashboard";
 
-import { translateClassification } from "../../../../../app/utils/translateClassification";
+import {translateClassification} from "../../../../../app/utils/translateClassification";
 
 export type PieChartData = {
   id: string;
@@ -10,8 +10,9 @@ export type PieChartData = {
   color: string;
 }[];
 
-export const useRepairPeriodsPieChart = () => {
-  const { unbilledPeriods, selectedPieChartView } = useGlobalDashboard();
+export const usePeriodsDetailsPieChart = () => {
+  const {unbilledPeriods, selectedPieChartView, handleCloseDetailsGraph} =
+    useGlobalDashboard();
 
   const colors = [
     "#336777",
@@ -24,7 +25,6 @@ export const useRepairPeriodsPieChart = () => {
     "#0a3b3b",
     "#062e2e",
     "#114a4a",
-    "#81c460",
     "#5c8c44",
     "#375625",
     "#2c451b",
@@ -84,8 +84,9 @@ export const useRepairPeriodsPieChart = () => {
       return acc;
     }, []);
 
-  console.log("ChartData", chartData);
   return {
     chartData,
+    selectedPieChartView,
+    handleCloseDetailsGraph,
   };
 };
