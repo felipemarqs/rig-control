@@ -1,31 +1,34 @@
-import React, {createContext, useState} from "react";
-import {useAuth} from "../../../../app/hooks/useAuth";
-import {User} from "../../../../app/entities/User";
-import {SelectOptions} from "../../../../app/entities/SelectOptions";
-import {startOfMonth, endOfMonth, format, differenceInDays} from "date-fns";
-import {useRigs} from "../../../../app/hooks/rigs/useRigs";
-import {Rig} from "../../../../app/entities/Rig";
-import {useSidebarContext} from "../../../../app/contexts/SidebarContext";
-import {filterOptions} from "../../../../app/utils/filterOptions";
-import {useEfficienciesRigsAverage} from "../../../../app/hooks/efficiencies/useEfficienciesRigsAverage";
-import {RigsAverageResponse} from "../../../../app/services/efficienciesService/getRigsAverage";
-import {useGetUnbilledPeriods} from "../../../../app/hooks/periods/useGetUnbilledPeriods";
-import {GetUnbilledPeriodsResponse} from "../../../../app/services/periodsService/getUnbilledPeriods";
+import React, { createContext, useState } from "react";
+import { useAuth } from "../../../../app/hooks/useAuth";
+import { User } from "../../../../app/entities/User";
+import { SelectOptions } from "../../../../app/entities/SelectOptions";
+import { startOfMonth, endOfMonth, format, differenceInDays } from "date-fns";
+import { useRigs } from "../../../../app/hooks/rigs/useRigs";
+import { Rig } from "../../../../app/entities/Rig";
+import { useSidebarContext } from "../../../../app/contexts/SidebarContext";
+import { filterOptions } from "../../../../app/utils/filterOptions";
+import { useEfficienciesRigsAverage } from "../../../../app/hooks/efficiencies/useEfficienciesRigsAverage";
+import { RigsAverageResponse } from "../../../../app/services/efficienciesService/getRigsAverage";
+import { useGetUnbilledPeriods } from "../../../../app/hooks/periods/useGetUnbilledPeriods";
+import { GetUnbilledPeriodsResponse } from "../../../../app/services/periodsService/getUnbilledPeriods";
+import { PeriodType } from "../../../../app/entities/PeriodType";
 
 // Definição do tipo do contexto
 interface GlobalDashboardContextValue {
+  selectedPieChartView: PeriodType;
   selectedPeriod: string;
   isEmpty: boolean;
   handleStartDateChange(date: Date): void;
   handleEndDateChange(date: Date): void;
   isAlertSeen: boolean;
+  handleSelectedPieChartViewChange(type: PeriodType): void;
   handleIsAlertSeen(): void;
   selectedEndDate: string;
   selectedStartDate: string;
   handleApplyFilters(): void;
   user: User | undefined;
   signout(): void;
-  rigs: Rig[] | {id: string; name: string}[];
+  rigs: Rig[] | { id: string; name: string }[];
   windowWidth: number;
   filterOptions: SelectOptions;
   rigsAverage: RigsAverageResponse;
@@ -46,14 +49,16 @@ export const GlobalDashboardProvider = ({
   children: React.ReactNode;
 }) => {
   // Utilização dos hooks para autenticação e contexto da barra lateral
-  const {user, signout, isAlertSeen, handleIsAlertSeen, isUserAdm} = useAuth();
-  const {windowWidth} = useSidebarContext();
+  const { user, signout, isAlertSeen, handleIsAlertSeen, isUserAdm } =
+    useAuth();
+  const { windowWidth } = useSidebarContext();
 
   // Verificação se o usuário é administrador para exibir as rigs corretas
-  const {rigs} = useRigs(isUserAdm);
+  const { rigs } = useRigs(isUserAdm);
 
   // Mapeamento das rigs do usuário para exibir apenas as autorizadas
-  const userRigs = user?.rigs.map(({rig: {id, name}}) => ({id, name})) || [];
+  const userRigs =
+    user?.rigs.map(({ rig: { id, name } }) => ({ id, name })) || [];
 
   // Estados iniciais para as datas (primeiro e último dia do mês atual)
   const currentDate = new Date();
@@ -79,9 +84,17 @@ export const GlobalDashboardProvider = ({
     endDate: selectedEndDate,
   });
 
+  const [selectedPieChartView, setSelectedPieChartView] = useState(
+    PeriodType.REPAIR
+  );
+
+  const handleSelectedPieChartViewChange = (type: PeriodType) => {
+    setSelectedPieChartView(type);
+  };
+
   // Utilização dos hooks para eficiências e médias de eficiência
 
-  const {rigsAverage, refetchRigsAverage, isFetchingRigsAverage} =
+  const { rigsAverage, refetchRigsAverage, isFetchingRigsAverage } =
     useEfficienciesRigsAverage(
       {
         startDate: filters.startDate,
@@ -90,7 +103,7 @@ export const GlobalDashboardProvider = ({
       isUserAdm
     );
 
-  const {unbilledPeriods, refetchUnbilledPeriods, isFetchingUnbilledPeriods} =
+  const { unbilledPeriods, refetchUnbilledPeriods, isFetchingUnbilledPeriods } =
     useGetUnbilledPeriods({
       startDate: filters.startDate,
       endDate: filters.endDate,
@@ -111,12 +124,15 @@ export const GlobalDashboardProvider = ({
 
   const handleStartDateChange = (date: Date) => {
     setSelectedStartDate(date.toISOString());
-    setFilters((prevState) => ({...prevState, startDate: date.toISOString()}));
+    setFilters((prevState) => ({
+      ...prevState,
+      startDate: date.toISOString(),
+    }));
   };
 
   const handleEndDateChange = (date: Date) => {
     setSelectedEndDate(date.toISOString());
-    setFilters((prevState) => ({...prevState, endDate: date.toISOString()}));
+    setFilters((prevState) => ({ ...prevState, endDate: date.toISOString() }));
   };
 
   // Retorno do provedor do contexto com os valores e funções necessárias
@@ -124,12 +140,14 @@ export const GlobalDashboardProvider = ({
     <GlobalDashboardContext.Provider
       value={{
         unbilledPeriods,
+        selectedPieChartView,
         isFetchingUnbilledPeriods,
         selectedPeriod,
         selectedStartDate,
         selectedEndDate,
         handleStartDateChange,
         handleEndDateChange,
+        handleSelectedPieChartViewChange,
         handleApplyFilters,
         user,
         filterOptions,

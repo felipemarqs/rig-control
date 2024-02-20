@@ -1,6 +1,6 @@
-import {parse} from "date-fns";
-import {useGlobalDashboard} from "../../GlobalDashboardContext/useDashboard";
-import {getDiffInMinutes} from "../../../../../app/utils/getDiffInMinutes";
+import { parse } from "date-fns";
+import { useGlobalDashboard } from "../../GlobalDashboardContext/useDashboard";
+import { getDiffInMinutes } from "../../../../../app/utils/getDiffInMinutes";
 
 export type PieChartData = {
   id: string;
@@ -10,7 +10,8 @@ export type PieChartData = {
 }[];
 
 export const useUnbilledPeriodsPieChart = () => {
-  const {unbilledPeriods} = useGlobalDashboard();
+  const { unbilledPeriods, handleSelectedPieChartViewChange } =
+    useGlobalDashboard();
 
   const data = [
     {
@@ -45,7 +46,7 @@ export const useUnbilledPeriodsPieChart = () => {
 
       acc = acc.map((accItem) =>
         accItem.id === current.type
-          ? {...accItem, value: (accItem.value += diffInMinutes)}
+          ? { ...accItem, value: (accItem.value += diffInMinutes) }
           : accItem
       );
 
@@ -69,5 +70,6 @@ export const useUnbilledPeriodsPieChart = () => {
 
   return {
     chartData,
+    handleSelectedPieChartViewChange,
   };
 };

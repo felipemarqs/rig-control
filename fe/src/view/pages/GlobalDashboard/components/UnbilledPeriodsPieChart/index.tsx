@@ -1,5 +1,6 @@
-import {ResponsivePie} from "@nivo/pie";
-import {useUnbilledPeriodsPieChart} from "./useUnbilledPeriodsPieChart";
+import { ResponsivePie } from "@nivo/pie";
+import { useUnbilledPeriodsPieChart } from "./useUnbilledPeriodsPieChart";
+import { PeriodType } from "../../../../../app/entities/PeriodType";
 
 // make sure parent container have a defined height when using
 // responsive component, otherwise height will be 0 and
@@ -7,7 +8,8 @@ import {useUnbilledPeriodsPieChart} from "./useUnbilledPeriodsPieChart";
 // website examples showcase many properties,
 // you'll often use just a few of them.
 export const UnbilledPeriodsPieChart = () => {
-  const {chartData} = useUnbilledPeriodsPieChart();
+  const { chartData, handleSelectedPieChartViewChange } =
+    useUnbilledPeriodsPieChart();
   return (
     <ResponsivePie
       data={chartData}
@@ -44,8 +46,8 @@ export const UnbilledPeriodsPieChart = () => {
           },
         },
       }}
-      colors={{datum: "data.color"}}
-      margin={{top: 40, right: 80, bottom: 80, left: 80}}
+      colors={{ datum: "data.color" }}
+      margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
       sortByValue={true}
       innerRadius={0.45}
       activeOuterRadiusOffset={8}
@@ -54,11 +56,13 @@ export const UnbilledPeriodsPieChart = () => {
         from: "color",
         modifiers: [["darker", 0.2]],
       }}
-      //onClick={(event) => handleChartClick(event.id as string)}
+      onClick={(event) =>
+        handleSelectedPieChartViewChange(event.id as PeriodType)
+      }
       enableArcLinkLabels={true}
       arcLinkLabelsTextColor={"#679d4d"}
       arcLinkLabelsThickness={2}
-      arcLinkLabelsColor={{from: "color"}}
+      arcLinkLabelsColor={{ from: "color" }}
       arcLabelsSkipAngle={10}
       arcLabelsTextColor={{
         from: "color",
