@@ -14,22 +14,19 @@ export const usePeriodsDetailsPieChart = () => {
   const {unbilledPeriods, selectedPieChartView, handleCloseDetailsGraph} =
     useGlobalDashboard();
 
-  const colors = [
-    "#336777",
+  const pieChartColors = [
+    "#1c7b7b", // primary 500
     "#81c460",
-    "#679d4d",
-    "#1c7b7b",
-    "#0d4c4c",
-    "#083d3d",
-    "#166262",
-    "#0a3b3b",
-    "#062e2e",
-    "#114a4a",
-    "#5c8c44",
-    "#375625",
-    "#2c451b",
-    "#213411",
-    "#344e26",
+    "#ffda79", // Amarelo
+    "#564787", // Roxo
+    "#f38181", // Rosa
+    "#84fab0", // Verde claro
+    "#ff5722", // Laranja
+    "#416788", // Azul marinho
+    "#b8de6f", // Verde limão
+    "#94618e", // Roxo claro
+    "#ffa45b", // Pêssego
+    "#a3de83", // Verde pastel
   ];
 
   const data = [
@@ -66,7 +63,7 @@ export const usePeriodsDetailsPieChart = () => {
           id: classification,
           label: classification,
           value: Math.ceil(Number(diffInHours.toFixed(2))),
-          color: colors[acc.length % colors.length], // Use modulo para evitar estouro de índice
+          color: pieChartColors[acc.length % pieChartColors.length], // Use modulo para evitar estouro de índice
         });
       } else {
         acc = acc.map((accItem) =>

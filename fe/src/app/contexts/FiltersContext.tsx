@@ -1,25 +1,20 @@
 import {endOfMonth, format, startOfMonth} from "date-fns";
 import {createContext, useState} from "react";
 import {FilterType} from "../entities/FilterType";
+import {getPeriodRange} from "../utils/getPeriodRange";
 
 interface FiltersContextValue {
-  setSelectedRig: React.Dispatch<React.SetStateAction<string>>;
   selectedRig: string;
-  setSelectedStartDate: React.Dispatch<React.SetStateAction<string>>;
   selectedStartDate: string;
-  setSelectedEndDate: React.Dispatch<React.SetStateAction<string>>;
   selectedEndDate: string;
-  setSelectedPeriod: React.Dispatch<React.SetStateAction<string>>;
   selectedPeriod: string;
-  setSeletectedYear: React.Dispatch<React.SetStateAction<string>>;
   selectedYear: string;
-  setFilters: React.Dispatch<
-    React.SetStateAction<{
-      rigId: string;
-      startDate: string;
-      endDate: string;
-    }>
-  >;
+  handleChangeRig(rigId: string): void;
+  handleChangePeriod(period: string): void;
+  handleStartDateChange(date: Date): void;
+  handleEndDateChange(date: Date): void;
+  handleToggleFilterType(filterType: FilterType): void;
+  handleYearChange(year: string): void;
   filters: {
     rigId: string;
     startDate: string;
@@ -28,7 +23,6 @@ interface FiltersContextValue {
   formattedFirstDay: string;
   formattedLastDay: string;
   selectedFilterType: FilterType;
-  setSelectedFilterType: React.Dispatch<React.SetStateAction<FilterType>>;
 }
 
 export const FiltersContext = createContext({} as FiltersContextValue);
@@ -59,27 +53,66 @@ export const FiltersProvider = ({children}: {children: React.ReactNode}) => {
     endDate: selectedEndDate,
   });
   const [selectedFilterType, setSelectedFilterType] = useState<FilterType>(
-    FilterType.PERIOD
+    FilterType.CUSTOM
   );
+  const handleChangeRig = (rigId: string) => {
+    setSelectedRig(rigId);
+    setFilters((prevState) => ({...prevState, rigId: rigId}));
+  };
+
+  const handleStartDateChange = (date: Date) => {
+    setSelectedStartDate(date.toISOString());
+    setFilters((prevState) => ({...prevState, startDate: date.toISOString()}));
+  };
+
+  const handleEndDateChange = (date: Date) => {
+    setSelectedEndDate(date.toISOString());
+    setFilters((prevState) => ({...prevState, endDate: date.toISOString()}));
+  };
+
+  const handleChangePeriod = (period: string) => {
+    setSelectedPeriod(period);
+    const periodFound = getPeriodRange(selectedRig, selectedYear);
+
+    if (periodFound) {
+      const monthPeriodSelected = periodFound.months.find(
+        (month) => month.month === period
+      );
+
+      handleStartDateChange(monthPeriodSelected?.startDate!);
+      handleEndDateChange(monthPeriodSelected?.endDate!);
+    }
+  };
+
+  const handleToggleFilterType = (filterType: FilterType) => {
+    setSelectedFilterType(filterType);
+    handleStartDateChange(new Date(formattedFirstDay));
+    handleEndDateChange(new Date(formattedLastDay));
+  };
+
+  const handleYearChange = (year: string) => {
+    setSeletectedYear(year);
+    setSelectedPeriod("");
+  };
+
   return (
     <FiltersContext.Provider
       value={{
-        setSelectedRig,
         selectedRig,
         selectedStartDate,
-        setSelectedStartDate,
         selectedEndDate,
-        setSelectedEndDate,
         selectedPeriod,
-        setSelectedPeriod,
-        setSeletectedYear,
         selectedYear,
-        setFilters,
         filters,
         formattedFirstDay,
         formattedLastDay,
         selectedFilterType,
-        setSelectedFilterType,
+        handleChangeRig,
+        handleChangePeriod,
+        handleStartDateChange,
+        handleEndDateChange,
+        handleToggleFilterType,
+        handleYearChange,
       }}
     >
       {children}

@@ -431,8 +431,6 @@ export class EfficienciesService {
       'truckTankTax',
     );
 
-    console.log(isTruckTankSelected, isMunckSelected);
-
     mobilizationTotalAmount = calculateSelectedValues(
       isMobilizationSelected,
       'mobilization',

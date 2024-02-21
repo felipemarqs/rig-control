@@ -15,6 +15,7 @@ import {AddFiles} from "../../components/AddFiles";
 import {GrouppedRepairs} from "./components/GrouppedRepairs";
 import {AccessLevel} from "../../../app/entities/AccessLevel";
 import {AverageBarChart} from "./components/AverageBarChart";
+import {GrouppedGlosses} from "./components/GrouppedGlosses";
 
 export const Dashboard = () => {
   return (
@@ -45,6 +46,7 @@ export const Dashboard = () => {
           user,
           months,
           filterOptions,
+          glossPeriods,
           handleToggleFilterType,
           selectedFilterType,
           selectedPeriod,
@@ -259,7 +261,7 @@ export const Dashboard = () => {
                   </div>*/}
 
                   <div
-                    className={`col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-4  `}
+                    className={`col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6  `}
                   >
                     {isFetchingEfficiencies && <Spinner />}
                     {repairPeriods.length === 0 && !isFetchingEfficiencies && (
@@ -278,8 +280,28 @@ export const Dashboard = () => {
                     )}
                   </div>
 
+                  <div
+                    className={`col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6  `}
+                  >
+                    {isFetchingEfficiencies && <Spinner />}
+                    {glossPeriods.length === 0 && !isFetchingEfficiencies && (
+                      <div className="flex justify-center  items-center">
+                        <NotFound>
+                          <strong>Não</strong> existem dados de{" "}
+                          <strong>glosa</strong> para a <strong>sonda</strong>{" "}
+                          no <strong>período</strong> selecionado!
+                        </NotFound>
+                      </div>
+                    )}
+                    {!isFetchingEfficiencies && glossPeriods.length > 0 && (
+                      <div className="w-full h-full">
+                        <GrouppedGlosses />
+                      </div>
+                    )}
+                  </div>
+
                   {user?.accessLevel === AccessLevel.ADM && (
-                    <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-8 lg:row-span-3">
+                    <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6 lg:row-span-3">
                       {isFetchingRigsAverage && <Spinner />}
                       {rigsAverage.length === 0 && !isFetchingRigsAverage && (
                         <div className="flex justify-center items-center">

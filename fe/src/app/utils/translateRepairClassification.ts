@@ -4,7 +4,6 @@ import {periodClassifications} from "./periodClassifications";
 export const translateRepairClassification = (
   repairClassification: RepairClassification
 ) => {
-  console.log("repairClassification", repairClassification);
   for (let repair of periodClassifications.REPAIR) {
     const res = repair.repairClassification.find(
       ({value}) => value === repairClassification

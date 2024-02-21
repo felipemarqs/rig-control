@@ -2,7 +2,7 @@ import {ResponsiveBar} from "@nivo/bar";
 import {useAverageBarChart} from "./useAverageBarChart";
 
 export const AverageBarChart = () => {
-  const {data, getBarColor} = useAverageBarChart();
+  const {data, getBarColor, handleChangeRig, navigate} = useAverageBarChart();
 
   return (
     <div className="w-full h-full relative">
@@ -112,6 +112,10 @@ export const AverageBarChart = () => {
           barAriaLabel={(e) =>
             e.id + ": " + e.formattedValue + " in country: " + e.indexValue
           }
+          onClick={(event) => {
+            handleChangeRig(event.data.rigId as string);
+            navigate(`/`);
+          }}
           theme={{
             axis: {
               domain: {
@@ -162,6 +166,10 @@ export const AverageBarChart = () => {
       <small className="flex items-center justify-center gap-2 absolute bottom-2 right-10 italic text-gray-700">
         <div className="bg-red-500 p-1 w-3 h-3"></div>{" "}
         <span> Sondas com dias pendentes durante o periodo selecionado</span>
+      </small>
+
+      <small className="absolute bottom-6 right-10 italic text-gray-700">
+        * Clique no gráfico para ver detalhes
       </small>
     </div>
   );

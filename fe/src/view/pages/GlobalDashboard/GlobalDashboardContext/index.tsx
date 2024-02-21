@@ -69,9 +69,8 @@ export const GlobalDashboardProvider = ({
     filters,
     selectedEndDate,
     selectedStartDate,
-    setFilters,
-    setSelectedEndDate,
-    setSelectedStartDate,
+    handleStartDateChange,
+    handleEndDateChange,
   } = useFiltersContext();
 
   const [isDetailsGraphVisible, setIsDetailsGraphVisible] = useState(false);
@@ -95,8 +94,6 @@ export const GlobalDashboardProvider = ({
       startDate: filters.startDate,
       endDate: filters.endDate,
     });
-
-  console.log("rigsAverage", rigsAverage);
 
   let rigsAverageTotalHours = 0;
 
@@ -193,19 +190,6 @@ export const GlobalDashboardProvider = ({
     );
     refetchRigsAverage();
     refetchUnbilledPeriods();
-  };
-
-  const handleStartDateChange = (date: Date) => {
-    setSelectedStartDate(date.toISOString());
-    setFilters((prevState) => ({
-      ...prevState,
-      startDate: date.toISOString(),
-    }));
-  };
-
-  const handleEndDateChange = (date: Date) => {
-    setSelectedEndDate(date.toISOString());
-    setFilters((prevState) => ({...prevState, endDate: date.toISOString()}));
   };
 
   // Retorno do provedor do contexto com os valores e funções necessárias
