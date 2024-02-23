@@ -3,7 +3,6 @@ import {translateClassification} from "../../../../../app/utils/translateClassif
 import {getDiffInMinutes} from "../../../../../app/utils/getDiffInMinutes";
 import {parse} from "date-fns";
 import {formatNumberWithFixedDecimals} from "../../../../../app/utils/formatNumberWithFixedDecimals";
-import {CheckCheckIcon} from "lucide-react";
 
 interface EquipmentData {
   equipment: string;

@@ -11,7 +11,6 @@ import {
   Building2,
   Construction,
   StickyNote,
-  LayoutDashboardIcon,
 } from "lucide-react";
 
 import {useSidebarContext} from "../../../app/contexts/SidebarContext";

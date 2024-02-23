@@ -6,6 +6,7 @@ import {PeriodType} from "../../../../../app/entities/PeriodType";
 import {OrderByType} from "../../../../../app/entities/OrderBy";
 import {useGetByPeriodType} from "../../../../../app/hooks/periods/useGetByPeriodType";
 import {GetByPeriodTypeFilters} from "../../../../../app/services/periodsService/getByPeriodType";
+import {endOfMonth, format, startOfMonth} from "date-fns";
 import {SelectOptions} from "../../../../../app/entities/SelectOptions";
 import {filterOptions} from "../../../../../app/utils/filterOptions";
 import {getPeriodRange} from "../../../../../app/utils/getPeriodRange";
@@ -19,7 +20,6 @@ import {PeriodClassification} from "../../../../../app/entities/PeriodClassifica
 import {RepairClassification} from "../../../../../app/entities/RepairClassification";
 import {periodClassifications} from "../../../../../app/utils/periodClassifications";
 import {GridPaginationModel} from "@mui/x-data-grid";
-import {useFiltersContext} from "../../../../../app/hooks/useFiltersContext";
 
 interface ReportContextValues {
   rigs: Rig[] | {id: string; name: string}[];
@@ -70,25 +70,19 @@ interface ReportContextValues {
 export const ReportContext = createContext({} as ReportContextValues);
 
 export const ReportProvider = ({children}: {children: React.ReactNode}) => {
-  const {
-    selectedEndDate,
-    selectedPeriod,
-    selectedRig,
-    selectedStartDate,
-    selectedYear,
-    setSelectedEndDate,
-    setSelectedPeriod,
-    setSelectedRig,
-    setSelectedStartDate,
-    setSeletectedYear,
-    formattedFirstDay,
-    formattedLastDay,
-    selectedFilterType,
-    setSelectedFilterType,
-  } = useFiltersContext();
-
+  const currentDate = new Date();
   const {user} = useAuth();
 
+  const firstDayOfMonth = startOfMonth(currentDate);
+  const lastDayOfMonth = endOfMonth(currentDate);
+  const formattedFirstDay = format(
+    firstDayOfMonth,
+    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
+  );
+  const formattedLastDay = format(
+    lastDayOfMonth,
+    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
+  );
   const {isUserAdm} = useAuth();
   const {windowWidth} = useSidebarContext();
 
@@ -102,7 +96,12 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
   //estado dos filtros
   const [isFilterContainerVisible, setIsFilterContainerVisible] =
     useState(true);
-
+  const [selectedRig, setSelectedRig] = useState<string>("");
+  const [selectedStartDate, setSelectedStartDate] =
+    useState<string>(formattedFirstDay);
+  const [selectedEndDate, setSelectedEndDate] =
+    useState<string>(formattedLastDay);
+  const [selectedPeriod, setSelectedPeriod] = useState<string>("");
   const [selectedPeriodType, setSelectedPeriodType] = useState<PeriodType>(
     PeriodType.WORKING
   );
@@ -118,7 +117,11 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
 
   const [repairClassificationOptions, setRepairClassificationOptions] =
     useState<null | SelectOptions>(null);
+  const [selectedYear, setSeletectedYear] = useState<string>("2023");
 
+  const [selectedFilterType, setSelectedFilterType] = useState<FilterType>(
+    FilterType.PERIOD
+  );
   const [filters, setFilters] = useState<GetByPeriodTypeFilters>({
     rigId: "",
     periodType: PeriodType.WORKING,

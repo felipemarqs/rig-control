@@ -10,7 +10,6 @@ import {filterOptions} from "../../../../app/utils/filterOptions";
 import {SelectOptions} from "../../../../app/entities/SelectOptions";
 import {useRigs} from "../../../../app/hooks/rigs/useRigs";
 import {Rig} from "../../../../app/entities/Rig";
-import {getPeriodRange} from "../../../../app/utils/getPeriodRange";
 import {months} from "../../../../app/utils/months";
 import {years} from "../../../../app/utils/years";
 import {useSidebarContext} from "../../../../app/contexts/SidebarContext";
@@ -83,17 +82,6 @@ export const BillingDashboardContext = createContext(
   {} as BillingDashboardContextValue
 );
 
-/* ,
-,
-,
-,
-,
-
-months,
-selectedYear,
-handleYearChange,
-years */
-
 export const BillingDashboardProvider = ({
   children,
 }: {
@@ -106,14 +94,13 @@ export const BillingDashboardProvider = ({
     selectedRig,
     selectedStartDate,
     selectedYear,
-    setFilters,
-    setSelectedEndDate,
-    setSelectedPeriod,
-    setSelectedRig,
-    setSelectedStartDate,
-    setSeletectedYear,
-    formattedFirstDay,
-    formattedLastDay,
+    handleChangePeriod,
+    handleChangeRig,
+    handleEndDateChange,
+    handleStartDateChange,
+    handleToggleFilterType,
+    handleYearChange,
+    selectedFilterType,
   } = useFiltersContext();
   // Obtenha a data atual
   const {windowWidth} = useSidebarContext();
@@ -130,10 +117,6 @@ export const BillingDashboardProvider = ({
   const [isEditConfigModalOpen, setIsEditConfigModalOpen] = useState(false);
   const [configBeingEdited, setConfigBeingEdited] =
     useState<null | BillingConfigResponse>(null);
-
-  const [selectedFilterType, setSelectedFilterType] = useState<FilterType>(
-    FilterType.CUSTOM
-  );
 
   const [sliderState, setSliderState] = useState({
     isBeginning: true,
@@ -157,32 +140,6 @@ export const BillingDashboardProvider = ({
     setIsEditRigModalOpen(true);
   }, []);
 
-  const handleToggleFilterType = (filterType: FilterType) => {
-    setSelectedFilterType(filterType);
-
-    handleStartDateChange(new Date(formattedFirstDay));
-    handleEndDateChange(new Date(formattedLastDay));
-  };
-
-  const handleChangeRig = (rigId: string) => {
-    setSelectedRig(rigId);
-    setFilters((prevState) => ({...prevState, rigId: rigId}));
-  };
-
-  const handleChangePeriod = (period: string) => {
-    setSelectedPeriod(period);
-
-    const periodFound = getPeriodRange(selectedRig, selectedYear);
-
-    if (periodFound) {
-      const monthPeriodSelected = periodFound.months.find((month) => {
-        return month.month === period;
-      });
-
-      handleStartDateChange(monthPeriodSelected?.startDate!);
-      handleEndDateChange(monthPeriodSelected?.endDate!);
-    }
-  };
   //=============================
 
   //Edit Config
@@ -218,27 +175,6 @@ export const BillingDashboardProvider = ({
 
   const handleApplyFilters = () => {
     refetchBillings();
-  };
-
-  const handleStartDateChange = useCallback((date: Date) => {
-    setSelectedStartDate(date.toISOString());
-    setFilters((prevState) => ({
-      ...prevState,
-      startDate: date.toISOString(),
-    }));
-  }, []);
-
-  const handleEndDateChange = (date: Date) => {
-    setSelectedEndDate(date.toISOString());
-    setFilters((prevState) => ({
-      ...prevState,
-      endDate: date.toISOString(),
-    }));
-  };
-
-  const handleYearChange = (year: string) => {
-    setSeletectedYear(year);
-    setSelectedPeriod("");
   };
 
   return (

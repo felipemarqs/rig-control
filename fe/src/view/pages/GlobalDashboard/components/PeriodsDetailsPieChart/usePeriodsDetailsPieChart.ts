@@ -29,21 +29,6 @@ export const usePeriodsDetailsPieChart = () => {
     "#a3de83", // Verde pastel
   ];
 
-  const data = [
-    {
-      id: "c",
-      label: "c",
-      value: 432,
-      color: "#1c7b7b",
-    },
-    {
-      id: "go",
-      label: "go",
-      value: 51,
-      color: "#81c460",
-    },
-  ];
-
   const parseHour = (hourString: string) =>
     parse(hourString.split("T")[1].slice(0, 5), "HH:mm", new Date());
 

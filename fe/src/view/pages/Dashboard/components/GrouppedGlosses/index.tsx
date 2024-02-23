@@ -2,7 +2,7 @@ import {useGrouppedRepairs} from "./useGrouppedGlosses";
 import {cn} from "../../../../../app/utils/cn";
 
 export const GrouppedGlosses = () => {
-  const {repairGroupedData, glossGroupedData} = useGrouppedRepairs();
+  const {glossGroupedData} = useGrouppedRepairs();
 
   return (
     <div
