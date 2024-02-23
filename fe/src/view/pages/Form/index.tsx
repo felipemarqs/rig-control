@@ -12,6 +12,7 @@ import {Select} from "../../components/Select";
 import {DatePickerInput} from "../../components/DatePickerInput";
 import {BraskemFormContainer} from "./components/BraskemFormContainer";
 import {ChevronDown} from "lucide-react";
+import {PageLoader} from "../../components/PageLoader";
 
 // Componente principal Form
 export const Form = () => {
@@ -39,6 +40,7 @@ export const Form = () => {
           isVisible,
           handleConfirmButton,
           isConfigsConfirmed,
+          isLoading,
         }) => (
           // Estrutura principal do formulário
           <div className="w-full h-full overflow-y-scroll lg:min-w-[1000px]">
@@ -168,6 +170,7 @@ export const Form = () => {
                 Enviar dados
               </Button>
             </div> */}
+            <PageLoader isLoading={isLoading} />
           </div>
         )}
       </FormContext.Consumer>

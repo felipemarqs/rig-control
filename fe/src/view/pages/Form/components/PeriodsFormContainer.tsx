@@ -12,7 +12,7 @@ import {Button} from "../../../components/Button";
 import TextArea from "antd/es/input/TextArea";
 import {useForm} from "./FormContext/useForm";
 import {Input} from "../../../components/Input";
-import {ChevronUp, TrashIcon} from "lucide-react";
+import {AlertTriangle, ChevronUp, TrashIcon} from "lucide-react";
 import {translateType} from "../../../../app/utils/translateType";
 import {PeriodType} from "../../../../app/entities/PeriodType";
 /* import {NewBraskemFormContainer} from "./NewBraskemForm";
@@ -109,12 +109,23 @@ export const PeriodsFormContainer = () => {
                 </div>
                 <div className="flex gap-4 items-center justify-center">
                   {getPeriodState(id) && (
-                    <button
-                      className="text-white bg-redAccent-500 w-12 h-12 flex justify-center items-center rounded-full hover:bg-redAccent-400 duration-250 active:bg-redAccent-700 transition-all "
-                      onClick={() => handleDeletePeriod(id)}
-                    >
-                      <TrashIcon className="text-white" />
-                    </button>
+                    <>
+                      {(!well || !type || !classification) && (
+                        <div className="flex items-center justify-center gap-1 text-redAccent-500">
+                          <AlertTriangle />
+                          <span>
+                            Campos obrigatórios não preenchidos. Por favor,
+                            verifique.{" "}
+                          </span>{" "}
+                        </div>
+                      )}
+                      <button
+                        className="text-white bg-redAccent-500 w-12 h-12 flex justify-center items-center rounded-full hover:bg-redAccent-400 duration-250 active:bg-redAccent-700 transition-all "
+                        onClick={() => handleDeletePeriod(id)}
+                      >
+                        <TrashIcon className="text-white" />
+                      </button>
+                    </>
                   )}
                   {!getPeriodState(id) && (
                     <Button
@@ -125,6 +136,7 @@ export const PeriodsFormContainer = () => {
                       Limpar campos
                     </Button>
                   )}
+
                   <button
                     onClick={() => updatePeriodState(id, !getPeriodState(id))}
                     className={`text-white bg-primary-500 w-12 h-12 flex justify-center items-center rounded-full transform transition-transform duration-200 ease-in ${
@@ -240,7 +252,6 @@ export const PeriodsFormContainer = () => {
                       }
                       value={well}
                       name="well"
-                      error={getErrorMessageByFildName("well")}
                       placeholder={type === "DTM" ? "Poço de Destino" : "Poço"}
                       labelStyles="text-black"
                       className="w-full border-1 text-black border-black bg-white hover:bg-white "
