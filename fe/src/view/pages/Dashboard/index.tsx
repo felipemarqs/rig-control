@@ -15,6 +15,8 @@ import {AddFiles} from "../../components/AddFiles";
 import {GrouppedRepairs} from "./components/GrouppedRepairs";
 import {AccessLevel} from "../../../app/entities/AccessLevel";
 import {AverageBarChart} from "./components/AverageBarChart";
+import {GrouppedGlosses} from "./components/GrouppedGlosses";
+import {RepairDetailsPieChart} from "./components/RepairDetailsPieChart";
 
 export const Dashboard = () => {
   return (
@@ -45,6 +47,7 @@ export const Dashboard = () => {
           user,
           months,
           filterOptions,
+          glossPeriods,
           handleToggleFilterType,
           selectedFilterType,
           selectedPeriod,
@@ -54,6 +57,7 @@ export const Dashboard = () => {
           repairPeriods,
           handleYearChange,
           years,
+          selectedEquipment,
         }) => (
           <div className="w-full  pt-10 overflow-y-scroll">
             <div className="w-full flex flex-wrap justify-center items-center lg:justify-end gap-1 lg:px-4">
@@ -137,7 +141,7 @@ export const Dashboard = () => {
             </div>
             <div className=" w-full flex justify-center my-6">
               <div className="stats  bg-gray-500">
-                {!isFetchingEfficiencies && (
+                {!isFetchingEfficiencies && !isEmpty && (
                   <>
                     <div className="stat">
                       <div className="stat-figure text-white">
@@ -246,9 +250,7 @@ export const Dashboard = () => {
                 <div className=" flex-1 grid grid-cols-12 auto-rows-[120px] gap-3">
                   <div
                     className={cn(
-                      "col-span-12 row-span-3 flex justify-center bg-gray-200 rounded-lg items-center lg:col-start-3 lg:col-span-8 lg:row-span-3",
-                      efficiencies.length > 15 &&
-                        "lg:col-start-0 lg:col-span-12"
+                      "col-span-12 row-span-3 flex justify-center bg-gray-200 rounded-lg items-center  lg:row-span-3 lg:col-start-0 lg:col-span-12"
                     )}
                   >
                     {isFetchingEfficiencies && <Spinner />}
@@ -261,7 +263,7 @@ export const Dashboard = () => {
                   </div>*/}
 
                   <div
-                    className={`col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-4  `}
+                    className={`col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6  `}
                   >
                     {isFetchingEfficiencies && <Spinner />}
                     {repairPeriods.length === 0 && !isFetchingEfficiencies && (
@@ -280,8 +282,49 @@ export const Dashboard = () => {
                     )}
                   </div>
 
+                  {selectedEquipment && (
+                    <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6 lg:row-span-3">
+                      {isFetchingEfficiencies && <Spinner />}
+                      {repairPeriods.length === 0 &&
+                        !isFetchingEfficiencies && (
+                          <div className="flex justify-center items-center">
+                            <NotFound>
+                              <strong>Não</strong> existem dados para a{" "}
+                              <strong>sonda</strong> no <strong>período</strong>{" "}
+                              selecionado!
+                            </NotFound>
+                          </div>
+                        )}
+                      {!isFetchingEfficiencies && repairPeriods.length > 0 && (
+                        <div className="w-full h-full">
+                          <RepairDetailsPieChart />
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  <div
+                    className={`col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6  `}
+                  >
+                    {isFetchingEfficiencies && <Spinner />}
+                    {glossPeriods.length === 0 && !isFetchingEfficiencies && (
+                      <div className="flex justify-center  items-center">
+                        <NotFound>
+                          <strong>Não</strong> existem dados de{" "}
+                          <strong>glosa</strong> para a <strong>sonda</strong>{" "}
+                          no <strong>período</strong> selecionado!
+                        </NotFound>
+                      </div>
+                    )}
+                    {!isFetchingEfficiencies && glossPeriods.length > 0 && (
+                      <div className="w-full h-full">
+                        <GrouppedGlosses />
+                      </div>
+                    )}
+                  </div>
+
                   {user?.accessLevel === AccessLevel.ADM && (
-                    <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-8 lg:row-span-3">
+                    <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6 lg:row-span-3">
                       {isFetchingRigsAverage && <Spinner />}
                       {rigsAverage.length === 0 && !isFetchingRigsAverage && (
                         <div className="flex justify-center items-center">

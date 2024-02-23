@@ -8,6 +8,7 @@ import {billingConfigService} from "../../../../../app/services/billingConfigSer
 import {customColorToast} from "../../../../../app/utils/customColorToast";
 import {AxiosError} from "axios";
 import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
+import {QueryKeys} from "../../../../../app/entities/QueryKeys";
 
 const schema = z.object({
   availableHourTax: z.union([z.string().nonempty("Obrigatório"), z.number()]),
@@ -274,7 +275,7 @@ export const useEditConfigModal = () => {
         rigId: configBeingEdited?.rig.id!,
       });
 
-      queryClient.invalidateQueries({queryKey: ["configBillings"]});
+      queryClient.invalidateQueries({queryKey: [QueryKeys.CONFIG_BILLINGS]});
 
       customColorToast(
         "Configuração editada com sucesso!",

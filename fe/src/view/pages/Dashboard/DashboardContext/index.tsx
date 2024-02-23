@@ -3,12 +3,10 @@ import {useEfficiencies} from "../../../../app/hooks/efficiencies/useEfficiencie
 import {useAuth} from "../../../../app/hooks/useAuth";
 import {User} from "../../../../app/entities/User";
 import {SelectOptions} from "../../../../app/entities/SelectOptions";
-import {startOfMonth, endOfMonth, format} from "date-fns";
 import {useRigs} from "../../../../app/hooks/rigs/useRigs";
 import {Rig} from "../../../../app/entities/Rig";
 import {Efficiency} from "../entities/Efficiency";
 import {useSidebarContext} from "../../../../app/contexts/SidebarContext";
-import {getPeriodRange} from "../../../../app/utils/getPeriodRange";
 import {months} from "../../../../app/utils/months";
 import {FilterType} from "../../../../app/entities/FilterType";
 import {filterOptions} from "../../../../app/utils/filterOptions";
@@ -18,6 +16,8 @@ import {getRepairPeriods} from "../../../../app/utils/getRepairPeriods";
 import {Period} from "../../../../app/entities/Period";
 import {useEfficienciesRigsAverage} from "../../../../app/hooks/efficiencies/useEfficienciesRigsAverage";
 import {RigsAverageResponse} from "../../../../app/services/efficienciesService/getRigsAverage";
+import {useFiltersContext} from "../../../../app/hooks/useFiltersContext";
+import {getGlossPeriods} from "../../../../app/utils/getGlossPeriods";
 
 // Definição do tipo do contexto
 interface DashboardContextValue {
@@ -28,13 +28,13 @@ interface DashboardContextValue {
   handleStartDateChange(date: Date): void;
   handleEndDateChange(date: Date): void;
   handleToggleFilterType(filterType: FilterType): void;
+  handleYearChange(year: string): void;
   isAlertSeen: boolean;
   handleIsAlertSeen(): void;
   selectedEndDate: string;
   selectedStartDate: string;
   isFetchingEfficiencies: boolean;
   handleApplyFilters(): void;
-  handleYearChange(year: string): void;
   selectedYear: string;
   selectedFilterType: FilterType;
   user: User | undefined;
@@ -42,6 +42,7 @@ interface DashboardContextValue {
   isEmpty: boolean;
   rigs: Rig[] | {id: string; name: string}[];
   repairPeriods: Period[] | never[];
+  glossPeriods: Period[] | never[];
   efficiencies: EfficienciesResponse;
   totalAvailableHours: number;
   availableHoursPercentage: number;
@@ -54,7 +55,9 @@ interface DashboardContextValue {
   months: SelectOptions;
   years: SelectOptions;
   rigsAverage: RigsAverageResponse;
+  selectedEquipment: string | null;
   isFetchingRigsAverage: boolean;
+  handleSelectEquipment: (equipment: string) => void;
 }
 
 // Criação do contexto
@@ -72,48 +75,33 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   const userRigs = user?.rigs.map(({rig: {id, name}}) => ({id, name})) || [];
 
   // Estados iniciais para as datas (primeiro e último dia do mês atual)
-  const currentDate = new Date();
-  const firstDayOfMonth = startOfMonth(currentDate);
-  const lastDayOfMonth = endOfMonth(currentDate);
-  const formattedFirstDay = format(
-    firstDayOfMonth,
-    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
-  );
-  const formattedLastDay = format(
-    lastDayOfMonth,
-    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
-  );
-
-  const [selectedRig, setSelectedRig] = useState<string>("");
-  const [selectedStartDate, setSelectedStartDate] =
-    useState<string>(formattedFirstDay);
-  const [selectedEndDate, setSelectedEndDate] =
-    useState<string>(formattedLastDay);
-  const [selectedPeriod, setSelectedPeriod] = useState<string>("");
-  const [selectedYear, setSeletectedYear] = useState<string>("2023");
-  const [filters, setFilters] = useState({
-    rigId: selectedRig,
-    startDate: selectedStartDate,
-    endDate: selectedEndDate,
-  });
+  const {
+    filters,
+    selectedEndDate,
+    selectedPeriod,
+    selectedRig,
+    selectedStartDate,
+    selectedYear,
+    selectedFilterType,
+    handleChangePeriod,
+    handleChangeRig,
+    handleEndDateChange,
+    handleStartDateChange,
+    handleToggleFilterType,
+    handleYearChange,
+  } = useFiltersContext();
 
   // Utilização dos hooks para eficiências e médias de eficiência
   const {efficiencies, isFetchingEfficiencies, refetchEffciencies} =
     useEfficiencies(filters);
 
   const {rigsAverage, refetchRigsAverage, isFetchingRigsAverage} =
-    useEfficienciesRigsAverage(
-      {
-        startDate: filters.startDate,
-        endDate: filters.endDate,
-      },
-      isUserAdm
-    );
+    useEfficienciesRigsAverage({
+      startDate: filters.startDate,
+      endDate: filters.endDate,
+    });
 
   const isEmpty: boolean = efficiencies.length === 0;
-  const [selectedFilterType, setSelectedFilterType] = useState<FilterType>(
-    FilterType.PERIOD
-  );
 
   // Funções para manipulação das datas e filtros
   const handleApplyFilters = () => {
@@ -121,47 +109,17 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     refetchRigsAverage();
   };
 
-  const handleChangeRig = (rigId: string) => {
-    setSelectedRig(rigId);
-    setFilters((prevState) => ({...prevState, rigId: rigId}));
-  };
-
-  const handleStartDateChange = (date: Date) => {
-    setSelectedStartDate(date.toISOString());
-    setFilters((prevState) => ({...prevState, startDate: date.toISOString()}));
-  };
-
-  const handleEndDateChange = (date: Date) => {
-    setSelectedEndDate(date.toISOString());
-    setFilters((prevState) => ({...prevState, endDate: date.toISOString()}));
-  };
-
-  const handleChangePeriod = (period: string) => {
-    setSelectedPeriod(period);
-    const periodFound = getPeriodRange(selectedRig, selectedYear);
-
-    if (periodFound) {
-      const monthPeriodSelected = periodFound.months.find(
-        (month) => month.month === period
-      );
-
-      handleStartDateChange(monthPeriodSelected?.startDate!);
-      handleEndDateChange(monthPeriodSelected?.endDate!);
-    }
-  };
-
-  const handleToggleFilterType = (filterType: FilterType) => {
-    setSelectedFilterType(filterType);
-    handleStartDateChange(new Date(formattedFirstDay));
-    handleEndDateChange(new Date(formattedLastDay));
-  };
-
-  const handleYearChange = (year: string) => {
-    setSeletectedYear(year);
-    setSelectedPeriod("");
-  };
-
   const repairPeriods = getRepairPeriods(efficiencies);
+
+  const glossPeriods = getGlossPeriods(efficiencies);
+
+  const [selectedEquipment, setSelectedEquipment] = useState<string | null>(
+    null
+  );
+
+  const handleSelectEquipment = (equipment: string) => {
+    setSelectedEquipment(equipment);
+  };
 
   // Cálculos para estatísticas das eficiências
   let totalAvailableHours: number = 0;
@@ -195,7 +153,10 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     <DashboardContext.Provider
       value={{
         years,
+        handleSelectEquipment,
+        selectedEquipment,
         months,
+        glossPeriods,
         selectedRig,
         handleChangeRig,
         selectedPeriod,

@@ -6,6 +6,7 @@ export const useGetByPeriodType = (filters: GetByPeriodTypeFilters) => {
   const {data, isFetching, refetch} = useQuery({
     queryKey: ["periods"],
     queryFn: () => periodsService.getByPeriodType(filters),
+    enabled: false,
   });
 
   return {

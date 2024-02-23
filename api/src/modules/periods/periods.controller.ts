@@ -30,6 +30,17 @@ export class PeriodsController {
     return this.periodsService.create(createPeriodDto);
   }
 
+  @Get('/unbilled')
+  getAverageEfficiency(
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    return this.periodsService.getUnbilledPeriods({
+      startDate,
+      endDate,
+    });
+  }
+
   @Get()
   async findByPeriodType(
     @Query('rigId', ParseUUIDPipe) rigId: string,
@@ -55,20 +66,5 @@ export class PeriodsController {
       pageSize,
       pageIndex,
     );
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.periodsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePeriodDto: UpdatePeriodDto) {
-    return this.periodsService.update(+id, updatePeriodDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.periodsService.remove(+id);
   }
 }

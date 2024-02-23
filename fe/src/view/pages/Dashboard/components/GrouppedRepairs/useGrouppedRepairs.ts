@@ -1,10 +1,11 @@
-import {BarDatum} from "@nivo/bar";
 import {useDashboard} from "../../DashboardContext/useDashboard";
 import {translateClassification} from "../../../../../app/utils/translateClassification";
 import {getDiffInMinutes} from "../../../../../app/utils/getDiffInMinutes";
 import {parse} from "date-fns";
+import {formatNumberWithFixedDecimals} from "../../../../../app/utils/formatNumberWithFixedDecimals";
 
 interface EquipmentData {
+  id: string;
   equipment: string;
   qty: number;
   totalHours: number;
@@ -15,15 +16,14 @@ interface GrouppedEquipmentData {
   groupedData: EquipmentData[];
 }
 
-export const useBarChart = () => {
-  const {repairPeriods} = useDashboard();
-
-  // console.log("repairPeriods", repairPeriods);
+export const useGrouppedRepairs = () => {
+  const {repairPeriods, handleSelectEquipment} = useDashboard();
 
   const repairGroupedData: GrouppedEquipmentData = repairPeriods.reduce(
     (acc: GrouppedEquipmentData, current) => {
       const foundIndex = acc.groupedData.findIndex(
-        (item) => item.equipment === current.classification
+        (item) =>
+          item.equipment === translateClassification(current.classification)
       );
 
       const parsedStartHour = parse(
@@ -37,19 +37,27 @@ export const useBarChart = () => {
         new Date()
       );
 
-      acc.totalRepairHours +=
-        getDiffInMinutes(parsedEndHour, parsedStartHour) / 60;
+      acc.totalRepairHours += formatNumberWithFixedDecimals(
+        getDiffInMinutes(parsedEndHour, parsedStartHour) / 60,
+        2
+      );
 
       if (foundIndex === -1) {
         acc.groupedData.push({
+          id: current.classification,
           equipment: translateClassification(current.classification)!,
           qty: 1,
-          totalHours: getDiffInMinutes(parsedEndHour, parsedStartHour) / 60,
+          totalHours: formatNumberWithFixedDecimals(
+            getDiffInMinutes(parsedEndHour, parsedStartHour) / 60,
+            2
+          ),
         });
       } else {
         acc.groupedData[foundIndex].qty += 1;
-        acc.groupedData[foundIndex].totalHours +=
-          getDiffInMinutes(parsedEndHour, parsedStartHour) / 60;
+        acc.groupedData[foundIndex].totalHours += formatNumberWithFixedDecimals(
+          getDiffInMinutes(parsedEndHour, parsedStartHour) / 60,
+          2
+        );
       }
 
       return acc;
@@ -57,17 +65,13 @@ export const useBarChart = () => {
     {totalRepairHours: 0, groupedData: []}
   );
 
-  //console.log("Result", result);
-
-  const convertedResult: BarDatum[] = repairGroupedData.groupedData
-    .map((item) => ({
-      equipment: translateClassification(item.equipment)!,
-      qty: item.qty,
-    }))
-    .sort((a, b) => a.qty - b.qty);
+  const convertedResult = repairGroupedData.groupedData.sort(
+    (a, b) => b.totalHours - a.totalHours
+  );
 
   return {
     data: convertedResult,
     repairGroupedData,
+    handleSelectEquipment,
   };
 };

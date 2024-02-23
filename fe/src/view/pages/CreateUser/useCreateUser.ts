@@ -12,6 +12,7 @@ import {useAuth} from "../../../app/hooks/useAuth";
 import {useContracts} from "../../../app/hooks/contracts/useContracts";
 import {useContractRigs} from "../../../app/hooks/contracts/useContractRigs";
 import {useEffect} from "react";
+import {QueryKeys} from "../../../app/entities/QueryKeys";
 
 const schema = z.object({
   name: z.string().nonempty("Nome é obrigatório"),
@@ -66,7 +67,7 @@ export const useCreateUser = () => {
       customColorToast("Usuário cadastrado com Sucesso!", "#1c7b7b", "success");
       reset();
 
-      queryClient.invalidateQueries({queryKey: ["users"]});
+      queryClient.invalidateQueries({queryKey: [QueryKeys.USERS]});
       navigate("/users");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);

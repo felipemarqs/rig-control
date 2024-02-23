@@ -26,7 +26,7 @@ export const DesktopLayout = () => {
         <SidebarItem
           icon={<LayoutDashboard size={20} />}
           text="Dashboard"
-          urlText="dashboard"
+          urlText=""
           isActive={active === "Dashboard"}
         />
 
