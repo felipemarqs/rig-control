@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreatePeriodDto } from './dto/create-period.dto';
 import { UpdatePeriodDto } from './dto/update-period.dto';
 import { PeriodsRepository } from 'src/shared/database/repositories/period.repositories';
@@ -62,8 +62,18 @@ export class PeriodsService {
     return { data: periods, totalItems };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} period`;
+  async getUnbilledPeriods(filters: { startDate: string; endDate: string }) {
+    if (!filters.startDate || !filters.endDate) {
+      throw new BadRequestException('Datas são necessárias');
+    }
+
+    return await this.periodsRepo.findMany({
+      where: {
+        startHour: { gte: new Date(filters.startDate) },
+        endHour: { lte: new Date(filters.endDate) },
+        OR: [{ type: 'GLOSS' }, { type: 'REPAIR' }],
+      },
+    });
   }
 
   update(id: number, updatePeriodDto: UpdatePeriodDto) {

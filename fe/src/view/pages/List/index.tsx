@@ -24,11 +24,11 @@ export const List = () => {
     isFetchingEfficiencies,
     selectedFilterType,
     handleToggleFilterType,
-    filterOptions,
     selectedPeriod,
     handleChangePeriod,
     selectedYear,
     years,
+    filterOptions,
     handleYearChange,
   } = useListController();
 

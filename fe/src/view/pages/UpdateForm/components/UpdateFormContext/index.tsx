@@ -351,7 +351,6 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
     timeString: string,
     id: string
   ) => {
-    console.log("timestring", timeString);
     const newPeriods = periods.map((period) => {
       return period.id === id ? {...period, startHour: timeString} : period;
     });

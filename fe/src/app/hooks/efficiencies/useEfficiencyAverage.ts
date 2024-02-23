@@ -4,6 +4,7 @@ import {efficienciesService} from "../../services/efficienciesService";
 export const useEfficiencyAverage = (rig: string) => {
   const {data, isFetching, refetch} = useQuery({
     queryKey: ["average"],
+    enabled: false,
     queryFn: () => efficienciesService.getAverage(rig),
     staleTime: 24 * 60 * 60 * 1000,
   });

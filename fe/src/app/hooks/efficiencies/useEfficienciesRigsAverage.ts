@@ -2,13 +2,10 @@ import {useQuery} from "@tanstack/react-query";
 import {efficienciesService} from "../../services/efficienciesService";
 import {filters} from "../../services/efficienciesService/getRigsAverage";
 
-export const useEfficienciesRigsAverage = (
-  filters: filters,
-  isUserAdm: boolean
-) => {
+export const useEfficienciesRigsAverage = (filters: filters) => {
   const {data, isFetching, refetch} = useQuery({
     queryKey: ["rigsAverage"],
-    enabled: isUserAdm,
+    enabled: false,
     queryFn: () => efficienciesService.getRigsAverage(filters),
     staleTime: 24 * 60 * 60 * 1000,
   });

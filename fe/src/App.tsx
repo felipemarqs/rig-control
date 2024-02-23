@@ -5,6 +5,7 @@ import {AuthProvider} from "./app/contexts/AuthContext";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
 
 import {SidebarProvider} from "./app/contexts/SidebarContext";
+import {FiltersProvider} from "./app/contexts/FiltersContext";
 
 // Configurando uma instância do QueryClient com opções padrão
 const queryClient = new QueryClient({
@@ -21,12 +22,14 @@ export const App = () => {
     // Provedor de QueryClient para gerenciar o estado global dos dados
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <SidebarProvider>
-          {/* Componente de roteamento principal */}
-          <Router />
+        <FiltersProvider>
+          <SidebarProvider>
+            {/* Componente de roteamento principal */}
+            <Router />
 
-          <Toaster position="bottom-center" reverseOrder={false} />
-        </SidebarProvider>
+            <Toaster position="bottom-center" reverseOrder={false} />
+          </SidebarProvider>
+        </FiltersProvider>
       </AuthProvider>
       {/* Ferramenta de desenvolvimento para visualizar o estado dos dados */}
       <ReactQueryDevtools />

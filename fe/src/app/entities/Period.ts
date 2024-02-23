@@ -10,7 +10,7 @@ export type Period = {
   type: PeriodType;
   efficiencyId: string;
   well: {
-    id:string,
-    name:string
-  }
+    id: string;
+    name: string;
+  };
 };
