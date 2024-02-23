@@ -5,6 +5,7 @@ import {parse} from "date-fns";
 import {formatNumberWithFixedDecimals} from "../../../../../app/utils/formatNumberWithFixedDecimals";
 
 interface EquipmentData {
+  id: string;
   equipment: string;
   qty: number;
   totalHours: number;
@@ -16,7 +17,7 @@ interface GrouppedEquipmentData {
 }
 
 export const useGrouppedRepairs = () => {
-  const {repairPeriods} = useDashboard();
+  const {repairPeriods, handleSelectEquipment} = useDashboard();
 
   const repairGroupedData: GrouppedEquipmentData = repairPeriods.reduce(
     (acc: GrouppedEquipmentData, current) => {
@@ -43,6 +44,7 @@ export const useGrouppedRepairs = () => {
 
       if (foundIndex === -1) {
         acc.groupedData.push({
+          id: current.classification,
           equipment: translateClassification(current.classification)!,
           qty: 1,
           totalHours: formatNumberWithFixedDecimals(
@@ -70,5 +72,6 @@ export const useGrouppedRepairs = () => {
   return {
     data: convertedResult,
     repairGroupedData,
+    handleSelectEquipment,
   };
 };

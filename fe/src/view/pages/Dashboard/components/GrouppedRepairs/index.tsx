@@ -2,7 +2,7 @@ import {useGrouppedRepairs} from "./useGrouppedRepairs";
 import {cn} from "../../../../../app/utils/cn";
 
 export const GrouppedRepairs = () => {
-  const {repairGroupedData} = useGrouppedRepairs();
+  const {repairGroupedData, handleSelectEquipment} = useGrouppedRepairs();
 
   return (
     <div
@@ -35,6 +35,15 @@ export const GrouppedRepairs = () => {
               <span className="text-primary-500 font-semibold italic">
                 {data.totalHours} Hrs
               </span>
+              <div
+                className="flex-1 flex justify-end"
+                onClick={() => handleSelectEquipment(data.id)}
+              >
+                <span className="underline text-primary-500 cursor-pointer font-semibold italic">
+                  {" "}
+                  Ver detalhes
+                </span>
+              </div>
             </div>
           </div>
         ))}

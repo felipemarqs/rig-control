@@ -16,6 +16,7 @@ import {GrouppedRepairs} from "./components/GrouppedRepairs";
 import {AccessLevel} from "../../../app/entities/AccessLevel";
 import {AverageBarChart} from "./components/AverageBarChart";
 import {GrouppedGlosses} from "./components/GrouppedGlosses";
+import {RepairDetailsPieChart} from "./components/RepairDetailsPieChart";
 
 export const Dashboard = () => {
   return (
@@ -56,6 +57,7 @@ export const Dashboard = () => {
           repairPeriods,
           handleYearChange,
           years,
+          selectedEquipment,
         }) => (
           <div className="w-full  pt-10 overflow-y-scroll">
             <div className="w-full flex flex-wrap justify-center items-center lg:justify-end gap-1 lg:px-4">
@@ -279,6 +281,27 @@ export const Dashboard = () => {
                       </div>
                     )}
                   </div>
+
+                  {selectedEquipment && (
+                    <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6 lg:row-span-3">
+                      {isFetchingEfficiencies && <Spinner />}
+                      {repairPeriods.length === 0 &&
+                        !isFetchingEfficiencies && (
+                          <div className="flex justify-center items-center">
+                            <NotFound>
+                              <strong>Não</strong> existem dados para a{" "}
+                              <strong>sonda</strong> no <strong>período</strong>{" "}
+                              selecionado!
+                            </NotFound>
+                          </div>
+                        )}
+                      {!isFetchingEfficiencies && repairPeriods.length > 0 && (
+                        <div className="w-full h-full">
+                          <RepairDetailsPieChart />
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   <div
                     className={`col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6  `}

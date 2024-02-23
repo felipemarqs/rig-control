@@ -27,7 +27,7 @@ export const DesktopLayout = () => {
         <SidebarItem
           icon={<LayoutDashboard size={20} />}
           text="Dashboard"
-          urlText="dashboard"
+          urlText=""
           isActive={active === "Dashboard"}
         />
 
@@ -99,13 +99,6 @@ export const DesktopLayout = () => {
           text="Relatórios"
           urlText="reports"
           isActive={active === "Relatórios"}
-        />
-
-        <SidebarItem
-          icon={<LayoutDashboardIcon size={20} />}
-          text="Global"
-          urlText="global-dashboard"
-          isActive={active === "Global"}
         />
       </Sidebar>
       <Outlet />

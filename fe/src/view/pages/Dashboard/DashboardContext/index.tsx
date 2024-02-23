@@ -1,4 +1,4 @@
-import React, {createContext} from "react";
+import React, {createContext, useState} from "react";
 import {useEfficiencies} from "../../../../app/hooks/efficiencies/useEfficiencies";
 import {useAuth} from "../../../../app/hooks/useAuth";
 import {User} from "../../../../app/entities/User";
@@ -55,7 +55,9 @@ interface DashboardContextValue {
   months: SelectOptions;
   years: SelectOptions;
   rigsAverage: RigsAverageResponse;
+  selectedEquipment: string | null;
   isFetchingRigsAverage: boolean;
+  handleSelectEquipment: (equipment: string) => void;
 }
 
 // Criação do contexto
@@ -109,9 +111,15 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
 
   const repairPeriods = getRepairPeriods(efficiencies);
 
-  console.log("repairPeriods", repairPeriods);
-
   const glossPeriods = getGlossPeriods(efficiencies);
+
+  const [selectedEquipment, setSelectedEquipment] = useState<string | null>(
+    null
+  );
+
+  const handleSelectEquipment = (equipment: string) => {
+    setSelectedEquipment(equipment);
+  };
 
   // Cálculos para estatísticas das eficiências
   let totalAvailableHours: number = 0;
@@ -145,6 +153,8 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     <DashboardContext.Provider
       value={{
         years,
+        handleSelectEquipment,
+        selectedEquipment,
         months,
         glossPeriods,
         selectedRig,
