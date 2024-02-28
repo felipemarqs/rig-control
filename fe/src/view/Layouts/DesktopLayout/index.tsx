@@ -15,14 +15,15 @@ import {
 
 import {useSidebarContext} from "../../../app/contexts/SidebarContext";
 import {useAuth} from "../../../app/hooks/useAuth";
+import {NNavBar} from "../../components/NNavbar";
 
 export const DesktopLayout = () => {
   //const {activeItem,handleNavItemChange} = useMainLayout()
   const {active} = useSidebarContext();
-  const {isUserAdm, userAccessLevel} = useAuth();
+  // const {isUserAdm, userAccessLevel} = useAuth();
   return (
-    <div className="flex w-screen h-screen">
-      <Sidebar>
+    <div className="w-screen h-screen">
+      {/*  <Sidebar>
         <SidebarItem
           icon={<LayoutDashboard size={20} />}
           text="Dashboard"
@@ -99,7 +100,9 @@ export const DesktopLayout = () => {
           urlText="reports"
           isActive={active === "Relatórios"}
         />
-      </Sidebar>
+      </Sidebar> */}
+
+      <NNavBar />
       <Outlet />
     </div>
   );

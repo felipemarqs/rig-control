@@ -59,7 +59,7 @@ export const Dashboard = () => {
           years,
           selectedEquipment,
         }) => (
-          <div className="w-full  pt-10 overflow-y-scroll">
+          <div className="w-full h-full pt-10 overflow-y-scroll">
             <div className="w-full flex flex-wrap justify-center items-center lg:justify-end gap-1 lg:px-4">
               <div className="w-[113px] lg:w-[250px]">
                 <Select

@@ -17,13 +17,7 @@ interface SidebarItemProps {
   isActive?: boolean;
 }
 
-export function NavbarItem({
-  icon,
-  text,
-  isActive,
-
-  urlText,
-}: SidebarItemProps) {
+export function NavbarItem({icon, text, isActive, urlText}: SidebarItemProps) {
   const {handleToggleNavItem} = useSidebarContext();
 
   const navigate = useNavigate();

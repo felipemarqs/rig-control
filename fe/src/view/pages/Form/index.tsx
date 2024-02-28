@@ -156,10 +156,12 @@ export const Form = () => {
             </div>
 
             {/* Componentes do formulário organizados em um layout flex */}
-            <div className="h-[80vh] mx-10   flex-col justify-center flex   lg:flex-row ">
-              {isConfigsConfirmed && <PeriodsFormContainer />}{" "}
-              {/* Condicionalmente renderiza diferentes formulários com base no contrato selecionado */}
-            </div>
+            {isConfigsConfirmed && (
+              <div className="h-[80vh] mx-10   flex-col justify-center flex   lg:flex-row ">
+                <PeriodsFormContainer />
+                {/* Condicionalmente renderiza diferentes formulários com base no contrato selecionado */}
+              </div>
+            )}
 
             {/* Botão para enviar dados (visível apenas em telas menores) */}
             {/*  <div className="flex justify-center mt-6 ">
