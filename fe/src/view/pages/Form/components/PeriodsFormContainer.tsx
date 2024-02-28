@@ -250,6 +250,7 @@ export const PeriodsFormContainer = () => {
                       onChange={(value) =>
                         handlePeriodWell(id, value.target.value)
                       }
+                      error={getErrorMessageByFildName(`${id} well`)}
                       value={well}
                       name="well"
                       placeholder={type === "DTM" ? "Poço de Destino" : "Poço"}
@@ -262,7 +263,7 @@ export const PeriodsFormContainer = () => {
                 <div className="flex justify-between p-4 col-span-12  lg:col-span-6  ">
                   <div className="w-full">
                     <Select
-                      error={!type ? "Obrigatório" : ""}
+                      error={getErrorMessageByFildName(`${id} type`)}
                       placeholder="Tipo"
                       value={type}
                       onChange={(value) => handlePeriodType(id, value)}
@@ -280,7 +281,9 @@ export const PeriodsFormContainer = () => {
                   {type && (
                     <div className="w-full">
                       <Select
-                        error={!classification ? "Obrigatório" : ""}
+                        error={getErrorMessageByFildName(
+                          `${id} classification`
+                        )}
                         onChange={(value) =>
                           handlePeriodClassification(id, value)
                         }
