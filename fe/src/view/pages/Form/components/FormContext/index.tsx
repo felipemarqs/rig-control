@@ -103,6 +103,7 @@ interface FormContextValue {
   handleConfirmButton(): void;
   getErrorMessageByFildName(fieldName: string): string;
   isExtraTrailerSelected: boolean;
+  isDateValid: boolean;
   getPeriodState(periodId: string): boolean;
   handleBobRentHours(time: Dayjs | null, timeString: string): void;
   handleChristmasTreeDisassemblyHours(
@@ -144,7 +145,8 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   //Custom Hooks
   const navigate = useNavigate();
   const {user, isUserAdm} = useAuth();
-  const {setError, removeError, getErrorMessageByFildName} = useErrors();
+  const {setError, removeError, getErrorMessageByFildName, errors} =
+    useErrors();
   const {handleToggleNavItem} = useSidebarContext();
   const [date, setDate] = useState<Date>();
   const [selectedRig, setSelectedRig] = useState<string>(() => {
@@ -166,12 +168,24 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     },
   ]);
 
+  console.log("Errors: ", errors);
+
   const [periodsState, setPeriodsState] = useState([
     {
       periodId: periods[0].id,
       isCollapsed: false,
     },
   ]);
+
+  useEffect(() => {
+    setError({fieldName: "date", message: "Data Inválida!"});
+    setError({fieldName: `${periods[0].id} well`, message: "Obrigatório"});
+    setError({fieldName: `${periods[0].id} type`, message: "Obrigatório"});
+    setError({
+      fieldName: `${periods[0].id} classification`,
+      message: "Obrigatório",
+    });
+  }, []);
 
   const [isVisible, setIsVisible] = useState(true);
 
@@ -282,6 +296,12 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const handlePeriodWell = (id: string, well: string) => {
+    if (!well) {
+      setError({fieldName: `${id} well`, message: "Obrigatório"});
+    } else {
+      removeError(`${id} well`);
+    }
+
     const newPeriods = periods.map((period) => {
       return period.id === id
         ? {
@@ -295,8 +315,14 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const handlePeriodType = (id: string, type: string) => {
+    if (!type) {
+      setError({fieldName: `${id} type`, message: "Obrigatório"});
+    } else {
+      removeError(`${id} type`);
+    }
     const newPeriods = periods.map((period) => {
       if (type === "DTM" && period.id === id) {
+        setError({fieldName: `${id} well`, message: "Obrigatório"});
         return {
           ...period,
           type: type,
@@ -307,6 +333,8 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
       }
 
       if (period.id === id) {
+        setError({fieldName: `${id} classification`, message: "Obrigatório"});
+
         return {
           ...period,
           type: type,
@@ -322,6 +350,11 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const handlePeriodClassification = (id: string, classification: string) => {
+    if (!classification) {
+      setError({fieldName: `${id} classification`, message: "Obrigatório"});
+    } else {
+      removeError(`${id} classification`);
+    }
     const newPeriods = periods.map((period) => {
       return period.id === id
         ? {
@@ -378,6 +411,8 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const addPeriod = () => {
     const newId = uuidv4();
+    setError({fieldName: `${newId} type`, message: "Obrigatório"});
+    setError({fieldName: `${newId} classification`, message: "Obrigatório"});
     setPeriods([
       ...periods,
       {
@@ -416,10 +451,25 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
     setPeriods(newPeriods);
   };
+  const millisecondsInADay = 1000 * 60 * 60 * 24;
+
+  const getTotalDaysByDate = (date: Date): number => {
+    const daysInMilliseconds = Number(date);
+    const daysInADay = daysInMilliseconds / millisecondsInADay;
+    const intDays = Math.trunc(daysInADay);
+
+    return intDays;
+  };
+
+  const isDateValid = date
+    ? getTotalDaysByDate(new Date(date)) >= getTotalDaysByDate(new Date())
+    : false;
 
   const handleDateChange = (date: Date) => {
     setDate(date);
-    if (new Date(date) >= new Date()) {
+    console.log("Data selecionada: ", getTotalDaysByDate(new Date(date)));
+    console.log("Data de hoje pelo New Date()", getTotalDaysByDate(new Date()));
+    if (getTotalDaysByDate(new Date(date)) >= getTotalDaysByDate(new Date())) {
       setError({fieldName: "date", message: "Data Inválida!"});
     } else {
       removeError("date");
@@ -462,7 +512,9 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     setRemainingMinutes(newMinutes);
   }, [periods]);
 
-  const isFormValid = Boolean(remainingMinutes === 0 && date);
+  const isFormValid = Boolean(
+    remainingMinutes === 0 && date && errors.length === 0
+  );
   const isPending = remainingMinutes !== 0;
 
   const userRig = user?.rigs[0].rig!;
@@ -653,6 +705,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         isTruckTankSelected,
         handleTruckTankCheckbox,
         isMunckSelected,
+        isDateValid,
         handleMunckCheckbox,
         isTransportationSelected,
         handleTransportationCheckbox,

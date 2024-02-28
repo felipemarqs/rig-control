@@ -114,7 +114,7 @@ export const AverageBarChart = () => {
           }
           onClick={(event) => {
             handleChangeRig(event.data.rigId as string);
-            navigate(`/`);
+            navigate(`/dashboard`);
           }}
           theme={{
             axis: {
