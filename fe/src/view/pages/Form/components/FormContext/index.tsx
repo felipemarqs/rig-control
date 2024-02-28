@@ -103,6 +103,7 @@ interface FormContextValue {
   handleConfirmButton(): void;
   getErrorMessageByFildName(fieldName: string): string;
   isExtraTrailerSelected: boolean;
+  isDateValid: boolean;
   getPeriodState(periodId: string): boolean;
   handleBobRentHours(time: Dayjs | null, timeString: string): void;
   handleChristmasTreeDisassemblyHours(
@@ -172,6 +173,10 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
       isCollapsed: false,
     },
   ]);
+
+  useEffect(() => {
+    setError({fieldName: "date", message: "Data Inválida!"});
+  }, []);
 
   const [isVisible, setIsVisible] = useState(true);
 
@@ -416,10 +421,25 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
     setPeriods(newPeriods);
   };
+  const millisecondsInADay = 1000 * 60 * 60 * 24;
+
+  const getTotalDaysByDate = (date: Date): number => {
+    const daysInMilliseconds = Number(date);
+    const daysInADay = daysInMilliseconds / millisecondsInADay;
+    const intDays = Math.trunc(daysInADay);
+
+    return intDays;
+  };
+
+  const isDateValid = date
+    ? getTotalDaysByDate(new Date(date)) >= getTotalDaysByDate(new Date())
+    : false;
 
   const handleDateChange = (date: Date) => {
     setDate(date);
-    if (new Date(date) >= new Date()) {
+    console.log("Data selecionada: ", getTotalDaysByDate(new Date(date)));
+    console.log("Data de hoje pelo New Date()", getTotalDaysByDate(new Date()));
+    if (getTotalDaysByDate(new Date(date)) >= getTotalDaysByDate(new Date())) {
       setError({fieldName: "date", message: "Data Inválida!"});
     } else {
       removeError("date");
@@ -653,6 +673,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         isTruckTankSelected,
         handleTruckTankCheckbox,
         isMunckSelected,
+        isDateValid,
         handleMunckCheckbox,
         isTransportationSelected,
         handleTransportationCheckbox,

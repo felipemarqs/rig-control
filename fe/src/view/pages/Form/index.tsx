@@ -28,6 +28,7 @@ export const Form = () => {
       <FormContext.Consumer>
         {({
           isPending,
+          isDateValid,
           remainingMinutes,
           selectedContract,
           selectedRig,
@@ -144,7 +145,7 @@ export const Form = () => {
                 </div>
                 <div className="flex justify-end w-full py-4 px-8">
                   <Button
-                    disabled={!(selectedRig && date)}
+                    disabled={!(selectedRig && !isDateValid)}
                     className="bg-primary-500  w-1/2 lg:w-1/5 "
                     onClick={() => handleConfirmButton()}
                   >
