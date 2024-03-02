@@ -30,7 +30,6 @@ const REPAIR = [
       {value: "CROWNING_BLOCK", label: "Bloco do Coroamento"},
       {value: "CATARINA", label: "Catarina"},
       {value: "CARRIER", label: "Carrier"},
-      {value: "CARRIER", label: "Carrier"},
       {value: "ENGINE", label: "Motor"},
       {value: "GEARBOX", label: "Caixa de Transmissão"},
       {value: "MAIN_WINCH", label: "Guincho Principal"},
