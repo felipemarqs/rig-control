@@ -41,16 +41,17 @@ enum UF {
 }
 
 model Rig {
-  id                   String                 @id @default(uuid()) @db.Uuid
-  name                 String                 @unique
-  isActive             Boolean                @default(true)
-  contractId           String                 @map("contract_id") @db.Uuid
-  state                UF
-  users                UserRig[]
-  efficiencies         Efficiency[]
-  BillingConfiguration BillingConfiguration[]
-  Billing              Billing[]
-  contract             Contract               @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  id                    String                 @id @default(uuid()) @db.Uuid
+  name                  String                 @unique
+  isActive              Boolean                @default(true)
+  contractId            String                 @map("contract_id") @db.Uuid
+  state                 UF
+  users                 UserRig[]
+  efficiencies          Efficiency[]
+  temporaryEfficiencies TemporaryEfficiency[]
+  BillingConfiguration  BillingConfiguration[]
+  Billing               Billing[]
+  contract              Contract               @relation(fields: [contractId], references: [id], onDelete: Cascade)
 
   @@map("rigs")
 }
@@ -80,10 +81,11 @@ model User {
   password    String
   accessLevel AccessLevel @map("access_level")
 
-  rigs            UserRig[]
-  contracts       UserContract[]
-  efficiencies    Efficiency[]
-  DeletionRequest DeletionRequest[]
+  rigs                UserRig[]
+  contracts           UserContract[]
+  efficiencies        Efficiency[]
+  DeletionRequest     DeletionRequest[]
+  TemporaryEfficiency TemporaryEfficiency[]
 
   @@map("users")
 }
@@ -307,9 +309,10 @@ model Period {
 }
 
 model Well {
-  id      String   @id @default(uuid()) @db.Uuid
-  name    String   @unique
-  periods Period[]
+  id               String            @id @default(uuid()) @db.Uuid
+  name             String            @unique
+  periods          Period[]
+  temporaryPeriods TemporaryPeriod[]
 }
 
 enum Interval {
@@ -323,16 +326,20 @@ model FluidRatio {
   ratio        Interval
   efficiencyId String   @map("efficiency_id") @db.Uuid
 
-  efficiency Efficiency @relation(fields: [efficiencyId], references: [id], onDelete: Cascade)
+  efficiency            Efficiency           @relation(fields: [efficiencyId], references: [id], onDelete: Cascade)
+  TemporaryEfficiency   TemporaryEfficiency? @relation(fields: [temporaryEfficiencyId], references: [id])
+  temporaryEfficiencyId String?              @db.Uuid
 
   @@map("fluid_ratio")
 }
 
 model EquipmentRatio {
-  id           String     @id @default(uuid()) @db.Uuid
-  ratio        Interval
-  efficiencyId String     @map("efficiency_id") @db.Uuid
-  efficiency   Efficiency @relation(fields: [efficiencyId], references: [id], onDelete: Cascade)
+  id                    String               @id @default(uuid()) @db.Uuid
+  ratio                 Interval
+  efficiencyId          String               @map("efficiency_id") @db.Uuid
+  efficiency            Efficiency           @relation(fields: [efficiencyId], references: [id], onDelete: Cascade)
+  TemporaryEfficiency   TemporaryEfficiency? @relation(fields: [temporaryEfficiencyId], references: [id])
+  temporaryEfficiencyId String?              @db.Uuid
 
   @@map("equipment_ratio")
 }
@@ -445,4 +452,79 @@ model DeletionRequest {
   createdAt    DateTime      @default(now())
   efficiency   Efficiency    @relation(fields: [efficiencyId], references: [id], onDelete: Cascade)
   user         User          @relation(fields: [userId], references: [id])
+}
+
+model TemporaryEfficiency {
+  id             String   @id @default(uuid()) @db.Uuid
+  date           DateTime
+  well           String
+  availableHours Float    @map("available_hours")
+  dtmHours       Float    @map("dtm_hours")
+
+  hasDemobilization             Boolean                   @map("has_demobilization")
+  hasMobilization               Boolean?                  @map("has_mobilization")
+  hasExtraTrailer               Boolean                   @map("has_extra_trailer")
+  hasPowerSwivel                Boolean                   @map("has_power_swivel")
+  hasTruckCartRent              Boolean                   @map("has_truck_cart_rent")
+  hasTransportation             Boolean                   @map("has_transportation")
+  truckKmHours                  Float                     @map("truck_km_amount")
+  bobRentHours                  Float                     @map("bot_rent_hours")
+  hasMixTankMonthRent           Boolean                   @map("has_mix_tank_month_rent")
+  hasMixTankHourRent            Boolean                   @map("has_mix_tank_hour_rent")
+  hasGeneratorFuel              Boolean                   @map("has_generator_fuel")
+  hasMixTankOperator            Boolean                   @map("has_mix_tank_operator")
+  hasMixTankDtm                 Boolean                   @map("has_mix_tank_dtm")
+  hasMixTankMobilization        Boolean                   @map("has_mix_tank_mobilization")
+  hasMixTankDemobilization      Boolean                   @map("has_mix_tank_demobilization")
+  hasSuckingTruck               Boolean                   @map("has_sucking_truck")
+  hasTruckTank                  Boolean                   @map("has_truck_tank")
+  christmasTreeDisassemblyHours Float                     @map("christmas_tree_disassembly_hours")
+  hasMunck                      Boolean                   @map("has_munck")
+  rigId                         String                    @map("rig_id") @db.Uuid
+  userId                        String                    @map("user_id") @db.Uuid
+  fluidRatio                    FluidRatio[]
+  equipmentRatio                EquipmentRatio[]
+  rig                           Rig                       @relation(fields: [rigId], references: [id], onDelete: Cascade)
+  user                          User                      @relation(fields: [userId], references: [id])
+  temporaryPeriod               TemporaryPeriod[]
+  temporaryFluidRatios          TemporaryFluidRatio[]
+  temporaryEquipmentRatios      TemporaryEquipmentRatio[]
+
+  @@map("temporary_efficiencies")
+}
+
+model TemporaryFluidRatio {
+  id                    String   @id @default(uuid()) @db.Uuid
+  ratio                 Interval
+  temporaryEfficiencyId String   @map("temporary_efficiency_id") @db.Uuid
+
+  TemporaryEfficiency TemporaryEfficiency? @relation(fields: [temporaryEfficiencyId], references: [id], onDelete: Cascade)
+
+  @@map("temporary_fluid_ratio")
+}
+
+model TemporaryEquipmentRatio {
+  id                    String               @id @default(uuid()) @db.Uuid
+  ratio                 Interval
+  temporaryEfficiencyId String               @map("temporary_efficiency_id") @db.Uuid
+  TemporaryEfficiency   TemporaryEfficiency? @relation(fields: [temporaryEfficiencyId], references: [id], onDelete: Cascade)
+
+  @@map("temporary_equipment_ratio")
+}
+
+model TemporaryPeriod {
+  id                    String                @id @default(uuid()) @db.Uuid
+  startHour             DateTime              @map("start_hour")
+  endHour               DateTime              @map("end_hour") @db.Timestamptz
+  classification        PeriodClassification
+  repairClassification  RepairClassification?
+  description           String?
+  type                  PeriodType
+  temporaryEfficiencyId String?               @map("temporary_efficiency_id") @db.Uuid
+  wellId                String?               @map("well_id") @db.Uuid
+
+  well                Well?                @relation(fields: [wellId], references: [id])
+  TemporaryEfficiency TemporaryEfficiency? @relation(fields: [temporaryEfficiencyId], references: [id], onDelete: Cascade)
+
+  @@map("temporary_periods")
 }
