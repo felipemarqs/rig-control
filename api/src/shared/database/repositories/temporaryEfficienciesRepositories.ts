@@ -17,4 +17,10 @@ export class TemporaryEfficienciesRepository {
   async findFirst(findFirstDto: Prisma.TemporaryEfficiencyFindFirstArgs) {
     return await this.prismaService.temporaryEfficiency.findFirst(findFirstDto);
   }
+
+  async findUnique(findUniqueDto: Prisma.TemporaryEfficiencyFindUniqueArgs) {
+    return await this.prismaService.temporaryEfficiency.findFirst(
+      findUniqueDto,
+    );
+  }
 }

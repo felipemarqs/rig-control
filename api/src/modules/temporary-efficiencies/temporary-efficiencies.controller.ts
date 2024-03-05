@@ -1,4 +1,11 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 
 import { TemporaryEfficiencyService } from './temporary-efficiencies.service';
 import { CreateEfficiencyDto } from './dto/create-efficiency.dto';
@@ -9,6 +16,11 @@ export class TemporaryEfficiencyController {
   constructor(
     private readonly temporaryEfficiencyService: TemporaryEfficiencyService,
   ) {}
+
+  @Get(':efficiencyId')
+  findById(@Param('efficiencyId', ParseUUIDPipe) efficiencyId: string) {
+    return this.temporaryEfficiencyService.findById(efficiencyId);
+  }
 
   @Post()
   create(

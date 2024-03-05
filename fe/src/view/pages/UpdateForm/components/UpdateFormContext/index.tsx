@@ -1,6 +1,6 @@
 import {createContext, useCallback, useEffect, useState} from "react";
 import {useAuth} from "../../../../../app/hooks/useAuth";
-import {useNavigate, useParams} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {v4 as uuidv4} from "uuid";
 import {efficiencyMappers} from "../../../../../app/services/mappers/efficiencyMappers";
 import {customColorToast} from "../../../../../app/utils/customColorToast";
@@ -147,6 +147,10 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   const {user} = useAuth();
 
   const {efficiencyId} = useParams<{efficiencyId: string}>();
+
+  const location = useLocation();
+
+  console.log("location", location);
 
   if (typeof efficiencyId === "undefined") {
     // Trate o erro de acordo com a necessidade do seu aplicativo

@@ -263,6 +263,60 @@ export class TemporaryEfficiencyService {
     return efficiency;
   }
 
+  async findById(efficiencyId: string) {
+    return this.temporaryEfficiencyRepo.findUnique({
+      where: { id: efficiencyId },
+      select: {
+        id: true,
+        date: true,
+        availableHours: true,
+        rigId: true,
+        userId: true,
+        christmasTreeDisassemblyHours: true,
+        bobRentHours: true,
+        hasDemobilization: true,
+        hasExtraTrailer: true,
+        hasGeneratorFuel: true,
+        hasMixTankDemobilization: true,
+        hasMixTankDtm: true,
+        hasMixTankHourRent: true,
+        hasMixTankMobilization: true,
+        hasMixTankMonthRent: true,
+        hasMixTankOperator: true,
+        hasMunck: true,
+        hasPowerSwivel: true,
+        hasSuckingTruck: true,
+        hasTransportation: true,
+        hasTruckCartRent: true,
+        truckKmHours: true,
+        well: true,
+        hasTruckTank: true,
+        rig: true,
+        user: {
+          select: {
+            name: true,
+          },
+        },
+        temporaryPeriod: {
+          select: {
+            temporaryEfficiencyId: true,
+            id: true,
+            startHour: true,
+            endHour: true,
+            classification: true,
+            description: true,
+            type: true,
+            repairClassification: true,
+            well: true,
+          },
+          orderBy: { startHour: 'asc' },
+        },
+        equipmentRatio: { select: { ratio: true } },
+        fluidRatio: { select: { ratio: true } },
+      },
+    });
+  }
+
   async remove(efficiencyId: string) {
     await this.temporaryEfficiencyRepo.delete({ where: { id: efficiencyId } });
     return null;
