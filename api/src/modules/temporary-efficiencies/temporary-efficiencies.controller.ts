@@ -10,11 +10,6 @@ export class TemporaryEfficiencyController {
     private readonly temporaryEfficiencyService: TemporaryEfficiencyService,
   ) {}
 
-  @Get()
-  get() {
-    return this.temporaryEfficiencyService.get();
-  }
-
   @Post()
   create(
     @ActiveUserId() userId: string,

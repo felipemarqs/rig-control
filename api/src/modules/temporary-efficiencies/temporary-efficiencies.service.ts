@@ -103,6 +103,14 @@ export class TemporaryEfficiencyService {
      * @param rigId The ID of the rig.
      * @param date The date for which to check the existence of an efficiency entry.
      */
+    const efficiencyAlreadyExists =
+      await this.temporaryEfficiencyRepo.findFirst({
+        where: { rigId, date },
+      });
+
+    if (efficiencyAlreadyExists) {
+      await this.remove(efficiencyAlreadyExists.id);
+    }
 
     /**
      * Checks if each well in the provided periods exists in the database.
@@ -255,7 +263,8 @@ export class TemporaryEfficiencyService {
     return efficiency;
   }
 
-  async get() {
-    return 'get temporary efficiency';
+  async remove(efficiencyId: string) {
+    await this.temporaryEfficiencyRepo.delete({ where: { id: efficiencyId } });
+    return null;
   }
 }

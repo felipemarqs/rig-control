@@ -15,9 +15,6 @@ export class TemporaryEfficienciesRepository {
   }
 
   async findFirst(findFirstDto: Prisma.TemporaryEfficiencyFindFirstArgs) {
-    console.log('testetetet', findFirstDto);
-    const testRes = await this.prismaService.temporaryEfficiency.findFirst();
-    console.log('testRes', testRes);
-    return testRes;
+    return await this.prismaService.temporaryEfficiency.findFirst(findFirstDto);
   }
 }
