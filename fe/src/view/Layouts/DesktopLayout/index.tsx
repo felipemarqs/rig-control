@@ -99,6 +99,13 @@ export const DesktopLayout = () => {
           urlText="reports"
           isActive={active === "Relatórios"}
         />
+
+        <SidebarItem
+          icon={<StickyNote size={20} />}
+          text="Menu Form"
+          urlText="form/menu"
+          isActive={active === "Menu Form"}
+        />
       </Sidebar>
       <Outlet />
     </div>

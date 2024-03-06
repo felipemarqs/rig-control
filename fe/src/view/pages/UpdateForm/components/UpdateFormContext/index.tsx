@@ -13,6 +13,8 @@ import {parse, differenceInMinutes} from "date-fns";
 import {useEfficiencyById} from "../../../../../app/hooks/efficiencies/useEfficiencyById";
 import {PersistanceEfficiency} from "../../../../../app/entities/PersistanceEfficiency";
 import {formatIsoStringToHours} from "../../../../../app/utils/formatIsoStringToHours";
+import {useTemporaryEfficiencyById} from "../../../../../app/hooks/temporaryEfficiencies/useTemporaryEfficiencyById";
+import {TemporaryEfficiencyResponse} from "../../../../../app/services/temporaryEfficienciesServices/getById";
 
 type ErrorArgs = {fieldName: string; message: string};
 
@@ -92,7 +94,7 @@ interface UpdateFormContextValue {
   isTruckCartSelected: boolean;
   isTruckTankSelected: boolean;
   isMunckSelected: boolean;
-  isFetchingEfficiency: boolean;
+  isFetching: boolean;
   isTransportationSelected: boolean;
   truckKm: number;
   isVisible: boolean;
@@ -150,7 +152,8 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
 
   const location = useLocation();
 
-  console.log("location", location);
+  const isTempForm = location.pathname.includes("temp");
+  console.log("efficiencyId", efficiencyId);
 
   if (typeof efficiencyId === "undefined") {
     // Trate o erro de acordo com a necessidade do seu aplicativo
@@ -160,69 +163,143 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
 
   const {efficiency, isFetchingEfficiency} = useEfficiencyById(efficiencyId!);
 
+  console.log("efficiencyId", efficiencyId);
+
+  const {
+    isFetchingTemporaryEfficiency,
+    refechTemporaryEfficiency,
+    temporaryEfficiency,
+  } = useTemporaryEfficiencyById(efficiencyId!);
+
+  const isFetching = isFetchingTemporaryEfficiency || isFetchingEfficiency;
+  console.log("temporaryEfficiency", temporaryEfficiency);
+  console.log("efficiency", efficiency);
+
   const responseEfficiency = efficiency as PersistanceEfficiency;
 
-  const initialPeriods = responseEfficiency?.periods?.map(
-    ({
-      startHour,
-      endHour,
-      description,
-      type,
-      classification,
-      repairClassification,
-      well,
-    }) => {
-      return {
-        id: uuidv4(),
-        startHour: formatIsoStringToHours(startHour),
-        endHour: formatIsoStringToHours(endHour),
-        type: type,
-        classification: classification,
-        repairClassification: repairClassification,
-        description: description,
-        equipmentRatio: "",
-        fluidRatio: "",
-        well: well?.name ?? "",
+  const responseTemporaryEfficiency =
+    temporaryEfficiency as TemporaryEfficiencyResponse;
+
+  console.log("responseTemporaryEfficiency!!!!!!!!!!", temporaryEfficiency);
+
+  const getInitialPeriods = (
+    responseEfficiency: PersistanceEfficiency | TemporaryEfficiencyResponse
+  ) => {
+    console.log("responseEfficiency", responseEfficiency);
+
+    let initialPeriods;
+    if ("periods" in responseEfficiency) {
+      initialPeriods = responseEfficiency?.periods?.map(
+        ({
+          startHour,
+          endHour,
+          description,
+          type,
+          classification,
+          repairClassification,
+          well,
+        }) => {
+          return {
+            id: uuidv4(),
+            startHour: formatIsoStringToHours(startHour),
+            endHour: formatIsoStringToHours(endHour),
+            type: type,
+            classification: classification,
+            repairClassification: repairClassification,
+            description: description,
+            equipmentRatio: "",
+            fluidRatio: "",
+            well: well?.name ?? "",
+          };
+        }
+      );
+    } else {
+      console.log(" FORA DO MAP");
+      initialPeriods = responseEfficiency?.temporaryPeriods?.map(
+        ({
+          startHour,
+          endHour,
+          description,
+          type,
+          classification,
+          repairClassification,
+          well,
+        }) => {
+          console.log(" DENTRO DO MAP");
+          return {
+            id: uuidv4(),
+            startHour: formatIsoStringToHours(startHour),
+            endHour: formatIsoStringToHours(endHour),
+            type: type,
+            classification: classification,
+            repairClassification: repairClassification,
+            description: description,
+            equipmentRatio: "",
+            fluidRatio: "",
+            well: well?.name ?? "",
+          };
+        }
+      );
+    }
+
+    for (
+      let index = 0;
+      index < responseEfficiency?.equipmentRatio?.length;
+      index++
+    ) {
+      initialPeriods[index] = {
+        id: initialPeriods[index].id,
+        startHour: initialPeriods[index].startHour,
+        endHour: initialPeriods[index].endHour,
+        type: initialPeriods[index].type,
+        classification: initialPeriods[index].classification,
+        repairClassification: initialPeriods[index].repairClassification,
+        description: initialPeriods[index].description,
+        fluidRatio: initialPeriods[index].fluidRatio,
+        equipmentRatio: responseEfficiency.equipmentRatio[index].ratio,
+        well: initialPeriods[index].well,
       };
     }
+
+    for (
+      let index = 0;
+      index < responseEfficiency?.fluidRatio?.length;
+      index++
+    ) {
+      initialPeriods[index] = {
+        id: initialPeriods[index].id,
+        startHour: initialPeriods[index].startHour,
+        endHour: initialPeriods[index].endHour,
+        type: initialPeriods[index].type,
+        classification: initialPeriods[index].classification,
+        repairClassification: initialPeriods[index].repairClassification,
+        description: initialPeriods[index].description,
+        equipmentRatio: initialPeriods[index].equipmentRatio,
+        fluidRatio: responseEfficiency.fluidRatio[index].ratio,
+        well: initialPeriods[index].well,
+      };
+    }
+
+    return initialPeriods;
+  };
+
+  const initialPeriods = getInitialPeriods(
+    isTempForm ? responseTemporaryEfficiency : responseEfficiency
   );
 
-  for (
-    let index = 0;
-    index < responseEfficiency?.equipmentRatio?.length;
-    index++
-  ) {
-    initialPeriods[index] = {
-      id: initialPeriods[index].id,
-      startHour: initialPeriods[index].startHour,
-      endHour: initialPeriods[index].endHour,
-      type: initialPeriods[index].type,
-      classification: initialPeriods[index].classification,
-      repairClassification: initialPeriods[index].repairClassification,
-      description: initialPeriods[index].description,
-      fluidRatio: initialPeriods[index].fluidRatio,
-      equipmentRatio: responseEfficiency.equipmentRatio[index].ratio,
-      well: initialPeriods[index].well,
-    };
-  }
+  console.log("inicialPeriods", initialPeriods);
 
-  for (let index = 0; index < responseEfficiency?.fluidRatio?.length; index++) {
-    initialPeriods[index] = {
-      id: initialPeriods[index].id,
-      startHour: initialPeriods[index].startHour,
-      endHour: initialPeriods[index].endHour,
-      type: initialPeriods[index].type,
-      classification: initialPeriods[index].classification,
-      repairClassification: initialPeriods[index].repairClassification,
-      description: initialPeriods[index].description,
-      equipmentRatio: initialPeriods[index].equipmentRatio,
-      fluidRatio: responseEfficiency.fluidRatio[index].ratio,
-      well: initialPeriods[index].well,
-    };
-  }
+  const initialDate = isTempForm
+    ? new Date(responseTemporaryEfficiency.date)
+    : new Date(responseEfficiency.date);
+
+  console.log(
+    "responseTemporaryEfficiency.date",
+    new Date(responseTemporaryEfficiency.date)
+  );
 
   const navigate = useNavigate();
-  const [date, setDate] = useState<Date>(new Date(responseEfficiency.date));
+  const [date, setDate] = useState<Date>(initialDate);
   const [selectedRig, setSelectedRig] = useState<string>(
     responseEfficiency.rigId
   );
@@ -237,7 +314,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   const queryClient = useQueryClient();
 
   const [periodsState, setPeriodsState] = useState(() => {
-    return initialPeriods.map(({id}) => ({periodId: id, isCollapsed: true}));
+    return initialPeriods?.map(({id}) => ({periodId: id, isCollapsed: true}));
   });
 
   const [errors, setErrors] = useState<Array<ErrorArgs>>([]);
@@ -534,7 +611,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   const calculateTotalMinutes = useCallback(() => {
     let totalMinutes = 0;
 
-    periods.forEach((period) => {
+    periods?.forEach((period) => {
       const horaInicial = parse(period.startHour, "HH:mm", new Date());
       const horaFinal = parse(period.endHour, "HH:mm", new Date());
       const diferencaMinutos = differenceInMinutes(horaFinal, horaInicial);
@@ -763,7 +840,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
         getErrorMessageByFildName,
         handleRepairClassification,
         selectedContract,
-        isFetchingEfficiency,
+        isFetching,
         getPeriodState,
       }}
     >

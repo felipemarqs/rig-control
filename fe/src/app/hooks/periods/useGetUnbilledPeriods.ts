@@ -1,6 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
 import {periodsService} from "../../services/periodsService";
-import {QueryKeys} from "../../entities/QueryKeys";
+import {QueryKeys} from "../../config/QueryKeys";
 import {GetUnbilledPeriodsFilters} from "../../services/periodsService/getUnbilledPeriods";
 
 export const useGetUnbilledPeriods = (filters: GetUnbilledPeriodsFilters) => {

@@ -1,15 +1,11 @@
 import {create} from "./create";
 import {getAll} from "./getAll";
-import {getAverage} from "./getAverage";
 import {getById} from "./getById";
-import {getRigsAverage} from "./getRigsAverage";
-import {remove} from "./remove";
+import {getByUserId} from "./getByUserId";
 
-export const efficienciesService = {
+export const temporaryEfficienciesServices = {
   create: create,
   getAll: getAll,
   getById: getById,
-  remove: remove,
-  getAverage: getAverage,
-  getRigsAverage: getRigsAverage,
+  getByUserId: getByUserId,
 };

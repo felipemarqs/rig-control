@@ -12,7 +12,7 @@ import {useAuth} from "../../../app/hooks/useAuth";
 import {useContracts} from "../../../app/hooks/contracts/useContracts";
 import {useContractRigs} from "../../../app/hooks/contracts/useContractRigs";
 import {useEffect} from "react";
-import {QueryKeys} from "../../../app/entities/QueryKeys";
+import {QueryKeys} from "../../../app/config/QueryKeys";
 
 const schema = z.object({
   name: z.string().nonempty("Nome é obrigatório"),

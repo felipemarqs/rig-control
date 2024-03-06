@@ -486,7 +486,7 @@ model TemporaryEfficiency {
   equipmentRatio                EquipmentRatio[]
   rig                           Rig                       @relation(fields: [rigId], references: [id], onDelete: Cascade)
   user                          User                      @relation(fields: [userId], references: [id])
-  temporaryPeriod               TemporaryPeriod[]
+  temporaryPeriods              TemporaryPeriod[]
   temporaryFluidRatios          TemporaryFluidRatio[]
   temporaryEquipmentRatios      TemporaryEquipmentRatio[]
 

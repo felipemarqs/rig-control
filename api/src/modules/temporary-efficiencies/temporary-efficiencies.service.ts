@@ -26,6 +26,12 @@ export class TemporaryEfficiencyService {
     return isBefore(startTime, endTime);
   }
 
+  private readonly selectOptions = {
+    id: true,
+    date: true,
+    // outras propriedades de seleção aqui
+  };
+
   private validatePeriodsTime(periods: PeriodDto[]) {
     for (let i = 0; i < periods.length; i++) {
       const currentPeriod = periods[i];
@@ -164,7 +170,7 @@ export class TemporaryEfficiencyService {
       hasTruckCartRent: isTruckCartSelected,
       hasTruckTank: isTruckTankSelected,
       truckKmHours: truckKm,
-      temporaryPeriod: {
+      temporaryPeriods: {
         createMany: {
           data: periods,
         },
@@ -297,7 +303,61 @@ export class TemporaryEfficiencyService {
             name: true,
           },
         },
-        temporaryPeriod: {
+        temporaryPeriods: {
+          select: {
+            temporaryEfficiencyId: true,
+            id: true,
+            startHour: true,
+            endHour: true,
+            classification: true,
+            description: true,
+            type: true,
+            repairClassification: true,
+            well: true,
+          },
+          orderBy: { startHour: 'asc' },
+        },
+        equipmentRatio: { select: { ratio: true } },
+        fluidRatio: { select: { ratio: true } },
+      },
+    });
+  }
+
+  async findByUserId(userId: string) {
+    return this.temporaryEfficiencyRepo.findMany({
+      where: { userId },
+      select: {
+        id: true,
+        date: true,
+        availableHours: true,
+        rigId: true,
+        userId: true,
+        christmasTreeDisassemblyHours: true,
+        bobRentHours: true,
+        hasDemobilization: true,
+        hasExtraTrailer: true,
+        hasGeneratorFuel: true,
+        hasMixTankDemobilization: true,
+        hasMixTankDtm: true,
+        hasMixTankHourRent: true,
+        hasMixTankMobilization: true,
+        hasMixTankMonthRent: true,
+        hasMixTankOperator: true,
+        hasMunck: true,
+        hasPowerSwivel: true,
+        hasSuckingTruck: true,
+        hasTransportation: true,
+        hasTruckCartRent: true,
+        truckKmHours: true,
+        well: true,
+        hasTruckTank: true,
+        rig: true,
+        user: {
+          select: {
+            name: true,
+          },
+        },
+        temporaryPeriods: {
           select: {
             temporaryEfficiencyId: true,
             id: true,

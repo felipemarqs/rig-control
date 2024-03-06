@@ -23,4 +23,8 @@ export class TemporaryEfficienciesRepository {
       findUniqueDto,
     );
   }
+
+  async findMany(findManyDto: Prisma.TemporaryEfficiencyFindManyArgs) {
+    return await this.prismaService.temporaryEfficiency.findMany(findManyDto);
+  }
 }

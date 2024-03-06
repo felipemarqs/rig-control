@@ -22,6 +22,11 @@ export class TemporaryEfficiencyController {
     return this.temporaryEfficiencyService.findById(efficiencyId);
   }
 
+  @Get('/user/:userId')
+  getByUserId(@Param('userId') userId: string) {
+    return this.temporaryEfficiencyService.findByUserId(userId);
+  }
+
   @Post()
   create(
     @ActiveUserId() userId: string,
