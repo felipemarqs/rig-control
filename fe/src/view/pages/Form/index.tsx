@@ -13,6 +13,7 @@ import {DatePickerInput} from "../../components/DatePickerInput";
 import {BraskemFormContainer} from "./components/BraskemFormContainer";
 import {ChevronDown} from "lucide-react";
 import {PageLoader} from "../../components/PageLoader";
+import {AlertModal} from "./components/AlertModal";
 
 // Componente principal Form
 export const Form = () => {
@@ -171,6 +172,7 @@ export const Form = () => {
                 Enviar dados
               </Button>
             </div> */}
+            <AlertModal />
             <PageLoader isLoading={isLoading} />
           </div>
         )}

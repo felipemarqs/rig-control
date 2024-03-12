@@ -9,6 +9,7 @@ import {
 } from "./components/UpdateFormContext";
 import {TresRFormContainer} from "./components/TresRForm";
 import {OrigemContainer} from "./components/OrigemForm";
+import {AlertModal} from "./components/AlertModal";
 import {CarmoEnergyContainer} from "./components/CarmoEnergyForm";
 import {Button} from "../../components/Button";
 import {DatePickerInput} from "../../components/DatePickerInput";
@@ -170,6 +171,7 @@ export const UpdateForm = () => {
                       Enviar dados
                     </Button>
                   </div> */}
+                <AlertModal />
                 <PageLoader isLoading={isLoading} />
               </div>
             )}

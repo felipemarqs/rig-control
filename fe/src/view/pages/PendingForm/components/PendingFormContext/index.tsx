@@ -120,6 +120,12 @@ interface PendingFormContextValue {
     time: Dayjs | null,
     timeString: string
   ): void;
+  handleSave(): void;
+  isModalOpen: boolean;
+  closeModal(): void;
+  openModal(): void;
+  handleConfirmModal(): void;
+  temporaryEfficiency: TemporaryEfficiencyResponse | never[];
   selectedContract:
     | {
         rig: {
@@ -262,15 +268,6 @@ export const PendingFormProvider = ({
     }
   }, [responseEfficiency]);
 
-  /* const initialPeriods = useMemo(() => {
-   
-
-    return initialPeriods;
-  }, [responseEfficiency]); */
-
-  console.log("initialPeriods: ", initialPeriods!);
-  console.log("responseEfficiency: ", responseEfficiency);
-
   const navigate = useNavigate();
   const [date, setDate] = useState<Date>(new Date(responseEfficiency.date));
   const [selectedRig, setSelectedRig] = useState<string>(
@@ -280,13 +277,11 @@ export const PendingFormProvider = ({
   const [remainingMinutes, setRemainingMinutes] = useState<number>();
   const [periods, setPeriods] = useState<Periods>([]);
 
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
   useEffect(() => {
     setPeriods(initialPeriods);
   }, []);
-
-  console.log("periods no context", periods);
-
-  // const tes = efficiency.periods.map()
 
   const {isPending: isLoadingEfficiency, mutateAsync} = useMutation({
     mutationFn: efficienciesService.create,
@@ -403,6 +398,28 @@ export const PendingFormProvider = ({
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
     }
+  };
+
+  const handleSave = () => {
+    if (temporaryEfficiency) {
+      openModal();
+      return;
+    }
+
+    handleSubmitTemporary(periods);
+  };
+
+  const handleConfirmModal = () => {
+    handleSubmitTemporary(periods);
+    closeModal();
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
   };
 
   const handleSubmitTemporary = async (periods: Periods) => {
@@ -674,6 +691,9 @@ export const PendingFormProvider = ({
   };
 
   const handleDeletePeriod = (id: string) => {
+    removeError(`${id} classification`);
+    removeError(`${id} well`);
+    removeError(`${id} type`);
     const newPeriods = periods.filter((period) => period.id !== id);
 
     setPeriods(newPeriods);
@@ -876,7 +896,7 @@ export const PendingFormProvider = ({
         handlePeriodWell,
         isLoading:
           isLoadingEfficiency ||
-          isFetchingTemporaryEfficiency ||
+          isLoadingTemporary ||
           isFetchingTemporaryEfficiency,
         userRig,
         usersRigs,
@@ -901,6 +921,11 @@ export const PendingFormProvider = ({
         isTankMixDTMSelected,
         bobRentHours,
         isDateValid,
+        closeModal,
+        handleConfirmModal,
+        isModalOpen,
+        openModal,
+        temporaryEfficiency,
         handleBobRentHours,
         handleChristmasTreeDisassemblyHours,
         isTruckCartSelected,
@@ -916,6 +941,7 @@ export const PendingFormProvider = ({
         handleTransportationCheckbox,
         handleTruckKmChange,
         truckKm,
+        handleSave,
         isVisible,
         toggleVisibility,
         handleExtraTrailerCheckbox,

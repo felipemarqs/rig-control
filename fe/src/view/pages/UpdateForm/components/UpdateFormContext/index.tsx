@@ -17,6 +17,7 @@ import {useTemporaryEfficiencyById} from "../../../../../app/hooks/temporaryEffi
 import {TemporaryEfficiencyResponse} from "../../../../../app/services/temporaryEfficienciesServices/getById";
 import {temporaryEfficienciesServices} from "../../../../../app/services/temporaryEfficienciesServices";
 import {useSidebarContext} from "../../../../../app/contexts/SidebarContext";
+import {useTemporaryEfficiencyByUserId} from "../../../../../app/hooks/temporaryEfficiencies/useTemporaryEfficiencyByUserId";
 
 type ErrorArgs = {fieldName: string; message: string};
 
@@ -52,6 +53,7 @@ interface UpdateFormContextValue {
   handleDescription(id: string, text: string): void;
   handleSubmitTemporary(periods: Periods): Promise<void>;
   handleSubmit(periods: Periods): Promise<void>;
+  handleSave(): void;
   cleanFields(id: string): void;
   isFormValid: boolean;
   isPending: boolean;
@@ -107,6 +109,11 @@ interface UpdateFormContextValue {
   removeError(fieldName: string): void;
   getErrorMessageByFildName(fieldName: string): string;
   isExtraTrailerSelected: boolean;
+  isModalOpen: boolean;
+  closeModal(): void;
+  openModal(): void;
+  handleConfirmModal(): void;
+  temporaryEfficiency: TemporaryEfficiencyResponse | never[];
   updatePeriodState(
     id: string,
     state: boolean
@@ -233,9 +240,6 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
     return initialPeriods;
   }, [responseEfficiency]);
 
-  console.log("initialPeriods: ", initialPeriods);
-  console.log("responseEfficiency: ", responseEfficiency);
-
   const navigate = useNavigate();
   const [date, setDate] = useState<Date>(new Date(responseEfficiency.date));
   const [selectedRig, setSelectedRig] = useState<string>(
@@ -244,7 +248,9 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   const [remainingMinutes, setRemainingMinutes] = useState<number>();
   const [periods, setPeriods] = useState<Periods>(initialPeriods);
 
-  console.log("periods no context", periods);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  const {temporaryEfficiency} = useTemporaryEfficiencyByUserId(user?.id!);
 
   useEffect(() => {
     setPeriods(initialPeriods);
@@ -376,6 +382,28 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
     }
+  };
+
+  const handleSave = () => {
+    if (temporaryEfficiency) {
+      openModal();
+      return;
+    }
+
+    handleSubmitTemporary(periods);
+  };
+
+  const handleConfirmModal = () => {
+    handleSubmitTemporary(periods);
+    closeModal();
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
   };
 
   const handleSubmitTemporary = async (periods: Periods) => {
@@ -646,6 +674,9 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const handleDeletePeriod = (id: string) => {
+    removeError(`${id} classification`);
+    removeError(`${id} well`);
+    removeError(`${id} type`);
     const newPeriods = periods.filter((period) => period.id !== id);
 
     setPeriods(newPeriods);
@@ -893,8 +924,13 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
         handleTransportationCheckbox,
         handleTruckKmChange,
         truckKm,
+        isModalOpen,
+        closeModal,
+        openModal,
+        handleConfirmModal,
         isVisible,
         toggleVisibility,
+        handleSave,
         handleExtraTrailerCheckbox,
         isExtraTrailerSelected,
         isPowerSwivelSelected,
@@ -909,7 +945,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
         getErrorMessageByFildName,
         handleRepairClassification,
         selectedContract,
-
+        temporaryEfficiency,
         getPeriodState,
       }}
     >

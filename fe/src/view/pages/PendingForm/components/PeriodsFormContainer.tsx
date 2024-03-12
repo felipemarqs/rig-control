@@ -40,6 +40,7 @@ export const PeriodsFormContainer = () => {
     isDateValid,
     hasRemainingMinutes,
     handleSubmitTemporary,
+    handleSave,
   } = usePendingForm();
 
   console.log("periods no periodsForm", periods);
@@ -385,9 +386,7 @@ export const PeriodsFormContainer = () => {
           disabled={!isFormValid || isLoading}
           className="bg-secondary-500 w-2/3 "
           onClick={() =>
-            hasRemainingMinutes
-              ? handleSubmitTemporary(periods)
-              : handleSubmit(periods)
+            hasRemainingMinutes ? handleSave() : handleSubmit(periods)
           }
         >
           {hasRemainingMinutes ? "Salvar dados" : "Enviar dados"}

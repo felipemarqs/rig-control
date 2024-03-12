@@ -15,6 +15,7 @@ import {DatePickerInput} from "../../components/DatePickerInput";
 import {ChevronDown} from "lucide-react";
 import {Select} from "../../components/Select";
 import {PageLoader} from "../../components/PageLoader";
+import {AlertModal} from "./components/AlertModal";
 
 export const PendingForm = () => {
   return (
@@ -170,6 +171,7 @@ export const PendingForm = () => {
               Enviar dados
             </Button>
           </div> */}
+                <AlertModal />
                 <PageLoader isLoading={isLoading} />
               </div>
             )}

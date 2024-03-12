@@ -13,6 +13,8 @@ import {parse, differenceInMinutes} from "date-fns";
 import {ErrorArgs, useErrors} from "../../../../../app/hooks/useErrors";
 import {useSidebarContext} from "../../../../../app/contexts/SidebarContext";
 import {temporaryEfficienciesServices} from "../../../../../app/services/temporaryEfficienciesServices";
+import {useTemporaryEfficiencyByUserId} from "../../../../../app/hooks/temporaryEfficiencies/useTemporaryEfficiencyByUserId";
+import {TemporaryEfficiencyResponse} from "../../../../../app/services/temporaryEfficienciesServices/getById";
 
 interface FormContextValue {
   date: Date | undefined;
@@ -49,6 +51,7 @@ interface FormContextValue {
   handleSubmitTemporary(periods: Periods): Promise<void>;
   hasRemainingMinutes: boolean;
   cleanFields(id: string): void;
+  handleSave(): void;
   updatePeriodState(
     id: string,
     state: boolean
@@ -99,6 +102,11 @@ interface FormContextValue {
   isTransportationSelected: boolean;
   truckKm: number;
   isVisible: boolean;
+  isModalOpen: boolean;
+  closeModal(): void;
+  openModal(): void;
+  handleConfirmModal(): void;
+  temporaryEfficiency: TemporaryEfficiencyResponse | never[];
   isConfigsConfirmed: boolean;
   setError(arg0: ErrorArgs): void;
   removeError(fieldName: string): void;
@@ -155,6 +163,10 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   const [selectedRig, setSelectedRig] = useState<string>(() => {
     return isUserAdm ? "" : user?.rigs[0].rig.id!;
   });
+
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const {temporaryEfficiency} = useTemporaryEfficiencyByUserId(user?.id!);
+
   const [remainingMinutes, setRemainingMinutes] = useState<number>();
   const [periods, setPeriods] = useState<Periods>([
     {
@@ -338,6 +350,28 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
     }
+  };
+
+  const handleSave = () => {
+    if (temporaryEfficiency) {
+      openModal();
+      return;
+    }
+
+    handleSubmitTemporary(periods);
+  };
+
+  const handleConfirmModal = () => {
+    handleSubmitTemporary(periods);
+    closeModal();
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
   };
 
   /*  <[{id:string, startHour:string,endHour:string,type: 'WORKING' | 'REPAIR' | '', classification: string}]> */
@@ -784,6 +818,12 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         isTransportationSelected,
         handleTransportationCheckbox,
         handleTruckKmChange,
+        closeModal,
+        handleConfirmModal,
+        isModalOpen,
+        openModal,
+        temporaryEfficiency,
+        handleSave,
         truckKm,
         handleExtraTrailerCheckbox,
         isExtraTrailerSelected,
