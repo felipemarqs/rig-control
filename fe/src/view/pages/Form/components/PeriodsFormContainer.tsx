@@ -41,6 +41,8 @@ export const PeriodsFormContainer = () => {
     getErrorMessageByFildName,
     handlePeriodWell,
     getPeriodState,
+    handleSubmitTemporary,
+    hasRemainingMinutes,
   } = useForm();
 
   const format = "HH:mm";
@@ -377,9 +379,13 @@ export const PeriodsFormContainer = () => {
         <Button
           disabled={!isFormValid || isLoading}
           className="bg-secondary-500 w-2/3 "
-          onClick={() => handleSubmit(periods)}
+          onClick={() =>
+            hasRemainingMinutes
+              ? handleSubmitTemporary(periods)
+              : handleSubmit(periods)
+          }
         >
-          Enviar dados
+          {hasRemainingMinutes ? "Salvar dados" : "Enviar dados"}
         </Button>
       </div>
     </div>

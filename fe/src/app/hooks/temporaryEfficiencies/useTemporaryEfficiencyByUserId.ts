@@ -9,7 +9,7 @@ export const useTemporaryEfficiencyByUserId = (userId: string) => {
   });
 
   return {
-    temporaryEfficiencies: data ?? [],
+    temporaryEfficiency: data ?? [],
     isFetchingTemporaryEfficiencies: isFetching,
     refechTemporaryEfficiencies: refetch,
   };

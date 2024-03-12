@@ -103,6 +103,15 @@ export class TemporaryEfficiencyService {
       );
     }
 
+    const userAlreadyHasATemporaryRegister =
+      await this.temporaryEfficiencyRepo.findFirst({
+        where: { userId: userId },
+      });
+
+    if (userAlreadyHasATemporaryRegister) {
+      await this.remove(userAlreadyHasATemporaryRegister.id);
+    }
+
     /**
      * Checks if an efficiency entry already exists for the given rig ID and date.
      * If an entry already exists, it throws a ConflictException.
@@ -324,7 +333,7 @@ export class TemporaryEfficiencyService {
   }
 
   async findByUserId(userId: string) {
-    return this.temporaryEfficiencyRepo.findMany({
+    return this.temporaryEfficiencyRepo.findFirst({
       where: { userId },
       select: {
         id: true,

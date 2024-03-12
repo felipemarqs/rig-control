@@ -4,7 +4,7 @@ import {temporaryEfficienciesServices} from "../../services/temporaryEfficiencie
 
 export const useTemporaryEfficiencyById = (efficiencyId: string) => {
   const {data, isFetching, refetch} = useQuery({
-    queryKey: [QueryKeys.TEMPORARY_EFFICIENCIE],
+    queryKey: [QueryKeys.TEMPORARY_EFFICIENCY],
     queryFn: () => temporaryEfficienciesServices.getById(efficiencyId),
   });
 

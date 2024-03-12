@@ -15,6 +15,7 @@ import { DeletionRequestRepository } from 'src/shared/database/repositories/dele
 import { RequestStatus } from '../deletion-requests/entities/deletion-request.entity';
 import { WellsRepository } from 'src/shared/database/repositories/well.repositories';
 import { PeriodDto } from './dto/create-period-dto';
+import { TemporaryEfficienciesRepository } from 'src/shared/database/repositories/temporaryEfficienciesRepositories';
 
 @Injectable()
 export class EfficienciesService {
@@ -26,6 +27,7 @@ export class EfficienciesService {
     private readonly billingRepo: BillingRepository,
     private readonly wellsRepo: WellsRepository,
     private readonly deletionRequestRepo: DeletionRequestRepository,
+    private readonly temporaryEfficiencyRepo: TemporaryEfficienciesRepository,
   ) {}
 
   private isTimeValid(startHour: string, endHour: string): boolean {
@@ -118,6 +120,17 @@ export class EfficienciesService {
 
     if (efficiencyAlreadyExists) {
       throw new ConflictException('Data já preenchida!');
+    }
+
+    const efficiencyTemporaryExists =
+      await this.temporaryEfficiencyRepo.findFirst({
+        where: { rigId, date },
+      });
+
+    if (efficiencyTemporaryExists) {
+      await this.temporaryEfficiencyRepo.delete({
+        where: { id: efficiencyTemporaryExists.id },
+      });
     }
 
     /**

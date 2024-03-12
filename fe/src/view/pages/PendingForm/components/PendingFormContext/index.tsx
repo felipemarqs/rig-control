@@ -1,6 +1,6 @@
-import {createContext, useCallback, useEffect, useState} from "react";
+import {createContext, useCallback, useEffect, useMemo, useState} from "react";
 import {useAuth} from "../../../../../app/hooks/useAuth";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {v4 as uuidv4} from "uuid";
 import {efficiencyMappers} from "../../../../../app/services/mappers/efficiencyMappers";
 import {customColorToast} from "../../../../../app/utils/customColorToast";
@@ -10,11 +10,18 @@ import {AxiosError} from "axios";
 import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
 import {Dayjs} from "dayjs";
 import {parse, differenceInMinutes} from "date-fns";
-import {ErrorArgs, useErrors} from "../../../../../app/hooks/useErrors";
-import {useSidebarContext} from "../../../../../app/contexts/SidebarContext";
+import {useEfficiencyById} from "../../../../../app/hooks/efficiencies/useEfficiencyById";
+import {PersistanceEfficiency} from "../../../../../app/entities/PersistanceEfficiency";
+import {formatIsoStringToHours} from "../../../../../app/utils/formatIsoStringToHours";
+import {useTemporaryEfficiencyById} from "../../../../../app/hooks/temporaryEfficiencies/useTemporaryEfficiencyById";
+import {TemporaryEfficiencyResponse} from "../../../../../app/services/temporaryEfficienciesServices/getById";
+import {PeriodType} from "../../../../../app/entities/PeriodType";
 import {temporaryEfficienciesServices} from "../../../../../app/services/temporaryEfficienciesServices";
+import {useSidebarContext} from "../../../../../app/contexts/SidebarContext";
 
-interface FormContextValue {
+type ErrorArgs = {fieldName: string; message: string};
+
+interface PendingFormContextValue {
   date: Date | undefined;
   remainingMinutes: number | undefined;
   periods: Periods;
@@ -39,23 +46,13 @@ interface FormContextValue {
   handleEndHourChange(time: Dayjs | null, timeString: string, id: string): void;
   addPeriod(): void;
   handlePeriodType(id: string, type: string): void;
-  handlePeriodWell(id: string, well: string): void;
   handlePeriodClassification(id: string, classification: string): void;
   handleRepairClassification(id: string, repairClassification: string): void;
   handleFluidRatio(id: string, ratio: string | never): void;
   handleEquipmentRatio(id: string, ratio: string | never): void;
   handleDescription(id: string, text: string): void;
   handleSubmit(periods: Periods): Promise<void>;
-  handleSubmitTemporary(periods: Periods): Promise<void>;
-  hasRemainingMinutes: boolean;
   cleanFields(id: string): void;
-  updatePeriodState(
-    id: string,
-    state: boolean
-  ): {
-    periodId: string;
-    isCollapsed: boolean;
-  }[];
   isFormValid: boolean;
   isPending: boolean;
   selectedRig: string;
@@ -78,7 +75,11 @@ interface FormContextValue {
   handlePowerSwivelCheckbox(): void;
   handleMobilizationPlace(value: string): void;
   handleSuckingTruckCheckbox(): void;
-
+  handlePeriodWell(id: string, well: string): void;
+  toggleVisibility(): void;
+  handleConfirmButton(): void;
+  getPeriodState(periodId: string): boolean;
+  isConfigsConfirmed: boolean;
   isSuckingTruckSelected: boolean;
   usersRigs: {id: string; name: string}[];
   mobilizationPlace: string;
@@ -96,18 +97,24 @@ interface FormContextValue {
   isTruckCartSelected: boolean;
   isTruckTankSelected: boolean;
   isMunckSelected: boolean;
+  isFetching: boolean;
+  handleSubmitTemporary(periods: Periods): Promise<void>;
+  hasRemainingMinutes: boolean;
   isTransportationSelected: boolean;
   truckKm: number;
+  isDateValid: boolean;
   isVisible: boolean;
-  isConfigsConfirmed: boolean;
   setError(arg0: ErrorArgs): void;
   removeError(fieldName: string): void;
-  toggleVisibility(): void;
-  handleConfirmButton(): void;
   getErrorMessageByFildName(fieldName: string): string;
   isExtraTrailerSelected: boolean;
-  isDateValid: boolean;
-  getPeriodState(periodId: string): boolean;
+  updatePeriodState(
+    id: string,
+    state: boolean
+  ): {
+    periodId: string;
+    isCollapsed: boolean;
+  }[];
   handleBobRentHours(time: Dayjs | null, timeString: string): void;
   handleChristmasTreeDisassemblyHours(
     time: Dayjs | null,
@@ -139,60 +146,194 @@ type Periods = {
   fluidRatio: string;
   equipmentRatio: string;
   description: string;
-  well: string;
+  well: any;
 }[];
 
-export const FormContext = createContext({} as FormContextValue);
+export const PendingFormContext = createContext({} as PendingFormContextValue);
 
-export const FormProvider = ({children}: {children: React.ReactNode}) => {
-  //Custom Hooks
-  const navigate = useNavigate();
-  const {user, isUserAdm} = useAuth();
-  const {setError, removeError, getErrorMessageByFildName, errors} =
-    useErrors();
-  const {handleToggleNavItem} = useSidebarContext();
-  const [date, setDate] = useState<Date>();
-  const [selectedRig, setSelectedRig] = useState<string>(() => {
-    return isUserAdm ? "" : user?.rigs[0].rig.id!;
-  });
-  const [remainingMinutes, setRemainingMinutes] = useState<number>();
-  const [periods, setPeriods] = useState<Periods>([
-    {
-      id: uuidv4(),
-      startHour: "00:00",
-      endHour: "00:00",
-      type: "",
-      classification: "",
-      fluidRatio: "",
-      repairClassification: null,
-      equipmentRatio: "",
-      description: "",
-      well: "",
-    },
-  ]);
+export const PendingFormProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const {user} = useAuth();
 
-  console.log("Errors: ", errors);
+  const {efficiencyId} = useParams<{efficiencyId: string}>();
 
-  const [periodsState, setPeriodsState] = useState([
-    {
-      periodId: periods[0].id,
-      isCollapsed: false,
-    },
-  ]);
+  if (typeof efficiencyId === "undefined") {
+    // Trate o erro de acordo com a necessidade do seu aplicativo
+    // Pode ser um redirecionamento, um erro lançado, ou até mesmo um log.
+    throw new Error("efficiencyId is undefined");
+  }
+
+  //const {efficiency, isFetchingEfficiency} = useEfficiencyById(efficiencyId!);
+
+  const {temporaryEfficiency, isFetchingTemporaryEfficiency} =
+    useTemporaryEfficiencyById(efficiencyId!);
+
+  const responseEfficiency = temporaryEfficiency as TemporaryEfficiencyResponse;
+
+  let initialPeriods: {
+    id: string;
+    startHour: string;
+    endHour: string;
+    type: PeriodType;
+    classification: string;
+    repairClassification: string | null;
+    description: string;
+    equipmentRatio: string;
+    fluidRatio: string;
+    well: string;
+  }[];
 
   useEffect(() => {
-    setError({fieldName: "date", message: "Data Inválida!"});
-    setError({fieldName: `${periods[0].id} well`, message: "Obrigatório"});
-    setError({fieldName: `${periods[0].id} type`, message: "Obrigatório"});
-    setError({
-      fieldName: `${periods[0].id} classification`,
-      message: "Obrigatório",
-    });
+    if (temporaryEfficiency) {
+      initialPeriods = responseEfficiency?.temporaryPeriods?.map(
+        ({
+          startHour,
+          endHour,
+          description,
+          type,
+          classification,
+          repairClassification,
+          well,
+        }) => {
+          return {
+            id: uuidv4(),
+            startHour: formatIsoStringToHours(startHour),
+            endHour: formatIsoStringToHours(endHour),
+            type: type,
+            classification: classification,
+            repairClassification: repairClassification,
+            description: description,
+            equipmentRatio: "",
+            fluidRatio: "",
+            well: well?.name ?? "",
+          };
+        }
+      );
+
+      for (
+        let index = 0;
+        index < responseEfficiency?.equipmentRatio?.length;
+        index++
+      ) {
+        initialPeriods[index] = {
+          id: initialPeriods[index].id,
+          startHour: initialPeriods[index].startHour,
+          endHour: initialPeriods[index].endHour,
+          type: initialPeriods[index].type,
+          classification: initialPeriods[index].classification,
+          repairClassification: initialPeriods[index].repairClassification,
+          description: initialPeriods[index].description,
+          fluidRatio: initialPeriods[index].fluidRatio,
+          equipmentRatio: responseEfficiency.equipmentRatio[index].ratio,
+          well: initialPeriods[index].well,
+        };
+      }
+
+      for (
+        let index = 0;
+        index < responseEfficiency?.fluidRatio?.length;
+        index++
+      ) {
+        initialPeriods[index] = {
+          id: initialPeriods[index].id,
+          startHour: initialPeriods[index].startHour,
+          endHour: initialPeriods[index].endHour,
+          type: initialPeriods[index].type,
+          classification: initialPeriods[index].classification,
+          repairClassification: initialPeriods[index].repairClassification,
+          description: initialPeriods[index].description,
+          equipmentRatio: initialPeriods[index].equipmentRatio,
+          fluidRatio: responseEfficiency.fluidRatio[index].ratio,
+          well: initialPeriods[index].well,
+        };
+      }
+
+      const periodsState = initialPeriods?.map(({id}) => ({
+        periodId: id,
+        isCollapsed: true,
+      }));
+
+      setPeriodsState(periodsState);
+
+      setPeriods(initialPeriods);
+    }
+  }, [responseEfficiency]);
+
+  /* const initialPeriods = useMemo(() => {
+   
+
+    return initialPeriods;
+  }, [responseEfficiency]); */
+
+  console.log("initialPeriods: ", initialPeriods!);
+  console.log("responseEfficiency: ", responseEfficiency);
+
+  const navigate = useNavigate();
+  const [date, setDate] = useState<Date>(new Date(responseEfficiency.date));
+  const [selectedRig, setSelectedRig] = useState<string>(
+    responseEfficiency.rigId
+  );
+  const {handleToggleNavItem} = useSidebarContext();
+  const [remainingMinutes, setRemainingMinutes] = useState<number>();
+  const [periods, setPeriods] = useState<Periods>([]);
+
+  useEffect(() => {
+    setPeriods(initialPeriods);
   }, []);
+
+  console.log("periods no context", periods);
+
+  // const tes = efficiency.periods.map()
+
+  const {isPending: isLoadingEfficiency, mutateAsync} = useMutation({
+    mutationFn: efficienciesService.create,
+  });
+  const queryClient = useQueryClient();
+
+  const [periodsState, setPeriodsState] = useState<
+    {
+      periodId: string;
+      isCollapsed: boolean;
+    }[]
+  >([]);
+
+  const [errors, setErrors] = useState<Array<ErrorArgs>>([]);
+  console.log("errors", errors);
+
+  const setError = ({fieldName, message}: ErrorArgs) => {
+    const errorAlreadyExists = errors.find(
+      (error) => error.fieldName === fieldName
+    );
+
+    if (errorAlreadyExists) return;
+
+    setErrors((prevState) => [...prevState, {fieldName, message}]);
+  };
+
+  const removeError = (fieldName: string) => {
+    setErrors((prevState) =>
+      prevState.filter((error) => error.fieldName !== fieldName)
+    );
+  };
+
+  const getErrorMessageByFildName = (fieldName: string) => {
+    let findErrorMessage = errors.find(
+      (error) => error.fieldName === fieldName
+    )?.message;
+
+    if (!findErrorMessage) {
+      findErrorMessage = "";
+    }
+
+    return findErrorMessage;
+  };
 
   const [isVisible, setIsVisible] = useState(true);
 
-  const [isConfigsConfirmed, setConfigsConfirmed] = useState(false);
+  const [isConfigsConfirmed, setConfigsConfirmed] = useState(true);
 
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
@@ -203,18 +344,6 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     setConfigsConfirmed(true);
   };
 
-  const getPeriodState = (periodId: string) => {
-    const periodState = periodsState.find(
-      (period) => period.periodId === periodId
-    );
-    return periodState?.isCollapsed ?? false;
-  };
-
-  // Utilização de useMutation para obter isLoading e mutateAsync
-  const {isPending: isLoading, mutateAsync} = useMutation({
-    mutationFn: efficienciesService.create,
-  });
-
   const {
     isPending: isLoadingTemporary,
     mutateAsync: mutateAsyncTemporaryEfficiency,
@@ -222,14 +351,10 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     mutationFn: temporaryEfficienciesServices.create,
   });
 
-  const queryClient = useQueryClient();
-
   const handleSubmit = async (periods: Periods) => {
-    // Criação do objeto de persistência utilizando o mapeamento dos dados
-
     const {toPersistenceObj} = efficiencyMappers.toPersistance({
       rigId: selectedRig,
-      date: date!,
+      date: date ?? new Date(),
       availableHours: 24,
       periods: periods,
       isMixTankSelected,
@@ -254,7 +379,6 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
       isSuckingTruckSelected,
     });
 
-    console.log(JSON.stringify(toPersistenceObj));
     try {
       await mutateAsync(toPersistenceObj);
       customColorToast("Dados Enviados com Sucesso!", "#1c7b7b", "success");
@@ -276,7 +400,6 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
       queryClient.invalidateQueries({queryKey: ["efficiencies", "average"]});
 
       navigate("/dashboard", {replace: true});
-      handleToggleNavItem("dashboard");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
     }
@@ -365,25 +488,6 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     setPeriods(newPeriods);
   };
 
-  const handlePeriodWell = (id: string, well: string) => {
-    if (!well) {
-      setError({fieldName: `${id} well`, message: "Obrigatório"});
-    } else {
-      removeError(`${id} well`);
-    }
-
-    const newPeriods = periods.map((period) => {
-      return period.id === id
-        ? {
-            ...period,
-            well: well,
-          }
-        : period;
-    });
-
-    setPeriods(newPeriods);
-  };
-
   const handlePeriodType = (id: string, type: string) => {
     if (!type) {
       setError({fieldName: `${id} type`, message: "Obrigatório"});
@@ -451,6 +555,24 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     setPeriods(newPeriods);
   };
 
+  const handlePeriodWell = (id: string, well: string) => {
+    if (!well) {
+      setError({fieldName: `${id} well`, message: "Obrigatório"});
+    } else {
+      removeError(`${id} well`);
+    }
+    const newPeriods = periods.map((period) => {
+      return period.id === id
+        ? {
+            ...period,
+            well: well,
+          }
+        : period;
+    });
+
+    setPeriods(newPeriods);
+  };
+
   const handleFluidRatio = (id: string, ratio: string | never) => {
     const newPeriods = periods.map((period) => {
       return period.id === id ? {...period, fluidRatio: ratio} : period;
@@ -465,6 +587,13 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     });
 
     setPeriods(newPeriods);
+  };
+
+  const getPeriodState = (periodId: string) => {
+    const periodState = periodsState.find(
+      (period) => period.periodId === periodId
+    );
+    return periodState?.isCollapsed ?? false;
   };
 
   const updatePeriodState = (id: string, state: boolean) => {
@@ -514,13 +643,13 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
             fluidRatio: "",
             equipmentRatio: "",
             description: "",
-            well: "",
           }
         : period;
     });
 
     setPeriods(newPeriods);
   };
+
   const millisecondsInADay = 1000 * 60 * 60 * 24;
 
   const getTotalDaysByDate = (date: Date): number => {
@@ -537,8 +666,6 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleDateChange = (date: Date) => {
     setDate(date);
-    console.log("Data selecionada: ", getTotalDaysByDate(new Date(date)));
-    console.log("Data de hoje pelo New Date()", getTotalDaysByDate(new Date()));
     if (getTotalDaysByDate(new Date(date)) >= getTotalDaysByDate(new Date())) {
       setError({fieldName: "date", message: "Data Inválida!"});
     } else {
@@ -547,10 +674,6 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const handleDeletePeriod = (id: string) => {
-    removeError(`${id} classification`);
-    removeError(`${id} well`);
-    removeError(`${id} type`);
-
     const newPeriods = periods.filter((period) => period.id !== id);
 
     setPeriods(newPeriods);
@@ -571,7 +694,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   const calculateTotalMinutes = useCallback(() => {
     let totalMinutes = 0;
 
-    periods.forEach((period) => {
+    periods?.forEach((period) => {
       const horaInicial = parse(period.startHour, "HH:mm", new Date());
       const horaFinal = parse(period.endHour, "HH:mm", new Date());
       const diferencaMinutos = differenceInMinutes(horaFinal, horaInicial);
@@ -587,9 +710,9 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   }, [periods]);
 
   const isFormValid = Boolean(date && errors.length === 0);
-  const isPending = remainingMinutes !== 0;
 
   const hasRemainingMinutes = remainingMinutes !== 0;
+  const isPending = remainingMinutes !== 0;
 
   const userRig = user?.rigs[0].rig!;
 
@@ -728,8 +851,11 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   }, []);
 
   return (
-    <FormContext.Provider
+    <PendingFormContext.Provider
       value={{
+        handleSubmitTemporary,
+        hasRemainingMinutes,
+        isFetching: isLoadingEfficiency,
         date,
         handleChangeRig,
         handleDateChange,
@@ -747,11 +873,14 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         handleDescription,
         handleSubmit,
         cleanFields,
-        isLoading: isLoading || isLoadingTemporary,
+        handlePeriodWell,
+        isLoading:
+          isLoadingEfficiency ||
+          isFetchingTemporaryEfficiency ||
+          isFetchingTemporaryEfficiency,
         userRig,
         usersRigs,
         isPending,
-        handlePeriodWell,
         handleMixTankCheckBox,
         isMixTankSelected,
         handleMixTankOperatorsCheckBox,
@@ -771,20 +900,24 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         handleTankMixDTMCheckbox,
         isTankMixDTMSelected,
         bobRentHours,
+        isDateValid,
         handleBobRentHours,
-        toggleVisibility,
         handleChristmasTreeDisassemblyHours,
         isTruckCartSelected,
         handleTruckCartCheckbox,
         isTruckTankSelected,
         handleTruckTankCheckbox,
         isMunckSelected,
-        isDateValid,
         handleMunckCheckbox,
+        handleConfirmButton,
+        isConfigsConfirmed,
+        updatePeriodState,
         isTransportationSelected,
         handleTransportationCheckbox,
         handleTruckKmChange,
         truckKm,
+        isVisible,
+        toggleVisibility,
         handleExtraTrailerCheckbox,
         isExtraTrailerSelected,
         isPowerSwivelSelected,
@@ -793,22 +926,17 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         handleMobilizationPlace,
         isSuckingTruckSelected,
         handleSuckingTruckCheckbox,
-        handleSubmitTemporary,
         selectedRig,
         setError,
-        handleConfirmButton,
-        isConfigsConfirmed,
         removeError,
         getErrorMessageByFildName,
         handleRepairClassification,
         selectedContract,
+
         getPeriodState,
-        updatePeriodState,
-        hasRemainingMinutes,
-        isVisible,
       }}
     >
       {children}
-    </FormContext.Provider>
+    </PendingFormContext.Provider>
   );
 };

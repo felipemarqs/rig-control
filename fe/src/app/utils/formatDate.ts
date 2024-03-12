@@ -1,4 +1,7 @@
 export const formatDate = (date: Date) => {
-  console.log("Date comeing", date);
+  if (date.toString() === "Invalid Date") {
+    return Intl.DateTimeFormat("pt-br").format(new Date());
+  }
+
   return Intl.DateTimeFormat("pt-br").format(date);
 };

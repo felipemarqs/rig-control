@@ -31,6 +31,7 @@ import {GlobalDashboard} from "../view/pages/GlobalDashboard";
 import {DashboardMenu} from "../view/pages/DashboardMenu";
 import {useAuth} from "../app/hooks/useAuth";
 import {FormMenu} from "../view/pages/FormMenu";
+import {PendingForm} from "../view/pages/PendingForm";
 
 export const Router = () => {
   const {windowWidth} = useSidebarContext();
@@ -62,7 +63,10 @@ export const Router = () => {
 
             <Route path="/form" element={<Form />} />
             <Route path="/form/:efficiencyId" element={<UpdateForm />} />
-            <Route path="/form/temp/:efficiencyId" element={<UpdateForm />} />
+            <Route
+              path="/pending-form/:efficiencyId"
+              element={<PendingForm />}
+            />
             <Route path="/form/menu" element={<FormMenu />} />
 
             <Route path="/list" element={<List />} />

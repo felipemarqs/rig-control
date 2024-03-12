@@ -4,9 +4,9 @@ import {cn} from "../../../app/utils/cn";
 import {PeriodsFormContainer} from "./components/PeriodsFormContainer";
 import {BraskemFormContainer} from "./components/BraskemFormContainer";
 import {
-  UpdateFormContext,
-  UpdateFormProvider,
-} from "./components/UpdateFormContext";
+  PendingFormContext,
+  PendingFormProvider,
+} from "./components/PendingFormContext";
 import {TresRFormContainer} from "./components/TresRForm";
 import {OrigemContainer} from "./components/OrigemForm";
 import {CarmoEnergyContainer} from "./components/CarmoEnergyForm";
@@ -16,10 +16,10 @@ import {ChevronDown} from "lucide-react";
 import {Select} from "../../components/Select";
 import {PageLoader} from "../../components/PageLoader";
 
-export const UpdateForm = () => {
+export const PendingForm = () => {
   return (
-    <UpdateFormProvider>
-      <UpdateFormContext.Consumer>
+    <PendingFormProvider>
+      <PendingFormContext.Consumer>
         {({
           isPending,
           remainingMinutes,
@@ -44,7 +44,7 @@ export const UpdateForm = () => {
               <div className="w-full h-full overflow-y-scroll lg:min-w-[1000px]">
                 {/* Cabeçalho */}
                 <Header
-                  title=" Boletim Diário de Ocorrência"
+                  title="Temporário"
                   subtitle="Selecione a sonda em atividade e preencha suas configurações para
             adicionar novos períodos"
                 />
@@ -162,20 +162,20 @@ export const UpdateForm = () => {
 
                 {/* Botão para enviar dados (visível apenas em telas menores) */}
                 {/*  <div className="flex justify-center mt-6 ">
-                    <Button
-                      disabled={!isFormValid || isLoading}
-                      className="bg-secondary-500 w-2/3 "
-                      onClick={() => handleSubmit(periods)}
-                    >
-                      Enviar dados
-                    </Button>
-                  </div> */}
+            <Button
+              disabled={!isFormValid || isLoading}
+              className="bg-secondary-500 w-2/3 "
+              onClick={() => handleSubmit(periods)}
+            >
+              Enviar dados
+            </Button>
+          </div> */}
                 <PageLoader isLoading={isLoading} />
               </div>
             )}
           </>
         )}
-      </UpdateFormContext.Consumer>
-    </UpdateFormProvider>
+      </PendingFormContext.Consumer>
+    </PendingFormProvider>
   );
 };

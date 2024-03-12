@@ -46,14 +46,6 @@ export const DetailsContextProvider = ({
 
   const {efficiency, isFetchingEfficiency} = useEfficiencyById(efficiencyId!);
 
-  const {
-    isFetchingTemporaryEfficiency,
-    refechTemporaryEfficiency,
-    temporaryEfficiency,
-  } = useTemporaryEfficiencyById("949e1e8a-60fc-4a83-a997-af8cc9b28ad2");
-
-  console.log(refechTemporaryEfficiency);
-
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const {isUserAdm, user} = useAuth();

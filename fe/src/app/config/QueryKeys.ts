@@ -9,6 +9,6 @@ export enum QueryKeys {
   CONFIG_BILLINGS = "config-billings",
   UNBILLED_PERIODS = "unbilled-periods",
   DELETION_REQUESTS = "deletion-requests",
-  TEMPORARY_EFFICIENCIE = "temporary-efficiencie",
+  TEMPORARY_EFFICIENCY = "temporary-efficiency",
   TEMPORARY_EFFICIENCIES = "temporary-efficiencies",
 }

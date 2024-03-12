@@ -5,6 +5,9 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
+  Delete,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 
 import { TemporaryEfficiencyService } from './temporary-efficiencies.service';
@@ -33,5 +36,11 @@ export class TemporaryEfficiencyController {
     @Body() createEfficiency: CreateEfficiencyDto,
   ) {
     return this.temporaryEfficiencyService.create(createEfficiency, userId);
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(':efficiencyId')
+  remove(@Param('efficiencyId', ParseUUIDPipe) efficiencyId: string) {
+    return this.temporaryEfficiencyService.remove(efficiencyId);
   }
 }
