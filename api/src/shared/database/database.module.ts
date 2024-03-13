@@ -12,6 +12,7 @@ import { PrismaClient } from '@prisma/client';
 import { DeletionRequestRepository } from './repositories/deletionRequests.repositories';
 import { WellsRepository } from './repositories/well.repositories';
 import { PeriodsRepository } from './repositories/period.repositories';
+import { TemporaryEfficienciesRepository } from './repositories/temporaryEfficienciesRepositories';
 
 @Global()
 @Module({
@@ -29,6 +30,7 @@ import { PeriodsRepository } from './repositories/period.repositories';
     DeletionRequestRepository,
     WellsRepository,
     PeriodsRepository,
+    TemporaryEfficienciesRepository,
   ],
   exports: [
     PrismaService,
@@ -43,6 +45,7 @@ import { PeriodsRepository } from './repositories/period.repositories';
     DeletionRequestRepository,
     WellsRepository,
     PeriodsRepository,
+    TemporaryEfficienciesRepository,
   ],
 })
 export class DatabaseModule {}

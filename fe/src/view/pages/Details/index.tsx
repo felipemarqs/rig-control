@@ -3,7 +3,6 @@ import {formatDate} from "../../../app/utils/formatDate";
 import {Button} from "../../components/Button";
 import {Header} from "../../components/Header";
 import {Spinner} from "../../components/Spinner";
-import {DeleteModal} from "./components/DeleteModal";
 import {
   DetailsContext,
   DetailsContextProvider,
@@ -11,6 +10,7 @@ import {
 import {DetailsModal} from "./components/DetailsModal";
 import {PeriodsDataGrid} from "./components/PeriodsDataGrid";
 import {RequestDeleteModal} from "./components/RequestDeleteModal";
+import {DeleteModal} from "../../components/DeleteModal";
 
 export const Details = () => {
   return (

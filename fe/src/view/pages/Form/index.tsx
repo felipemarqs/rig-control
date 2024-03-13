@@ -12,6 +12,8 @@ import {Select} from "../../components/Select";
 import {DatePickerInput} from "../../components/DatePickerInput";
 import {BraskemFormContainer} from "./components/BraskemFormContainer";
 import {ChevronDown} from "lucide-react";
+import {PageLoader} from "../../components/PageLoader";
+import {AlertModal} from "./components/AlertModal";
 
 // Componente principal Form
 export const Form = () => {
@@ -27,6 +29,7 @@ export const Form = () => {
       <FormContext.Consumer>
         {({
           isPending,
+          isDateValid,
           remainingMinutes,
           selectedContract,
           selectedRig,
@@ -39,6 +42,7 @@ export const Form = () => {
           isVisible,
           handleConfirmButton,
           isConfigsConfirmed,
+          isLoading,
         }) => (
           // Estrutura principal do formulário
           <div className="w-full h-full overflow-y-scroll lg:min-w-[1000px]">
@@ -142,7 +146,7 @@ export const Form = () => {
                 </div>
                 <div className="flex justify-end w-full py-4 px-8">
                   <Button
-                    disabled={!(selectedRig && date)}
+                    disabled={!(selectedRig && !isDateValid)}
                     className="bg-primary-500  w-1/2 lg:w-1/5 "
                     onClick={() => handleConfirmButton()}
                   >
@@ -168,6 +172,8 @@ export const Form = () => {
                 Enviar dados
               </Button>
             </div> */}
+            <AlertModal />
+            <PageLoader isLoading={isLoading} />
           </div>
         )}
       </FormContext.Consumer>

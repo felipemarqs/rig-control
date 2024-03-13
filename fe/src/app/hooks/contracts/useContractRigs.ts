@@ -1,6 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
 import {contractsService} from "../../services/contractsService";
-import {QueryKeys} from "../../entities/QueryKeys";
+import {QueryKeys} from "../../config/QueryKeys";
 
 export const useContractRigs = (contractId: string) => {
   const {data, isFetching, refetch} = useQuery({

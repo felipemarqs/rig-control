@@ -7,7 +7,7 @@ import {treatAxiosError} from "../utils/treatAxiosError";
 import {AxiosError} from "axios";
 import {PageLoader} from "../../view/components/PageLoader";
 import {AccessLevel} from "../entities/AccessLevel";
-import {QueryKeys} from "../entities/QueryKeys";
+import {QueryKeys} from "../config/QueryKeys";
 
 interface AuthContextValue {
   signedIn: boolean;

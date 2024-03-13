@@ -12,6 +12,9 @@ import {Dayjs} from "dayjs";
 import {parse, differenceInMinutes} from "date-fns";
 import {ErrorArgs, useErrors} from "../../../../../app/hooks/useErrors";
 import {useSidebarContext} from "../../../../../app/contexts/SidebarContext";
+import {temporaryEfficienciesServices} from "../../../../../app/services/temporaryEfficienciesServices";
+import {useTemporaryEfficiencyByUserId} from "../../../../../app/hooks/temporaryEfficiencies/useTemporaryEfficiencyByUserId";
+import {TemporaryEfficiencyResponse} from "../../../../../app/services/temporaryEfficienciesServices/getById";
 
 interface FormContextValue {
   date: Date | undefined;
@@ -45,7 +48,10 @@ interface FormContextValue {
   handleEquipmentRatio(id: string, ratio: string | never): void;
   handleDescription(id: string, text: string): void;
   handleSubmit(periods: Periods): Promise<void>;
+  handleSubmitTemporary(periods: Periods): Promise<void>;
+  hasRemainingMinutes: boolean;
   cleanFields(id: string): void;
+  handleSave(): void;
   updatePeriodState(
     id: string,
     state: boolean
@@ -96,6 +102,11 @@ interface FormContextValue {
   isTransportationSelected: boolean;
   truckKm: number;
   isVisible: boolean;
+  isModalOpen: boolean;
+  closeModal(): void;
+  openModal(): void;
+  handleConfirmModal(): void;
+  temporaryEfficiency: TemporaryEfficiencyResponse | never[];
   isConfigsConfirmed: boolean;
   setError(arg0: ErrorArgs): void;
   removeError(fieldName: string): void;
@@ -103,6 +114,7 @@ interface FormContextValue {
   handleConfirmButton(): void;
   getErrorMessageByFildName(fieldName: string): string;
   isExtraTrailerSelected: boolean;
+  isDateValid: boolean;
   getPeriodState(periodId: string): boolean;
   handleBobRentHours(time: Dayjs | null, timeString: string): void;
   handleChristmasTreeDisassemblyHours(
@@ -144,12 +156,17 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   //Custom Hooks
   const navigate = useNavigate();
   const {user, isUserAdm} = useAuth();
-  const {setError, removeError, getErrorMessageByFildName} = useErrors();
+  const {setError, removeError, getErrorMessageByFildName, errors} =
+    useErrors();
   const {handleToggleNavItem} = useSidebarContext();
   const [date, setDate] = useState<Date>();
   const [selectedRig, setSelectedRig] = useState<string>(() => {
     return isUserAdm ? "" : user?.rigs[0].rig.id!;
   });
+
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const {temporaryEfficiency} = useTemporaryEfficiencyByUserId(user?.id!);
+
   const [remainingMinutes, setRemainingMinutes] = useState<number>();
   const [periods, setPeriods] = useState<Periods>([
     {
@@ -166,12 +183,24 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     },
   ]);
 
+  console.log("Errors: ", errors);
+
   const [periodsState, setPeriodsState] = useState([
     {
       periodId: periods[0].id,
       isCollapsed: false,
     },
   ]);
+
+  useEffect(() => {
+    setError({fieldName: "date", message: "Data Inválida!"});
+    setError({fieldName: `${periods[0].id} well`, message: "Obrigatório"});
+    setError({fieldName: `${periods[0].id} type`, message: "Obrigatório"});
+    setError({
+      fieldName: `${periods[0].id} classification`,
+      message: "Obrigatório",
+    });
+  }, []);
 
   const [isVisible, setIsVisible] = useState(true);
 
@@ -197,6 +226,14 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   const {isPending: isLoading, mutateAsync} = useMutation({
     mutationFn: efficienciesService.create,
   });
+
+  const {
+    isPending: isLoadingTemporary,
+    mutateAsync: mutateAsyncTemporaryEfficiency,
+  } = useMutation({
+    mutationFn: temporaryEfficienciesServices.create,
+  });
+
   const queryClient = useQueryClient();
 
   const handleSubmit = async (periods: Periods) => {
@@ -204,7 +241,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
     const {toPersistenceObj} = efficiencyMappers.toPersistance({
       rigId: selectedRig,
-      date: date ?? new Date(),
+      date: date!,
       availableHours: 24,
       periods: periods,
       isMixTankSelected,
@@ -229,6 +266,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
       isSuckingTruckSelected,
     });
 
+    console.log(JSON.stringify(toPersistenceObj));
     try {
       await mutateAsync(toPersistenceObj);
       customColorToast("Dados Enviados com Sucesso!", "#1c7b7b", "success");
@@ -254,6 +292,86 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
     }
+  };
+
+  const handleSubmitTemporary = async (periods: Periods) => {
+    // Criação do objeto de persistência utilizando o mapeamento dos dados
+
+    const {toPersistenceObj} = efficiencyMappers.toPersistance({
+      rigId: selectedRig,
+      date: date!,
+      availableHours: 24,
+      periods: periods,
+      isMixTankSelected,
+      isMixTankOperatorsSelected,
+      isMixTankMonthSelected,
+      isFuelGeneratorSelected,
+      isMobilizationSelected,
+      isDemobilizationSelected,
+      isTankMixMobilizationSelected,
+      isTankMixDemobilizationSelected,
+      isTankMixDTMSelected,
+      bobRentHours,
+      christmasTreeDisassemblyHours,
+      isTruckCartSelected,
+      isTruckTankSelected,
+      isMunckSelected,
+      isTransportationSelected,
+      truckKm,
+      isExtraTrailerSelected,
+      isPowerSwivelSelected,
+      mobilizationPlace,
+      isSuckingTruckSelected,
+    });
+
+    console.log(JSON.stringify(toPersistenceObj));
+    try {
+      await mutateAsyncTemporaryEfficiency(toPersistenceObj);
+      customColorToast("Dados Enviados com Sucesso!", "#1c7b7b", "success");
+
+      setPeriods([
+        {
+          id: uuidv4(),
+          startHour: "00:00",
+          endHour: "00:00",
+          type: "",
+          classification: "",
+          fluidRatio: "",
+          repairClassification: null,
+          equipmentRatio: "",
+          description: "",
+          well: "",
+        },
+      ]);
+      queryClient.invalidateQueries({queryKey: ["efficiencies", "average"]});
+
+      navigate("/dashboard", {replace: true});
+      handleToggleNavItem("dashboard");
+    } catch (error: any | typeof AxiosError) {
+      treatAxiosError(error);
+    }
+  };
+
+  const handleSave = () => {
+    if (temporaryEfficiency) {
+      openModal();
+      return;
+    }
+
+    handleSubmitTemporary(periods);
+  };
+
+  const handleConfirmModal = () => {
+    handleSubmitTemporary(periods);
+    closeModal();
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
   };
 
   /*  <[{id:string, startHour:string,endHour:string,type: 'WORKING' | 'REPAIR' | '', classification: string}]> */
@@ -282,6 +400,12 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const handlePeriodWell = (id: string, well: string) => {
+    if (!well) {
+      setError({fieldName: `${id} well`, message: "Obrigatório"});
+    } else {
+      removeError(`${id} well`);
+    }
+
     const newPeriods = periods.map((period) => {
       return period.id === id
         ? {
@@ -295,8 +419,14 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const handlePeriodType = (id: string, type: string) => {
+    if (!type) {
+      setError({fieldName: `${id} type`, message: "Obrigatório"});
+    } else {
+      removeError(`${id} type`);
+    }
     const newPeriods = periods.map((period) => {
       if (type === "DTM" && period.id === id) {
+        setError({fieldName: `${id} well`, message: "Obrigatório"});
         return {
           ...period,
           type: type,
@@ -307,6 +437,8 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
       }
 
       if (period.id === id) {
+        setError({fieldName: `${id} classification`, message: "Obrigatório"});
+
         return {
           ...period,
           type: type,
@@ -322,6 +454,11 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const handlePeriodClassification = (id: string, classification: string) => {
+    if (!classification) {
+      setError({fieldName: `${id} classification`, message: "Obrigatório"});
+    } else {
+      removeError(`${id} classification`);
+    }
     const newPeriods = periods.map((period) => {
       return period.id === id
         ? {
@@ -378,6 +515,8 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const addPeriod = () => {
     const newId = uuidv4();
+    setError({fieldName: `${newId} type`, message: "Obrigatório"});
+    setError({fieldName: `${newId} classification`, message: "Obrigatório"});
     setPeriods([
       ...periods,
       {
@@ -416,10 +555,25 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
     setPeriods(newPeriods);
   };
+  const millisecondsInADay = 1000 * 60 * 60 * 24;
+
+  const getTotalDaysByDate = (date: Date): number => {
+    const daysInMilliseconds = Number(date);
+    const daysInADay = daysInMilliseconds / millisecondsInADay;
+    const intDays = Math.trunc(daysInADay);
+
+    return intDays;
+  };
+
+  const isDateValid = date
+    ? getTotalDaysByDate(new Date(date)) >= getTotalDaysByDate(new Date())
+    : false;
 
   const handleDateChange = (date: Date) => {
     setDate(date);
-    if (new Date(date) >= new Date()) {
+    console.log("Data selecionada: ", getTotalDaysByDate(new Date(date)));
+    console.log("Data de hoje pelo New Date()", getTotalDaysByDate(new Date()));
+    if (getTotalDaysByDate(new Date(date)) >= getTotalDaysByDate(new Date())) {
       setError({fieldName: "date", message: "Data Inválida!"});
     } else {
       removeError("date");
@@ -427,6 +581,10 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const handleDeletePeriod = (id: string) => {
+    removeError(`${id} classification`);
+    removeError(`${id} well`);
+    removeError(`${id} type`);
+
     const newPeriods = periods.filter((period) => period.id !== id);
 
     setPeriods(newPeriods);
@@ -462,8 +620,10 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     setRemainingMinutes(newMinutes);
   }, [periods]);
 
-  const isFormValid = Boolean(remainingMinutes === 0 && date);
+  const isFormValid = Boolean(date && errors.length === 0);
   const isPending = remainingMinutes !== 0;
+
+  const hasRemainingMinutes = remainingMinutes !== 0;
 
   const userRig = user?.rigs[0].rig!;
 
@@ -621,7 +781,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         handleDescription,
         handleSubmit,
         cleanFields,
-        isLoading,
+        isLoading: isLoading || isLoadingTemporary,
         userRig,
         usersRigs,
         isPending,
@@ -653,10 +813,17 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         isTruckTankSelected,
         handleTruckTankCheckbox,
         isMunckSelected,
+        isDateValid,
         handleMunckCheckbox,
         isTransportationSelected,
         handleTransportationCheckbox,
         handleTruckKmChange,
+        closeModal,
+        handleConfirmModal,
+        isModalOpen,
+        openModal,
+        temporaryEfficiency,
+        handleSave,
         truckKm,
         handleExtraTrailerCheckbox,
         isExtraTrailerSelected,
@@ -666,6 +833,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         handleMobilizationPlace,
         isSuckingTruckSelected,
         handleSuckingTruckCheckbox,
+        handleSubmitTemporary,
         selectedRig,
         setError,
         handleConfirmButton,
@@ -676,6 +844,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         selectedContract,
         getPeriodState,
         updatePeriodState,
+        hasRemainingMinutes,
         isVisible,
       }}
     >
