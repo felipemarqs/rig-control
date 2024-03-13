@@ -219,6 +219,7 @@ export class EfficienciesService {
     //criando valores de faturamento
     // Talvez mudar isso aqui de lugar
 
+    const totalUnavailableHours = 24 - availableHours;
     let scheduledStopTotalHours = 0;
     let dtmLt20TotalHours = 0;
     let dtmBt20And50TotalHours = 0;
@@ -250,6 +251,8 @@ export class EfficienciesService {
     let mixTankMobilizationTotalAmount = 0;
     let mixTankDemobilizationTotalAmount = 0;
     let suckingTruckTotalAmount = 0;
+    let totalGlossHours = 0;
+    let totalRepairHours = 0;
 
     const wells = await this.wellsRepo.findAll({});
 
@@ -260,6 +263,20 @@ export class EfficienciesService {
      * @param periods The array of periods to iterate through.
      * @param wells The array of wells to search for matching names.
      */
+
+    const getDiffInMinutes = (finalHour: Date, initialHour: Date) => {
+      // Get the ISO hour from the finalHour
+      const isoHour = finalHour.toISOString().split('T')[1];
+
+      // Adjust endDate if isoHour is '23:59'
+      let endDate = finalHour;
+      if (isoHour.slice(0, 5) === '23:59') {
+        return differenceInMinutes(endDate, initialHour) + 1; // Adding 1 minute
+      }
+
+      // Return the difference in minutes between endDate and initialHour
+      return differenceInMinutes(endDate, initialHour);
+    };
     periods.forEach(
       ({ type, startHour, endHour, classification, wellId }, index) => {
         // Find the corresponding well ID in the wells array
@@ -273,19 +290,6 @@ export class EfficienciesService {
         const horaFinal = new Date(endHour);
 
         // Function to calculate the difference in minutes between two dates
-        const getDiffInMinutes = (finalHour: Date, initialHour: Date) => {
-          // Get the ISO hour from the finalHour
-          const isoHour = finalHour.toISOString().split('T')[1];
-
-          // Adjust endDate if isoHour is '23:59'
-          let endDate = finalHour;
-          if (isoHour.slice(0, 5) === '23:59') {
-            return differenceInMinutes(endDate, initialHour) + 1; // Adding 1 minute
-          }
-
-          // Return the difference in minutes between endDate and initialHour
-          return differenceInMinutes(endDate, initialHour);
-        };
 
         // Calculate the difference in minutes between start and end hour
         const diffInMinutes = getDiffInMinutes(horaFinal, horaInicial);
@@ -311,6 +315,16 @@ export class EfficienciesService {
         if (type === 'SCHEDULED_STOP') {
           scheduledStopTotalHours += diffInMinutes / 60;
         }
+
+        if (type === 'REPAIR') {
+          totalRepairHours += diffInMinutes / 60;
+        }
+
+        if (type === 'GLOSS') {
+          totalGlossHours += diffInMinutes / 60;
+        }
+
+        // calcular aquis
       },
     );
 
@@ -355,7 +369,10 @@ export class EfficienciesService {
       (rigBillingConfiguration.availableHourTax * 0.8);
 
     const glossHourAmount =
-      (24 - availableHours) * rigBillingConfiguration.glossHourTax;
+      totalGlossHours * rigBillingConfiguration.glossHourTax;
+
+    const repairHourAmount =
+      totalRepairHours * rigBillingConfiguration.glossHourTax;
     const dtmLt20Amount =
       dtmLt20TotalAmmount * rigBillingConfiguration.dtmLt20Tax;
 
@@ -543,6 +560,7 @@ export class EfficienciesService {
         availableHourAmount,
         scheduledStopAmount,
         glossHourAmount,
+        repairHourAmount,
         dtmLt20Amount,
         dtmBt20And50Amount,
         dtmGt50Amount,

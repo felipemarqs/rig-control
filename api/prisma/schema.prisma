@@ -395,6 +395,7 @@ model Billing {
   availableHourAmount            Float    @map("available_hour_amount")
   dtmHourAmount                  Float    @map("dtm_hour_amount")
   glossHourAmount                Float    @map("gloss_hour_amount")
+  repairHourAmount               Float?   @map("repair_hour_amount")
   dtmLt20Amount                  Float    @map("dtm_lt_20_amount")
   dtmBt20And50Amount             Float    @map("dtm_bt_20_and_50_amount")
   dtmGt50Amount                  Float    @map("dtm_gt_50_amount")
