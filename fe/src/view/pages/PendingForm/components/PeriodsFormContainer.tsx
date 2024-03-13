@@ -37,9 +37,7 @@ export const PeriodsFormContainer = () => {
     getPeriodState,
     updatePeriodState,
     getErrorMessageByFildName,
-    isDateValid,
     hasRemainingMinutes,
-    handleSubmitTemporary,
     handleSave,
   } = usePendingForm();
 
@@ -122,12 +120,14 @@ export const PeriodsFormContainer = () => {
                             </span>{" "}
                           </div>
                         )}
-                        <button
-                          className="text-white bg-redAccent-500 w-12 h-12 flex justify-center items-center rounded-full hover:bg-redAccent-400 duration-250 active:bg-redAccent-700 transition-all "
-                          onClick={() => handleDeletePeriod(id)}
-                        >
-                          <TrashIcon className="text-white" />
-                        </button>
+                        {index > 0 && (
+                          <button
+                            className="text-white bg-redAccent-500 w-12 h-12 flex justify-center items-center rounded-full hover:bg-redAccent-400 duration-250 active:bg-redAccent-700 transition-all "
+                            onClick={() => handleDeletePeriod(id)}
+                          >
+                            <TrashIcon className="text-white" />
+                          </button>
+                        )}
                       </>
                     )}
                     {!getPeriodState(id) && (

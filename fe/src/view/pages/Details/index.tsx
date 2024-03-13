@@ -123,16 +123,6 @@ export const Details = () => {
                       </span>
                     </Link>
                   </Button>
-
-                  <Button>
-                    <Link
-                      to={`/form/temp/949e1e8a-60fc-4a83-a997-af8cc9b28ad2`}
-                    >
-                      <span className="text-white tracking-[-0.5]  font-semibold cursor-pointer">
-                        Editar sssd
-                      </span>
-                    </Link>
-                  </Button>
                 </div>
               )}
 

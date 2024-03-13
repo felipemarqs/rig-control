@@ -1,6 +1,6 @@
 import {createContext, useCallback, useEffect, useMemo, useState} from "react";
 import {useAuth} from "../../../../../app/hooks/useAuth";
-import {useLocation, useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {v4 as uuidv4} from "uuid";
 import {efficiencyMappers} from "../../../../../app/services/mappers/efficiencyMappers";
 import {customColorToast} from "../../../../../app/utils/customColorToast";
@@ -13,7 +13,6 @@ import {parse, differenceInMinutes} from "date-fns";
 import {useEfficiencyById} from "../../../../../app/hooks/efficiencies/useEfficiencyById";
 import {PersistanceEfficiency} from "../../../../../app/entities/PersistanceEfficiency";
 import {formatIsoStringToHours} from "../../../../../app/utils/formatIsoStringToHours";
-import {useTemporaryEfficiencyById} from "../../../../../app/hooks/temporaryEfficiencies/useTemporaryEfficiencyById";
 import {TemporaryEfficiencyResponse} from "../../../../../app/services/temporaryEfficienciesServices/getById";
 import {temporaryEfficienciesServices} from "../../../../../app/services/temporaryEfficienciesServices";
 import {useSidebarContext} from "../../../../../app/contexts/SidebarContext";

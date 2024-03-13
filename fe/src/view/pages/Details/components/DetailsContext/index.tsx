@@ -8,7 +8,6 @@ import {useAuth} from "../../../../../app/hooks/useAuth";
 import {efficienciesService} from "../../../../../app/services/efficienciesService";
 import {AxiosError} from "axios";
 import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
-import {useTemporaryEfficiencyById} from "../../../../../app/hooks/temporaryEfficiencies/useTemporaryEfficiencyById";
 
 interface DetailsContextValues {
   isFetchingEfficiency: boolean;
