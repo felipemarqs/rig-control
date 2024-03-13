@@ -13,6 +13,7 @@ import { UsersRigModule } from './modules/users-rig/users-rig.module';
 import { DeletionRequestsModule } from './modules/deletion-requests/deletion-requests.module';
 import { WellsModule } from './modules/wells/wells.module';
 import { PeriodsModule } from './modules/periods/periods.module';
+import { TemporaryEfficienciesModule } from './modules/temporary-efficiencies/temporary-efficiencies.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { PeriodsModule } from './modules/periods/periods.module';
     UsersModule,
     RigsModule,
     EfficienciesModule,
+    TemporaryEfficienciesModule,
     BillingsModule,
     BillingsConfigurationModule,
     ContractsModule,

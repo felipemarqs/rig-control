@@ -2,7 +2,7 @@ import {useQuery} from "@tanstack/react-query";
 
 import {usersFilters} from "../../services/usersService/getAll";
 import {usersService} from "../../services/usersService";
-import {QueryKeys} from "../../entities/QueryKeys";
+import {QueryKeys} from "../../config/QueryKeys";
 
 export const useUsers = (filters: usersFilters, isUserAdm?: boolean) => {
   const {data, isFetching, refetch} = useQuery({

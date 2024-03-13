@@ -1,4 +1,4 @@
-import {createContext, useCallback, useEffect, useState} from "react";
+import {createContext, useCallback, useEffect, useMemo, useState} from "react";
 import {useAuth} from "../../../../../app/hooks/useAuth";
 import {useNavigate, useParams} from "react-router-dom";
 import {v4 as uuidv4} from "uuid";
@@ -13,6 +13,10 @@ import {parse, differenceInMinutes} from "date-fns";
 import {useEfficiencyById} from "../../../../../app/hooks/efficiencies/useEfficiencyById";
 import {PersistanceEfficiency} from "../../../../../app/entities/PersistanceEfficiency";
 import {formatIsoStringToHours} from "../../../../../app/utils/formatIsoStringToHours";
+import {TemporaryEfficiencyResponse} from "../../../../../app/services/temporaryEfficienciesServices/getById";
+import {temporaryEfficienciesServices} from "../../../../../app/services/temporaryEfficienciesServices";
+import {useSidebarContext} from "../../../../../app/contexts/SidebarContext";
+import {useTemporaryEfficiencyByUserId} from "../../../../../app/hooks/temporaryEfficiencies/useTemporaryEfficiencyByUserId";
 
 type ErrorArgs = {fieldName: string; message: string};
 
@@ -46,7 +50,9 @@ interface UpdateFormContextValue {
   handleFluidRatio(id: string, ratio: string | never): void;
   handleEquipmentRatio(id: string, ratio: string | never): void;
   handleDescription(id: string, text: string): void;
+  handleSubmitTemporary(periods: Periods): Promise<void>;
   handleSubmit(periods: Periods): Promise<void>;
+  handleSave(): void;
   cleanFields(id: string): void;
   isFormValid: boolean;
   isPending: boolean;
@@ -92,14 +98,21 @@ interface UpdateFormContextValue {
   isTruckCartSelected: boolean;
   isTruckTankSelected: boolean;
   isMunckSelected: boolean;
-  isFetchingEfficiency: boolean;
+  isFetching: boolean;
   isTransportationSelected: boolean;
   truckKm: number;
+  isDateValid: boolean;
+  hasRemainingMinutes: boolean;
   isVisible: boolean;
   setError(arg0: ErrorArgs): void;
   removeError(fieldName: string): void;
   getErrorMessageByFildName(fieldName: string): string;
   isExtraTrailerSelected: boolean;
+  isModalOpen: boolean;
+  closeModal(): void;
+  openModal(): void;
+  handleConfirmModal(): void;
+  temporaryEfficiency: TemporaryEfficiencyResponse | never[];
   updatePeriodState(
     id: string,
     state: boolean
@@ -145,6 +158,7 @@ export const UpdateFormContext = createContext({} as UpdateFormContextValue);
 
 export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   const {user} = useAuth();
+  const {handleToggleNavItem} = useSidebarContext();
 
   const {efficiencyId} = useParams<{efficiencyId: string}>();
 
@@ -158,64 +172,72 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
 
   const responseEfficiency = efficiency as PersistanceEfficiency;
 
-  const initialPeriods = responseEfficiency?.periods?.map(
-    ({
-      startHour,
-      endHour,
-      description,
-      type,
-      classification,
-      repairClassification,
-      well,
-    }) => {
-      return {
-        id: uuidv4(),
-        startHour: formatIsoStringToHours(startHour),
-        endHour: formatIsoStringToHours(endHour),
-        type: type,
-        classification: classification,
-        repairClassification: repairClassification,
-        description: description,
-        equipmentRatio: "",
-        fluidRatio: "",
-        well: well?.name ?? "",
+  const initialPeriods = useMemo(() => {
+    const initialPeriods = responseEfficiency?.periods?.map(
+      ({
+        startHour,
+        endHour,
+        description,
+        type,
+        classification,
+        repairClassification,
+        well,
+      }) => {
+        return {
+          id: uuidv4(),
+          startHour: formatIsoStringToHours(startHour),
+          endHour: formatIsoStringToHours(endHour),
+          type: type,
+          classification: classification,
+          repairClassification: repairClassification,
+          description: description,
+          equipmentRatio: "",
+          fluidRatio: "",
+          well: well?.name ?? "",
+        };
+      }
+    );
+
+    for (
+      let index = 0;
+      index < responseEfficiency?.equipmentRatio?.length;
+      index++
+    ) {
+      initialPeriods[index] = {
+        id: initialPeriods[index].id,
+        startHour: initialPeriods[index].startHour,
+        endHour: initialPeriods[index].endHour,
+        type: initialPeriods[index].type,
+        classification: initialPeriods[index].classification,
+        repairClassification: initialPeriods[index].repairClassification,
+        description: initialPeriods[index].description,
+        fluidRatio: initialPeriods[index].fluidRatio,
+        equipmentRatio: responseEfficiency.equipmentRatio[index].ratio,
+        well: initialPeriods[index].well,
       };
     }
-  );
 
-  for (
-    let index = 0;
-    index < responseEfficiency?.equipmentRatio?.length;
-    index++
-  ) {
-    initialPeriods[index] = {
-      id: initialPeriods[index].id,
-      startHour: initialPeriods[index].startHour,
-      endHour: initialPeriods[index].endHour,
-      type: initialPeriods[index].type,
-      classification: initialPeriods[index].classification,
-      repairClassification: initialPeriods[index].repairClassification,
-      description: initialPeriods[index].description,
-      fluidRatio: initialPeriods[index].fluidRatio,
-      equipmentRatio: responseEfficiency.equipmentRatio[index].ratio,
-      well: initialPeriods[index].well,
-    };
-  }
+    for (
+      let index = 0;
+      index < responseEfficiency?.fluidRatio?.length;
+      index++
+    ) {
+      initialPeriods[index] = {
+        id: initialPeriods[index].id,
+        startHour: initialPeriods[index].startHour,
+        endHour: initialPeriods[index].endHour,
+        type: initialPeriods[index].type,
+        classification: initialPeriods[index].classification,
+        repairClassification: initialPeriods[index].repairClassification,
+        description: initialPeriods[index].description,
+        equipmentRatio: initialPeriods[index].equipmentRatio,
+        fluidRatio: responseEfficiency.fluidRatio[index].ratio,
+        well: initialPeriods[index].well,
+      };
+    }
 
-  for (let index = 0; index < responseEfficiency?.fluidRatio?.length; index++) {
-    initialPeriods[index] = {
-      id: initialPeriods[index].id,
-      startHour: initialPeriods[index].startHour,
-      endHour: initialPeriods[index].endHour,
-      type: initialPeriods[index].type,
-      classification: initialPeriods[index].classification,
-      repairClassification: initialPeriods[index].repairClassification,
-      description: initialPeriods[index].description,
-      equipmentRatio: initialPeriods[index].equipmentRatio,
-      fluidRatio: responseEfficiency.fluidRatio[index].ratio,
-      well: initialPeriods[index].well,
-    };
-  }
+    return initialPeriods;
+  }, [responseEfficiency]);
 
   const navigate = useNavigate();
   const [date, setDate] = useState<Date>(new Date(responseEfficiency.date));
@@ -225,6 +247,14 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   const [remainingMinutes, setRemainingMinutes] = useState<number>();
   const [periods, setPeriods] = useState<Periods>(initialPeriods);
 
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  const {temporaryEfficiency} = useTemporaryEfficiencyByUserId(user?.id!);
+
+  useEffect(() => {
+    setPeriods(initialPeriods);
+  }, []);
+
   // const tes = efficiency.periods.map()
 
   const {isPending: isLoadingEfficiency, mutateAsync} = useMutation({
@@ -233,10 +263,11 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   const queryClient = useQueryClient();
 
   const [periodsState, setPeriodsState] = useState(() => {
-    return initialPeriods.map(({id}) => ({periodId: id, isCollapsed: true}));
+    return initialPeriods?.map(({id}) => ({periodId: id, isCollapsed: true}));
   });
 
   const [errors, setErrors] = useState<Array<ErrorArgs>>([]);
+  console.log("errors", errors);
 
   const setError = ({fieldName, message}: ErrorArgs) => {
     const errorAlreadyExists = errors.find(
@@ -283,6 +314,13 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
     isPending: isLoadingRemoveEfficiency,
     mutateAsync: mutateAsyncRemoveEfficiency,
   } = useMutation({mutationFn: efficienciesService.remove});
+
+  const {
+    isPending: isLoadingTemporary,
+    mutateAsync: mutateAsyncTemporaryEfficiency,
+  } = useMutation({
+    mutationFn: temporaryEfficienciesServices.create,
+  });
 
   const handleSubmit = async (periods: Periods) => {
     try {
@@ -345,6 +383,85 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
     }
   };
 
+  const handleSave = () => {
+    if (temporaryEfficiency) {
+      openModal();
+      return;
+    }
+
+    handleSubmitTemporary(periods);
+  };
+
+  const handleConfirmModal = () => {
+    handleSubmitTemporary(periods);
+    closeModal();
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleSubmitTemporary = async (periods: Periods) => {
+    // Criação do objeto de persistência utilizando o mapeamento dos dados
+
+    const {toPersistenceObj} = efficiencyMappers.toPersistance({
+      rigId: selectedRig,
+      date: date!,
+      availableHours: 24,
+      periods: periods,
+      isMixTankSelected,
+      isMixTankOperatorsSelected,
+      isMixTankMonthSelected,
+      isFuelGeneratorSelected,
+      isMobilizationSelected,
+      isDemobilizationSelected,
+      isTankMixMobilizationSelected,
+      isTankMixDemobilizationSelected,
+      isTankMixDTMSelected,
+      bobRentHours,
+      christmasTreeDisassemblyHours,
+      isTruckCartSelected,
+      isTruckTankSelected,
+      isMunckSelected,
+      isTransportationSelected,
+      truckKm,
+      isExtraTrailerSelected,
+      isPowerSwivelSelected,
+      mobilizationPlace,
+      isSuckingTruckSelected,
+    });
+
+    try {
+      await mutateAsyncTemporaryEfficiency(toPersistenceObj);
+      customColorToast("Dados Enviados com Sucesso!", "#1c7b7b", "success");
+
+      setPeriods([
+        {
+          id: uuidv4(),
+          startHour: "00:00",
+          endHour: "00:00",
+          type: "",
+          classification: "",
+          fluidRatio: "",
+          repairClassification: null,
+          equipmentRatio: "",
+          description: "",
+          well: "",
+        },
+      ]);
+      queryClient.invalidateQueries({queryKey: ["efficiencies", "average"]});
+
+      navigate("/dashboard", {replace: true});
+      handleToggleNavItem("dashboard");
+    } catch (error: any | typeof AxiosError) {
+      treatAxiosError(error);
+    }
+  };
+
   /*  <[{id:string, startHour:string,endHour:string,type: 'WORKING' | 'REPAIR' | '', classification: string}]> */
   const handleStartHourChange = (
     _time: Dayjs | null,
@@ -371,21 +488,46 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const handlePeriodType = (id: string, type: string) => {
+    if (!type) {
+      setError({fieldName: `${id} type`, message: "Obrigatório"});
+    } else {
+      removeError(`${id} type`);
+    }
     const newPeriods = periods.map((period) => {
-      return period.id === id
-        ? {
-            ...period,
-            type: type,
-            classification: "",
-            repairClassification: null,
-          }
-        : period;
+      if (type === "DTM" && period.id === id) {
+        setError({fieldName: `${id} well`, message: "Obrigatório"});
+        return {
+          ...period,
+          type: type,
+          classification: "",
+          repairClassification: null,
+          well: "",
+        };
+      }
+
+      if (period.id === id) {
+        setError({fieldName: `${id} classification`, message: "Obrigatório"});
+
+        return {
+          ...period,
+          type: type,
+          classification: "",
+          repairClassification: null,
+        };
+      }
+
+      return period;
     });
 
     setPeriods(newPeriods);
   };
 
   const handlePeriodClassification = (id: string, classification: string) => {
+    if (!classification) {
+      setError({fieldName: `${id} classification`, message: "Obrigatório"});
+    } else {
+      removeError(`${id} classification`);
+    }
     const newPeriods = periods.map((period) => {
       return period.id === id
         ? {
@@ -413,6 +555,11 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const handlePeriodWell = (id: string, well: string) => {
+    if (!well) {
+      setError({fieldName: `${id} well`, message: "Obrigatório"});
+    } else {
+      removeError(`${id} well`);
+    }
     const newPeriods = periods.map((period) => {
       return period.id === id
         ? {
@@ -462,6 +609,8 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
 
   const addPeriod = () => {
     const newId = uuidv4();
+    setError({fieldName: `${newId} type`, message: "Obrigatório"});
+    setError({fieldName: `${newId} classification`, message: "Obrigatório"});
     setPeriods([
       ...periods,
       {
@@ -500,9 +649,23 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
     setPeriods(newPeriods);
   };
 
+  const millisecondsInADay = 1000 * 60 * 60 * 24;
+
+  const getTotalDaysByDate = (date: Date): number => {
+    const daysInMilliseconds = Number(date);
+    const daysInADay = daysInMilliseconds / millisecondsInADay;
+    const intDays = Math.trunc(daysInADay);
+
+    return intDays;
+  };
+
+  const isDateValid = date
+    ? getTotalDaysByDate(new Date(date)) >= getTotalDaysByDate(new Date())
+    : false;
+
   const handleDateChange = (date: Date) => {
     setDate(date);
-    if (new Date(date) >= new Date()) {
+    if (getTotalDaysByDate(new Date(date)) >= getTotalDaysByDate(new Date())) {
       setError({fieldName: "date", message: "Data Inválida!"});
     } else {
       removeError("date");
@@ -510,6 +673,9 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const handleDeletePeriod = (id: string) => {
+    removeError(`${id} classification`);
+    removeError(`${id} well`);
+    removeError(`${id} type`);
     const newPeriods = periods.filter((period) => period.id !== id);
 
     setPeriods(newPeriods);
@@ -530,7 +696,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   const calculateTotalMinutes = useCallback(() => {
     let totalMinutes = 0;
 
-    periods.forEach((period) => {
+    periods?.forEach((period) => {
       const horaInicial = parse(period.startHour, "HH:mm", new Date());
       const horaFinal = parse(period.endHour, "HH:mm", new Date());
       const diferencaMinutos = differenceInMinutes(horaFinal, horaInicial);
@@ -545,7 +711,10 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
     setRemainingMinutes(newMinutes);
   }, [periods]);
 
-  const isFormValid = Boolean(remainingMinutes === 0 && date);
+  const isFormValid = Boolean(date && errors.length === 0);
+
+  const hasRemainingMinutes = remainingMinutes !== 0;
+
   const isPending = remainingMinutes !== 0;
 
   const userRig = user?.rigs[0].rig!;
@@ -687,6 +856,11 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   return (
     <UpdateFormContext.Provider
       value={{
+        isFetching:
+          isLoadingRemoveEfficiency ||
+          isFetchingEfficiency ||
+          isLoadingEfficiency ||
+          isLoadingTemporary,
         date,
         handleChangeRig,
         handleDateChange,
@@ -701,11 +875,15 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
         handleEquipmentRatio,
         remainingMinutes,
         isFormValid,
+        hasRemainingMinutes,
         handleDescription,
         handleSubmit,
         cleanFields,
         handlePeriodWell,
-        isLoading: isLoadingEfficiency || isLoadingRemoveEfficiency,
+        isLoading:
+          isLoadingEfficiency ||
+          isLoadingRemoveEfficiency ||
+          isLoadingTemporary,
         userRig,
         usersRigs,
         isPending,
@@ -728,6 +906,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
         handleTankMixDTMCheckbox,
         isTankMixDTMSelected,
         bobRentHours,
+        isDateValid,
         handleBobRentHours,
         handleChristmasTreeDisassemblyHours,
         isTruckCartSelected,
@@ -738,13 +917,19 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
         handleMunckCheckbox,
         handleConfirmButton,
         isConfigsConfirmed,
+        handleSubmitTemporary,
         updatePeriodState,
         isTransportationSelected,
         handleTransportationCheckbox,
         handleTruckKmChange,
         truckKm,
+        isModalOpen,
+        closeModal,
+        openModal,
+        handleConfirmModal,
         isVisible,
         toggleVisibility,
+        handleSave,
         handleExtraTrailerCheckbox,
         isExtraTrailerSelected,
         isPowerSwivelSelected,
@@ -759,7 +944,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
         getErrorMessageByFildName,
         handleRepairClassification,
         selectedContract,
-        isFetchingEfficiency,
+        temporaryEfficiency,
         getPeriodState,
       }}
     >

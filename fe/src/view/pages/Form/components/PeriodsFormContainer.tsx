@@ -41,6 +41,8 @@ export const PeriodsFormContainer = () => {
     getErrorMessageByFildName,
     handlePeriodWell,
     getPeriodState,
+    handleSave,
+    hasRemainingMinutes,
   } = useForm();
 
   const format = "HH:mm";
@@ -119,12 +121,14 @@ export const PeriodsFormContainer = () => {
                           </span>{" "}
                         </div>
                       )}
-                      <button
-                        className="text-white bg-redAccent-500 w-12 h-12 flex justify-center items-center rounded-full hover:bg-redAccent-400 duration-250 active:bg-redAccent-700 transition-all "
-                        onClick={() => handleDeletePeriod(id)}
-                      >
-                        <TrashIcon className="text-white" />
-                      </button>
+                      {index > 0 && (
+                        <button
+                          className="text-white bg-redAccent-500 w-12 h-12 flex justify-center items-center rounded-full hover:bg-redAccent-400 duration-250 active:bg-redAccent-700 transition-all "
+                          onClick={() => handleDeletePeriod(id)}
+                        >
+                          <TrashIcon className="text-white" />
+                        </button>
+                      )}
                     </>
                   )}
                   {!getPeriodState(id) && (
@@ -377,9 +381,11 @@ export const PeriodsFormContainer = () => {
         <Button
           disabled={!isFormValid || isLoading}
           className="bg-secondary-500 w-2/3 "
-          onClick={() => handleSubmit(periods)}
+          onClick={() =>
+            hasRemainingMinutes ? handleSave() : handleSubmit(periods)
+          }
         >
-          Enviar dados
+          {hasRemainingMinutes ? "Salvar dados" : "Enviar dados"}
         </Button>
       </div>
     </div>
