@@ -10,8 +10,6 @@ import {LineChart} from "./components/LineChart";
 import {ListEfficienciesDataGrid} from "../../components/ListEfficienciesDataGrid";
 import {cn} from "../../../app/utils/cn";
 import {FilterType} from "../../../app/entities/FilterType";
-import {Modal} from "../../components/Modal";
-import {AddFiles} from "../../components/AddFiles";
 import {GrouppedRepairs} from "./components/GrouppedRepairs";
 import {AccessLevel} from "../../../app/entities/AccessLevel";
 import {AverageBarChart} from "./components/AverageBarChart";
@@ -51,9 +49,7 @@ export const Dashboard = () => {
           handleToggleFilterType,
           selectedFilterType,
           selectedPeriod,
-          handleIsAlertSeen,
           selectedYear,
-          isAlertSeen,
           repairPeriods,
           handleYearChange,
           years,
@@ -358,7 +354,7 @@ export const Dashboard = () => {
                 </div>
               )}
             </div>
-            <Modal
+            {/*       <Modal
               title="Novidades e Melhorias Recentes!!"
               maxWidth="1000px"
               open={!isAlertSeen}
@@ -398,7 +394,7 @@ export const Dashboard = () => {
                   </ul>
                 </div>
               </div>
-            </Modal>
+            </Modal> */}
           </div>
         )}
       </DashboardContext.Consumer>

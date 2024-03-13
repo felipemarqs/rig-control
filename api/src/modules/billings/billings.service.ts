@@ -31,4 +31,26 @@ export class BillingsService {
   }) {
     return await this.billingRepo.findAll({ startDate, endDate });
   }
+
+  /*  async findMany() {
+    const response = await this.billingRepo.findMany({});
+
+    let total = 0;
+    let glossTotal = 0;
+
+    for (const biling of response) {
+      const subtracted = biling.total - biling.glossHourAmount;
+
+      await this.billingRepo.update({
+        where: { id: biling.id },
+        data: { total: subtracted },
+      });
+    }
+
+    console.log('total', total);
+    console.log('subtractedTotal', glossTotal);
+    //console.log('TOTAL', total - subtractedTotal);
+
+    return response;
+  } */
 }

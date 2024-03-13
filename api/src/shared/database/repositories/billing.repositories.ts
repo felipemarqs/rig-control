@@ -17,8 +17,16 @@ export class BillingRepository {
     return await this.prismaService.billing.findUnique(findUniqueDto);
   }
 
+  async findMany(findManyDto: Prisma.BillingFindManyArgs) {
+    return await this.prismaService.billing.findMany(findManyDto);
+  }
+
   async findFisrt(findUniqueDto: Prisma.BillingFindFirstArgs) {
     return await this.prismaService.billing.findFirst(findUniqueDto);
+  }
+
+  async update(updateDto: Prisma.BillingUpdateArgs) {
+    return await this.prismaService.billing.update(updateDto);
   }
 
   async findAll({ startDate, endDate }) {

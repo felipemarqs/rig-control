@@ -481,7 +481,6 @@ export class EfficienciesService {
     const totalAmmount =
       (availableHourAmount +
         dtmHourAmount +
-        glossHourAmount +
         dtmLt20Amount +
         dtmBt20And50Amount +
         dtmGt50Amount +
