@@ -5,7 +5,7 @@ import {localStorageKeys} from "../config/localStorageKeys";
 
 enum URLPath {
   DEV = "http://127.0.0.1:3000",
-  PROD = "https://rig-control-backendv6-0.onrender.com",
+  PROD = "https://rig-control-backendv6-1.onrender.com",
 }
 export const httpClient = axios.create({
   baseURL: URLPath.PROD,
