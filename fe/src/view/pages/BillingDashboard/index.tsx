@@ -8,7 +8,6 @@ import {
 import {Spinner} from "../../components/Spinner";
 import {NotFound} from "../../components/NotFound";
 import {BarChart} from "./components/BarChart";
-import {ListBillingDataGrid} from "./components/ListBillingDataGrid";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {RigCard} from "./components/RigCard/RigCard";
 import {RigsSliderNavigation} from "./components/RigCard/RigsSliderNavigation";
@@ -49,6 +48,8 @@ export const BillingDashboard = () => {
           selectedYear,
           handleYearChange,
           windowWidth,
+          totalGlossAmount,
+          totalRepairAmount,
           years,
         }) => (
           <div className="w-full h-full overflow-y-scroll">
@@ -159,6 +160,46 @@ export const BillingDashboard = () => {
                         Total de faturamento no período.
                       </div>
                     </div>
+
+                    <div className="stat">
+                      <div className="stat-figure text-white">
+                        {/*  <div
+                          className="radial-progress text-primary-500"
+                          style={{"--value": 70} as any} // @ts-ignore
+                        >
+                          {70 || 0}%
+                        </div> */}
+                      </div>
+                      <div className="stat-title  text-redAccent-500">
+                        Fat. Perdido por Glosa
+                      </div>
+                      <div className="stat-value  text-redAccent-500">
+                        {totalGlossAmount}
+                      </div>
+                      <div className="stat-desc  text-redAccent-500">
+                        Total de faturamento perdido por glosa no periodo.
+                      </div>
+                    </div>
+
+                    <div className="stat">
+                      <div className="stat-figure text-white">
+                        {/*  <div
+                          className="radial-progress text-redAccent-500"
+                          style={{"--value": 70} as any} // @ts-ignore
+                        >
+                          {70 || 0}%
+                        </div> */}
+                      </div>
+                      <div className="stat-title  text-redAccent-500">
+                        Fat. Perdido por Reparo
+                      </div>
+                      <div className="stat-value  text-redAccent-500">
+                        {totalRepairAmount}
+                      </div>
+                      <div className="stat-desc  text-redAccent-500">
+                        Total de faturamento perdido por reparo no periodo.
+                      </div>
+                    </div>
                   </>
                 )}
               </div>
@@ -185,14 +226,14 @@ export const BillingDashboard = () => {
 
               {!isEmpty && (
                 <div className="grid grid-cols-12 auto-rows-[120px] gap-3">
-                  <div className="col-span-12 row-span-3 flex justify-center bg-gray-200 rounded-lg items-center lg:col-span-8">
+                  <div className="col-span-12 row-span-3 flex justify-center bg-gray-200 rounded-lg items-center lg:col-span-12">
                     {isFetchingBillings && <Spinner />}
                     {!isFetchingBillings && <BarChart />}
                   </div>
 
                   <div
                     className={cn(
-                      " col-span-12 row-span-3 flex justify-center bg-primary-500 rounded-lg items-center lg:p-4 lg:col-span-4"
+                      "hidden col-span-12 row-span-3  justify-center bg-primary-500 rounded-lg items-center lg:p-4 lg:col-span-4"
                     )}
                   >
                     {isFetchingBillings && <Spinner />}
@@ -269,11 +310,6 @@ export const BillingDashboard = () => {
                         </Swiper>
                       </>
                     )}
-                  </div>
-
-                  <div className="col-span-12  row-span-4 flex justify-center bg-gray-200 rounded-lg items-center">
-                    {isFetchingBillings && <Spinner />}
-                    {!isFetchingBillings && <ListBillingDataGrid />}
                   </div>
                 </div>
               )}

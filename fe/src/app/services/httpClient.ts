@@ -8,7 +8,7 @@ enum URLPath {
   PROD = "https://rig-control-backendv6-1.onrender.com",
 }
 export const httpClient = axios.create({
-  baseURL: URLPath.PROD,
+  baseURL: URLPath.DEV,
 });
 
 httpClient.interceptors.request.use(async (config) => {

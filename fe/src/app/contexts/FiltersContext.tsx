@@ -46,7 +46,7 @@ export const FiltersProvider = ({children}: {children: React.ReactNode}) => {
   const [selectedEndDate, setSelectedEndDate] =
     useState<string>(formattedLastDay);
   const [selectedPeriod, setSelectedPeriod] = useState<string>("");
-  const [selectedYear, setSeletectedYear] = useState<string>("2023");
+  const [selectedYear, setSeletectedYear] = useState<string>("2024");
   const [filters, setFilters] = useState({
     rigId: selectedRig,
     startDate: selectedStartDate,

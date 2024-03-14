@@ -1,4 +1,4 @@
-import { httpClient } from "../httpClient";
+import {httpClient} from "../httpClient";
 
 export type BillingsFilters = {
   startDate: string;
@@ -16,18 +16,16 @@ export interface BillingResponse {
   fluidgt50amount: number;
   fluidlt20amount: number;
   glosshouramount: number;
+  repairhouramount: number | null;
   rigid: string;
   rigname: string;
   total: number;
 }
 
 export const getAll = async (filters: BillingsFilters) => {
-  const { data } = await httpClient.get<Array<BillingResponse>>(
-    `/billings/all`,
-    {
-      params: filters,
-    }
-  );
+  const {data} = await httpClient.get<Array<BillingResponse>>(`/billings/all`, {
+    params: filters,
+  });
 
   return data;
 };
