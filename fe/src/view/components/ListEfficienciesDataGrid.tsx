@@ -5,11 +5,11 @@ import {
   GridToolbar,
   GridValueGetterParams,
 } from "@mui/x-data-grid";
-import {Button} from "../Button";
+import {Button} from "./Button";
 import {Link} from "react-router-dom";
-import {formatDate} from "../../../app/utils/formatDate";
-import {Efficiency} from "../../pages/Dashboard/entities/Efficiency";
-import {NotFound} from "../NotFound";
+import {formatDate} from "../../app/utils/formatDate";
+import {Efficiency} from "../pages/Dashboard/entities/Efficiency";
+import {NotFound} from "./NotFound";
 
 interface ListDataGridProps {
   data: Efficiency[];

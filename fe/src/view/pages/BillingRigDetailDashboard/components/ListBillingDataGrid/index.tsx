@@ -92,19 +92,29 @@ export const ListBillingDataGrid = () => {
           border: "none",
         },
         "& .MuiDataGrid-cell": {
-          borderBottom: "none",
-          borderRightColor: "black",
+          borderBottomColor: "#1c7b7b",
+          borderWidth: "1px",
         },
         "& .MuiDataGrid-columnHeaders": {
+          fontWeight: "bold",
           backgroundColor: "#1c7b7b",
           color: "#fff",
-          borderBottom: "none",
+          // borderBottom: "#1c7b7b",
+          borderBottomColor: "#1c7b7b",
+          borderWidth: "1px",
+        },
+        "& .MuiDataGrid-columnHeaderTitle": {
+          fontWeight: "bold",
+        },
+        "& .MuiTablePagination-root": {
+          color: "#1c7b7b",
         },
         "& .MuiDataGrid-virtualScroller": {
-          backgroundColor: "#499595",
+          backgroundColor: "#E9ECEF",
+          padding: 0,
         },
         "& .MuiDataGrid-footerContainer": {
-          backgroundColor: "#1c7b7b",
+          backgroundColor: "#E9ECEF",
           color: "#fff",
           borderTop: "none",
         },
