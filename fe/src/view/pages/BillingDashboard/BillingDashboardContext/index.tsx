@@ -1,4 +1,4 @@
-import {createContext, useCallback, useMemo, useState} from "react";
+import {createContext, useCallback, useEffect, useMemo, useState} from "react";
 import React from "react";
 import {useBillings} from "../../../../app/hooks/billings/useBillings";
 import {BillingResponse} from "../../../../app/services/billingServices/getAll";
@@ -27,6 +27,8 @@ interface BillingDashboardContextValue {
   isFetchingConfig: boolean;
   isEmpty: boolean;
   totalAmount: number | string;
+  totalGlossAmount: number | string;
+  totalRepairAmount: number | string;
   setSliderState({
     isBeginning,
     isEnd,
@@ -114,6 +116,10 @@ export const BillingDashboardProvider = ({
     null
   );
 
+  useEffect(() => {
+    handleToggleFilterType(FilterType.CUSTOM);
+  }, []);
+
   const [isEditConfigModalOpen, setIsEditConfigModalOpen] = useState(false);
   const [configBeingEdited, setConfigBeingEdited] =
     useState<null | BillingConfigResponse>(null);
@@ -163,15 +169,28 @@ export const BillingDashboardProvider = ({
 
   const isEmpty: boolean = billings.length === 0;
 
-  const totalAmount = useMemo(() => {
+  const {totalAmount, totalGlossAmount, totalRepairAmount} = useMemo(() => {
     let totalBillings = 0;
+    let totalRepairUnbilled = 0;
+    let totalGlossUnbilled = 0;
 
-    billings.forEach(({total}) => {
+    billings.forEach(({total, repairhouramount, glosshouramount}) => {
       totalBillings += total;
+      totalGlossUnbilled += glosshouramount;
+
+      if (repairhouramount) {
+        totalRepairUnbilled += repairhouramount;
+      }
     });
 
-    return formatCurrency(totalBillings);
+    const totalAmount = formatCurrency(totalBillings);
+    const totalRepairAmount = formatCurrency(totalRepairUnbilled);
+    const totalGlossAmount = formatCurrency(totalGlossUnbilled);
+
+    return {totalAmount, totalRepairAmount, totalGlossAmount};
   }, [billings]);
+
+  console.log({totalAmount, totalGlossAmount, totalRepairAmount});
 
   const handleApplyFilters = () => {
     refetchBillings();
@@ -201,6 +220,8 @@ export const BillingDashboardProvider = ({
         billings,
         isEmpty,
         totalAmount,
+        totalGlossAmount,
+        totalRepairAmount,
         setSliderState,
         sliderState,
         isEditRigModalOpen,

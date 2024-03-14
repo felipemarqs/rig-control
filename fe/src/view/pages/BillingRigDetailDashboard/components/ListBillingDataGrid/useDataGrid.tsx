@@ -27,9 +27,7 @@ export const useDataGrid = () => {
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-white font-semibold  py-2 px-6 rounded-sm">
-              {params.value}
-            </div>
+            <div className="text-primary-500 font-semibold">{params.value}</div>
           </div>
         );
       },
@@ -46,8 +44,8 @@ export const useDataGrid = () => {
 
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-white font-semibold  py-2 px-6 rounded-sm">
-              {`${params.value} ${suffix}`}
+            <div className="text-primary-500 font-bold">
+              {`${params.value.toFixed(2)} ${suffix}`}
             </div>
           </div>
         );
@@ -93,6 +91,16 @@ export const useDataGrid = () => {
 
     return rowData;
   });
+
+  console.log(
+    "tableData",
+    tableData
+    /*  tableData.sort((a, b) => {
+      console.log("a", a);
+      console.log("b", b);
+      return b["SPT 61"] - a["SPT 61"];
+    }) */
+  );
 
   return {
     columns,
