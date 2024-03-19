@@ -8,6 +8,7 @@ import {useAuth} from "../../../../../app/hooks/useAuth";
 import {efficienciesService} from "../../../../../app/services/efficienciesService";
 import {AxiosError} from "axios";
 import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
+import {QueryKeys} from "../../../../../app/config/QueryKeys";
 
 interface DetailsContextValues {
   isFetchingEfficiency: boolean;
@@ -27,6 +28,8 @@ interface DetailsContextValues {
   isDeletionRequestModalOpen: boolean;
   efficiencyId: string;
   canUserEdit: boolean;
+  handleUpdateEfficiency: () => void;
+  isLoadingUpdateEfficiency: boolean;
 }
 export const DetailsContext = createContext({} as DetailsContextValues);
 
@@ -45,6 +48,8 @@ export const DetailsContextProvider = ({
 
   const {efficiency, isFetchingEfficiency} = useEfficiencyById(efficiencyId!);
 
+  console.log("Is Editable", efficiency);
+
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const {isUserAdm, user} = useAuth();
@@ -61,6 +66,23 @@ export const DetailsContextProvider = ({
   const [modalDescription, setModalDescription] = useState<string>("");
 
   const {
+    isPending: isLoadingUpdateEfficiency,
+    mutateAsync: mutateAsyncUpdateEfficiency,
+  } = useMutation({mutationFn: efficienciesService.update});
+
+  const handleUpdateEfficiency = async () => {
+    try {
+      await mutateAsyncUpdateEfficiency({
+        efficiencyId: efficiencyId,
+        isEditable: true,
+      });
+      queryClient.invalidateQueries({queryKey: [QueryKeys.EFFICIENCY]});
+    } catch (error: any | typeof AxiosError) {
+      treatAxiosError(error);
+    }
+  };
+
+  const {
     isPending: isLoadingRemoveEfficiency,
     mutateAsync: mutateAsyncRemoveEfficiency,
   } = useMutation({mutationFn: efficienciesService.remove});
@@ -68,7 +90,7 @@ export const DetailsContextProvider = ({
   const handleDeleteEfficiency = async () => {
     try {
       await mutateAsyncRemoveEfficiency(efficiencyId!);
-      queryClient.invalidateQueries({queryKey: ["efficiencies"]});
+      queryClient.invalidateQueries({queryKey: [QueryKeys.EFFICIENCIES]});
       customColorToast("Dados Deletados com Sucesso!", "#1c7b7b", "success");
       closeDeleteModal();
       navigate("/dashboard");
@@ -120,10 +142,12 @@ export const DetailsContextProvider = ({
         handleDeleteEfficiency,
         isUserAdm,
         canUserEdit,
+        isLoadingUpdateEfficiency,
         efficiencyId,
         closeDeletionRequestModal,
         openDeletionRequestModal,
         isDeletionRequestModalOpen,
+        handleUpdateEfficiency,
       }}
     >
       {children}

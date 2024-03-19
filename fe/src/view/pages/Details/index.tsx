@@ -28,8 +28,10 @@ export const Details = () => {
           isDeleteModalOpen,
           isLoadingRemoveEfficiency,
           handleDeleteEfficiency,
+          isLoadingUpdateEfficiency,
           canUserEdit,
           efficiencyId,
+          handleUpdateEfficiency,
           closeDeletionRequestModal,
           isDeletionRequestModalOpen,
         }) => (
@@ -99,32 +101,48 @@ export const Details = () => {
               {!isFetchingEfficiency &&
                 efficiency &&
                 !(efficiency instanceof Array) && (
-                  <div className="w-full h-[70vh] bg-primary-200 p-2 rounded-md flex justify-center items-center lg:w-[70vw] ">
-                    {/* <ListEfficienciesDataGrid data={efficiencies} isDashboard={false} /> */}
-                    <PeriodsDataGrid
-                      data={efficiency}
-                      openDetailModal={openDetailModal}
-                    />
-                  </div>
-                )}
-              {canUserEdit && (
-                <div className="flex justify-between w-3/4 lg:w-1/2">
-                  <Button
-                    onClick={openDeleteModal}
-                    className="bg-redAccent-500 hover:bg-redAccent-300"
-                  >
-                    Deletar Registro
-                  </Button>
+                  <>
+                    <div className="w-full h-[70vh] bg-primary-200 p-2 rounded-md flex justify-center items-center lg:w-[70vw] ">
+                      {/* <ListEfficienciesDataGrid data={efficiencies} isDashboard={false} /> */}
+                      <PeriodsDataGrid
+                        data={efficiency}
+                        openDetailModal={openDetailModal}
+                      />
+                    </div>
 
-                  <Button>
-                    <Link to={`/form/${efficiencyId}`}>
-                      <span className="text-white tracking-[-0.5]  font-semibold cursor-pointer">
-                        Editar Registro
-                      </span>
-                    </Link>
-                  </Button>
-                </div>
-              )}
+                    <div className="flex justify-center w-3/4 gap-10 lg:w-1/2 ">
+                      {canUserEdit && (
+                        <Button
+                          onClick={openDeleteModal}
+                          className="bg-redAccent-500 hover:bg-redAccent-300"
+                        >
+                          Deletar Registro
+                        </Button>
+                      )}
+
+                      {efficiency.isEditable && (
+                        <Button>
+                          <Link to={`/form/${efficiencyId}`}>
+                            <span className="text-white tracking-[-0.5]  font-semibold cursor-pointer">
+                              Editar Registro
+                            </span>
+                          </Link>
+                        </Button>
+                      )}
+
+                      {!efficiency.isEditable && canUserEdit && (
+                        <Button
+                          isLoading={isLoadingUpdateEfficiency}
+                          onClick={() => handleUpdateEfficiency()}
+                        >
+                          <span className="text-white tracking-[-0.5]  font-semibold cursor-pointer">
+                            Tornar Registro Editável
+                          </span>
+                        </Button>
+                      )}
+                    </div>
+                  </>
+                )}
 
               {/*   {!isUserAdm && (
                 <Button
@@ -135,6 +153,7 @@ export const Details = () => {
                 </Button>
               )} */}
             </div>
+            {/*             <PageLoader isLoading={isLoadingUpdateEfficiency} /> */}
           </div>
         )}
       </DetailsContext.Consumer>

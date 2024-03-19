@@ -70,4 +70,12 @@ export class EfficienciesController {
   ) {
     return this.efficienciesService.create(createEfficiencyDto, userId);
   }
+
+  @Patch(':efficiencyId')
+  update(
+    @Param('efficiencyId') efficiencyId: string,
+    @Body() updateEfficiencyDto: UpdateEfficiencyDto,
+  ) {
+    return this.efficienciesService.update(updateEfficiencyDto, efficiencyId);
+  }
 }
