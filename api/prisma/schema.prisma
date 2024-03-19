@@ -118,6 +118,7 @@ model Efficiency {
   well           String
   availableHours Float    @map("available_hours")
   dtmHours       Float    @map("dtm_hours")
+  isEditable     Boolean? @default(false) @map("is_editable")
 
   hasDemobilization             Boolean           @map("has_demobilization")
   hasMobilization               Boolean?          @map("has_mobilization")
