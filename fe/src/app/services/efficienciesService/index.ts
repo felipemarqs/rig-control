@@ -4,12 +4,14 @@ import {getAverage} from "./getAverage";
 import {getById} from "./getById";
 import {getRigsAverage} from "./getRigsAverage";
 import {remove} from "./remove";
+import {update} from "./update";
 
 export const efficienciesService = {
   create: create,
   getAll: getAll,
-  getById: getById,
   remove: remove,
+  update: update,
+  getById: getById,
   getAverage: getAverage,
   getRigsAverage: getRigsAverage,
 };

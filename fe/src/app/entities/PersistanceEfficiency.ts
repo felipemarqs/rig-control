@@ -9,6 +9,7 @@ export type PersistanceEfficiency = {
   rigId: string;
   userId: string;
   user: {name: string};
+  isEditable: boolean | null;
   rig: {name: string; state: UF};
   periods: {
     id: string;
