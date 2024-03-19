@@ -16,6 +16,7 @@ import { RequestStatus } from '../deletion-requests/entities/deletion-request.en
 import { WellsRepository } from 'src/shared/database/repositories/well.repositories';
 import { PeriodDto } from './dto/create-period-dto';
 import { TemporaryEfficienciesRepository } from 'src/shared/database/repositories/temporaryEfficienciesRepositories';
+import { UpdateEfficiencyDto } from './dto/update-efficiency.dto';
 
 @Injectable()
 export class EfficienciesService {
@@ -702,6 +703,7 @@ export class EfficienciesService {
         truckKmHours: true,
         well: true,
         hasTruckTank: true,
+        isEditable: true,
         rig: true,
         user: {
           select: {
@@ -813,5 +815,12 @@ export class EfficienciesService {
     });
 
     return result;
+  }
+
+  async update(updateEfficiencyDto: UpdateEfficiencyDto, efficiencyId: string) {
+    return await this.efficiencyRepo.update({
+      where: { id: efficiencyId },
+      data: updateEfficiencyDto,
+    });
   }
 }

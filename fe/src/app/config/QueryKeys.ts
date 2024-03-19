@@ -3,6 +3,8 @@ export enum QueryKeys {
   USERS = "users",
   WELLS = "wells",
   PERIODS = "periods",
+  EFFICIENCY = "efficiency",
+  EFFICIENCIES = "efficiencies",
   BILLING = "billing",
   BILLINGS = "billings",
   CONTRACT_RIGS = "contract-rigs",

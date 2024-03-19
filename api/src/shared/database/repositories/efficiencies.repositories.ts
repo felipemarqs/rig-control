@@ -68,4 +68,8 @@ export class EfficienciesRepository {
     ORDER BY month;
   `;
   }
+
+  async update(updateDto: Prisma.EfficiencyUpdateArgs) {
+    return await this.prismaService.efficiency.update(updateDto);
+  }
 }

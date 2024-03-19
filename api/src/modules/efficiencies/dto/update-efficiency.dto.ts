@@ -1,4 +1,7 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateEfficiencyDto } from './create-efficiency.dto';
+import { IsBoolean, IsOptional } from 'class-validator';
 
-export class UpdateEfficiencyDto extends PartialType(CreateEfficiencyDto) {}
+export class UpdateEfficiencyDto {
+  @IsOptional()
+  @IsBoolean()
+  isEditable: boolean;
+}
