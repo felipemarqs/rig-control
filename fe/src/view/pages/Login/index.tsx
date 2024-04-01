@@ -26,7 +26,7 @@ export const Login = () => {
 
       {/* Form Container */}
       <form
-        className="mt-12 flex flex-col justify-around  h-1/2 gap-6 px-3 lg:px-12"
+        className="mt-8 flex flex-col justify-around  gap-6 px-3 lg:px-12"
         onSubmit={handleSubmit}
       >
         <div className="flex flex-col gap-6">
