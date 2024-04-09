@@ -314,7 +314,6 @@ const REPAIR = [
 ];
 
 const GLOSS = [
-  {id: "LABOR", classification: "Mão de Obra"},
   {id: "PROCESS", classification: "Processo"},
   {id: "LOGISTICS", classification: "Logística"},
   {id: "SECURITY", classification: "Segurança"},

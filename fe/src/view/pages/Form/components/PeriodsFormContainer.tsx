@@ -15,10 +15,6 @@ import {Input} from "../../../components/Input";
 import {AlertTriangle, ChevronUp, TrashIcon} from "lucide-react";
 import {translateType} from "../../../../app/utils/translateType";
 import {PeriodType} from "../../../../app/entities/PeriodType";
-/* import {NewBraskemFormContainer} from "./NewBraskemForm";
-import {TresRFormContainer} from "./TresRForm";
-import {OrigemContainer} from "./OrigemForm";
-import {CarmoEnergyContainer} from "./CarmoEnergyForm"; */
 
 export const PeriodsFormContainer = () => {
   const {
