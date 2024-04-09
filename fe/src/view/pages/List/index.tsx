@@ -115,7 +115,7 @@ export const List = () => {
 
       <div className="w-full h-full  lg:mx-5 mt-5 max-w-[1400px] flex justify-center  ">
         {isFetchingEfficiencies && (
-          <div className="lg:w-[70vw] lg:h-[70vh] bg-primary-500 p-2 rounded-md flex justify-center items-center">
+          <div className="lg:w-[70vw] lg:h-[70vh] bg-primary p-2 rounded-md flex justify-center items-center">
             <Spinner className="h-12 w-12" />
           </div>
         )}

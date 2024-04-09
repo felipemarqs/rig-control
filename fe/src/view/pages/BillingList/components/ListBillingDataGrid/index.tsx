@@ -5,16 +5,16 @@ import {
   GridToolbar,
 } from "@mui/x-data-grid";
 
-import { NotFound } from "../../../../components/NotFound";
+import {NotFound} from "../../../../components/NotFound";
 
-import { formatCurrency } from "../../../../../app/utils/formatCurrency";
-import { BillingResponse } from "../../../../../app/services/billingServices/getAll";
+import {formatCurrency} from "../../../../../app/utils/formatCurrency";
+import {BillingResponse} from "../../../../../app/services/billingServices/getAll";
 
 interface ListBillingDataGridProps {
   data: BillingResponse[];
 }
 
-export const ListBillingDataGrid = ({ data }: ListBillingDataGridProps) => {
+export const ListBillingDataGrid = ({data}: ListBillingDataGridProps) => {
   const columns: GridColDef[] = [
     {
       field: "taxa",
@@ -34,7 +34,7 @@ export const ListBillingDataGrid = ({ data }: ListBillingDataGridProps) => {
     },
   ];
 
-  data.forEach(({ rigname }) => {
+  data.forEach(({rigname}) => {
     columns.push({
       field: rigname,
       headerName: rigname,
@@ -44,7 +44,7 @@ export const ListBillingDataGrid = ({ data }: ListBillingDataGridProps) => {
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-white  bg-primary-500 py-1 px-6 rounded-sm">
+            <div className="text-white  bg-primary py-1 px-6 rounded-sm">
               {formatCurrency(params.value)}
             </div>
           </div>

@@ -43,28 +43,22 @@ export const Details = () => {
                 !(efficiency instanceof Array) && (
                   <div className="flex gap-4">
                     <div className="flex gap-1">
-                      <h1 className="text-xl font-bold text-primary-500">
-                        Dia:
-                      </h1>
-                      <h2 className="text-lg text-secondary-500">
+                      <h1 className="text-xl font-bold text-primary">Dia:</h1>
+                      <h2 className="text-lg text-secondary">
                         {formatDate(new Date(efficiency.date))}
                       </h2>
                     </div>
 
                     <div className="flex gap-1">
-                      <h1 className="text-xl font-bold text-primary-500">
-                        Poço:
-                      </h1>
-                      <h2 className="text-lg text-secondary-500">
+                      <h1 className="text-xl font-bold text-primary">Poço:</h1>
+                      <h2 className="text-lg text-secondary">
                         {efficiency.well}
                       </h2>
                     </div>
 
                     <div className="flex gap-1">
-                      <h1 className="text-xl font-bold text-primary-500">
-                        Sonda:
-                      </h1>
-                      <h2 className="text-lg text-secondary-500">
+                      <h1 className="text-xl font-bold text-primary">Sonda:</h1>
+                      <h2 className="text-lg text-secondary">
                         {efficiency.rig.name}
                       </h2>
                     </div>
@@ -93,7 +87,7 @@ export const Details = () => {
             />
             <div className="w-full h-full  lg:mx-5 lg:mt-5 max-w-[1400px] min-w-[1000px] flex justify-start items-center gap-4 flex-col">
               {isFetchingEfficiency && (
-                <div className="w-full h-full bg-primary-500 p-2 rounded-md flex justify-center items-center lg:w-[70vw] lg:h-[70vh]">
+                <div className="w-full h-full bg-primary p-2 rounded-md flex justify-center items-center lg:w-[70vw] lg:h-[70vh]">
                   <Spinner className="h-12 w-12" />
                 </div>
               )}

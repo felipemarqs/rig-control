@@ -76,7 +76,7 @@ export const GlobalDashboard = () => {
                     <div className="stat">
                       <div className="stat-figure text-white">
                         <div
-                          className="radial-progress text-primary-500"
+                          className="radial-progress text-primary"
                           style={
                             {
                               "--value": statBox.averageHoursPercentage,
@@ -86,22 +86,22 @@ export const GlobalDashboard = () => {
                           {statBox.averageHoursPercentage || 0}%
                         </div>
                       </div>
-                      <div className="stat-title  text-primary-500">
+                      <div className="stat-title  text-primary">
                         Disp. Diária
                       </div>
-                      <div className="stat-value  text-primary-500">
+                      <div className="stat-value  text-primary">
                         {statBox.averageHours} Hrs
                       </div>
-                      <div className="stat-desc  text-primary-500">
+                      <div className="stat-desc  text-primary">
                         Média de disponibilidade diária
                       </div>
                     </div>
                     <div className="stat  border-r border-primary-300">
-                      <div className="stat-title  text-primary-500">
+                      <div className="stat-title  text-primary">
                         Sondas Cadastradas
                       </div>
-                      <div className="stat-value  text-primary-500">9</div>
-                      <div className="stat-desc  text-primary-500">
+                      <div className="stat-value  text-primary">9</div>
+                      <div className="stat-desc  text-primary">
                         Sondas Cadastradas no sistema
                       </div>
                     </div>
@@ -240,9 +240,9 @@ export const GlobalDashboard = () => {
 
                   <span className="text-gray-800 font-semibold">
                     Confira as últimas{" "}
-                    <span className="text-primary-500">atualizações</span> e
+                    <span className="text-primary">atualizações</span> e
                     melhorias que fizemos no sistema para aprimorar ainda mais
-                    sua <span className="text-primary-500">experiência</span>.
+                    sua <span className="text-primary">experiência</span>.
                     Confira as novidades:
                   </span>
                   <ul className="list-disc list-inside">

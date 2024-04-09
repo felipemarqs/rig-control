@@ -34,7 +34,7 @@ export const ListRigs = () => {
                   <div className="p-8 flex flex-col h-full gap-4 lg:items-center">
                     <div
                       onClick={() => navigate("/create-rig")}
-                      className="p-4 bg-white rounded-2xl shadow-[0_1px_2px] flex  h-20 gap-4 justify-center items-center border-l-4  border-primary-500 lg:w-2/5 cursor-pointer"
+                      className="p-4 bg-white rounded-2xl shadow-[0_1px_2px] flex  h-20 gap-4 justify-center items-center border-l-4  border-primary lg:w-2/5 cursor-pointer"
                     >
                       <div className="h-11 w-11 rounded-full border-2 border-dashed border-gray-600 flex justify-center items-center">
                         <PlusIcon className="w-6 h-6 text-gray-600" />
@@ -46,7 +46,7 @@ export const ListRigs = () => {
                     {rigs.map(({id, name, state, isActive}) => (
                       <div
                         key={id}
-                        className="p-4 bg-white rounded-2xl shadow-[0_1px_2px] flex flex-col gap-2 justify-between border-l-4  border-primary-500 lg:w-2/5"
+                        className="p-4 bg-white rounded-2xl shadow-[0_1px_2px] flex flex-col gap-2 justify-between border-l-4  border-primary lg:w-2/5"
                       >
                         <div className="w-full flex justify-between">
                           <div className="flex flex-col ">
@@ -75,14 +75,14 @@ export const ListRigs = () => {
                             </span>
                             <span
                               className={cn(
-                                "w-5 h-5 bg-secondary-500 rounded-full",
+                                "w-5 h-5 bg-secondary rounded-full",
                                 isActive === false && "bg-redAccent-500"
                               )}
                             ></span>
                           </div>
 
                           <span
-                            className="text-primary-500 tracking-[-0.5] underline font-semibold cursor-pointer"
+                            className="text-primary tracking-[-0.5] underline font-semibold cursor-pointer"
                             onClick={() => handleSetRigBeingEdited(id)}
                           >
                             Editar Sonda

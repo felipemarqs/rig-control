@@ -134,19 +134,17 @@ export const BillingRigDetailDashboard = () => {
                     <div className="stat">
                       <div className="stat-figure text-white">
                         {/*  <div
-                          className="radial-progress text-primary-500"
+                          className="radial-progress text-primary"
                           style={{"--value": 70} as any} // @ts-ignore
                         >
                           {70 || 0}%
                         </div> */}
                       </div>
-                      <div className="stat-title  text-primary-500">
-                        Fat. Total
-                      </div>
-                      <div className="stat-value  text-primary-500">
+                      <div className="stat-title  text-primary">Fat. Total</div>
+                      <div className="stat-value  text-primary">
                         {formatCurrency(totalAmount)}
                       </div>
-                      <div className="stat-desc  text-primary-500">
+                      <div className="stat-desc  text-primary">
                         Total de faturamento no período.
                       </div>
                     </div>

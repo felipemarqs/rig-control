@@ -120,7 +120,7 @@ export const MobileLayout = () => {
             </div>
           </div>
 
-          <Button className="p-2 bg-primary-600" onClick={() => signout()}>
+          <Button className="p-2 bg-primary" onClick={() => signout()}>
             Sair
           </Button>
         </div>

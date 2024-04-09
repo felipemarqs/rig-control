@@ -37,7 +37,7 @@ export const FormMenu = () => {
             <div className="p-2 flex flex-col h-full gap-4 lg:items-center lg:p-8">
               <div
                 onClick={() => navigate("/form")}
-                className="p-4 bg-primary-500 rounded-md shadow-[0_1px_2px] flex  h-20 gap-4 justify-center items-center border-l-4  border-primary-500 lg:w-3/4 cursor-pointer"
+                className="p-4 bg-primary rounded-md shadow-[0_1px_2px] flex  h-20 gap-4 justify-center items-center border-l-4  border-primary lg:w-3/4 cursor-pointer"
               >
                 <div className="h-11 w-11 rounded-full border-2 border-dashed border-white flex justify-center items-center">
                   <PlusIcon className="w-6 h-6 text-white" />
@@ -102,7 +102,7 @@ export const FormMenu = () => {
                         <TrashIcon className="text-white" />
                       </button>
                       <Link
-                        className="text-white tracking-[-0.5]  font-semibold px-4 py-2 rounded-md bg-primary-500 hover:bg-primary-600"
+                        className="text-white tracking-[-0.5]  font-semibold px-4 py-2 rounded-md bg-primary hover:bg-primary"
                         to={`/pending-form/${temporaryEfficiency.id}`}
                       >
                         Continuar Boletim

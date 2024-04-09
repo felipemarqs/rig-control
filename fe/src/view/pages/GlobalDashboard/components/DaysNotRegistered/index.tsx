@@ -11,7 +11,7 @@ export const DaysNotRegistered = () => {
         `max-h-full ${mappedRigsAverage.length <= 3 ? "" : "overflow-y-scroll"}`
       )}
     >
-      <header className="bg-primary-500 text-white p-2 rounded-t-lg justify-center flex">
+      <header className="bg-primary text-white p-2 rounded-t-lg justify-center flex">
         <span className="text-white font-semibold">
           Dias sem registros de eficiência por sonda
         </span>
@@ -23,21 +23,17 @@ export const DaysNotRegistered = () => {
             key={rigId}
           >
             <div className="flex gap-2">
-              <span className="text-primary-500"> Sonda:</span>
+              <span className="text-primary"> Sonda:</span>
 
-              <span className="text-primary-500 font-semibold italic">
-                {rig}
-              </span>
+              <span className="text-primary font-semibold italic">{rig}</span>
             </div>
 
             <div className="flex gap-2">
-              <span className="text-primary-500"> Dias sem registros:</span>
+              <span className="text-primary"> Dias sem registros:</span>
 
               <span
                 className={`${
-                  daysNotRegistered > 3
-                    ? "text-redAccent-500"
-                    : "text-primary-500"
+                  daysNotRegistered > 3 ? "text-redAccent-500" : "text-primary"
                 } font-semibold italic flex justify-center items-center gap-2`}
               >
                 {daysNotRegistered} Dias{" "}

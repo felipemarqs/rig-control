@@ -12,7 +12,7 @@ export const NotFound = ({children, Icon}: NotFoundProps) => {
       <div className="flex justify-center items-center flex-col">
         {Icon && <Icon />}
         {!Icon && <img src={emptyBox} />}
-        <h2 className="text-primary-500 mt-1 text-center flex-1">{children}</h2>
+        <h2 className="text-primary mt-1 text-center flex-1">{children}</h2>
       </div>
     </div>
   );

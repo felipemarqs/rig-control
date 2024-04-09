@@ -54,7 +54,7 @@ export const PendingForm = () => {
                 <div
                   className={cn(
                     "fixed  bg-redAccent-500  text-sm text-white p-1 lg:p-4 z-50 rounded-lg top-5 right-5",
-                    !isPending && "bg-secondary-500"
+                    !isPending && "bg-secondary"
                   )}
                 >
                   {isPending && (
@@ -71,17 +71,17 @@ export const PendingForm = () => {
                   <header
                     className={cn(
                       `w-full p-4  flex justify-between items-center transition-all ease-in-out duration-500 ${
-                        isVisible ? "border-b-2 border-primary-500" : ""
+                        isVisible ? "border-b-2 border-primary" : ""
                       }`
                     )}
                   >
-                    <h2 className="text-primary-500 font-bold">
+                    <h2 className="text-primary font-bold">
                       Configurações da Sonda:
                     </h2>
 
                     <button
                       onClick={() => toggleVisibility()}
-                      className={`text-white bg-primary-500 w-12 h-12 flex justify-center items-center rounded-full transform transition-transform duration-200 ease-in ${
+                      className={`text-white bg-primary w-12 h-12 flex justify-center items-center rounded-full transform transition-transform duration-200 ease-in ${
                         isVisible ? "-rotate-180" : "rotate-0"
                       }`}
                     >
@@ -89,11 +89,11 @@ export const PendingForm = () => {
                     </button>
 
                     {/*  {isVisible ? (
-                <button className=" text-white bg-primary-500 w-12 h-12 flex justify-center items-center rounded-full ">
+                <button className=" text-white bg-primary w-12 h-12 flex justify-center items-center rounded-full ">
                   <ChevronDown onClick={() => toggleVisibility()} />
                 </button>
               ) : (
-                <button className=" text-white bg-primary-500 w-12 h-12 flex justify-center items-center rounded-full ">
+                <button className=" text-white bg-primary w-12 h-12 flex justify-center items-center rounded-full ">
                   <ChevronUp onClick={() => toggleVisibility()} />
                 </button>
               )} */}
@@ -146,7 +146,7 @@ export const PendingForm = () => {
                     <div className="flex justify-end w-full py-4 px-8">
                       <Button
                         disabled={!(selectedRig && !isDateValid)}
-                        className="bg-primary-500  w-1/2 lg:w-1/5 "
+                        className="bg-primary  w-1/2 lg:w-1/5 "
                         onClick={() => handleConfirmButton()}
                       >
                         Confirmar
@@ -165,7 +165,7 @@ export const PendingForm = () => {
                 {/*  <div className="flex justify-center mt-6 ">
             <Button
               disabled={!isFormValid || isLoading}
-              className="bg-secondary-500 w-2/3 "
+              className="bg-secondary w-2/3 "
               onClick={() => handleSubmit(periods)}
             >
               Enviar dados

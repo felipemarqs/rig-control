@@ -29,7 +29,7 @@ export const Navbar = ({children}: {children: React.ReactNode}) => {
   }, [state]);
 
   return (
-    <nav ref={navRef} className="bg-primary-500 w-full top-0 z-20">
+    <nav ref={navRef} className="bg-primary w-full top-0 z-20">
       <div className="items-center px-4 max-w-screen-xl mx-auto md:px-8 lg:flex">
         <div className="flex items-center justify-between py-3 lg:py-4 lg:block">
           <Link to="/dashboard">
@@ -78,7 +78,7 @@ export const Navbar = ({children}: {children: React.ReactNode}) => {
           }`}
         >
           <div className="flex-1">
-            <ul className="justify-center items-center space-y-8 bg-primary-500 lg:flex lg:space-x-6 lg:space-y-0">
+            <ul className="justify-center items-center space-y-8 bg-primary lg:flex lg:space-x-6 lg:space-y-0">
               {children}
             </ul>
           </div>

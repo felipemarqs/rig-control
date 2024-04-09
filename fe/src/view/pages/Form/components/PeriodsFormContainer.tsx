@@ -45,7 +45,7 @@ export const PeriodsFormContainer = () => {
   return (
     <div className=" max-h-[90vh]  flex-1  ">
       <header className="mt-10">
-        <h2 className="text-primary-500 font-bold">Períodos:</h2>
+        <h2 className="text-primary font-bold">Períodos:</h2>
       </header>
       {periods.map(
         (
@@ -71,11 +71,11 @@ export const PeriodsFormContainer = () => {
             >
               <header
                 className={`  w-full p-4 flex justify-between items-center  ${
-                  getPeriodState(id) ? "" : "border-b border-primary-500"
+                  getPeriodState(id) ? "" : "border-b border-primary"
                 }`}
               >
                 <div>
-                  <h2 className="text-primary-500 font-bold">
+                  <h2 className="text-primary font-bold">
                     Período {index + 1}
                   </h2>
                   <div
@@ -130,7 +130,7 @@ export const PeriodsFormContainer = () => {
                   {!getPeriodState(id) && (
                     <Button
                       variant="ghost"
-                      //className="bg-transparent border border-primary-500 text-primary-500 rounded-md hover:bg-primary-500 hover:text-white"
+                      //className="bg-transparent border border-primary text-primary rounded-md hover:bg-primary hover:text-white"
                       onClick={() => cleanFields(id)}
                     >
                       Limpar campos
@@ -139,7 +139,7 @@ export const PeriodsFormContainer = () => {
 
                   <button
                     onClick={() => updatePeriodState(id, !getPeriodState(id))}
-                    className={`text-white bg-primary-500 w-12 h-12 flex justify-center items-center rounded-full transform transition-transform duration-200 ease-in ${
+                    className={`text-white bg-primary w-12 h-12 flex justify-center items-center rounded-full transform transition-transform duration-200 ease-in ${
                       getPeriodState(id) ? "rotate-180" : "rotate-0"
                     }`}
                   >
@@ -359,7 +359,7 @@ export const PeriodsFormContainer = () => {
                   )}
 
                   <Button
-                    className="bg-secondary-500 w-1/3 lg:w-1/4 text-sm"
+                    className="bg-secondary w-1/3 lg:w-1/4 text-sm"
                     onClick={() => addPeriod()}
                   >
                     Adicionar período
@@ -376,7 +376,7 @@ export const PeriodsFormContainer = () => {
       <div className="lg:flex lg:justify-center pb-6 lg:my-6 ">
         <Button
           disabled={!isFormValid || isLoading}
-          className="bg-secondary-500 w-2/3 "
+          className="bg-secondary w-2/3 "
           onClick={() =>
             hasRemainingMinutes ? handleSave() : handleSubmit(periods)
           }

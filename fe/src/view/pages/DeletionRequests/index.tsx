@@ -59,9 +59,7 @@ export const DeletionRequests = () => {
 
         <div className="w-full h-full ">
           <div className="border border-b-2">
-            <h1 className="text-xl text-primary-500 pl-8">
-              Pedidos de Deleção
-            </h1>
+            <h1 className="text-xl text-primary pl-8">Pedidos de Deleção</h1>
             {isFetchingDeletionsRequests && (
               <div className="flex justify-center items-center h-1/2">
                 <Spinner />
@@ -80,7 +78,7 @@ export const DeletionRequests = () => {
                 {deletionRequests.map((deletionRequest) => (
                   <div
                     key={deletionRequest.id}
-                    className="p-4 bg-white rounded-2xl shadow-[0_1px_2px] flex-col flex h-60 justify-between border-l-4  border-primary-500 lg:w-3/4"
+                    className="p-4 bg-white rounded-2xl shadow-[0_1px_2px] flex-col flex h-60 justify-between border-l-4  border-primary lg:w-3/4"
                   >
                     <div className="flex justify-between w-full">
                       <div className="flex flex-col">
@@ -141,7 +139,7 @@ export const DeletionRequests = () => {
                     <div className="flex justify-between items-center w-full">
                       <div className="flex flex-col">
                         <span
-                          className="text-primary-500 tracking-[-0.5] underline font-semibold cursor-pointer"
+                          className="text-primary tracking-[-0.5] underline font-semibold cursor-pointer"
                           onClick={() =>
                             openReasonModal(deletionRequest.reason)
                           }
@@ -152,7 +150,7 @@ export const DeletionRequests = () => {
 
                       <div className="flex ">
                         <Link to={`/details/${deletionRequest.efficiency.id}`}>
-                          <span className="text-primary-500 tracking-[-0.5] underline font-semibold cursor-pointer">
+                          <span className="text-primary tracking-[-0.5] underline font-semibold cursor-pointer">
                             Ver Registro
                           </span>
                         </Link>

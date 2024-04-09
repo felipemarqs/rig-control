@@ -31,7 +31,7 @@ export const PeriodsDataGrid = ({
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-white font-semibold bg-primary-500 py-1 px-6 rounded-sm">
+            <div className="text-white font-semibold bg-primary py-1 px-6 rounded-sm">
               {formatIsoStringToHours(params.value)}
             </div>
           </div>
@@ -48,7 +48,7 @@ export const PeriodsDataGrid = ({
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-white  font-semibold bg-primary-500 py-1 px-6 rounded-sm">
+            <div className="text-white  font-semibold bg-primary py-1 px-6 rounded-sm">
               {formatIsoStringToHours(params.value)}
             </div>
           </div>
@@ -64,7 +64,7 @@ export const PeriodsDataGrid = ({
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-white  bg-primary-500 py-1 px-4 rounded-sm">
+            <div className="text-white  bg-primary py-1 px-4 rounded-sm">
               {translateType(params.value)}
             </div>
           </div>
@@ -80,7 +80,7 @@ export const PeriodsDataGrid = ({
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-white  bg-primary-500 py-1 px-4 rounded-sm">
+            <div className="text-white  bg-primary py-1 px-4 rounded-sm">
               {translateClassification(params.value)}
             </div>
           </div>
@@ -97,7 +97,7 @@ export const PeriodsDataGrid = ({
         return (
           <div className="w-full flex justify-center items-center">
             <Button
-              className="bg-secondary-500 rounded-md h-[25px]"
+              className="bg-secondary rounded-md h-[25px]"
               onClick={() => openDetailModal(params.value)}
             >
               Ver Detalhes

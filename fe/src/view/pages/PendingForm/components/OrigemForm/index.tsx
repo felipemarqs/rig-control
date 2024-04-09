@@ -10,7 +10,7 @@ export const OrigemContainer = () => {
   } = usePendingForm();
 
   return (
-    <div className="  bg-primary-500 py-4  my-4  rounded-xl ">
+    <div className="  bg-primary py-4  my-4  rounded-xl ">
       <div className="p-4 rounded-xl flex flex-col gap-2">
         <div className="flex flex-col gap-2">
           <Checkbox

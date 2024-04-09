@@ -50,9 +50,7 @@ export const Router = () => {
         {/* Rota para páginas autenticadas */}
         <Route element={<AuthGuard isPrivate={true} />}>
           {/* Define o layout baseado na largura da janela */}
-          <Route
-            element={windowWidth <= 1024 ? <MobileLayout /> : <DesktopLayout />}
-          >
+          <Route element={<DesktopLayout />}>
             <Route path="/" element={<DashboardMenu />} />
 
             <Route path="/dashboard" element={<Dashboard />} />

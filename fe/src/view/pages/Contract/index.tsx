@@ -23,7 +23,7 @@ export const Contract = () => {
             <div className="p-8 flex flex-col h-full gap-4 lg:items-center">
               <div
                 onClick={() => navigate("/create-contract")}
-                className="p-4 bg-white rounded-2xl shadow-[0_1px_2px] flex  h-20 gap-4 justify-center items-center border-l-4  border-primary-500 lg:w-3/4 cursor-pointer"
+                className="p-4 bg-white rounded-2xl shadow-[0_1px_2px] flex  h-20 gap-4 justify-center items-center border-l-4  border-primary lg:w-3/4 cursor-pointer"
               >
                 <div className="h-11 w-11 rounded-full border-2 border-dashed border-gray-600 flex justify-center items-center">
                   <PlusIcon className="w-6 h-6 text-gray-600" />
@@ -35,7 +35,7 @@ export const Contract = () => {
               {contracts.map((contract) => (
                 <div
                   key={contract.id}
-                  className="p-4 bg-white rounded-2xl shadow-[0_1px_2px] flex h-20 justify-between border-l-4  border-primary-500 lg:w-3/4"
+                  className="p-4 bg-white rounded-2xl shadow-[0_1px_2px] flex h-20 justify-between border-l-4  border-primary lg:w-3/4"
                 >
                   <div className="flex flex-col ">
                     <span className="text-gray-800 tracking-[-0.5] font-medium block">

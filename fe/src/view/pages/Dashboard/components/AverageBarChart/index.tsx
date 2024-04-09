@@ -6,7 +6,7 @@ export const AverageBarChart = () => {
 
   return (
     <div className="w-full h-full">
-      <header className="bg-primary-500 text-white p-2 rounded-t-lg justify-center flex">
+      <header className="bg-primary text-white p-2 rounded-t-lg justify-center flex">
         <span className="text-white font-semibold">
           Eficiência Média das Sondas
         </span>

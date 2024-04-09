@@ -12,7 +12,7 @@ export const GrouppedRepairs = () => {
         }`
       )}
     >
-      <header className="bg-primary-500 text-white p-2 rounded-t-lg justify-center flex">
+      <header className="bg-primary text-white p-2 rounded-t-lg justify-center flex">
         <span className="text-white font-semibold">Reparos</span>
       </header>
       <div className="flex flex-col gap-2  ">
@@ -22,24 +22,24 @@ export const GrouppedRepairs = () => {
             key={data.equipment}
           >
             <div className="flex gap-2">
-              <span className="text-primary-500"> Equipamento:</span>
+              <span className="text-primary"> Equipamento:</span>
 
-              <span className="text-primary-500 font-semibold italic">
+              <span className="text-primary font-semibold italic">
                 {data.equipment}
               </span>
             </div>
 
             <div className="flex gap-2">
-              <span className="text-primary-500"> Tempo em Reparo:</span>
+              <span className="text-primary"> Tempo em Reparo:</span>
 
-              <span className="text-primary-500 font-semibold italic">
+              <span className="text-primary font-semibold italic">
                 {data.totalHours} Hrs
               </span>
               <div
                 className="flex-1 flex justify-end"
                 onClick={() => handleSelectEquipment(data.id)}
               >
-                <span className="underline text-primary-500 cursor-pointer font-semibold italic">
+                <span className="underline text-primary cursor-pointer font-semibold italic">
                   {" "}
                   Ver detalhes
                 </span>

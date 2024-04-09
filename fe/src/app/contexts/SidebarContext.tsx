@@ -17,6 +17,15 @@ interface SidebarContextValues {
   hidden: boolean;
 }
 
+export type SidebarOptions =
+  | "dashboard"
+  | "invoicing"
+  | "form/menu"
+  | "list"
+  | "list-rigs"
+  | "contracts"
+  | "users"
+  | "reports";
 export const SidebarContext = createContext({} as SidebarContextValues);
 
 export const useSidebarContext = () => useContext(SidebarContext);

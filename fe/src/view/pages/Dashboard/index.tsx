@@ -142,19 +142,19 @@ export const Dashboard = () => {
                     <div className="stat">
                       <div className="stat-figure text-white">
                         <div
-                          className="radial-progress text-primary-500"
+                          className="radial-progress text-primary"
                           style={{"--value": availableHoursPercentage} as any}
                         >
                           {availableHoursPercentage || 0}%
                         </div>
                       </div>
-                      <div className="stat-title  text-primary-500">
+                      <div className="stat-title  text-primary">
                         Horas Disp.
                       </div>
-                      <div className="stat-value  text-primary-500">
+                      <div className="stat-value  text-primary">
                         {totalAvailableHours.toFixed()}Hrs
                       </div>
-                      <div className="stat-desc  text-primary-500">
+                      <div className="stat-desc  text-primary">
                         Total de horas faturadas pela sonda
                       </div>
                     </div>
@@ -184,35 +184,33 @@ export const Dashboard = () => {
                     </div>
 
                     <div className="stat">
-                      <div className="stat-figure text-primary-500">
+                      <div className="stat-figure text-primary">
                         <div className="w-16 rounded-full">
                           <div className="w-16 h-16 flex items-center justify-center rounded-full bg-white">
                             <Truck size={50} />
                           </div>
                         </div>
                       </div>
-                      <div className="stat-value text-primary-500">
-                        {totalDtms}
-                      </div>
-                      <div className="stat-title text-primary-500">DTMs</div>
-                      <div className="stat-desc text-primary-500">
+                      <div className="stat-value text-primary">{totalDtms}</div>
+                      <div className="stat-title text-primary">DTMs</div>
+                      <div className="stat-desc text-primary">
                         No período selecionado
                       </div>
                     </div>
 
                     <div className="stat">
-                      <div className="stat-figure text-primary-500">
+                      <div className="stat-figure text-primary">
                         <div className="w-16 h-16 flex items-center justify-center rounded-full bg-white">
                           <BaggageClaim size={50} />
                         </div>
                       </div>
-                      <div className="stat-value text-primary-500">
+                      <div className="stat-value text-primary">
                         {totalMovimentations}
                       </div>
-                      <div className="stat-title text-primary-500">
+                      <div className="stat-title text-primary">
                         Movimentações
                       </div>
-                      <div className="stat-desc text-primary-500">
+                      <div className="stat-desc text-primary">
                         No período selecionado
                       </div>
                     </div>
@@ -371,9 +369,9 @@ export const Dashboard = () => {
 
                   <span className="text-gray-800 font-semibold">
                     Confira as últimas{" "}
-                    <span className="text-primary-500">atualizações</span> e
+                    <span className="text-primary">atualizações</span> e
                     melhorias que fizemos no sistema para aprimorar ainda mais
-                    sua <span className="text-primary-500">experiência</span>.
+                    sua <span className="text-primary">experiência</span>.
                     Confira as novidades:
                   </span>
                   <ul className="list-disc list-inside">

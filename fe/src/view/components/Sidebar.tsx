@@ -14,7 +14,7 @@ export default function Sidebar({children}: {children: React.ReactNode}) {
 
   return (
     <aside className={cn("h-screen" /* hidden && "hidden" */)}>
-      <nav className="h-full  flex flex-col bg-primary-500 border-r shadow-sm">
+      <nav className="h-full  flex flex-col bg-primary border-r shadow-sm">
         <div className="p-4 pb-2 flex justify-between items-center">
           <img
             src={whiteLogo}
@@ -25,7 +25,7 @@ export default function Sidebar({children}: {children: React.ReactNode}) {
           />
           <button
             onClick={() => toggleVisibility()}
-            className="p-1.5 rounded-lg bg-primary-500 text-white hover:bg-primary-300"
+            className="p-1.5 rounded-lg bg-primary text-white hover:bg-primary-300"
           >
             {expanded ? <ChevronFirst /> : <ChevronLast />}
           </button>
@@ -52,7 +52,7 @@ export default function Sidebar({children}: {children: React.ReactNode}) {
             </div>
           </div>
 
-          <Button className="p-2 bg-primary-600" onClick={() => signout()}>
+          <Button className="p-2 bg-primary" onClick={() => signout()}>
             Sair
           </Button>
         </div>

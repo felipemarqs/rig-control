@@ -34,7 +34,7 @@ export const useDataGrid = () => {
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-white  bg-primary-500 py-1 px-6 rounded-sm">
+            <div className="text-white  bg-primary py-1 px-6 rounded-sm">
               {formatCurrency(params.value)}
             </div>
           </div>

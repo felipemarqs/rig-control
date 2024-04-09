@@ -29,7 +29,7 @@ export const ListEquipmentRepairs = ({
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-primary-500 font-semibold">
+            <div className="text-primary font-semibold">
               {params.value.name}
             </div>
           </div>
@@ -49,7 +49,7 @@ export const ListEquipmentRepairs = ({
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-primary-500 font-semibold">
+            <div className="text-primary font-semibold">
               {" "}
               {formatDate(new Date(params.value)).slice(0, 5)}
             </div>
@@ -65,7 +65,7 @@ export const ListEquipmentRepairs = ({
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-primary-500 font-semibold">{params.value}</div>
+            <div className="text-primary font-semibold">{params.value}</div>
           </div>
         );
       },
@@ -78,9 +78,7 @@ export const ListEquipmentRepairs = ({
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-primary-500 font-semibold ">
-              {params.value}Hrs
-            </div>
+            <div className="text-primary font-semibold ">{params.value}Hrs</div>
           </div>
         );
       },
@@ -99,7 +97,7 @@ export const ListEquipmentRepairs = ({
               to={`/details/${params.value}`}
               className="w-full flex justify-center items-center"
             >
-              <Button className="bg-primary-500 rounded-md h-[25px]">
+              <Button className="bg-primary rounded-md h-[25px]">
                 Ver Mais
               </Button>
             </Link>
@@ -112,7 +110,7 @@ export const ListEquipmentRepairs = ({
   const NotFoundDataGrid = () => {
     return (
       <NotFound>
-        <span className="text-primary-500">
+        <span className="text-primary">
           <strong>Não</strong> existem dados para a <strong>sonda</strong> no{" "}
           <strong>período</strong> selecionado!
         </span>

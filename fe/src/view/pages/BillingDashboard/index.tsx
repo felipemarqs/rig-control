@@ -144,19 +144,17 @@ export const BillingDashboard = () => {
                     <div className="stat">
                       <div className="stat-figure text-white">
                         {/*  <div
-                          className="radial-progress text-primary-500"
+                          className="radial-progress text-primary"
                           style={{"--value": 70} as any} // @ts-ignore
                         >
                           {70 || 0}%
                         </div> */}
                       </div>
-                      <div className="stat-title  text-primary-500">
-                        Fat. Total
-                      </div>
-                      <div className="stat-value  text-primary-500">
+                      <div className="stat-title  text-primary">Fat. Total</div>
+                      <div className="stat-value  text-primary">
                         {totalAmount}
                       </div>
-                      <div className="stat-desc  text-primary-500">
+                      <div className="stat-desc  text-primary">
                         Total de faturamento no período.
                       </div>
                     </div>
@@ -164,7 +162,7 @@ export const BillingDashboard = () => {
                     <div className="stat">
                       <div className="stat-figure text-white">
                         {/*  <div
-                          className="radial-progress text-primary-500"
+                          className="radial-progress text-primary"
                           style={{"--value": 70} as any} // @ts-ignore
                         >
                           {70 || 0}%
@@ -233,7 +231,7 @@ export const BillingDashboard = () => {
 
                   <div
                     className={cn(
-                      "hidden col-span-12 row-span-3  justify-center bg-primary-500 rounded-lg items-center lg:p-4 lg:col-span-4"
+                      "hidden col-span-12 row-span-3  justify-center bg-primary rounded-lg items-center lg:p-4 lg:col-span-4"
                     )}
                   >
                     {isFetchingBillings && <Spinner />}
@@ -273,7 +271,7 @@ export const BillingDashboard = () => {
 
                   <div
                     className={cn(
-                      " col-span-12 row-span-5 flex justify-center bg-primary-500 rounded-lg items-center p-4",
+                      " col-span-12 row-span-5 flex justify-center bg-primary rounded-lg items-center p-4",
                       configs.length <= 3 && "lg:p-[12rem]"
                     )}
                   >

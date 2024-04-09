@@ -68,7 +68,7 @@ export const Report = () => {
                 </div>
                 <button
                   onClick={toggleFilterContainerVisibility}
-                  className={`text-white bg-primary-500 w-12 h-12 flex justify-center items-center rounded-full transform transition-transform duration-200 ease-in ${
+                  className={`text-white bg-primary w-12 h-12 flex justify-center items-center rounded-full transform transition-transform duration-200 ease-in ${
                     isFilterContainerVisible ? "rotate-180" : "rotate-0"
                   }`}
                 >
