@@ -9,10 +9,10 @@ export const InvoicingMenu = () => {
     <div className="w-full h-full overflow-y-scroll">
       <Header title="FATURAMENTO" subtitle="Menu de Faturamento" />
 
-      <div className="w-full h-4/5 flex justify-center items-center">
-        <div className="w-10/12 grid grid-cols-12 auto-rows-[120px] gap-3 bg-gray-400 p-8 rounded-md">
+      <div className="w-full flex justify-center items-center">
+        <div className=" w-full mt-12 flex justify-start items-center gap-4 pl-8">
           <div
-            className="col-start-3 col-span-3 row-span-2 p-4 bg-white rounded-2xl h-full flex flex-col justify-around items-center border-b-4  border-teal-950 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
+            className="w-52 h-52 p-4 bg-white rounded-2xl  flex flex-col justify-around items-center border-b-4  border-teal-950 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
             style={{borderColor: "#81c460"}}
             role="button"
             onClick={() => navigate("/invoicing-rig-dashboard")}
@@ -22,7 +22,7 @@ export const InvoicingMenu = () => {
           </div>
 
           <div
-            className="col-start-8 col-span-3 row-span-2 p-4 bg-white rounded-2xl h-full flex flex-col justify-around items-center border-b-4  border-teal-950 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
+            className="w-52 h-52 p-4 bg-white rounded-2xl  flex flex-col justify-around items-center border-b-4  border-teal-950 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
             style={{borderColor: "#81c460"}}
             role="button"
             onClick={() => navigate("/invoicing-dashboard")}
