@@ -31,7 +31,7 @@ module.exports = {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        "shad-primary": {
+        primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
         },
@@ -59,7 +59,7 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        primary: {
+        "custom-primary": {
           100: "#d2e5e5",
           200: "#a4caca",
           300: "#77b0b0",
@@ -70,7 +70,7 @@ module.exports = {
           800: "#0b3131",
           900: "#061919",
         },
-        secondary: {
+        "custom-secondary": {
           100: "#e6f3df",
           200: "#cde7bf",
           300: "#b3dca0",
