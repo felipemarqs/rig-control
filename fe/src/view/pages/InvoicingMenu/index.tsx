@@ -1,6 +1,5 @@
 import { CircleDollarSignIcon, Receipt } from "lucide-react";
 import { Header } from "../../components/Header";
-import { useInvoicingMenu } from "./useInvoicingMenu";
 import { MenuCard } from "@/view/components/MenuCard";
 
 export const InvoicingMenu = () => {

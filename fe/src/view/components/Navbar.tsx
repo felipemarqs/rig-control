@@ -1,89 +1,195 @@
-import {useEffect, useRef, useState} from "react";
-import whiteLogo from "../../assets/images/white-logo.png";
-import {Link} from "react-router-dom";
+import { CircleUser, Menu } from "lucide-react";
 
-export const Navbar = ({children}: {children: React.ReactNode}) => {
-  const [state, setState] = useState(false);
-  const navRef = useRef<HTMLDivElement>(null);
+import { Button } from "@/components/ui/button";
 
-  useEffect(() => {
-    const body = document.body;
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-    const customBodyStyle = ["overflow-hidden", "lg:overflow-visible"];
-    if (state) body.classList.add(...customBodyStyle);
-    else body.classList.remove(...customBodyStyle);
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useNavigate, Link } from "react-router-dom";
 
-    const customStyle = ["sticky-nav", "fixed", "border-b"];
-    const handleScroll = () => {
-      if (window.scrollY > 80 && navRef.current) {
-        navRef.current.classList.add(...customStyle);
-      } else if (navRef.current) {
-        navRef.current.classList.remove(...customStyle);
-      }
-    };
+import logo from "@/assets/images/white-logo.png";
+import { useAuth } from "@/app/hooks/useAuth";
+import { ModeToggle } from "./ModeToggle";
+import { useSidebarContext } from "@/app/contexts/SidebarContext";
+import { cn } from "@/lib/utils";
 
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [state]);
-
+const NavigationLinks = () => {
+  const { activeTab, handleToggleNavItem } = useSidebarContext();
   return (
-    <nav ref={navRef} className="bg-primary w-full top-0 z-20">
-      <div className="items-center px-4 max-w-screen-xl mx-auto md:px-8 lg:flex">
-        <div className="flex items-center justify-between py-3 lg:py-4 lg:block">
-          <Link to="/dashboard">
-            <img src={whiteLogo} className="w-16" alt="Float UI logo" />
-          </Link>
-          <div className="lg:hidden">
-            <button
-              className="text-gray-700 outline-none p-2 rounded-md focus:border-gray-400 focus:border"
-              onClick={() => setState(!state)}
-            >
-              {state ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="white"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 8h16M4 16h16"
-                  />
-                </svg>
-              )}
-            </button>
-          </div>
-        </div>
-        <div
-          className={`flex-1 justify-between flex-row-reverse lg:overflow-visible lg:flex lg:pb-0 lg:pr-0 lg:h-auto ${
-            state ? "h-screen pb-20 overflow-auto pr-4" : "hidden"
-          }`}
-        >
-          <div className="flex-1">
-            <ul className="justify-center items-center space-y-8 bg-primary lg:flex lg:space-x-6 lg:space-y-0">
-              {children}
-            </ul>
-          </div>
-        </div>
-      </div>
-    </nav>
+    <>
+      <Link
+        to="/"
+        onClick={() => handleToggleNavItem("dashboard")}
+        className={cn(
+          "text-white transition-colors hover:text-foreground",
+          activeTab === "dashboard"
+            ? "text-primary bg-white p-1 rounded-md w-5/6 lg:w-full"
+            : ""
+        )}
+      >
+        Dashboard
+      </Link>
+
+      <Link
+        to="/invoicing"
+        onClick={() => handleToggleNavItem("invoicing")}
+        className={cn(
+          "text-white transition-colors hover:text-foreground",
+          activeTab === "invoicing"
+            ? "text-primary bg-white p-1 rounded-md w-5/6 lg:w-full "
+            : ""
+        )}
+      >
+        Faturamento
+      </Link>
+
+      <Link
+        to="/form/menu"
+        onClick={() => handleToggleNavItem("form/menu")}
+        className={cn(
+          "text-white transition-colors hover:text-foreground",
+          activeTab === "form/menu"
+            ? "text-primary bg-white p-1 rounded-md w-5/6 lg:w-full"
+            : ""
+        )}
+      >
+        Formulário
+      </Link>
+
+      <Link
+        to="/list"
+        onClick={() => handleToggleNavItem("list")}
+        className={cn(
+          "text-white transition-colors hover:text-foreground",
+          activeTab === "list"
+            ? "text-primary bg-white p-1 rounded-md w-5/6 lg:w-full"
+            : ""
+        )}
+      >
+        Ocorrências
+      </Link>
+
+      <Link
+        to="/list-rigs"
+        onClick={() => handleToggleNavItem("list-rigs")}
+        className={cn(
+          "text-white transition-colors hover:text-foreground",
+          activeTab === "list-rigs"
+            ? "text-primary bg-white p-1 rounded-md w-5/6 lg:w-full"
+            : ""
+        )}
+      >
+        Sondas
+      </Link>
+
+      <Link
+        to="/contracts"
+        onClick={() => handleToggleNavItem("contracts")}
+        className={cn(
+          "text-white transition-colors hover:text-foreground",
+          activeTab === "contracts"
+            ? "text-primary bg-white p-1 rounded-md w-5/6 lg:w-full"
+            : ""
+        )}
+      >
+        Contratos
+      </Link>
+
+      <Link
+        to="/users"
+        onClick={() => handleToggleNavItem("users")}
+        className={cn(
+          "text-white transition-colors hover:text-foreground",
+          activeTab === "users"
+            ? "text-primary bg-white p-1 rounded-md w-5/6 lg:w-full"
+            : ""
+        )}
+      >
+        Usuários
+      </Link>
+
+      <Link
+        to="/reports"
+        onClick={() => handleToggleNavItem("reports")}
+        className={cn(
+          "text-white transition-colors hover:text-foreground",
+          activeTab === "reports"
+            ? "text-primary bg-white p-1 rounded-md w-5/6 lg:w-full"
+            : ""
+        )}
+      >
+        Relatórios
+      </Link>
+    </>
   );
 };
+
+export function Navbar() {
+  const navigate = useNavigate();
+  const { signout } = useAuth();
+  return (
+    <header className="sticky top-0 flex h-16 z-10 items-center gap-4 border-b bg-primary px-4 md:px-6">
+      <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
+        <img
+          onClick={() => navigate("/")}
+          src={logo}
+          width={70}
+          height={50}
+          alt="logo"
+          className="rounded-full cursor-pointer"
+        />
+
+        <NavigationLinks />
+      </nav>
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant="outline" size="icon" className="shrink-0 md:hidden">
+            <Menu className="h-5 w-5" />
+            <span className="sr-only">Toggle navigation menu</span>
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left">
+          <nav className="grid gap-6 text-lg font-medium">
+            <NavigationLinks />
+          </nav>
+        </SheetContent>
+      </Sheet>
+      <div className="flex  items-center gap-4 md:ml-auto md:gap-2 lg:gap-4 ">
+        <ModeToggle />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="secondary" size="icon" className="rounded-full">
+              <CircleUser className="h-5 w-5" />
+              <span className="sr-only">Toggle user menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <Link to="/profile" className=" w-full">
+                Perfil
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link to="/profile/products" className=" w-full">
+                Meus Produtos
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => signout()}>
+              Logout
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </header>
+  );
+}

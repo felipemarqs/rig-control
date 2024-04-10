@@ -7,7 +7,6 @@ import {
   CardFooter,
   CardTitle,
 } from "@/components/ui/card";
-import { LineChart, LucideIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface MenuCardProps {

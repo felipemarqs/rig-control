@@ -18,7 +18,6 @@ import { CreateUser } from "../view/pages/CreateUser";
 import { UpdateUser } from "../view/pages/UpdateUser";
 import { UpdateUserRigs } from "../view/pages/UpdateUserRigs";
 import { DeletionRequests } from "../view/pages/DeletionRequests";
-import { useSidebarContext } from "../app/contexts/SidebarContext";
 import { ListRigs } from "../view/pages/ListRigs";
 import { BillingRigDetailDashboard } from "../view/pages/BillingRigDetailDashboard";
 //import { InDevelopmentPage } from "../view/pages/InDevelopmentPage";
