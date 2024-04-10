@@ -1,20 +1,7 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import {useWindowWidth} from "../utils/useWindowWidth";
-
+import { createContext, useContext, useState } from "react";
 interface SidebarContextValues {
-  expanded: boolean;
-  active: string;
-  toggleVisibility(): void;
-  toggleHiddenVisibility(): void;
+  activeTab: SidebarOptions;
   handleToggleNavItem(text: string): void;
-  windowWidth: number;
-  hidden: boolean;
 }
 
 export type SidebarOptions =
@@ -30,39 +17,22 @@ export const SidebarContext = createContext({} as SidebarContextValues);
 
 export const useSidebarContext = () => useContext(SidebarContext);
 
-export const SidebarProvider = ({children}: {children: React.ReactNode}) => {
-  const [expanded, setExpanded] = useState(false);
-  const [hidden, setHidden] = useState(false);
-  const [active, setActive] = useState<string>("Dashboard");
+export const SidebarProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const [activeTab, setActiveTab] = useState<SidebarOptions>("dashboard");
 
-  const windowWidth = useWindowWidth();
-
-  const toggleVisibility = () => {
-    setExpanded((prevState) => !prevState);
+  const handleToggleNavItem = (sidebarOption: SidebarOptions) => {
+    setActiveTab(sidebarOption);
   };
 
-  const toggleHiddenVisibility = useCallback(() => {
-    setHidden((prevState) => !prevState);
-  }, []);
-  const handleToggleNavItem = (text: string) => {
-    setActive(text);
-  };
-
-  useEffect(() => {
-    if (windowWidth > 1300) {
-      toggleHiddenVisibility();
-    }
-  }, [toggleHiddenVisibility, windowWidth]);
   return (
     <SidebarContext.Provider
       value={{
-        expanded,
-        toggleVisibility,
         handleToggleNavItem,
-        active,
-        windowWidth,
-        toggleHiddenVisibility,
-        hidden,
+        activeTab,
       }}
     >
       {children}

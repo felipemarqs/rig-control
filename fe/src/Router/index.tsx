@@ -1,41 +1,39 @@
 // Importando bibliotecas e componentes necessários
-import {Routes, Route, BrowserRouter} from "react-router-dom";
-import {AuthGuard} from "./AuthGuard";
-import {Login} from "../view/pages/Login";
-import {Dashboard} from "../view/pages/Dashboard";
-import {Register} from "../view/pages/Register";
-import {AuthLayout} from "../view/Layouts/AuthLayout";
-import {DesktopLayout} from "../view/Layouts/DesktopLayout/index";
-import {Form} from "../view/pages/Form";
-import {List} from "../view/pages/List";
-import {BillingDashboard} from "../view/pages/BillingDashboard";
-import {ListBilling} from "../view/pages/BillingList";
-import {Details} from "../view/pages/Details";
-import {CreateRig} from "../view/pages/CreateRig";
-import {CreateContract} from "../view/pages/CreateContract";
-import {Contract} from "../view/pages/Contract";
-import {ListUsers} from "../view/pages/ListUsers";
-import {CreateUser} from "../view/pages/CreateUser";
-import {UpdateUser} from "../view/pages/UpdateUser";
-import {UpdateUserRigs} from "../view/pages/UpdateUserRigs";
-import {DeletionRequests} from "../view/pages/DeletionRequests";
-import {MobileLayout} from "../view/Layouts/MobileLayout";
-import {useSidebarContext} from "../app/contexts/SidebarContext";
-import {ListRigs} from "../view/pages/ListRigs";
-import {BillingRigDetailDashboard} from "../view/pages/BillingRigDetailDashboard";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { AuthGuard } from "./AuthGuard";
+import { Login } from "../view/pages/Login";
+import { Dashboard } from "../view/pages/Dashboard";
+import { Register } from "../view/pages/Register";
+import { AuthLayout } from "../view/Layouts/AuthLayout";
+import { Form } from "../view/pages/Form";
+import { List } from "../view/pages/List";
+import { BillingDashboard } from "../view/pages/BillingDashboard";
+import { ListBilling } from "../view/pages/BillingList";
+import { Details } from "../view/pages/Details";
+import { CreateRig } from "../view/pages/CreateRig";
+import { CreateContract } from "../view/pages/CreateContract";
+import { Contract } from "../view/pages/Contract";
+import { ListUsers } from "../view/pages/ListUsers";
+import { CreateUser } from "../view/pages/CreateUser";
+import { UpdateUser } from "../view/pages/UpdateUser";
+import { UpdateUserRigs } from "../view/pages/UpdateUserRigs";
+import { DeletionRequests } from "../view/pages/DeletionRequests";
+import { useSidebarContext } from "../app/contexts/SidebarContext";
+import { ListRigs } from "../view/pages/ListRigs";
+import { BillingRigDetailDashboard } from "../view/pages/BillingRigDetailDashboard";
 //import { InDevelopmentPage } from "../view/pages/InDevelopmentPage";
-import {UpdateForm} from "../view/pages/UpdateForm";
-import {Report} from "../view/pages/Report";
-import {InvoicingMenu} from "../view/pages/InvoicingMenu";
-import {GlobalDashboard} from "../view/pages/GlobalDashboard";
-import {DashboardMenu} from "../view/pages/DashboardMenu";
-import {useAuth} from "../app/hooks/useAuth";
-import {FormMenu} from "../view/pages/FormMenu";
-import {PendingForm} from "../view/pages/PendingForm";
+import { UpdateForm } from "../view/pages/UpdateForm";
+import { Report } from "../view/pages/Report";
+import { InvoicingMenu } from "../view/pages/InvoicingMenu";
+import { GlobalDashboard } from "../view/pages/GlobalDashboard";
+import { DashboardMenu } from "../view/pages/DashboardMenu";
+import { useAuth } from "../app/hooks/useAuth";
+import { FormMenu } from "../view/pages/FormMenu";
+import { PendingForm } from "../view/pages/PendingForm";
+import { AppLayout } from "@/view/Layouts/AppLayout";
 
 export const Router = () => {
-  const {windowWidth} = useSidebarContext();
-  const {isUserAdm} = useAuth();
+  const { isUserAdm } = useAuth();
   return (
     <BrowserRouter>
       <Routes>
@@ -50,7 +48,7 @@ export const Router = () => {
         {/* Rota para páginas autenticadas */}
         <Route element={<AuthGuard isPrivate={true} />}>
           {/* Define o layout baseado na largura da janela */}
-          <Route element={<DesktopLayout />}>
+          <Route element={<AppLayout />}>
             <Route path="/" element={<DashboardMenu />} />
 
             <Route path="/dashboard" element={<Dashboard />} />
