@@ -18,6 +18,7 @@ import {useEfficienciesRigsAverage} from "../../../../app/hooks/efficiencies/use
 import {RigsAverageResponse} from "../../../../app/services/efficienciesService/getRigsAverage";
 import {useFiltersContext} from "../../../../app/hooks/useFiltersContext";
 import {getGlossPeriods} from "../../../../app/utils/getGlossPeriods";
+import {useWindowWidth} from "@/app/hooks/useWindowWidth";
 
 // Definição do tipo do contexto
 interface DashboardContextValue {
@@ -66,10 +67,10 @@ export const DashboardContext = createContext({} as DashboardContextValue);
 export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   // Utilização dos hooks para autenticação e contexto da barra lateral
   const {user, signout, isAlertSeen, handleIsAlertSeen, isUserAdm} = useAuth();
-  const {windowWidth} = useSidebarContext();
 
   // Verificação se o usuário é administrador para exibir as rigs corretas
   const {rigs} = useRigs(isUserAdm);
+  const windowWidth = useWindowWidth();
 
   // Mapeamento das rigs do usuário para exibir apenas as autorizadas
   const userRigs = user?.rigs.map(({rig: {id, name}}) => ({id, name})) || [];
@@ -156,6 +157,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         handleSelectEquipment,
         selectedEquipment,
         months,
+        windowWidth,
         glossPeriods,
         selectedRig,
         handleChangeRig,
@@ -182,7 +184,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         unavailableHoursPercentage,
         totalDtms,
         totalMovimentations,
-        windowWidth,
+
         isAlertSeen,
         handleIsAlertSeen,
         handleYearChange,

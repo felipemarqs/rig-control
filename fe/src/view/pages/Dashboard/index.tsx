@@ -1,6 +1,12 @@
 // Importações de componentes e contextos necessários
-import {BaggageClaim, FilterIcon, Truck} from "lucide-react";
-import {Button} from "../../components/Button";
+import {
+  BaggageClaim,
+  FilterIcon,
+  TimerIcon,
+  TimerOff,
+  Truck,
+} from "lucide-react";
+//import {Button} from "../../components/Button";
 import {DatePickerInput} from "../../components/DatePickerInput";
 import {NotFound} from "../../components/NotFound";
 import {Select} from "../../components/Select";
@@ -15,6 +21,32 @@ import {AccessLevel} from "../../../app/entities/AccessLevel";
 import {AverageBarChart} from "./components/AverageBarChart";
 import {GrouppedGlosses} from "./components/GrouppedGlosses";
 import {RepairDetailsPieChart} from "./components/RepairDetailsPieChart";
+
+import {Link} from "react-router-dom";
+import {ArrowUpRight} from "lucide-react";
+
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import {Button} from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {Progress} from "@/components/ui/progress";
+import {useLineChart} from "./components/LineChart/useLineChart";
+import {Badge} from "@/components/ui/badge";
 
 export const Dashboard = () => {
   return (
@@ -32,6 +64,7 @@ export const Dashboard = () => {
           isFetchingEfficiencies,
           isFetchingRigsAverage,
           rigsAverage,
+          windowWidth,
           rigs,
           isEmpty,
           totalAvailableHours,
@@ -41,7 +74,6 @@ export const Dashboard = () => {
           totalDtms,
           totalMovimentations,
           efficiencies,
-          windowWidth,
           user,
           months,
           filterOptions,
@@ -55,232 +87,278 @@ export const Dashboard = () => {
           years,
           selectedEquipment,
         }) => (
-          <div className="w-full  pt-10 overflow-y-scroll">
-            <div className="w-full flex flex-wrap justify-center items-center lg:justify-end gap-1 lg:px-4">
-              <div className="w-[113px] lg:w-[250px]">
-                <Select
-                  error={""}
-                  placeholder="Tipo de Filtro"
-                  value={selectedFilterType}
-                  onChange={(value) =>
-                    handleToggleFilterType(value as FilterType)
-                  }
-                  options={filterOptions}
-                />
-              </div>
-              <div className="w-[113px] lg:w-[123px]">
-                <Select
-                  error={""}
-                  placeholder="Sonda"
-                  value={selectedRig}
-                  onChange={(value) => handleChangeRig(value)}
-                  options={rigs.map(({id, name}) => ({
-                    value: id ?? "",
-                    label: name ?? "",
-                  }))}
-                />
-              </div>
-              {selectedFilterType === FilterType.PERIOD && (
-                <>
-                  <div className="w-[113px] lg:w-[123px]">
-                    <Select
-                      error={""}
-                      placeholder="Período"
-                      value={selectedPeriod}
-                      onChange={(value) => handleChangePeriod(value)}
-                      options={months}
-                    />
-                  </div>
-
-                  <div className="w-[113px] lg:w-[123px]">
-                    <Select
-                      error={""}
-                      placeholder="Ano"
-                      value={selectedYear}
-                      onChange={(value) => handleYearChange(value)}
-                      options={years}
-                    />
-                  </div>
-                </>
-              )}
-
-              {selectedFilterType === FilterType.CUSTOM && (
-                <>
-                  <div>
-                    <DatePickerInput
-                      placeholder="Data de Início"
-                      error={""}
-                      value={new Date(selectedStartDate)}
-                      onChange={(value) => handleStartDateChange(value)}
-                    />
-                  </div>
-
-                  <div>
-                    <DatePickerInput
-                      placeholder="Data de Fim"
-                      error={""}
-                      value={new Date(selectedEndDate)}
-                      onChange={(value) => handleEndDateChange(value)}
-                    />
-                  </div>
-                </>
-              )}
-
-              <div>
-                <Button
-                  className="h-[32px] lg:h-[52px]"
-                  onClick={handleApplyFilters}
-                >
-                  {windowWidth <= 1024 ? <FilterIcon /> : "Aplicar Filtro"}
-                </Button>
-              </div>
-            </div>
-            <div className=" w-full flex justify-center my-6">
-              <div className="stats  bg-gray-500">
-                {!isFetchingEfficiencies && !isEmpty && (
+          <div>
+            <div className="w-full  pt-10 overflow-y-scroll bg-red-500">
+              <div className="w-full flex flex-wrap justify-center items-center lg:justify-end gap-1 lg:px-4">
+                <div className="w-[113px] lg:w-[250px]">
+                  <Select
+                    error={""}
+                    placeholder="Tipo de Filtro"
+                    value={selectedFilterType}
+                    onChange={(value) =>
+                      handleToggleFilterType(value as FilterType)
+                    }
+                    options={filterOptions}
+                  />
+                </div>
+                <div className="w-[113px] lg:w-[123px]">
+                  <Select
+                    error={""}
+                    placeholder="Sonda"
+                    value={selectedRig}
+                    onChange={(value) => handleChangeRig(value)}
+                    options={rigs.map(({id, name}) => ({
+                      value: id ?? "",
+                      label: name ?? "",
+                    }))}
+                  />
+                </div>
+                {selectedFilterType === FilterType.PERIOD && (
                   <>
-                    <div className="stat">
-                      <div className="stat-figure text-white">
-                        <div
-                          className="radial-progress text-primary"
-                          style={{"--value": availableHoursPercentage} as any}
-                        >
-                          {availableHoursPercentage || 0}%
-                        </div>
-                      </div>
-                      <div className="stat-title  text-primary">
-                        Horas Disp.
-                      </div>
-                      <div className="stat-value  text-primary">
-                        {totalAvailableHours.toFixed()}Hrs
-                      </div>
-                      <div className="stat-desc  text-primary">
-                        Total de horas faturadas pela sonda
-                      </div>
+                    <div className="w-[113px] lg:w-[123px]">
+                      <Select
+                        error={""}
+                        placeholder="Período"
+                        value={selectedPeriod}
+                        onChange={(value) => handleChangePeriod(value)}
+                        options={months}
+                      />
                     </div>
 
-                    <div className="stat">
-                      <div className="stat-figure text-red">
-                        <div className="stat-figure text-white">
-                          <div
-                            className="radial-progress text-redAccent-500"
-                            style={
-                              {"--value": unavailableHoursPercentage} as any
-                            }
-                          >
-                            {unavailableHoursPercentage || 0}%
-                          </div>
-                        </div>
-                      </div>
-                      <div className="stat-title text-redAccent-500">
-                        Horas Indisp.
-                      </div>
-                      <div className="stat-value text-redAccent-500">
-                        {totalUnavailableHours.toFixed()}Hrs
-                      </div>
-                      <div className="stat-desc text-redAccent-500">
-                        Total de não horas faturadas pela sonda
-                      </div>
-                    </div>
-
-                    <div className="stat">
-                      <div className="stat-figure text-primary">
-                        <div className="w-16 rounded-full">
-                          <div className="w-16 h-16 flex items-center justify-center rounded-full bg-white">
-                            <Truck size={50} />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="stat-value text-primary">{totalDtms}</div>
-                      <div className="stat-title text-primary">DTMs</div>
-                      <div className="stat-desc text-primary">
-                        No período selecionado
-                      </div>
-                    </div>
-
-                    <div className="stat">
-                      <div className="stat-figure text-primary">
-                        <div className="w-16 h-16 flex items-center justify-center rounded-full bg-white">
-                          <BaggageClaim size={50} />
-                        </div>
-                      </div>
-                      <div className="stat-value text-primary">
-                        {totalMovimentations}
-                      </div>
-                      <div className="stat-title text-primary">
-                        Movimentações
-                      </div>
-                      <div className="stat-desc text-primary">
-                        No período selecionado
-                      </div>
+                    <div className="w-[113px] lg:w-[123px]">
+                      <Select
+                        error={""}
+                        placeholder="Ano"
+                        value={selectedYear}
+                        onChange={(value) => handleYearChange(value)}
+                        options={years}
+                      />
                     </div>
                   </>
                 )}
-              </div>
-            </div>
 
-            <div className=" mx-auto max-w-[1024px] bg-gray-400 min-h-[450px] rounded-md lg:min-w-[1300px] lg:p-4 flex justify-center items-center">
-              {isEmpty && (
-                <>
-                  {isFetchingEfficiencies && (
-                    <div className="w-full h-full flex justify-center items-center">
-                      <Spinner />
+                {selectedFilterType === FilterType.CUSTOM && (
+                  <>
+                    <div>
+                      <DatePickerInput
+                        placeholder="Data de Início"
+                        error={""}
+                        value={new Date(selectedStartDate)}
+                        onChange={(value) => handleStartDateChange(value)}
+                      />
                     </div>
-                  )}
 
-                  {!isFetchingEfficiencies && (
-                    <div className="w-full h-full flex justify-center items-center">
-                      <NotFound>
-                        <strong>Não</strong> existem dados para a{" "}
-                        <strong>sonda</strong> no <strong>período</strong>{" "}
-                        selecionado!
-                      </NotFound>
+                    <div>
+                      <DatePickerInput
+                        placeholder="Data de Fim"
+                        error={""}
+                        value={new Date(selectedEndDate)}
+                        onChange={(value) => handleEndDateChange(value)}
+                      />
                     </div>
-                  )}
-                </>
-              )}
+                  </>
+                )}
 
-              {!isEmpty && (
-                <div className=" flex-1 grid grid-cols-12 auto-rows-[120px] gap-3">
-                  <div
-                    className={cn(
-                      "col-span-12 row-span-3 flex justify-center bg-gray-200 rounded-lg items-center  lg:row-span-3 lg:col-start-0 lg:col-span-12"
-                    )}
+                <div>
+                  <Button
+                    className="h-[32px] lg:h-[52px]"
+                    onClick={handleApplyFilters}
                   >
-                    {isFetchingEfficiencies && <Spinner />}
-                    {!isFetchingEfficiencies && <LineChart />}
-                  </div>
+                    <FilterIcon />
+                  </Button>
+                </div>
+              </div>
+              <div className=" w-full flex justify-center my-6">
+                <div className="stats  bg-gray-500">
+                  {!isFetchingEfficiencies && !isEmpty && (
+                    <>
+                      <div className="stat">
+                        <div className="stat-figure text-white">
+                          <div
+                            className="radial-progress text-primary"
+                            style={{"--value": availableHoursPercentage} as any}
+                          >
+                            {availableHoursPercentage || 0}%
+                          </div>
+                        </div>
+                        <div className="stat-title  text-primary">
+                          Horas Disp.
+                        </div>
+                        <div className="stat-value  text-primary">
+                          {totalAvailableHours.toFixed()}Hrs
+                        </div>
+                        <div className="stat-desc  text-primary">
+                          Total de horas faturadas pela sonda
+                        </div>
+                      </div>
 
-                  {/*    <div className="col-span-6 row-span-2 flex justify-center bg-gray-200 rounded-lg items-center">
+                      <div className="stat">
+                        <div className="stat-figure text-red">
+                          <div className="stat-figure text-white">
+                            <div
+                              className="radial-progress text-redAccent-500"
+                              style={
+                                {"--value": unavailableHoursPercentage} as any
+                              }
+                            >
+                              {unavailableHoursPercentage || 0}%
+                            </div>
+                          </div>
+                        </div>
+                        <div className="stat-title text-redAccent-500">
+                          Horas Indisp.
+                        </div>
+                        <div className="stat-value text-redAccent-500">
+                          {totalUnavailableHours.toFixed()}Hrs
+                        </div>
+                        <div className="stat-desc text-redAccent-500">
+                          Total de não horas faturadas pela sonda
+                        </div>
+                      </div>
+
+                      <div className="stat">
+                        <div className="stat-figure text-primary">
+                          <div className="w-16 rounded-full">
+                            <div className="w-16 h-16 flex items-center justify-center rounded-full bg-white">
+                              <Truck size={50} />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="stat-value text-primary">
+                          {totalDtms}
+                        </div>
+                        <div className="stat-title text-primary">DTMs</div>
+                        <div className="stat-desc text-primary">
+                          No período selecionado
+                        </div>
+                      </div>
+
+                      <div className="stat">
+                        <div className="stat-figure text-primary">
+                          <div className="w-16 h-16 flex items-center justify-center rounded-full bg-white">
+                            <BaggageClaim size={50} />
+                          </div>
+                        </div>
+                        <div className="stat-value text-primary">
+                          {totalMovimentations}
+                        </div>
+                        <div className="stat-title text-primary">
+                          Movimentações
+                        </div>
+                        <div className="stat-desc text-primary">
+                          No período selecionado
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              <div className=" mx-auto max-w-[1024px] bg-gray-400 min-h-[450px] rounded-md lg:min-w-[1300px] lg:p-4 flex justify-center items-center">
+                {isEmpty && (
+                  <>
+                    {isFetchingEfficiencies && (
+                      <div className="w-full h-full flex justify-center items-center">
+                        <Spinner />
+                      </div>
+                    )}
+
+                    {!isFetchingEfficiencies && (
+                      <div className="w-full h-full flex justify-center items-center">
+                        <NotFound>
+                          <strong>Não</strong> existem dados para a{" "}
+                          <strong>sonda</strong> no <strong>período</strong>{" "}
+                          selecionado!
+                        </NotFound>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {!isEmpty && (
+                  <div className=" flex-1 grid grid-cols-12 auto-rows-[120px] gap-3">
+                    <div
+                      className={cn(
+                        "col-span-12 row-span-3 flex justify-center bg-gray-200 rounded-lg items-center  lg:row-span-3 lg:col-start-0 lg:col-span-12"
+                      )}
+                    >
+                      {isFetchingEfficiencies && <Spinner />}
+                      {!isFetchingEfficiencies && <LineChart />}
+                    </div>
+
+                    {/*    <div className="col-span-6 row-span-2 flex justify-center bg-gray-200 rounded-lg items-center">
                     {isFetchingEfficiencies && <Spinner />}
                     {!isFetchingEfficiencies && <LineChart />}
                   </div>*/}
 
-                  <div
-                    className={`col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6  `}
-                  >
-                    {isFetchingEfficiencies && <Spinner />}
-                    {repairPeriods.length === 0 && !isFetchingEfficiencies && (
-                      <div className="flex justify-center  items-center">
-                        <NotFound>
-                          <strong>Não</strong> existem dados de{" "}
-                          <strong>reparos</strong> para a <strong>sonda</strong>{" "}
-                          no <strong>período</strong> selecionado!
-                        </NotFound>
-                      </div>
-                    )}
-                    {!isFetchingEfficiencies && repairPeriods.length > 0 && (
-                      <div className="w-full h-full">
-                        <GrouppedRepairs />
-                      </div>
-                    )}
-                  </div>
-
-                  {selectedEquipment && (
-                    <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6 lg:row-span-3">
+                    <div
+                      className={`col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6  `}
+                    >
                       {isFetchingEfficiencies && <Spinner />}
                       {repairPeriods.length === 0 &&
                         !isFetchingEfficiencies && (
+                          <div className="flex justify-center  items-center">
+                            <NotFound>
+                              <strong>Não</strong> existem dados de{" "}
+                              <strong>reparos</strong> para a{" "}
+                              <strong>sonda</strong> no <strong>período</strong>{" "}
+                              selecionado!
+                            </NotFound>
+                          </div>
+                        )}
+                      {!isFetchingEfficiencies && repairPeriods.length > 0 && (
+                        <div className="w-full h-full">
+                          <GrouppedRepairs />
+                        </div>
+                      )}
+                    </div>
+
+                    {selectedEquipment && (
+                      <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6 lg:row-span-3">
+                        {isFetchingEfficiencies && <Spinner />}
+                        {repairPeriods.length === 0 &&
+                          !isFetchingEfficiencies && (
+                            <div className="flex justify-center items-center">
+                              <NotFound>
+                                <strong>Não</strong> existem dados para a{" "}
+                                <strong>sonda</strong> no{" "}
+                                <strong>período</strong> selecionado!
+                              </NotFound>
+                            </div>
+                          )}
+                        {!isFetchingEfficiencies &&
+                          repairPeriods.length > 0 && (
+                            <div className="w-full h-full">
+                              <RepairDetailsPieChart />
+                            </div>
+                          )}
+                      </div>
+                    )}
+
+                    <div
+                      className={`col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6  `}
+                    >
+                      {isFetchingEfficiencies && <Spinner />}
+                      {glossPeriods.length === 0 && !isFetchingEfficiencies && (
+                        <div className="flex justify-center  items-center">
+                          <NotFound>
+                            <strong>Não</strong> existem dados de{" "}
+                            <strong>glosa</strong> para a <strong>sonda</strong>{" "}
+                            no <strong>período</strong> selecionado!
+                          </NotFound>
+                        </div>
+                      )}
+                      {!isFetchingEfficiencies && glossPeriods.length > 0 && (
+                        <div className="w-full h-full">
+                          <GrouppedGlosses />
+                        </div>
+                      )}
+                    </div>
+
+                    {user?.accessLevel === AccessLevel.ADM && (
+                      <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6 lg:row-span-3">
+                        {isFetchingRigsAverage && <Spinner />}
+                        {rigsAverage.length === 0 && !isFetchingRigsAverage && (
                           <div className="flex justify-center items-center">
                             <NotFound>
                               <strong>Não</strong> existem dados para a{" "}
@@ -289,70 +367,30 @@ export const Dashboard = () => {
                             </NotFound>
                           </div>
                         )}
-                      {!isFetchingEfficiencies && repairPeriods.length > 0 && (
+                        {!isFetchingRigsAverage && rigsAverage.length > 0 && (
+                          <div className="w-full h-full">
+                            <AverageBarChart />
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="col-span-12 row-span-3 flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6">
+                      {isFetchingEfficiencies && <Spinner />}
+
+                      {/* {!isFetchingEfficiencies && (
                         <div className="w-full h-full">
-                          <RepairDetailsPieChart />
+                          <ListEfficienciesDataGrid
+                            data={efficiencies}
+                            isDashboard
+                          />
                         </div>
-                      )}
+                      )} */}
                     </div>
-                  )}
-
-                  <div
-                    className={`col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6  `}
-                  >
-                    {isFetchingEfficiencies && <Spinner />}
-                    {glossPeriods.length === 0 && !isFetchingEfficiencies && (
-                      <div className="flex justify-center  items-center">
-                        <NotFound>
-                          <strong>Não</strong> existem dados de{" "}
-                          <strong>glosa</strong> para a <strong>sonda</strong>{" "}
-                          no <strong>período</strong> selecionado!
-                        </NotFound>
-                      </div>
-                    )}
-                    {!isFetchingEfficiencies && glossPeriods.length > 0 && (
-                      <div className="w-full h-full">
-                        <GrouppedGlosses />
-                      </div>
-                    )}
                   </div>
-
-                  {user?.accessLevel === AccessLevel.ADM && (
-                    <div className="col-span-12 row-span-3  flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6 lg:row-span-3">
-                      {isFetchingRigsAverage && <Spinner />}
-                      {rigsAverage.length === 0 && !isFetchingRigsAverage && (
-                        <div className="flex justify-center items-center">
-                          <NotFound>
-                            <strong>Não</strong> existem dados para a{" "}
-                            <strong>sonda</strong> no <strong>período</strong>{" "}
-                            selecionado!
-                          </NotFound>
-                        </div>
-                      )}
-                      {!isFetchingRigsAverage && rigsAverage.length > 0 && (
-                        <div className="w-full h-full">
-                          <AverageBarChart />
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  <div className="col-span-12 row-span-3 flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6">
-                    {isFetchingEfficiencies && <Spinner />}
-
-                    {!isFetchingEfficiencies && (
-                      <div className="w-full h-full">
-                        <ListEfficienciesDataGrid
-                          data={efficiencies}
-                          isDashboard
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-            {/*       <Modal
+                )}
+              </div>
+              {/*       <Modal
               title="Novidades e Melhorias Recentes!!"
               maxWidth="1000px"
               open={!isAlertSeen}
@@ -393,6 +431,318 @@ export const Dashboard = () => {
                 </div>
               </div>
             </Modal> */}
+            </div>
+            <div className="flex w-full flex-col">
+              <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+                <div className="grid gap-4  md:grid-cols-2 md:gap-8 lg:grid-cols-4">
+                  <Card
+                    x-chunk="dashboard-01-chunk-0"
+                    className="shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
+                  >
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">
+                        Horas Disponiveis
+                      </CardTitle>
+                      <TimerIcon className="h-8 w-8 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">
+                        {totalAvailableHours.toFixed()}Hrs
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Total de horas faturadas pela sonda
+                      </p>
+                    </CardContent>
+                    <CardFooter>
+                      <Progress value={availableHoursPercentage} />
+                    </CardFooter>
+                  </Card>
+                  <Card
+                    x-chunk="dashboard-01-chunk-0"
+                    className="shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
+                  >
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium text-redAccent-500">
+                        Horas Indisponiveis
+                      </CardTitle>
+                      <TimerOff className="h-8 w-8 text-muted-foreground text-redAccent-500" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-redAccent-500">
+                        {totalUnavailableHours.toFixed()}Hrs
+                      </div>
+                      <p className="text-xs text-muted-foreground text-redAccent-500">
+                        Total de horas não faturadas pela sonda
+                      </p>
+                    </CardContent>
+                    <CardFooter>
+                      <Progress
+                        value={unavailableHoursPercentage}
+                        indicatorColor="bg-redAccent-500"
+                        className="bg-redAccent-500/20"
+                      />
+                    </CardFooter>
+                  </Card>
+                  <Card
+                    x-chunk="dashboard-01-chunk-2"
+                    className="shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
+                  >
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">DTM</CardTitle>
+                      <Truck className="h-8 w-8 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{totalDtms}</div>
+                      <p className="text-xs text-muted-foreground">
+                        Total de DTMs no período selecionado
+                      </p>
+                    </CardContent>
+                  </Card>
+                  <Card
+                    x-chunk="dashboard-01-chunk-2"
+                    className="shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
+                  >
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">
+                        Movimentações
+                      </CardTitle>
+                      <BaggageClaim className="h-8 w-8 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{totalDtms}</div>
+                      <p className="text-xs text-muted-foreground">
+                        Total de monivmentações de Equipamentos e Fluidos no
+                        período selecionado
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+                <div className="grid gap-4 md:gap-8 grid-cols-12">
+                  {!isEmpty && !isFetchingEfficiencies && (
+                    <Card className="col-span-12  shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
+                      <CardHeader className="pb-0">
+                        <CardTitle>Eficiência Diária</CardTitle>
+                        <CardDescription>Gráfico com os dias</CardDescription>
+                      </CardHeader>
+                      <CardContent className="p-0 h-4/5">
+                        {isFetchingEfficiencies && <Spinner />}
+                        {!isFetchingEfficiencies && <LineChart />}
+                      </CardContent>
+                    </Card>
+                  )}
+                  <Card className="col-span-12 lg:col-span-5 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
+                    <CardHeader className="flex flex-row items-center">
+                      <div className="grid gap-2">
+                        <CardTitle>Lista de Ocorrências</CardTitle>
+                        <CardDescription>
+                          Lista de Ocorrências do período selecionado
+                        </CardDescription>
+                      </div>
+                      <Button asChild size="sm" className="ml-auto gap-1">
+                        <Link to="/">
+                          View All
+                          <ArrowUpRight className="h-4 w-4" />
+                        </Link>
+                      </Button>
+                    </CardHeader>
+                    <CardContent>
+                      {" "}
+                      <div className="max-w-full">
+                        <ListEfficienciesDataGrid
+                          data={efficiencies}
+                          isDashboard
+                          windowWidth={windowWidth}
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="col-span-12 lg:col-span-5 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] max-h-[494px] overflow-y-scroll">
+                    <CardHeader className="px-7">
+                      <CardTitle>Orders</CardTitle>
+                      <CardDescription>
+                        Recent orders from your store.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Customer</TableHead>
+                            <TableHead className="hidden sm:table-cell">
+                              Type
+                            </TableHead>
+                            <TableHead className="hidden sm:table-cell">
+                              Status
+                            </TableHead>
+                            <TableHead className="hidden md:table-cell">
+                              Date
+                            </TableHead>
+                            <TableHead className="text-right">Amount</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          <TableRow className="bg-accent">
+                            <TableCell>
+                              <div className="font-medium">Liam Johnson</div>
+                              <div className="hidden text-sm text-muted-foreground md:inline">
+                                liam@example.com
+                              </div>
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              Sale
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              <Badge className="text-xs" variant="secondary">
+                                Fulfilled
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              2023-06-23
+                            </TableCell>
+                            <TableCell className="text-right">
+                              $250.00
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>
+                              <div className="font-medium">Olivia Smith</div>
+                              <div className="hidden text-sm text-muted-foreground md:inline">
+                                olivia@example.com
+                              </div>
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              Refund
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              <Badge className="text-xs" variant="outline">
+                                Declined
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              2023-06-24
+                            </TableCell>
+                            <TableCell className="text-right">
+                              $150.00
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>
+                              <div className="font-medium">Noah Williams</div>
+                              <div className="hidden text-sm text-muted-foreground md:inline">
+                                noah@example.com
+                              </div>
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              Subscription
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              <Badge className="text-xs" variant="secondary">
+                                Fulfilled
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              2023-06-25
+                            </TableCell>
+                            <TableCell className="text-right">
+                              $350.00
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>
+                              <div className="font-medium">Noah Williams</div>
+                              <div className="hidden text-sm text-muted-foreground md:inline">
+                                noah@example.com
+                              </div>
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              Subscription
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              <Badge className="text-xs" variant="secondary">
+                                Fulfilled
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              2023-06-25
+                            </TableCell>
+                            <TableCell className="text-right">
+                              $350.00
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>
+                              <div className="font-medium">Emma Brown</div>
+                              <div className="hidden text-sm text-muted-foreground md:inline">
+                                emma@example.com
+                              </div>
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              Sale
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              <Badge className="text-xs" variant="secondary">
+                                Fulfilled
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              2023-06-26
+                            </TableCell>
+                            <TableCell className="text-right">
+                              $450.00
+                            </TableCell>
+                          </TableRow>
+
+                          <TableRow>
+                            <TableCell>
+                              <div className="font-medium">Olivia Smith</div>
+                              <div className="hidden text-sm text-muted-foreground md:inline">
+                                olivia@example.com
+                              </div>
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              Refund
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              <Badge className="text-xs" variant="outline">
+                                Declined
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              2023-06-24
+                            </TableCell>
+                            <TableCell className="text-right">
+                              $150.00
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>
+                              <div className="font-medium">Emma Brown</div>
+                              <div className="hidden text-sm text-muted-foreground md:inline">
+                                emma@example.com
+                              </div>
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              Sale
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              <Badge className="text-xs" variant="secondary">
+                                Fulfilled
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              2023-06-26
+                            </TableCell>
+                            <TableCell className="text-right">
+                              $450.00
+                            </TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </CardContent>
+                  </Card>
+                </div>
+              </main>
+            </div>
           </div>
         )}
       </DashboardContext.Consumer>
