@@ -7,26 +7,26 @@ import {
   Truck,
 } from "lucide-react";
 //import {Button} from "../../components/Button";
-import {DatePickerInput} from "../../components/DatePickerInput";
-import {NotFound} from "../../components/NotFound";
-import {Select} from "../../components/Select";
-import {Spinner} from "../../components/Spinner";
-import {DashboardContext, DashboardProvider} from "./DashboardContext";
-import {LineChart} from "./components/LineChart";
-import {ListEfficienciesDataGrid} from "../../components/ListEfficienciesDataGrid";
-import {cn} from "../../../app/utils/cn";
-import {FilterType} from "../../../app/entities/FilterType";
-import {GrouppedRepairs} from "./components/GrouppedRepairs";
-import {AccessLevel} from "../../../app/entities/AccessLevel";
-import {AverageBarChart} from "./components/AverageBarChart";
-import {GrouppedGlosses} from "./components/GrouppedGlosses";
-import {RepairDetailsPieChart} from "./components/RepairDetailsPieChart";
+import { DatePickerInput } from "../../components/DatePickerInput";
+import { NotFound } from "../../components/NotFound";
+import { Select } from "../../components/Select";
+import { Spinner } from "../../components/Spinner";
+import { DashboardContext, DashboardProvider } from "./DashboardContext";
+import { LineChart } from "./components/LineChart";
+import { ListEfficienciesDataGrid } from "../../components/ListEfficienciesDataGrid";
+import { cn } from "../../../app/utils/cn";
+import { FilterType } from "../../../app/entities/FilterType";
+import { GrouppedRepairs } from "./components/GrouppedRepairs";
+import { AccessLevel } from "../../../app/entities/AccessLevel";
+import { AverageBarChart } from "./components/AverageBarChart";
+import { GrouppedGlosses } from "./components/GrouppedGlosses";
+import { RepairDetailsPieChart } from "./components/RepairDetailsPieChart";
 
-import {Link} from "react-router-dom";
-import {ArrowUpRight} from "lucide-react";
+import { Link } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
 
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
-import {Button} from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -44,9 +44,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {Progress} from "@/components/ui/progress";
-import {useLineChart} from "./components/LineChart/useLineChart";
-import {Badge} from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { useLineChart } from "./components/LineChart/useLineChart";
+import { Badge } from "@/components/ui/badge";
+import { Indexx } from "./components/GrouppedRepairs/indexx";
 
 export const Dashboard = () => {
   return (
@@ -107,7 +108,7 @@ export const Dashboard = () => {
                     placeholder="Sonda"
                     value={selectedRig}
                     onChange={(value) => handleChangeRig(value)}
-                    options={rigs.map(({id, name}) => ({
+                    options={rigs.map(({ id, name }) => ({
                       value: id ?? "",
                       label: name ?? "",
                     }))}
@@ -176,7 +177,9 @@ export const Dashboard = () => {
                         <div className="stat-figure text-white">
                           <div
                             className="radial-progress text-primary"
-                            style={{"--value": availableHoursPercentage} as any}
+                            style={
+                              { "--value": availableHoursPercentage } as any
+                            }
                           >
                             {availableHoursPercentage || 0}%
                           </div>
@@ -198,7 +201,7 @@ export const Dashboard = () => {
                             <div
                               className="radial-progress text-redAccent-500"
                               style={
-                                {"--value": unavailableHoursPercentage} as any
+                                { "--value": unavailableHoursPercentage } as any
                               }
                             >
                               {unavailableHoursPercentage || 0}%
@@ -533,7 +536,7 @@ export const Dashboard = () => {
                   <Card className="col-span-12 lg:col-span-5 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
                     <CardHeader className="flex flex-row items-center">
                       <div className="grid gap-2">
-                        <CardTitle>Lista de Ocorrências</CardTitle>
+                        <CardTitle>Ocorrências</CardTitle>
                         <CardDescription>
                           Lista de Ocorrências do período selecionado
                         </CardDescription>
@@ -556,190 +559,51 @@ export const Dashboard = () => {
                       </div>
                     </CardContent>
                   </Card>
-                  <Card className="col-span-12 lg:col-span-5 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] max-h-[494px] overflow-y-scroll">
+                  <Card className="col-span-12 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] max-h-[494px] overflow-hidden overflow-y-scroll">
                     <CardHeader className="px-7">
-                      <CardTitle>Orders</CardTitle>
+                      <CardTitle>Reparos</CardTitle>
                       <CardDescription>
-                        Recent orders from your store.
+                        Lista dos reparos de equipamentos durante o período
+                        selecionado.
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Customer</TableHead>
-                            <TableHead className="hidden sm:table-cell">
-                              Type
-                            </TableHead>
-                            <TableHead className="hidden sm:table-cell">
-                              Status
-                            </TableHead>
-                            <TableHead className="hidden md:table-cell">
-                              Date
-                            </TableHead>
-                            <TableHead className="text-right">Amount</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          <TableRow className="bg-accent">
-                            <TableCell>
-                              <div className="font-medium">Liam Johnson</div>
-                              <div className="hidden text-sm text-muted-foreground md:inline">
-                                liam@example.com
-                              </div>
-                            </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                              Sale
-                            </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                              <Badge className="text-xs" variant="secondary">
-                                Fulfilled
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              2023-06-23
-                            </TableCell>
-                            <TableCell className="text-right">
-                              $250.00
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell>
-                              <div className="font-medium">Olivia Smith</div>
-                              <div className="hidden text-sm text-muted-foreground md:inline">
-                                olivia@example.com
-                              </div>
-                            </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                              Refund
-                            </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                              <Badge className="text-xs" variant="outline">
-                                Declined
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              2023-06-24
-                            </TableCell>
-                            <TableCell className="text-right">
-                              $150.00
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell>
-                              <div className="font-medium">Noah Williams</div>
-                              <div className="hidden text-sm text-muted-foreground md:inline">
-                                noah@example.com
-                              </div>
-                            </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                              Subscription
-                            </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                              <Badge className="text-xs" variant="secondary">
-                                Fulfilled
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              2023-06-25
-                            </TableCell>
-                            <TableCell className="text-right">
-                              $350.00
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell>
-                              <div className="font-medium">Noah Williams</div>
-                              <div className="hidden text-sm text-muted-foreground md:inline">
-                                noah@example.com
-                              </div>
-                            </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                              Subscription
-                            </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                              <Badge className="text-xs" variant="secondary">
-                                Fulfilled
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              2023-06-25
-                            </TableCell>
-                            <TableCell className="text-right">
-                              $350.00
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell>
-                              <div className="font-medium">Emma Brown</div>
-                              <div className="hidden text-sm text-muted-foreground md:inline">
-                                emma@example.com
-                              </div>
-                            </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                              Sale
-                            </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                              <Badge className="text-xs" variant="secondary">
-                                Fulfilled
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              2023-06-26
-                            </TableCell>
-                            <TableCell className="text-right">
-                              $450.00
-                            </TableCell>
-                          </TableRow>
-
-                          <TableRow>
-                            <TableCell>
-                              <div className="font-medium">Olivia Smith</div>
-                              <div className="hidden text-sm text-muted-foreground md:inline">
-                                olivia@example.com
-                              </div>
-                            </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                              Refund
-                            </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                              <Badge className="text-xs" variant="outline">
-                                Declined
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              2023-06-24
-                            </TableCell>
-                            <TableCell className="text-right">
-                              $150.00
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell>
-                              <div className="font-medium">Emma Brown</div>
-                              <div className="hidden text-sm text-muted-foreground md:inline">
-                                emma@example.com
-                              </div>
-                            </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                              Sale
-                            </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                              <Badge className="text-xs" variant="secondary">
-                                Fulfilled
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              2023-06-26
-                            </TableCell>
-                            <TableCell className="text-right">
-                              $450.00
-                            </TableCell>
-                          </TableRow>
-                        </TableBody>
-                      </Table>
+                      <Indexx />
                     </CardContent>
                   </Card>
+
+                  <Card className="col-span-12 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] max-h-[494px] ">
+                    <CardHeader className="px-7">
+                      <CardTitle>Detalhes do Reparo</CardTitle>
+                      <CardDescription>
+                        Gráfico com detalhes do equipamento selecionado.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="px-2 h-full">
+                      {selectedEquipment &&
+                        !isFetchingEfficiencies &&
+                        repairPeriods.length > 0 && (
+                          <div className="max-w-full h-full">
+                            <RepairDetailsPieChart />
+                          </div>
+                        )}
+                    </CardContent>
+                  </Card>
+
+                  <div className="col-span-12   flex justify-center bg-gray-200 rounded-lg items-center  lg:col-span-6 ">
+                    {isFetchingEfficiencies && <Spinner />}
+                    {selectedEquipment &&
+                      repairPeriods.length === 0 &&
+                      !isFetchingEfficiencies && (
+                        <div className="flex justify-center items-center">
+                          <NotFound>
+                            <strong>Não</strong> existem dados para a{" "}
+                            <strong>sonda</strong> no <strong>período</strong>{" "}
+                            selecionado!
+                          </NotFound>
+                        </div>
+                      )}
+                  </div>
                 </div>
               </main>
             </div>
