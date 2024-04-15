@@ -11,18 +11,9 @@ import {FilterType} from "../../../app/entities/FilterType";
 import {RepairDetailsPieChart} from "./components/RepairDetailsPieChart";
 
 import {Button} from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
-import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 
 import {GrouppedRepairsCard} from "./components/GrouppedRepairsCard";
-import {translateClassification} from "@/app/utils/translateClassification";
 import {GrouppedGlossesCard} from "./components/GrouppedGlossesCard";
 import {StatboxContainer} from "./components/StatboxContainer";
 import {LineChartCard} from "./components/LineChartCard";
@@ -34,9 +25,9 @@ import {
   SheetContent,
   SheetDescription,
   SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {cn} from "@/lib/utils";
 
 export const Dashboard = () => {
   return (
@@ -53,12 +44,9 @@ export const Dashboard = () => {
           handleRemoveSelectedEquipment,
           handleApplyFilters,
           isFetchingEfficiencies,
-
           rigs,
-
           months,
           filterOptions,
-
           handleToggleFilterType,
           selectedFilterType,
           selectedPeriod,
@@ -67,9 +55,7 @@ export const Dashboard = () => {
           handleYearChange,
           years,
           selectedEquipment,
-          handleSelectGloss,
           selectedGloss,
-          isEfficiencyArrayLarge,
         }) => (
           <div>
             <div className="flex justify-end p-4">
@@ -149,7 +135,14 @@ export const Dashboard = () => {
                           </>
                         )}
 
-                        <Button onClick={handleApplyFilters}>
+                        <Button
+                          onClick={handleApplyFilters}
+                          disabled={isFetchingEfficiencies}
+                          className={cn(
+                            "",
+                            isFetchingEfficiencies ? "cursor-not-allowed" : ""
+                          )}
+                        >
                           Aplicar Filtros
                         </Button>
                       </div>

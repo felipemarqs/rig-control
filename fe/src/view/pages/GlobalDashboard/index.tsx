@@ -30,7 +30,7 @@ export const GlobalDashboard = () => {
           rigsAverage,
           isChartDataEmpty,
           isEmpty,
-          windowWidth,
+
           user,
           handleIsAlertSeen,
           isAlertSeen,
@@ -64,7 +64,7 @@ export const GlobalDashboard = () => {
                   className="h-[32px] lg:h-[52px]"
                   onClick={handleApplyFilters}
                 >
-                  {windowWidth <= 1024 ? <FilterIcon /> : "Aplicar Filtro"}
+                  <FilterIcon />
                 </Button>
               </div>
             </div>

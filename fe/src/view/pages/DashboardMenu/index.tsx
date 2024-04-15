@@ -1,5 +1,4 @@
 import {BarChartBig, LineChart} from "lucide-react";
-import {Header} from "../../components/Header";
 import {useDashboardMenu} from "./useDashboardMenu";
 import {MenuCard} from "@/view/components/MenuCard";
 

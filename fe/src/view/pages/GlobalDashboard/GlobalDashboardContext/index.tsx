@@ -28,7 +28,6 @@ interface GlobalDashboardContextValue {
   handleApplyFilters(): void;
   user: User | undefined;
   signout(): void;
-  windowWidth: number;
   rigsAverage: RigsAverageResponse;
   isFetchingRigsAverage: boolean;
   totalDaysSelected: number;
@@ -62,7 +61,6 @@ export const GlobalDashboardProvider = ({
 }) => {
   // Utilização dos hooks para autenticação e contexto da barra lateral
   const {user, signout, isAlertSeen, handleIsAlertSeen} = useAuth();
-  const {windowWidth} = useSidebarContext();
 
   // Estados iniciais para as datas (primeiro e último dia do mês atual)
   const {
@@ -213,7 +211,6 @@ export const GlobalDashboardProvider = ({
         user,
         handleCloseDetailsGraph,
         signout,
-        windowWidth,
         isAlertSeen,
         handleIsAlertSeen,
         totalDaysSelected,

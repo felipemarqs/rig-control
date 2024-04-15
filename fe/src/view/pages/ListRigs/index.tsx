@@ -79,19 +79,13 @@ export const ListRigs = () => {
                             </div>
                             {isActive && (
                               <div>
-                                <Badge className="bg-emerald-500">
-                                  {" "}
-                                  Sonda Ativa
-                                </Badge>
+                                <Badge className="bg-emerald-500">Ativa</Badge>
                               </div>
                             )}
 
                             {!isActive && (
                               <div>
-                                <Badge variant="destructive">
-                                  {" "}
-                                  Sonda Desativada
-                                </Badge>
+                                <Badge variant="destructive">Desativada</Badge>
                               </div>
                             )}
                           </div>
