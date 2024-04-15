@@ -1,10 +1,8 @@
-import { ResponsivePie } from "@nivo/pie";
-import { useRepairDetailsPieChart } from "./useRepairDetailsPieChart";
-import { ChartHeader } from "../../../../components/ChartHeader";
+import {ResponsivePie} from "@nivo/pie";
+import {useRepairDetailsPieChart} from "./useRepairDetailsPieChart";
 
 export const RepairDetailsPieChart = () => {
-  const { chartData /* handleCloseDetailsGraph */ } =
-    useRepairDetailsPieChart();
+  const {chartData /* handleCloseDetailsGraph */} = useRepairDetailsPieChart();
   return (
     <ResponsivePie
       data={chartData}
@@ -50,10 +48,10 @@ export const RepairDetailsPieChart = () => {
           },
         },
       }}
-      colors={{ datum: "data.color" }}
-      margin={{ top: 40, right: 80, bottom: 100, left: 80 }}
+      colors={{datum: "data.color"}}
+      margin={{top: 10, right: 80, bottom: 120, left: 80}}
       sortByValue={true}
-      innerRadius={0.45}
+      innerRadius={0}
       activeOuterRadiusOffset={8}
       borderWidth={1}
       borderColor={{
@@ -64,7 +62,7 @@ export const RepairDetailsPieChart = () => {
       enableArcLinkLabels={true}
       arcLinkLabelsTextColor={"#1c7b7b"}
       arcLinkLabelsThickness={3}
-      arcLinkLabelsColor={{ from: "color" }}
+      arcLinkLabelsColor={{from: "color"}}
       arcLabelsSkipAngle={10}
       arcLabelsTextColor="#fff"
       valueFormat={(value) => `${value} Hrs`}

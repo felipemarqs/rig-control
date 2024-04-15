@@ -58,8 +58,6 @@ export const useLineChart = () => {
   // Chama a função para formatar eficiências para o gráfico de linha
   formatEfficiencyToLineChart(efficiencies);
 
-  console.log("Data in Line Chart: ", data);
-
   // Retorna os dados formatados para o gráfico de linha
   return {data};
 };

@@ -17,7 +17,8 @@ interface GrouppedEquipmentData {
 }
 
 export const useGrouppedRepairs = () => {
-  const {repairPeriods, handleSelectEquipment} = useDashboard();
+  const {repairPeriods, handleSelectEquipment, isEfficiencyArrayLarge} =
+    useDashboard();
 
   const repairGroupedData: GrouppedEquipmentData = repairPeriods.reduce(
     (acc: GrouppedEquipmentData, current) => {
@@ -72,6 +73,7 @@ export const useGrouppedRepairs = () => {
   return {
     data: convertedResult,
     repairGroupedData,
+    isEfficiencyArrayLarge,
     handleSelectEquipment,
   };
 };

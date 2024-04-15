@@ -29,107 +29,180 @@ export const ListEfficienciesDataGrid = ({
   isDashboard,
   windowWidth = 1920,
 }: ListDataGridProps) => {
-  const columns: GridColDef[] = [
-    {
-      field: "user",
-      headerName: "Usuário",
-      headerAlign: "center",
-      flex: 0.3,
-      renderCell(params: GridRenderCellParams) {
-        return (
-          <div className="w-full flex justify-center items-center">
-            <div className="text-gray-800 font-medium tracking-tighter">
-              {params.value.name}
-            </div>
-          </div>
-        );
-      },
-    },
-    {
-      field: "date",
-      headerName: "Data",
-      headerAlign: "center",
-      type: "date",
-      flex: 0.2,
-      valueGetter: (params: GridValueGetterParams) => {
-        // Supondo que o valor de data seja uma string no formato ISO8601
-        return new Date(params.value);
-      },
-      renderCell(params: GridRenderCellParams) {
-        return (
-          <div className="w-full flex justify-center items-center">
-            <div className="text-gray-800 font-medium tracking-tighter">
-              {" "}
-              {formatDate(new Date(params.value)).slice(0, 5)}
-            </div>
-          </div>
-        );
-      },
-    },
-    {
-      field: "well",
-      headerName: "Poço",
-      headerAlign: "center",
+  const columns: GridColDef[] =
+    windowWidth >= 768
+      ? [
+          {
+            field: "user",
+            headerName: "Usuário",
+            headerAlign: "center",
+            flex: 0.3,
+            renderCell(params: GridRenderCellParams) {
+              return (
+                <div className="w-full flex justify-center items-center">
+                  <div className="text-gray-800 font-medium tracking-tighter">
+                    {params.value.name}
+                  </div>
+                </div>
+              );
+            },
+          },
+          {
+            field: "date",
+            headerName: "Data",
+            headerAlign: "center",
+            type: "date",
+            flex: 0.2,
+            valueGetter: (params: GridValueGetterParams) => {
+              // Supondo que o valor de data seja uma string no formato ISO8601
+              return new Date(params.value);
+            },
+            renderCell(params: GridRenderCellParams) {
+              return (
+                <div className="w-full flex justify-center items-center">
+                  <div className="text-gray-800 font-medium tracking-tighter">
+                    {" "}
+                    {formatDate(new Date(params.value)).slice(0, 5)}
+                  </div>
+                </div>
+              );
+            },
+          },
+          {
+            field: "well",
+            headerName: "Poço",
+            headerAlign: "center",
 
-      renderCell(params: GridRenderCellParams) {
-        return (
-          <div className="w-full flex justify-center items-center">
-            <div className="text-gray-800 font-medium tracking-tighter">
-              {params.value}
-            </div>
-          </div>
-        );
-      },
-    },
-    {
-      field: "availableHours",
-      headerName: "Hrs Disp.",
-      headerAlign: "center",
-      flex: 0.2,
-      renderCell(params: GridRenderCellParams) {
-        return (
-          <div className="w-full flex justify-center items-center">
-            <div className="text-gray-800 font-medium tracking-tighter ">
-              {params.value}Hrs
-            </div>
-          </div>
-        );
-      },
-    },
-    {
-      field: "id",
-      headerAlign: "center",
-      headerName: "Açoes",
+            renderCell(params: GridRenderCellParams) {
+              return (
+                <div className="w-full flex justify-center items-center">
+                  <div className="text-gray-800 font-medium tracking-tighter">
+                    {params.value}
+                  </div>
+                </div>
+              );
+            },
+          },
+          {
+            field: "availableHours",
+            headerName: "Hrs Disp.",
+            headerAlign: "center",
+            flex: 0.2,
+            renderCell(params: GridRenderCellParams) {
+              return (
+                <div className="w-full flex justify-center items-center">
+                  <div className="text-gray-800 font-medium tracking-tighter ">
+                    {params.value}Hrs
+                  </div>
+                </div>
+              );
+            },
+          },
+          {
+            field: "id",
+            headerAlign: "center",
+            headerName: "Açoes",
 
-      filterable: false,
-      sortable: false,
-      renderCell(params: GridRenderCellParams) {
-        return (
-          <div className="w-full flex justify-center items-center">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button aria-haspopup="true" size="icon" variant="ghost">
-                  <MoreHorizontal className="h-4 w-4" />
-                  <span className="sr-only">Toggle menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>
-                  {" "}
-                  <Link
-                    to={`/details/${params.value}`}
-                    className="w-full flex justify-center items-center"
-                  >
-                    <Button variant="ghost">Ver Mais</Button>
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        );
-      },
-    },
-  ];
+            filterable: false,
+            sortable: false,
+            renderCell(params: GridRenderCellParams) {
+              return (
+                <div className="w-full flex justify-center items-center">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button aria-haspopup="true" size="icon" variant="ghost">
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Toggle menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem>
+                        {" "}
+                        <Link
+                          to={`/details/${params.value}`}
+                          className="w-full flex justify-center items-center"
+                        >
+                          <Button variant="ghost">Ver Mais</Button>
+                        </Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              );
+            },
+          },
+        ]
+      : [
+          {
+            field: "date",
+            headerName: "Data",
+            headerAlign: "center",
+            type: "date",
+            flex: 0.2,
+            valueGetter: (params: GridValueGetterParams) => {
+              // Supondo que o valor de data seja uma string no formato ISO8601
+              return new Date(params.value);
+            },
+            renderCell(params: GridRenderCellParams) {
+              return (
+                <div className="w-full flex justify-center items-center">
+                  <div className="text-gray-800 font-medium tracking-tighter">
+                    {" "}
+                    {formatDate(new Date(params.value)).slice(0, 5)}
+                  </div>
+                </div>
+              );
+            },
+          },
+          {
+            field: "availableHours",
+            headerName: "Hrs Disp.",
+            headerAlign: "center",
+            flex: 0.2,
+            renderCell(params: GridRenderCellParams) {
+              return (
+                <div className="w-full flex justify-center items-center">
+                  <div className="text-gray-800 font-medium tracking-tighter ">
+                    {params.value}Hrs
+                  </div>
+                </div>
+              );
+            },
+          },
+          {
+            field: "id",
+            headerAlign: "center",
+            headerName: "Açoes",
+
+            filterable: false,
+            sortable: false,
+            renderCell(params: GridRenderCellParams) {
+              return (
+                <div className="w-full flex justify-center items-center">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button aria-haspopup="true" size="icon" variant="ghost">
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Toggle menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem>
+                        {" "}
+                        <Link
+                          to={`/details/${params.value}`}
+                          className="w-full flex justify-center items-center"
+                        >
+                          <Button variant="ghost">Ver Mais</Button>
+                        </Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              );
+            },
+          },
+        ];
 
   console.log("window width is: ", windowWidth);
 
@@ -210,7 +283,7 @@ export const ListEfficienciesDataGrid = ({
         noRowsOverlay: NotFoundDataGrid,
       }}
       pagination
-      pageSizeOptions={[5, 10, 25, 100]}
+      pageSizeOptions={isDashboard ? [5] : [5, 10, 25, 100]}
       paginationMode="client"
       initialState={{
         pagination: {

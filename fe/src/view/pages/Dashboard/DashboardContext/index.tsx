@@ -6,7 +6,6 @@ import {SelectOptions} from "../../../../app/entities/SelectOptions";
 import {useRigs} from "../../../../app/hooks/rigs/useRigs";
 import {Rig} from "../../../../app/entities/Rig";
 import {Efficiency} from "../entities/Efficiency";
-import {useSidebarContext} from "../../../../app/contexts/SidebarContext";
 import {months} from "../../../../app/utils/months";
 import {FilterType} from "../../../../app/entities/FilterType";
 import {filterOptions} from "../../../../app/utils/filterOptions";
@@ -59,6 +58,8 @@ interface DashboardContextValue {
   selectedEquipment: string | null;
   isFetchingRigsAverage: boolean;
   handleSelectEquipment: (equipment: string) => void;
+  handleRemoveSelectedEquipment: () => void;
+  isEfficiencyArrayLarge: boolean;
 }
 
 // Criação do contexto
@@ -122,6 +123,13 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     setSelectedEquipment(equipment);
   };
 
+  const handleRemoveSelectedEquipment = () => {
+    setSelectedEquipment(null);
+  };
+
+  //Variável para controlar o tamanho do array
+  const isEfficiencyArrayLarge = efficiencies.length >= 22;
+
   // Cálculos para estatísticas das eficiências
   let totalAvailableHours: number = 0;
   let totalUnavailableHours: number = 0;
@@ -141,6 +149,8 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     }
   });
 
+  console.log("is Large", isEfficiencyArrayLarge);
+
   const totalHours: number = totalAvailableHours + totalUnavailableHours;
   let availableHoursPercentage: number = Number(
     ((totalAvailableHours * 100) / totalHours).toFixed(2)
@@ -154,6 +164,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     <DashboardContext.Provider
       value={{
         years,
+        handleRemoveSelectedEquipment,
         handleSelectEquipment,
         selectedEquipment,
         months,
@@ -184,7 +195,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         unavailableHoursPercentage,
         totalDtms,
         totalMovimentations,
-
+        isEfficiencyArrayLarge,
         isAlertSeen,
         handleIsAlertSeen,
         handleYearChange,
