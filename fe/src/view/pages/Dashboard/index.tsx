@@ -40,6 +40,10 @@ import {Progress} from "@/components/ui/progress";
 import {GrouppedRepairsCard} from "./components/GrouppedRepairsCard";
 import {translateClassification} from "@/app/utils/translateClassification";
 import {GrouppedGlossesCard} from "./components/GrouppedGlossesCard";
+import {StatboxContainer} from "./components/StatboxContainer";
+import {LineChartCard} from "./components/LineChartCard";
+import {AverageBarChartCard} from "./components/AverageBarChartCard";
+import {DataGridCard} from "./components/DataGridCard";
 
 export const Dashboard = () => {
   return (
@@ -165,186 +169,14 @@ export const Dashboard = () => {
 
             <div className="flex w-full flex-col">
               <main className="flex flex-1 flex-col gap-4 px-4 py-2 md:gap-8 ">
-                {/* Início do Statbox Container */}
-                <div className="grid gap-4  md:grid-cols-2 md:gap-8 lg:grid-cols-4">
-                  <Card
-                    x-chunk="dashboard-01-chunk-0"
-                    className="shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
-                  >
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
-                        Horas Disponiveis
-                      </CardTitle>
-                      <TimerIcon className="h-8 w-8 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">
-                        {totalAvailableHours.toFixed()}Hrs
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        Total de horas faturadas pela sonda
-                      </p>
-                    </CardContent>
-                    <CardFooter>
-                      <Progress value={availableHoursPercentage} />
-                    </CardFooter>
-                  </Card>
-                  <Card
-                    x-chunk="dashboard-01-chunk-0"
-                    className="shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
-                  >
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium text-redAccent-500">
-                        Horas Indisponiveis
-                      </CardTitle>
-                      <TimerOff className="h-8 w-8 text-muted-foreground text-redAccent-500" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold text-redAccent-500">
-                        {totalUnavailableHours.toFixed()}Hrs
-                      </div>
-                      <p className="text-xs text-muted-foreground text-redAccent-500">
-                        Total de horas não faturadas pela sonda
-                      </p>
-                    </CardContent>
-                    <CardFooter>
-                      <Progress
-                        value={unavailableHoursPercentage}
-                        indicatorColor="bg-redAccent-500"
-                        className="bg-redAccent-500/20"
-                      />
-                    </CardFooter>
-                  </Card>
-                  <Card
-                    x-chunk="dashboard-01-chunk-2"
-                    className="shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
-                  >
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">DTM</CardTitle>
-                      <Truck className="h-8 w-8 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{totalDtms}</div>
-                      <p className="text-xs text-muted-foreground">
-                        Total de DTMs no período selecionado
-                      </p>
-                    </CardContent>
-                  </Card>
-                  <Card
-                    x-chunk="dashboard-01-chunk-2"
-                    className="shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
-                  >
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
-                        Movimentações
-                      </CardTitle>
-                      <BaggageClaim className="h-8 w-8 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">
-                        {totalMovimentations}
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        Total de monivmentações de Equipamentos e Fluidos no
-                        período selecionado
-                      </p>
-                    </CardContent>
-                  </Card>
-                </div>
-                {/* Fim do Statbox Container */}
+                <StatboxContainer />
+
                 <div className="grid gap-4 md:gap-8 grid-cols-12 auto-rows-[150px]">
-                  {/* Início do LineChart Container */}
+                  <LineChartCard />
 
-                  <Card
-                    className={cn(
-                      "col-span-12 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
-                    )}
-                  >
-                    <CardHeader className="pb-0">
-                      <CardTitle>Eficiência Diária</CardTitle>
-                      <CardDescription>Gráfico com os dias</CardDescription>
-                    </CardHeader>
-                    <CardContent className="p-0 h-4/5  flex justify-center items-center">
-                      {isFetchingEfficiencies && <Spinner />}
-                      {!isFetchingEfficiencies && !isEmpty && <LineChart />}
-                      {!isFetchingEfficiencies && isEmpty && (
-                        <NotFound>
-                          {
-                            <p>
-                              Sem dados para o <strong>período</strong>{" "}
-                              selecionado
-                            </p>
-                          }
-                        </NotFound>
-                      )}
-                    </CardContent>
-                  </Card>
+                  <AverageBarChartCard />
 
-                  {/* Fim do LineChart Container */}
-
-                  <Card className="col-span-12 row-span-3 lg:col-span-7 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] ">
-                    <CardHeader className="px-7">
-                      <CardTitle>Média </CardTitle>
-                      <CardDescription>
-                        Gráfico com a média de todas as sondas durante o período
-                        selecionado.
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="w-full h-full">
-                      <div className="max-w-full h-full">
-                        <AverageBarChart />
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Inicio do Datagrid Container */}
-                  <Card className="col-span-12 row-span-3 lg:col-span-5 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-                    <CardHeader className="flex flex-row items-center">
-                      <div className="grid gap-2">
-                        <CardTitle>Ocorrências</CardTitle>
-                        <CardDescription>
-                          Lista de Ocorrências do período selecionado
-                        </CardDescription>
-                      </div>
-                      <Button asChild size="sm" className="ml-auto gap-1">
-                        <Link to="/">
-                          View All
-                          <ArrowUpRight className="h-4 w-4" />
-                        </Link>
-                      </Button>
-                    </CardHeader>
-                    <CardContent className="p-0 h-4/5 ">
-                      {isFetchingEfficiencies && (
-                        <div className="h-full flex items-center justify-center">
-                          <Spinner />
-                        </div>
-                      )}
-                      {!isEmpty && !isFetchingEfficiencies && (
-                        <div className="max-w-full">
-                          <ListEfficienciesDataGrid
-                            data={efficiencies}
-                            isDashboard
-                            windowWidth={windowWidth}
-                          />
-                        </div>
-                      )}
-
-                      {isEmpty && !isFetchingEfficiencies && (
-                        <div className="h-full flex items-center justify-center">
-                          <NotFound>
-                            {
-                              <p>
-                                Sem dados para o <strong>período</strong>{" "}
-                                selecionado
-                              </p>
-                            }
-                          </NotFound>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-
-                  {/* Fim do Datagrid Container */}
+                  <DataGridCard />
 
                   <GrouppedRepairsCard />
 

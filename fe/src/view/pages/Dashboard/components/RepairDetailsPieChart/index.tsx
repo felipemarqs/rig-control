@@ -49,7 +49,7 @@ export const RepairDetailsPieChart = () => {
         },
       }}
       colors={{datum: "data.color"}}
-      margin={{top: 10, right: 80, bottom: 120, left: 80}}
+      margin={{top: 10, right: 80, bottom: 100, left: 80}}
       sortByValue={true}
       innerRadius={0}
       activeOuterRadiusOffset={8}
@@ -61,9 +61,9 @@ export const RepairDetailsPieChart = () => {
       //onClick={(event) => handleChartClick(event.id as string)}
       enableArcLinkLabels={true}
       arcLinkLabelsTextColor={"#1c7b7b"}
-      arcLinkLabelsThickness={3}
+      arcLinkLabelsThickness={1}
       arcLinkLabelsColor={{from: "color"}}
-      arcLabelsSkipAngle={10}
+      arcLabelsSkipAngle={1}
       arcLabelsTextColor="#fff"
       valueFormat={(value) => `${value} Hrs`}
       /*  legends={[
