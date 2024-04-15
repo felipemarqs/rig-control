@@ -1,6 +1,6 @@
-import { CircleUser, Menu } from "lucide-react";
+import {CircleUser, Menu} from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import {Button} from "@/components/ui/button";
 
 import {
   DropdownMenu,
@@ -11,27 +11,25 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { useNavigate, Link } from "react-router-dom";
+import {Sheet, SheetContent, SheetTrigger} from "@/components/ui/sheet";
+import {useNavigate, Link} from "react-router-dom";
 
 import logo from "@/assets/images/white-logo.png";
-import { useAuth } from "@/app/hooks/useAuth";
-import { ModeToggle } from "./ModeToggle";
-import { useSidebarContext } from "@/app/contexts/SidebarContext";
-import { cn } from "@/lib/utils";
+import {useAuth} from "@/app/hooks/useAuth";
+import {ModeToggle} from "./ModeToggle";
+import {useSidebarContext} from "@/app/contexts/SidebarContext";
+import {cn} from "@/lib/utils";
 
 const NavigationLinks = () => {
-  const { activeTab, handleToggleNavItem } = useSidebarContext();
+  const {activeTab, handleToggleNavItem} = useSidebarContext();
   return (
     <>
       <Link
         to="/"
         onClick={() => handleToggleNavItem("dashboard")}
         className={cn(
-          "text-white transition-colors hover:text-foreground",
-          activeTab === "dashboard"
-            ? "text-primary bg-white p-1 rounded-md w-5/6 lg:w-full"
-            : ""
+          "text-gray-500 transition-colors hover:text-white",
+          activeTab === "dashboard" ? "text-white " : ""
         )}
       >
         Dashboard
@@ -41,10 +39,8 @@ const NavigationLinks = () => {
         to="/invoicing"
         onClick={() => handleToggleNavItem("invoicing")}
         className={cn(
-          "text-white transition-colors hover:text-foreground",
-          activeTab === "invoicing"
-            ? "text-primary bg-white p-1 rounded-md w-5/6 lg:w-full "
-            : ""
+          "text-gray-500 transition-colors hover:text-white",
+          activeTab === "invoicing" ? "text-white  " : ""
         )}
       >
         Faturamento
@@ -54,10 +50,8 @@ const NavigationLinks = () => {
         to="/form/menu"
         onClick={() => handleToggleNavItem("form/menu")}
         className={cn(
-          "text-white transition-colors hover:text-foreground",
-          activeTab === "form/menu"
-            ? "text-primary bg-white p-1 rounded-md w-5/6 lg:w-full"
-            : ""
+          "text-gray-500 transition-colors hover:text-white",
+          activeTab === "form/menu" ? "text-white " : ""
         )}
       >
         Formulário
@@ -67,10 +61,8 @@ const NavigationLinks = () => {
         to="/list"
         onClick={() => handleToggleNavItem("list")}
         className={cn(
-          "text-white transition-colors hover:text-foreground",
-          activeTab === "list"
-            ? "text-primary bg-white p-1 rounded-md w-5/6 lg:w-full"
-            : ""
+          "text-gray-500 transition-colors hover:text-white",
+          activeTab === "list" ? "text-white " : ""
         )}
       >
         Ocorrências
@@ -80,10 +72,8 @@ const NavigationLinks = () => {
         to="/list-rigs"
         onClick={() => handleToggleNavItem("list-rigs")}
         className={cn(
-          "text-white transition-colors hover:text-foreground",
-          activeTab === "list-rigs"
-            ? "text-primary bg-white p-1 rounded-md w-5/6 lg:w-full"
-            : ""
+          "text-gray-500 transition-colors hover:text-white",
+          activeTab === "list-rigs" ? "text-white " : ""
         )}
       >
         Sondas
@@ -93,10 +83,8 @@ const NavigationLinks = () => {
         to="/contracts"
         onClick={() => handleToggleNavItem("contracts")}
         className={cn(
-          "text-white transition-colors hover:text-foreground",
-          activeTab === "contracts"
-            ? "text-primary bg-white p-1 rounded-md w-5/6 lg:w-full"
-            : ""
+          "text-gray-500 transition-colors hover:text-white",
+          activeTab === "contracts" ? "text-white " : ""
         )}
       >
         Contratos
@@ -106,10 +94,8 @@ const NavigationLinks = () => {
         to="/users"
         onClick={() => handleToggleNavItem("users")}
         className={cn(
-          "text-white transition-colors hover:text-foreground",
-          activeTab === "users"
-            ? "text-primary bg-white p-1 rounded-md w-5/6 lg:w-full"
-            : ""
+          "text-gray-500 transition-colors hover:text-white",
+          activeTab === "users" ? "text-white " : ""
         )}
       >
         Usuários
@@ -119,10 +105,8 @@ const NavigationLinks = () => {
         to="/reports"
         onClick={() => handleToggleNavItem("reports")}
         className={cn(
-          "text-white transition-colors hover:text-foreground",
-          activeTab === "reports"
-            ? "text-primary bg-white p-1 rounded-md w-5/6 lg:w-full"
-            : ""
+          "text-gray-500 transition-colors hover:text-white",
+          activeTab === "reports" ? "text-white " : ""
         )}
       >
         Relatórios
@@ -133,20 +117,24 @@ const NavigationLinks = () => {
 
 export function Navbar() {
   const navigate = useNavigate();
-  const { signout } = useAuth();
+  const {signout} = useAuth();
   return (
-    <header className="sticky top-0 flex h-16 z-10 items-center gap-4 border-b bg-primary px-4 md:px-6">
-      <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
-        <img
-          onClick={() => navigate("/")}
-          src={logo}
-          width={70}
-          height={50}
-          alt="logo"
-          className="rounded-full cursor-pointer"
-        />
+    <header className="sticky top-0 flex h-24 z-10 items-center gap-4 border-b bg-primary px-4 md:px-6">
+      <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6 ">
+        <div>
+          <img
+            onClick={() => navigate("/")}
+            src={logo}
+            width={70}
+            height={50}
+            alt="logo"
+            className="rounded-full cursor-pointer"
+          />
+        </div>
 
-        <NavigationLinks />
+        <div className="ml-12 flex gap-8">
+          <NavigationLinks />
+        </div>
       </nav>
       <Sheet>
         <SheetTrigger asChild>
@@ -162,7 +150,6 @@ export function Navbar() {
         </SheetContent>
       </Sheet>
       <div className="flex  items-center gap-4 md:ml-auto md:gap-2 lg:gap-4 ">
-        <ModeToggle />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon" className="rounded-full">

@@ -55,6 +55,8 @@ interface DashboardContextValue {
   months: SelectOptions;
   years: SelectOptions;
   rigsAverage: RigsAverageResponse;
+  selectedGloss: string | null;
+  handleSelectGloss: (gloss: string) => void;
   selectedEquipment: string | null;
   isFetchingRigsAverage: boolean;
   handleSelectEquipment: (equipment: string) => void;
@@ -119,6 +121,19 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     null
   );
 
+  console.log("repair Periods", repairPeriods);
+  console.log("gloss Periods", glossPeriods);
+
+  const [selectedGloss, setSelectedGloss] = useState<string | null>(null);
+
+  const handleSelectGloss = (gloss: string) => {
+    setSelectedGloss(gloss);
+  };
+
+  const handleRemoveSelectedGloss = () => {
+    setSelectedGloss(null);
+  };
+
   const handleSelectEquipment = (equipment: string) => {
     setSelectedEquipment(equipment);
   };
@@ -181,6 +196,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         handleStartDateChange,
         handleEndDateChange,
         handleApplyFilters,
+
         efficiencies,
         isFetchingEfficiencies,
         user,
@@ -200,6 +216,8 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         handleIsAlertSeen,
         handleYearChange,
         selectedYear,
+        handleSelectGloss,
+        selectedGloss,
         rigsAverage,
         isFetchingRigsAverage,
       }}

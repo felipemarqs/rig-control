@@ -16,9 +16,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {ExternalLink, PieChart} from "lucide-react";
+import {translateGlossClassification} from "@/app/utils/translateGlossClassification";
 
 export const GrouppedGlossesCard = () => {
-  const {glossGroupedData, isEfficiencyArrayLarge} = useGrouppedGlosses();
+  const {glossGroupedData, handleSelectGloss} = useGrouppedGlosses();
 
   return (
     <Card
@@ -48,12 +49,17 @@ export const GrouppedGlossesCard = () => {
             {glossGroupedData.groupedData.map(({id, gloss, totalHours}) => (
               <TableRow key={id}>
                 <TableCell>
-                  <div className="font-medium">{gloss}</div>
+                  <div className="font-medium">
+                    {translateGlossClassification(gloss)}
+                  </div>
                 </TableCell>
                 <TableCell className="hidden sm:table-cell">
                   {totalHours} Hrs
                 </TableCell>
-                <TableCell className="flex justify-center items-center cursor-pointer ">
+                <TableCell
+                  className="flex justify-center items-center cursor-pointer "
+                  onClick={() => handleSelectGloss(id)}
+                >
                   <ExternalLink />
                 </TableCell>
               </TableRow>

@@ -28,7 +28,8 @@ interface GrouppedGlossData {
 }
 
 export const useGrouppedGlosses = () => {
-  const {repairPeriods, glossPeriods, isEfficiencyArrayLarge} = useDashboard();
+  const {glossPeriods, isEfficiencyArrayLarge, handleSelectGloss} =
+    useDashboard();
 
   const glossGroupedData: GrouppedGlossData = glossPeriods.reduce(
     (acc: GrouppedGlossData, current) => {
@@ -83,5 +84,6 @@ export const useGrouppedGlosses = () => {
     data: convertedResult,
     glossGroupedData,
     isEfficiencyArrayLarge,
+    handleSelectGloss,
   };
 };

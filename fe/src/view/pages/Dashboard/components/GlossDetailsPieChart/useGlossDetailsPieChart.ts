@@ -3,6 +3,8 @@ import {differenceInMinutes, parse} from "date-fns";
 import {useDashboard} from "../../DashboardContext/useDashboard";
 import {translateRepairClassification} from "../../../../../app/utils/translateRepairClassification";
 import {RepairClassification} from "../../../../../app/entities/RepairClassification";
+import {translateClassification} from "@/app/utils/translateClassification";
+import {translateGlossClassification} from "@/app/utils/translateGlossClassification";
 
 export type PieChartData = {
   id: string;
@@ -11,8 +13,8 @@ export type PieChartData = {
   color: string;
 }[];
 
-export const useRepairDetailsPieChart = () => {
-  const {repairPeriods, selectedEquipment} = useDashboard();
+export const useGlossDetailsPieChart = () => {
+  const {glossPeriods, selectedGloss} = useDashboard();
 
   const pieChartColors = [
     "#1c7b7b", // primary 500
@@ -29,15 +31,21 @@ export const useRepairDetailsPieChart = () => {
     "#a3de83", // Verde pastel
   ];
 
+  console.log("selectedGloss", selectedGloss);
+  console.log("glossPeriods", glossPeriods);
+
   const parseHour = (hourString: string) =>
     parse(hourString.split("T")[1].slice(0, 5), "HH:mm", new Date());
 
-  const chartData = repairPeriods
-    .filter((period) => period.classification === selectedEquipment)
+  const chartData = glossPeriods
+    .filter((period) => period.classification === selectedGloss)
     .reduce((acc: PieChartData, current) => {
-      const classification = translateRepairClassification(
-        current.repairClassification as RepairClassification
+      const classification = translateGlossClassification(
+        current.classification
       );
+
+      console.log("classification", classification);
+
       const foundItem = acc.find((accItem) => accItem.id === classification)!;
 
       const parsedStartHour = parseHour(current.startHour);
@@ -47,8 +55,8 @@ export const useRepairDetailsPieChart = () => {
 
       if (!foundItem) {
         acc.push({
-          id: classification,
-          label: classification,
+          id: classification!,
+          label: classification!,
           value: Number(diffInHours.toFixed(2)),
           color: pieChartColors[acc.length % pieChartColors.length], // Use modulo para evitar estouro de índice
         });
@@ -66,8 +74,9 @@ export const useRepairDetailsPieChart = () => {
       return acc;
     }, []);
 
+  console.log("chartData", chartData);
+
   return {
     chartData,
-    selectedEquipment,
   };
 };

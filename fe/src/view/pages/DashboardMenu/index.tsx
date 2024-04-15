@@ -1,15 +1,13 @@
-import { BarChartBig, LineChart } from "lucide-react";
-import { Header } from "../../components/Header";
-import { useDashboardMenu } from "./useDashboardMenu";
-import { MenuCard } from "@/view/components/MenuCard";
+import {BarChartBig, LineChart} from "lucide-react";
+import {Header} from "../../components/Header";
+import {useDashboardMenu} from "./useDashboardMenu";
+import {MenuCard} from "@/view/components/MenuCard";
 
 export const DashboardMenu = () => {
-  const { isUserAdm } = useDashboardMenu();
+  const {isUserAdm} = useDashboardMenu();
 
   return (
     <div className="w-full h-full overflow-y-scroll">
-      <Header title="DASHBOARD" subtitle="Menu de Dashboard" />
-
       <div className="w-full flex justify-center items-center">
         <div className=" w-full mt-12 flex flex-col justify-start items-center gap-4 lg:pl-8 lg:flex-row">
           {isUserAdm && (
