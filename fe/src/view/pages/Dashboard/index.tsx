@@ -34,6 +34,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
+
 import {Progress} from "@/components/ui/progress";
 import {GrouppedRepairsCard} from "./components/GrouppedRepairsCard";
 import {translateClassification} from "@/app/utils/translateClassification";
@@ -81,84 +83,84 @@ export const Dashboard = () => {
           isEfficiencyArrayLarge,
         }) => (
           <div>
-            <div className="w-full flex pt-2 flex-wrap justify-center items-center lg:justify-end gap-1 lg:px-4">
-              <div className="w-[113px] lg:w-[250px]">
-                <Select
-                  error={""}
-                  placeholder="Tipo de Filtro"
-                  value={selectedFilterType}
-                  onChange={(value) =>
-                    handleToggleFilterType(value as FilterType)
-                  }
-                  options={filterOptions}
-                />
-              </div>
-              <div className="w-[113px] lg:w-[123px]">
-                <Select
-                  error={""}
-                  placeholder="Sonda"
-                  value={selectedRig}
-                  onChange={(value) => handleChangeRig(value)}
-                  options={rigs.map(({id, name}) => ({
-                    value: id ?? "",
-                    label: name ?? "",
-                  }))}
-                />
-              </div>
-              {selectedFilterType === FilterType.PERIOD && (
-                <>
-                  <div className="w-[113px] lg:w-[123px]">
+            <div className="flex justify-end p-4">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="default">
+                    <FilterIcon /> Abrir Filtros
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80">
+                  <div className="grid gap-4">
                     <Select
                       error={""}
-                      placeholder="Período"
-                      value={selectedPeriod}
-                      onChange={(value) => handleChangePeriod(value)}
-                      options={months}
+                      placeholder="Tipo de Filtro"
+                      value={selectedFilterType}
+                      onChange={(value) =>
+                        handleToggleFilterType(value as FilterType)
+                      }
+                      options={filterOptions}
                     />
-                  </div>
 
-                  <div className="w-[113px] lg:w-[123px]">
                     <Select
                       error={""}
-                      placeholder="Ano"
-                      value={selectedYear}
-                      onChange={(value) => handleYearChange(value)}
-                      options={years}
+                      placeholder="Sonda"
+                      value={selectedRig}
+                      onChange={(value) => handleChangeRig(value)}
+                      options={rigs.map(({id, name}) => ({
+                        value: id ?? "",
+                        label: name ?? "",
+                      }))}
                     />
-                  </div>
-                </>
-              )}
 
-              {selectedFilterType === FilterType.CUSTOM && (
-                <>
-                  <div>
-                    <DatePickerInput
-                      placeholder="Data de Início"
-                      error={""}
-                      value={new Date(selectedStartDate)}
-                      onChange={(value) => handleStartDateChange(value)}
-                    />
-                  </div>
+                    {selectedFilterType === FilterType.PERIOD && (
+                      <>
+                        <Select
+                          error={""}
+                          placeholder="Período"
+                          value={selectedPeriod}
+                          onChange={(value) => handleChangePeriod(value)}
+                          options={months}
+                        />
 
-                  <div>
-                    <DatePickerInput
-                      placeholder="Data de Fim"
-                      error={""}
-                      value={new Date(selectedEndDate)}
-                      onChange={(value) => handleEndDateChange(value)}
-                    />
-                  </div>
-                </>
-              )}
+                        <Select
+                          error={""}
+                          placeholder="Ano"
+                          value={selectedYear}
+                          onChange={(value) => handleYearChange(value)}
+                          options={years}
+                        />
+                      </>
+                    )}
 
-              <div>
-                <Button
-                  className="h-[32px] lg:h-[52px]"
-                  onClick={handleApplyFilters}
-                >
-                  <FilterIcon />
-                </Button>
-              </div>
+                    {selectedFilterType === FilterType.CUSTOM && (
+                      <>
+                        <div>
+                          <DatePickerInput
+                            placeholder="Data de Início"
+                            error={""}
+                            value={new Date(selectedStartDate)}
+                            onChange={(value) => handleStartDateChange(value)}
+                          />
+                        </div>
+
+                        <div>
+                          <DatePickerInput
+                            placeholder="Data de Fim"
+                            error={""}
+                            value={new Date(selectedEndDate)}
+                            onChange={(value) => handleEndDateChange(value)}
+                          />
+                        </div>
+                      </>
+                    )}
+
+                    <Button onClick={handleApplyFilters}>
+                      Aplicar Filtros
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
 
             <div className="flex w-full flex-col">
