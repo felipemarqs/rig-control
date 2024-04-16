@@ -10,7 +10,7 @@ import {NotFound} from "@/view/components/NotFound";
 import {Spinner} from "@/view/components/Spinner";
 
 import {useLineChartCard} from "./useLineChartCard";
-import {LineChart} from "../LineChart";
+import {LineChart} from "./components/LineChart";
 
 export const LineChartCard = () => {
   const {isFetchingEfficiencies, isEmpty} = useLineChartCard();

@@ -1,7 +1,7 @@
 import {differenceInMinutes, parse} from "date-fns";
-import {useGlobalDashboard} from "../../GlobalDashboardContext/useDashboard";
+import {useGlobalDashboard} from "../../../../GlobalDashboardContext/useDashboard";
 
-import {translateClassification} from "../../../../../app/utils/translateClassification";
+import {translateClassification} from "../../../../../../../app/utils/translateClassification";
 
 export type PieChartData = {
   id: string;

@@ -64,7 +64,6 @@ export class WellsService {
     const distinctsWells = sheetWells.filter(
       (item) => !existingWells.includes(item),
     );
-    console.log('Poços Distintos: ', distinctsWells);
 
     /*  const test = distinctsWells.map((well) => ({
       contractId: 'c6b04e59-1a97-42c7-9370-3f0d48d222de',

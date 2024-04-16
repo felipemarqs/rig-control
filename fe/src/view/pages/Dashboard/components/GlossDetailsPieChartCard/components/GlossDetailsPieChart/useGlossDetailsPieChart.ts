@@ -1,9 +1,6 @@
 import {differenceInMinutes, parse} from "date-fns";
 
-import {useDashboard} from "../../DashboardContext/useDashboard";
-import {translateRepairClassification} from "../../../../../app/utils/translateRepairClassification";
-import {RepairClassification} from "../../../../../app/entities/RepairClassification";
-import {translateClassification} from "@/app/utils/translateClassification";
+import {useDashboard} from "../../../../DashboardContext/useDashboard";
 import {translateGlossClassification} from "@/app/utils/translateGlossClassification";
 
 export type PieChartData = {
@@ -31,9 +28,6 @@ export const useGlossDetailsPieChart = () => {
     "#a3de83", // Verde pastel
   ];
 
-  console.log("selectedGloss", selectedGloss);
-  console.log("glossPeriods", glossPeriods);
-
   const parseHour = (hourString: string) =>
     parse(hourString.split("T")[1].slice(0, 5), "HH:mm", new Date());
 
@@ -43,8 +37,6 @@ export const useGlossDetailsPieChart = () => {
       const classification = translateGlossClassification(
         current.classification
       );
-
-      console.log("classification", classification);
 
       const foundItem = acc.find((accItem) => accItem.id === classification)!;
 
@@ -73,8 +65,6 @@ export const useGlossDetailsPieChart = () => {
 
       return acc;
     }, []);
-
-  console.log("chartData", chartData);
 
   return {
     chartData,

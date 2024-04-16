@@ -1,4 +1,4 @@
-import {useGlobalDashboard} from "../../GlobalDashboardContext/useDashboard";
+import {useGlobalDashboard} from "../../../GlobalDashboardContext/useDashboard";
 
 export type PieChartData = {
   id: string;

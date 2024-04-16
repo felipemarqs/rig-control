@@ -1,5 +1,5 @@
 import {useDaysNotRegistered} from "./useDaysNotRegistered";
-import {cn} from "../../../../../app/utils/cn";
+import {cn} from "../../../../../../../app/utils/cn";
 import {AlertTriangle} from "lucide-react";
 
 export const DaysNotRegistered = () => {

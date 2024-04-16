@@ -190,8 +190,6 @@ export const BillingDashboardProvider = ({
     return {totalAmount, totalRepairAmount, totalGlossAmount};
   }, [billings]);
 
-  console.log({totalAmount, totalGlossAmount, totalRepairAmount});
-
   const handleApplyFilters = () => {
     refetchBillings();
   };

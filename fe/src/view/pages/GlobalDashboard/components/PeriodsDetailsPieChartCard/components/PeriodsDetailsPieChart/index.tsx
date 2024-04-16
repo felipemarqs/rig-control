@@ -1,17 +1,10 @@
 import {ResponsivePie} from "@nivo/pie";
 import {usePeriodsDetailsPieChart} from "./usePeriodsDetailsPieChart";
-import {translateType} from "../../../../../app/utils/translateType";
-import {ChartHeader} from "../../../../components/ChartHeader";
 
 export const PeriodsDetailsPieChart = () => {
-  const {chartData, selectedPieChartView, handleCloseDetailsGraph} =
-    usePeriodsDetailsPieChart();
+  const {chartData} = usePeriodsDetailsPieChart();
   return (
     <div className="w-full h-full">
-      <ChartHeader onClose={handleCloseDetailsGraph}>
-        Detalhes dos periodos de {translateType(selectedPieChartView)}
-      </ChartHeader>
-
       <ResponsivePie
         data={chartData}
         theme={{
@@ -57,7 +50,7 @@ export const PeriodsDetailsPieChart = () => {
           },
         }}
         colors={{datum: "data.color"}}
-        margin={{top: 40, right: 80, bottom: 100, left: 80}}
+        margin={{top: 10, right: 10, bottom: 100, left: 10}}
         sortByValue={true}
         innerRadius={0.45}
         activeOuterRadiusOffset={8}
@@ -79,8 +72,8 @@ export const PeriodsDetailsPieChart = () => {
             anchor: "bottom",
             direction: "column",
             justify: false,
-            translateX: 200,
-            translateY: 56,
+            translateX: 150,
+            translateY: 40,
             itemsSpacing: 10,
             itemWidth: 85,
             itemHeight: 24,

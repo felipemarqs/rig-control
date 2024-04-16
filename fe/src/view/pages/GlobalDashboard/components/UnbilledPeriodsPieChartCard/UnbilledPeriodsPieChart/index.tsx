@@ -1,19 +1,12 @@
 import {ResponsivePie} from "@nivo/pie";
 import {useUnbilledPeriodsPieChart} from "./useUnbilledPeriodsPieChart";
-import {PeriodType} from "../../../../../app/entities/PeriodType";
-import {ChartHeader} from "../../../../components/ChartHeader";
+import {PeriodType} from "../../../../../../app/entities/PeriodType";
 
-// make sure parent container have a defined height when using
-// responsive component, otherwise height will be 0 and
-// no chart will be rendered.
-// website examples showcase many properties,
-// you'll often use just a few of them.
 export const UnbilledPeriodsPieChart = () => {
   const {chartData, handleSelectedPieChartViewChange} =
     useUnbilledPeriodsPieChart();
   return (
     <div className="w-full h-full relative">
-      <ChartHeader>Horas não faturadas</ChartHeader>
       <ResponsivePie
         data={chartData}
         theme={{
@@ -60,7 +53,7 @@ export const UnbilledPeriodsPieChart = () => {
           },
         }}
         colors={{datum: "data.color"}}
-        margin={{top: 40, right: 80, bottom: 100, left: 80}}
+        margin={{top: 0, right: 10, bottom: 80, left: 10}}
         sortByValue={true}
         innerRadius={0.45}
         activeOuterRadiusOffset={8}
@@ -105,7 +98,7 @@ export const UnbilledPeriodsPieChart = () => {
           },
         ]} */
       />
-      <small className="absolute bottom-5 right-10 italic text-gray-700">
+      <small className="absolute bottom-12 right-14 italic text-gray-700">
         * Clique no gráfico para ver detalhes
       </small>
     </div>

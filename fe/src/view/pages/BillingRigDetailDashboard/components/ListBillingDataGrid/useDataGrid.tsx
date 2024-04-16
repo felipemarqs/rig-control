@@ -92,16 +92,6 @@ export const useDataGrid = () => {
     return rowData;
   });
 
-  console.log(
-    "tableData",
-    tableData
-    /*  tableData.sort((a, b) => {
-      console.log("a", a);
-      console.log("b", b);
-      return b["SPT 61"] - a["SPT 61"];
-    }) */
-  );
-
   return {
     columns,
     data: tableData,

@@ -18,8 +18,7 @@ import {
 import {cn} from "@/lib/utils";
 
 export const GrouppedRepairsCard = () => {
-  const {repairGroupedData, handleSelectEquipment, isEfficiencyArrayLarge} =
-    useGrouppedRepairs();
+  const {repairGroupedData, handleSelectEquipment} = useGrouppedRepairs();
 
   return (
     <Card
@@ -48,7 +47,7 @@ export const GrouppedRepairsCard = () => {
           <TableBody>
             {repairGroupedData.groupedData.map(
               ({id, equipment, totalHours}) => (
-                <TableRow>
+                <TableRow key={id}>
                   <TableCell>
                     <div className="font-medium">{equipment}</div>
                   </TableCell>

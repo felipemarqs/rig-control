@@ -1,4 +1,4 @@
-import {endOfMonth, format, startOfMonth} from "date-fns";
+import {endOfMonth, format, startOfMonth, sub} from "date-fns";
 import {createContext, useState} from "react";
 import {FilterType} from "../entities/FilterType";
 import {getPeriodRange} from "../utils/getPeriodRange";
@@ -30,13 +30,14 @@ export const FiltersContext = createContext({} as FiltersContextValue);
 export const FiltersProvider = ({children}: {children: React.ReactNode}) => {
   const currentDate = new Date();
   const firstDayOfMonth = startOfMonth(currentDate);
-  const lastDayOfMonth = endOfMonth(currentDate);
+  const threeDaysBeforeToday = sub(currentDate, {days: 3});
+
   const formattedFirstDay = format(
     firstDayOfMonth,
     "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
   );
   const formattedLastDay = format(
-    lastDayOfMonth,
+    threeDaysBeforeToday,
     "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
   );
 

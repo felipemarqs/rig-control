@@ -1,6 +1,6 @@
 // Importações necessárias - useDashboard e Efficiency
-import {useDashboard} from "../../DashboardContext/useDashboard";
-import {Efficiency} from "../../entities/Efficiency";
+import {useDashboard} from "../../../../DashboardContext/useDashboard";
+import {Efficiency} from "../../../../entities/Efficiency";
 
 // Definição da estrutura de saída para o gráfico de linha
 interface OutputData {

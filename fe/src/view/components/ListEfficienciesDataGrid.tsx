@@ -204,8 +204,6 @@ export const ListEfficienciesDataGrid = ({
           },
         ];
 
-  console.log("window width is: ", windowWidth);
-
   const NotFoundDataGrid = () => {
     return (
       <NotFound>

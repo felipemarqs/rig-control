@@ -1,5 +1,5 @@
 // Importações de componentes e contextos necessários
-import {FilterIcon, PieChart, X} from "lucide-react";
+import {ArrowLeft, FilterIcon} from "lucide-react";
 //import {Button} from "../../components/Button";
 import {DatePickerInput} from "../../components/DatePickerInput";
 
@@ -7,19 +7,14 @@ import {Select} from "../../components/Select";
 import {DashboardContext, DashboardProvider} from "./DashboardContext";
 
 import {FilterType} from "../../../app/entities/FilterType";
-
-import {RepairDetailsPieChart} from "./components/RepairDetailsPieChart";
-
 import {Button} from "@/components/ui/button";
-import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
-
+import {Link} from "react-router-dom";
 import {GrouppedRepairsCard} from "./components/GrouppedRepairsCard";
 import {GrouppedGlossesCard} from "./components/GrouppedGlossesCard";
 import {StatboxContainer} from "./components/StatboxContainer";
 import {LineChartCard} from "./components/LineChartCard";
 import {AverageBarChartCard} from "./components/AverageBarChartCard";
 import {DataGridCard} from "./components/DataGridCard";
-import {GlossDetailsPieChart} from "./components/GlossDetailsPieChart";
 import {
   Sheet,
   SheetContent,
@@ -28,6 +23,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import {cn} from "@/lib/utils";
+import {RepairDetailsPieChartCard} from "./components/RepairDetailsPieChartCard";
+import {GlossDetailsPieChartCard} from "./components/GlossDetailsPieChartCard";
 
 export const Dashboard = () => {
   return (
@@ -41,7 +38,6 @@ export const Dashboard = () => {
           selectedStartDate,
           handleStartDateChange,
           handleEndDateChange,
-          handleRemoveSelectedEquipment,
           handleApplyFilters,
           isFetchingEfficiencies,
           rigs,
@@ -51,14 +47,16 @@ export const Dashboard = () => {
           selectedFilterType,
           selectedPeriod,
           selectedYear,
-          repairPeriods,
           handleYearChange,
           years,
-          selectedEquipment,
-          selectedGloss,
         }) => (
           <div>
-            <div className="flex justify-end p-4">
+            <div className="flex justify-between p-4">
+              <Link to="/global-dashboard">
+                <Button className="gap-2" variant="default">
+                  <ArrowLeft /> Dashboard Geral
+                </Button>
+              </Link>
               <Sheet>
                 <SheetTrigger>
                   {" "}
@@ -165,67 +163,11 @@ export const Dashboard = () => {
 
                   <GrouppedRepairsCard />
 
-                  <Card className="col-span-12 lg:col-span-3 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] ">
-                    <CardHeader className="pl-7 ">
-                      <div
-                        className="flex gap-2 items-center justify-between cursor-pointer"
-                        onClick={() => handleRemoveSelectedEquipment()}
-                      >
-                        <CardTitle>Detalhes do Reparo: </CardTitle>
-                        <X />
-                      </div>
-                    </CardHeader>
-
-                    <CardContent className="px-2 h-full">
-                      {selectedEquipment &&
-                        !isFetchingEfficiencies &&
-                        repairPeriods.length > 0 && (
-                          <div className="max-w-full h-full">
-                            <RepairDetailsPieChart />
-                          </div>
-                        )}
-
-                      {!selectedEquipment &&
-                        !isFetchingEfficiencies &&
-                        repairPeriods.length > 0 && (
-                          <div className="max-w-full h-[75%] flex justify-center items-center ">
-                            <PieChart size={96} absoluteStrokeWidth={true} />
-                          </div>
-                        )}
-                    </CardContent>
-                  </Card>
+                  <RepairDetailsPieChartCard />
 
                   <GrouppedGlossesCard />
 
-                  <Card className="col-span-12 lg:col-span-3 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] ">
-                    <CardHeader className="pl-7 ">
-                      <div
-                        className="flex gap-2 items-center justify-between cursor-pointer"
-                        onClick={() => handleRemoveSelectedEquipment()}
-                      >
-                        <CardTitle>Detalhes da Glosa: </CardTitle>
-                        <X />
-                      </div>
-                    </CardHeader>
-
-                    <CardContent className="px-2 h-full">
-                      {selectedGloss &&
-                        !isFetchingEfficiencies &&
-                        repairPeriods.length > 0 && (
-                          <div className="max-w-full h-full">
-                            <GlossDetailsPieChart />
-                          </div>
-                        )}
-
-                      {!selectedGloss &&
-                        !isFetchingEfficiencies &&
-                        repairPeriods.length > 0 && (
-                          <div className="max-w-full h-[75%] flex justify-center items-center ">
-                            <PieChart size={96} absoluteStrokeWidth={true} />
-                          </div>
-                        )}
-                    </CardContent>
-                  </Card>
+                  <GlossDetailsPieChartCard />
                 </div>
               </main>
             </div>

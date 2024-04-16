@@ -1,8 +1,8 @@
 import {differenceInMinutes, parse} from "date-fns";
 
-import {useDashboard} from "../../DashboardContext/useDashboard";
-import {translateRepairClassification} from "../../../../../app/utils/translateRepairClassification";
-import {RepairClassification} from "../../../../../app/entities/RepairClassification";
+import {useDashboard} from "../../../../DashboardContext/useDashboard";
+import {translateRepairClassification} from "../../../../../../../app/utils/translateRepairClassification";
+import {RepairClassification} from "../../../../../../../app/entities/RepairClassification";
 
 export type PieChartData = {
   id: string;

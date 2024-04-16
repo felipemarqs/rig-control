@@ -1,4 +1,4 @@
-import React, {createContext, useState} from "react";
+import React, {createContext, useMemo, useState} from "react";
 import {useAuth} from "../../../../app/hooks/useAuth";
 import {User} from "../../../../app/entities/User";
 import {differenceInDays, parse} from "date-fns";
@@ -9,7 +9,7 @@ import {useGetUnbilledPeriods} from "../../../../app/hooks/periods/useGetUnbille
 import {GetUnbilledPeriodsResponse} from "../../../../app/services/periodsService/getUnbilledPeriods";
 import {PeriodType} from "../../../../app/entities/PeriodType";
 import {UF} from "../../../../app/entities/Rig";
-import {PieChartData} from "../components/UnbilledPeriodsPieChart/useUnbilledPeriodsPieChart";
+import {PieChartData} from "../components/UnbilledPeriodsPieChartCard/UnbilledPeriodsPieChart/useUnbilledPeriodsPieChart";
 import {getDiffInMinutes} from "../../../../app/utils/getDiffInMinutes";
 import {formatNumberWithFixedDecimals} from "../../../../app/utils/formatNumberWithFixedDecimals";
 import {useFiltersContext} from "../../../../app/hooks/useFiltersContext";
@@ -29,6 +29,7 @@ interface GlobalDashboardContextValue {
   user: User | undefined;
   signout(): void;
   rigsAverage: RigsAverageResponse;
+  filteredRigsAverage: RigsAverageResponse;
   isFetchingRigsAverage: boolean;
   totalDaysSelected: number;
   unbilledPeriods: GetUnbilledPeriodsResponse;
@@ -47,7 +48,11 @@ interface GlobalDashboardContextValue {
     averageHours: number;
     averageHoursPercentage: number;
   };
+  handleChangeDashboardView: (view: DashboardView) => void;
+  selectedDashboardView: DashboardView;
 }
+
+type DashboardView = "ALL" | "BA" | "SE" | "AL";
 
 // Criação do contexto
 export const GlobalDashboardContext = createContext(
@@ -93,9 +98,31 @@ export const GlobalDashboardProvider = ({
       endDate: filters.endDate,
     });
 
+  console.log("Rigs Average", rigsAverage);
+
+  const [selectedDashboardView, setSelectedDashboardView] =
+    useState<DashboardView>("ALL");
+
+  const filteredRigsAverage = useMemo(() => {
+    if (selectedDashboardView === "ALL") {
+      return rigsAverage;
+    }
+
+    return rigsAverage.filter(
+      ({state}) => (state as string) === selectedDashboardView
+    );
+  }, [selectedDashboardView, rigsAverage]);
+
+  const handleChangeDashboardView = (view: DashboardView) => {
+    setSelectedDashboardView(view);
+  };
+
+  console.log("Filtered Rigs Average: ", filteredRigsAverage);
+  console.log("Selected view: ", selectedDashboardView);
+
   let rigsAverageTotalHours = 0;
 
-  rigsAverage.forEach((rigAverage) => {
+  filteredRigsAverage.forEach((rigAverage) => {
     rigsAverageTotalHours += Math.round(rigAverage.avg);
   });
 
@@ -108,23 +135,23 @@ export const GlobalDashboardProvider = ({
   const statBox = {
     averageHours:
       formatNumberWithFixedDecimals(
-        rigsAverageTotalHours / rigsAverage.length,
+        rigsAverageTotalHours / filteredRigsAverage.length,
         2
       ) ?? 0,
     averageHoursPercentage:
       formatNumberWithFixedDecimals(
-        ((rigsAverageTotalHours / rigsAverage.length) * 100) / 24,
+        ((rigsAverageTotalHours / filteredRigsAverage.length) * 100) / 24,
         2
       ) ?? 0,
   };
 
-  const isEmpty: boolean = rigsAverage.length === 0;
+  const isEmpty: boolean = filteredRigsAverage.length === 0;
 
   const [totalDaysSelected, setTotalDaysSelected] = useState(
     differenceInDays(filters.endDate, filters.startDate) + 1
   );
 
-  const mappedRigsAverage = rigsAverage
+  const mappedRigsAverage = filteredRigsAverage
     .map(({count, rig, rigId, state}) => {
       return {
         rig,
@@ -179,6 +206,8 @@ export const GlobalDashboardProvider = ({
     []
   );
 
+  console.log("Unbilled Periods", unbilledPeriods);
+
   const isChartDataEmpty = chartData.every((data) => data.value === 0);
 
   // Funções para manipulação das datas e filtros
@@ -194,7 +223,10 @@ export const GlobalDashboardProvider = ({
   return (
     <GlobalDashboardContext.Provider
       value={{
+        handleChangeDashboardView,
+        selectedDashboardView,
         statBox,
+        filteredRigsAverage,
         chartData,
         isChartDataEmpty,
         unbilledPeriods,
