@@ -1,4 +1,4 @@
-import {endOfMonth, format, startOfMonth, sub} from "date-fns";
+import {format, startOfMonth, sub} from "date-fns";
 import {createContext, useState} from "react";
 import {FilterType} from "../entities/FilterType";
 import {getPeriodRange} from "../utils/getPeriodRange";

@@ -2,14 +2,7 @@ import React, {createContext, useState} from "react";
 import {useEfficiencies} from "../../../../app/hooks/efficiencies/useEfficiencies";
 import {useAuth} from "../../../../app/hooks/useAuth";
 import {User} from "../../../../app/entities/User";
-import {SelectOptions} from "../../../../app/entities/SelectOptions";
-import {useRigs} from "../../../../app/hooks/rigs/useRigs";
-import {Rig} from "../../../../app/entities/Rig";
 import {Efficiency} from "../entities/Efficiency";
-import {months} from "../../../../app/utils/months";
-import {FilterType} from "../../../../app/entities/FilterType";
-import {filterOptions} from "../../../../app/utils/filterOptions";
-import {years} from "../../../../app/utils/years";
 import {EfficienciesResponse} from "../../../../app/services/efficienciesService/getAll";
 import {getRepairPeriods} from "../../../../app/utils/getRepairPeriods";
 import {Period} from "../../../../app/entities/Period";
@@ -21,26 +14,13 @@ import {useWindowWidth} from "@/app/hooks/useWindowWidth";
 
 // Definição do tipo do contexto
 interface DashboardContextValue {
-  selectedRig: string;
-  selectedPeriod: string;
-  handleChangeRig(rigId: string): void;
-  handleChangePeriod(period: string): void;
-  handleStartDateChange(date: Date): void;
-  handleEndDateChange(date: Date): void;
-  handleToggleFilterType(filterType: FilterType): void;
-  handleYearChange(year: string): void;
   isAlertSeen: boolean;
   handleIsAlertSeen(): void;
-  selectedEndDate: string;
-  selectedStartDate: string;
   isFetchingEfficiencies: boolean;
   handleApplyFilters(): void;
-  selectedYear: string;
-  selectedFilterType: FilterType;
   user: User | undefined;
   signout(): void;
   isEmpty: boolean;
-  rigs: Rig[] | {id: string; name: string}[];
   repairPeriods: Period[] | never[];
   glossPeriods: Period[] | never[];
   efficiencies: EfficienciesResponse;
@@ -50,10 +30,6 @@ interface DashboardContextValue {
   unavailableHoursPercentage: number;
   totalDtms: number;
   totalMovimentations: number;
-  windowWidth: number;
-  filterOptions: SelectOptions;
-  months: SelectOptions;
-  years: SelectOptions;
   rigsAverage: RigsAverageResponse;
   selectedGloss: string | null;
   handleSelectGloss: (gloss: string) => void;
@@ -61,7 +37,7 @@ interface DashboardContextValue {
   isFetchingRigsAverage: boolean;
   handleSelectEquipment: (equipment: string) => void;
   handleRemoveSelectedEquipment: () => void;
-  isEfficiencyArrayLarge: boolean;
+  windowWidth: number;
 }
 
 // Criação do contexto
@@ -69,31 +45,13 @@ export const DashboardContext = createContext({} as DashboardContextValue);
 
 export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   // Utilização dos hooks para autenticação e contexto da barra lateral
-  const {user, signout, isAlertSeen, handleIsAlertSeen, isUserAdm} = useAuth();
+  const {user, signout, isAlertSeen, handleIsAlertSeen} = useAuth();
 
   // Verificação se o usuário é administrador para exibir as rigs corretas
-  const {rigs} = useRigs(isUserAdm);
   const windowWidth = useWindowWidth();
 
-  // Mapeamento das rigs do usuário para exibir apenas as autorizadas
-  const userRigs = user?.rigs.map(({rig: {id, name}}) => ({id, name})) || [];
-
   // Estados iniciais para as datas (primeiro e último dia do mês atual)
-  const {
-    filters,
-    selectedEndDate,
-    selectedPeriod,
-    selectedRig,
-    selectedStartDate,
-    selectedYear,
-    selectedFilterType,
-    handleChangePeriod,
-    handleChangeRig,
-    handleEndDateChange,
-    handleStartDateChange,
-    handleToggleFilterType,
-    handleYearChange,
-  } = useFiltersContext();
+  const {filters} = useFiltersContext();
 
   // Utilização dos hooks para eficiências e médias de eficiência
   const {efficiencies, isFetchingEfficiencies, refetchEffciencies} =
@@ -130,10 +88,6 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     setSelectedGloss(gloss);
   };
 
-  const handleRemoveSelectedGloss = () => {
-    setSelectedGloss(null);
-  };
-
   const handleSelectEquipment = (equipment: string) => {
     setSelectedEquipment(equipment);
   };
@@ -141,9 +95,6 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   const handleRemoveSelectedEquipment = () => {
     setSelectedEquipment(null);
   };
-
-  //Variável para controlar o tamanho do array
-  const isEfficiencyArrayLarge = efficiencies.length >= 22;
 
   // Cálculos para estatísticas das eficiências
   let totalAvailableHours: number = 0;
@@ -164,8 +115,6 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     }
   });
 
-  console.log("is Large", isEfficiencyArrayLarge);
-
   const totalHours: number = totalAvailableHours + totalUnavailableHours;
   let availableHoursPercentage: number = Number(
     ((totalAvailableHours * 100) / totalHours).toFixed(2)
@@ -178,31 +127,16 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   return (
     <DashboardContext.Provider
       value={{
-        years,
+        windowWidth,
         handleRemoveSelectedEquipment,
         handleSelectEquipment,
         selectedEquipment,
-        months,
-        windowWidth,
         glossPeriods,
-        selectedRig,
-        handleChangeRig,
-        selectedPeriod,
-        handleChangePeriod,
-        handleToggleFilterType,
-        selectedStartDate,
-        selectedEndDate,
         repairPeriods,
-        handleStartDateChange,
-        handleEndDateChange,
         handleApplyFilters,
-
         efficiencies,
         isFetchingEfficiencies,
         user,
-        filterOptions,
-        selectedFilterType,
-        rigs: isUserAdm ? rigs : userRigs,
         signout,
         isEmpty,
         totalAvailableHours,
@@ -211,11 +145,8 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         unavailableHoursPercentage,
         totalDtms,
         totalMovimentations,
-        isEfficiencyArrayLarge,
         isAlertSeen,
         handleIsAlertSeen,
-        handleYearChange,
-        selectedYear,
         handleSelectGloss,
         selectedGloss,
         rigsAverage,
