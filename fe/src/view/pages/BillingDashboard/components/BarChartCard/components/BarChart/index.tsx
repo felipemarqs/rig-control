@@ -1,5 +1,5 @@
 import {ResponsiveBar} from "@nivo/bar";
-import {formatCurrency} from "../../../../../app/utils/formatCurrency";
+import {formatCurrency} from "../../../../../../../app/utils/formatCurrency";
 import {useBarChart} from "./useBarChart";
 
 export const BarChart = () => {
@@ -10,8 +10,8 @@ export const BarChart = () => {
       data={data}
       keys={["total"]}
       indexBy="rig"
-      margin={{top: 50, right: 60, bottom: 50, left: 60}}
-      padding={0.3}
+      margin={{top: 10, right: 20, bottom: 120, left: 20}}
+      padding={0.2}
       valueScale={{type: "linear"}}
       indexScale={{type: "band", round: true}}
       colors="#1c7b7b"
@@ -35,6 +35,7 @@ export const BarChart = () => {
           spacing: 10,
         },
       ]}
+      borderRadius={5}
       fill={[
         {
           match: {
@@ -63,17 +64,20 @@ export const BarChart = () => {
         legendPosition: "middle",
         legendOffset: 32,
       }}
-      axisLeft={{
+      axisLeft={
+        null /* {
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
         legend: "",
         legendPosition: "middle",
         legendOffset: -40,
-      }}
+      } */
+      }
       labelSkipWidth={12}
       labelSkipHeight={12}
       labelTextColor="#fff"
+      enableGridY={false}
       /* legends={[
         {
           dataFrom: "keys",
@@ -98,6 +102,7 @@ export const BarChart = () => {
           ],
         },
       ]} */
+
       valueFormat={(value) => `${formatCurrency(value)}`}
       role="application"
       ariaLabel=""

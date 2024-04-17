@@ -13,14 +13,11 @@ import {useFiltersContext} from "@/app/hooks/useFiltersContext";
 import {DatePickerInput} from "./DatePickerInput";
 
 interface FilterSheetProps {
-  handleApplyFilters(): void;
+  onApplyFilters(): void;
   isLoading: boolean;
 }
 
-export const FilterSheet = ({
-  handleApplyFilters,
-  isLoading,
-}: FilterSheetProps) => {
+export const FilterSheet = ({onApplyFilters, isLoading}: FilterSheetProps) => {
   const {
     selectedStartDate,
     handleStartDateChange,
@@ -60,7 +57,7 @@ export const FilterSheet = ({
               </>
 
               <Button
-                onClick={handleApplyFilters}
+                onClick={onApplyFilters}
                 disabled={isLoading}
                 className={cn(isLoading ? "cursor-not-allowed" : "")}
               >

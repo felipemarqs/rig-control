@@ -1,4 +1,4 @@
-import {useBillingDashboard} from "../../BillingDashboardContext/useBillingDashboard";
+import {useBillingDashboard} from "../../../../BillingDashboardContext/useBillingDashboard";
 
 export const useBarChart = () => {
   const {billings} = useBillingDashboard();

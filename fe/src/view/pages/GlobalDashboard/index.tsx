@@ -1,27 +1,13 @@
 // Importações de componentes e contextos necessários
-import {ArrowLeft, FilterIcon} from "lucide-react";
-import {DatePickerInput} from "../../components/DatePickerInput";
+import {ArrowLeft} from "lucide-react";
 
-import {NotFound} from "../../components/NotFound";
-import {Spinner} from "../../components/Spinner";
-import {AverageBarChart} from "./components/AverageBarChartCard/components/AverageBarChart";
 import {
   GlobalDashboardContext,
   GlobalDashboardProvider,
 } from "./GlobalDashboardContext";
-import {UnbilledPeriodsPieChart} from "./components/UnbilledPeriodsPieChartCard/UnbilledPeriodsPieChart";
-import {DaysNotRegistered} from "./components/DaysNotRegisteredCard/components/DaysNotRegistered";
+
 import {StatboxContainer} from "./components/StatboxContainer";
 import {Link} from "react-router-dom";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-
-import {cn} from "@/lib/utils";
 import {Button} from "@/components/ui/button";
 import {DaysNotRegisteredCard} from "./components/DaysNotRegisteredCard";
 import {AverageBarChartCard} from "./components/AverageBarChartCard";
@@ -36,10 +22,6 @@ export const GlobalDashboard = () => {
       <GlobalDashboardContext.Consumer>
         {({
           isDetailsGraphVisible,
-          selectedEndDate,
-          selectedStartDate,
-          handleStartDateChange,
-          handleEndDateChange,
           handleApplyFilters,
           isFetchingRigsAverage,
           isChartDataEmpty,
@@ -56,7 +38,7 @@ export const GlobalDashboard = () => {
               </Link>
               <div className="flex flex-row-reverse gap-2">
                 <FilterSheet
-                  handleApplyFilters={handleApplyFilters}
+                  onApplyFilters={handleApplyFilters}
                   isLoading={isFetchingRigsAverage}
                 />
                 <Tabs defaultValue="all">

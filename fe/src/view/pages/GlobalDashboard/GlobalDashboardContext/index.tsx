@@ -17,13 +17,9 @@ import {useFiltersContext} from "../../../../app/hooks/useFiltersContext";
 interface GlobalDashboardContextValue {
   selectedPieChartView: PeriodType;
   isEmpty: boolean;
-  handleStartDateChange(date: Date): void;
-  handleEndDateChange(date: Date): void;
   isAlertSeen: boolean;
   handleSelectedPieChartViewChange(type: PeriodType): void;
   handleIsAlertSeen(): void;
-  selectedEndDate: string;
-  selectedStartDate: string;
   handleApplyFilters(): void;
   user: User | undefined;
   signout(): void;
@@ -67,13 +63,7 @@ export const GlobalDashboardProvider = ({
   const {user, signout, isAlertSeen, handleIsAlertSeen} = useAuth();
 
   // Estados iniciais para as datas (primeiro e último dia do mês atual)
-  const {
-    filters,
-    selectedEndDate,
-    selectedStartDate,
-    handleStartDateChange,
-    handleEndDateChange,
-  } = useFiltersContext();
+  const {filters} = useFiltersContext();
 
   const [isDetailsGraphVisible, setIsDetailsGraphVisible] = useState(false);
   const [selectedPieChartView, setSelectedPieChartView] = useState(
@@ -97,8 +87,6 @@ export const GlobalDashboardProvider = ({
       endDate: filters.endDate,
     });
 
-  console.log("Rigs Average", rigsAverage);
-
   const [selectedDashboardView, setSelectedDashboardView] =
     useState<DashboardView>("ALL");
 
@@ -115,9 +103,6 @@ export const GlobalDashboardProvider = ({
   const handleChangeDashboardView = (view: DashboardView) => {
     setSelectedDashboardView(view);
   };
-
-  console.log("Filtered Rigs Average: ", filteredRigsAverage);
-  console.log("Selected view: ", selectedDashboardView);
 
   let rigsAverageTotalHours = 0;
 
@@ -233,10 +218,6 @@ export const GlobalDashboardProvider = ({
         selectedPieChartView,
         isFetchingUnbilledPeriods,
         isDetailsGraphVisible,
-        selectedStartDate,
-        selectedEndDate,
-        handleStartDateChange,
-        handleEndDateChange,
         handleSelectedPieChartViewChange,
         handleApplyFilters,
         user,
