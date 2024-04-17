@@ -2,7 +2,6 @@ import React, {createContext, useMemo, useState} from "react";
 import {useAuth} from "../../../../app/hooks/useAuth";
 import {User} from "../../../../app/entities/User";
 import {differenceInDays, parse} from "date-fns";
-import {useSidebarContext} from "../../../../app/contexts/SidebarContext";
 import {useEfficienciesRigsAverage} from "../../../../app/hooks/efficiencies/useEfficienciesRigsAverage";
 import {RigsAverageResponse} from "../../../../app/services/efficienciesService/getRigsAverage";
 import {useGetUnbilledPeriods} from "../../../../app/hooks/periods/useGetUnbilledPeriods";

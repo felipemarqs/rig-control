@@ -19,8 +19,6 @@ export const useStatboxContainer = () => {
     }
   });
 
-  console.log("averageHoursPercentage", averageHoursPercentage);
-
   return {
     glossHours,
     repairHours,
