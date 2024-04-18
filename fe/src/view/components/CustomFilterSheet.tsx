@@ -56,7 +56,7 @@ export const CustomFilterSheet = ({
       <SheetTrigger>
         {" "}
         <Button className="gap-2" variant="default">
-          <FilterIcon /> Filtros
+          <FilterIcon /> <span className="hidden lg:inline">Filtros</span>
         </Button>
       </SheetTrigger>
       <SheetContent className="bg-card">

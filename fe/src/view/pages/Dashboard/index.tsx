@@ -19,7 +19,7 @@ export const Dashboard = () => {
           <div className="h-full ">
             <div className="flex justify-between p-4 px-10">
               <div className="flex flex-col gap-4">
-                <span className="text-gray-800 text-2xl font-semibold tracking-[-1px]">
+                <span className="hidden lg:inline text-gray-800 text-2xl font-semibold tracking-[-1px]">
                   Dashboard por Sonda
                 </span>
                 <BagdeStatus displayRig />

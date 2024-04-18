@@ -42,7 +42,7 @@ export const BagdeStatus = ({displayRig = false}: BagdeStatusProps) => {
 
       {selectedRig && displayRig && (
         <Badge
-          className="flex gap-4 text-primary bg-gray-200 shadow-[rgba(0,_0,_0,_0.14)_0px_3px_4px]"
+          className="hidden sm:flex gap-4 text-primary bg-gray-200 shadow-[rgba(0,_0,_0,_0.14)_0px_3px_4px]"
           variant="outline"
         >
           <span>{`${selectedRig?.rig.name}`}</span>

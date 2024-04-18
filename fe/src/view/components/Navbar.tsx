@@ -1,4 +1,4 @@
-import {CircleUser, Menu} from "lucide-react";
+import {ChevronDown, CircleUser, Menu} from "lucide-react";
 
 import {Button} from "@/components/ui/button";
 
@@ -16,7 +16,6 @@ import {useNavigate, Link} from "react-router-dom";
 
 import logo from "@/assets/images/white-logo.png";
 import {useAuth} from "@/app/hooks/useAuth";
-import {ModeToggle} from "./ModeToggle";
 import {useSidebarContext} from "@/app/contexts/SidebarContext";
 import {cn} from "@/lib/utils";
 
@@ -24,16 +23,38 @@ const NavigationLinks = () => {
   const {activeTab, handleToggleNavItem} = useSidebarContext();
   return (
     <>
-      <Link
-        to="/"
-        onClick={() => handleToggleNavItem("dashboard")}
-        className={cn(
-          "text-gray-500 transition-colors hover:text-white",
-          activeTab === "dashboard" ? "text-white " : ""
-        )}
-      >
-        Dashboard
-      </Link>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          className={cn(
+            "text-left text-gray-500 transition-colors hover:text-white",
+            activeTab === "dashboard" ? "text-white " : ""
+          )}
+        >
+          <span className="flex items-center gap-2">
+            {" "}
+            Dashboard <ChevronDown />
+          </span>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem>
+            <Link
+              to="/global-dashboard"
+              onClick={() => handleToggleNavItem("dashboard")}
+            >
+              Dashboard Geral
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            {" "}
+            <Link
+              to="/dashboard"
+              onClick={() => handleToggleNavItem("dashboard")}
+            >
+              Dashboard por Sonda
+            </Link>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       <Link
         to="/invoicing"

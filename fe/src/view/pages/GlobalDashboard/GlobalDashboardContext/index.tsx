@@ -190,8 +190,6 @@ export const GlobalDashboardProvider = ({
     []
   );
 
-  console.log("Unbilled Periods", unbilledPeriods);
-
   const isChartDataEmpty = chartData.every((data) => data.value === 0);
 
   // Funções para manipulação das datas e filtros
