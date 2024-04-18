@@ -11,8 +11,6 @@ import {RigsAverageResponse} from "../../../../app/services/efficienciesService/
 import {useFiltersContext} from "../../../../app/hooks/useFiltersContext";
 import {getGlossPeriods} from "../../../../app/utils/getGlossPeriods";
 import {useWindowWidth} from "@/app/hooks/useWindowWidth";
-import {formatDate} from "@/app/utils/formatDate";
-import {months} from "@/app/utils/months";
 
 // Definição do tipo do contexto
 interface DashboardContextValue {
@@ -54,14 +52,6 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
 
   // Estados iniciais para as datas (primeiro e último dia do mês atual)
   const {filters} = useFiltersContext();
-
-  console.log("filters", formatDate(new Date(filters.startDate)).split("/"));
-
-  const [stringStartDay, stringEndDay] = formatDate(
-    new Date(filters.startDate)
-  ).split("/");
-
-  console.log(`${stringStartDay} de ${months[Number(stringEndDay)].label}`);
 
   // Utilização dos hooks para eficiências e médias de eficiência
   const {efficiencies, isFetchingEfficiencies, refetchEffciencies} =

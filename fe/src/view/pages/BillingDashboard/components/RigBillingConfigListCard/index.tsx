@@ -7,7 +7,7 @@ import {
   TableHeader,
 } from "@/components/ui/table";
 import {useRigBillingConfigListCard} from "./useRigBillingConfigListCard";
-import {ExternalLink, MoreHorizontal, PieChart} from "lucide-react";
+import {MoreHorizontal} from "lucide-react";
 import {
   Card,
   CardContent,

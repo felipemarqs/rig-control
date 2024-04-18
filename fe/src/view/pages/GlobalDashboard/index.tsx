@@ -1,20 +1,16 @@
-// Importações de componentes e contextos necessários
-import {ArrowLeft} from "lucide-react";
-
+// Importações de componentes e contextos necessário
 import {
   GlobalDashboardContext,
   GlobalDashboardProvider,
 } from "./GlobalDashboardContext";
-
 import {StatboxContainer} from "./components/StatboxContainer";
-import {Link} from "react-router-dom";
-import {Button} from "@/components/ui/button";
 import {DaysNotRegisteredCard} from "./components/DaysNotRegisteredCard";
 import {AverageBarChartCard} from "./components/AverageBarChartCard";
 import {Tabs, TabsList, TabsTrigger} from "@/components/ui/tabs";
 import {UnbilledPeriodsPieChartCard} from "./components/UnbilledPeriodsPieChartCard";
 import {PeriodsDetailsPieChartCard} from "./components/PeriodsDetailsPieChartCard";
 import {FilterSheet} from "@/view/components/FilterSheet";
+import {BagdeStatus} from "@/view/components/BagdeStatus";
 
 export const GlobalDashboard = () => {
   return (
@@ -30,13 +26,13 @@ export const GlobalDashboard = () => {
         }) => (
           <div>
             <div className="flex justify-between p-4">
-              <Link to="/dashboard">
-                <Button className="gap-2" variant="default">
-                  <ArrowLeft />{" "}
-                  <span className="hidden lg:inline">Dashboard</span>
-                </Button>
-              </Link>
-              <div className="flex flex-row-reverse gap-2">
+              <div className="flex flex-col gap-4">
+                <span className="text-gray-800 text-2xl font-semibold tracking-[-1px]">
+                  Dashboard por Sonda
+                </span>
+                <BagdeStatus displayRig />
+              </div>
+              <div className="flex flex-row-reverse gap-2  items-center">
                 <FilterSheet
                   onApplyFilters={handleApplyFilters}
                   isLoading={isFetchingRigsAverage}

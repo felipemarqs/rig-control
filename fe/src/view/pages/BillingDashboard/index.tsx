@@ -7,12 +7,13 @@ import {FilterSheet} from "@/view/components/FilterSheet";
 import {StatboxContainer} from "./components/StatboxContainer";
 import {BarChartCard} from "./components/BarChartCard";
 import {RigBillingConfigListCard} from "./components/RigBillingConfigListCard";
+import {EditConfigModal} from "./modals/EditConfigModal";
 
 export const BillingDashboard = () => {
   return (
     <BillingDashboardProvider>
       <BillingDashboardContext.Consumer>
-        {({handleApplyFilters, isFetchingBillings}) => (
+        {({handleApplyFilters, isFetchingBillings, configBeingEdited}) => (
           <>
             <div className="flex justify-end p-4">
               <FilterSheet
@@ -30,6 +31,7 @@ export const BillingDashboard = () => {
                 </div>
               </main>
             </div>
+            {configBeingEdited && <EditConfigModal />}
           </>
         )}
       </BillingDashboardContext.Consumer>
