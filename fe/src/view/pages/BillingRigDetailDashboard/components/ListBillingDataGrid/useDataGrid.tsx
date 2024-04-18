@@ -27,7 +27,9 @@ export const useDataGrid = () => {
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-primary font-semibold">{params.value}</div>
+            <div className="text-gray-800 font-medium tracking-tighter">
+              {params.value}
+            </div>
           </div>
         );
       },
@@ -44,7 +46,7 @@ export const useDataGrid = () => {
 
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-primary font-bold">
+            <div className="text-gray-800 font-medium tracking-tighter">
               {`${params.value.toFixed(2)} ${suffix}`}
             </div>
           </div>
@@ -63,7 +65,7 @@ export const useDataGrid = () => {
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-white  bg-primary py-1 px-6 rounded-sm">
+            <div className="text-gray-800 font-semibold ">
               {formatCurrency(params.value)}
             </div>
           </div>

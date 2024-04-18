@@ -6,8 +6,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -19,7 +17,11 @@ import {useAuth} from "@/app/hooks/useAuth";
 import {useSidebarContext} from "@/app/contexts/SidebarContext";
 import {cn} from "@/lib/utils";
 
-const NavigationLinks = () => {
+interface NavigationLinksProps {
+  isUserAdm: boolean;
+}
+
+const NavigationLinks = ({isUserAdm}: NavigationLinksProps) => {
   const {activeTab, handleToggleNavItem} = useSidebarContext();
   return (
     <>
@@ -36,14 +38,17 @@ const NavigationLinks = () => {
           </span>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem>
-            <Link
-              to="/global-dashboard"
-              onClick={() => handleToggleNavItem("dashboard")}
-            >
-              Dashboard Geral
-            </Link>
-          </DropdownMenuItem>
+          {isUserAdm && (
+            <DropdownMenuItem>
+              <Link
+                to="/global-dashboard"
+                onClick={() => handleToggleNavItem("dashboard")}
+              >
+                Dashboard Geral
+              </Link>
+            </DropdownMenuItem>
+          )}
+
           <DropdownMenuItem>
             {" "}
             <Link
@@ -56,16 +61,40 @@ const NavigationLinks = () => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Link
-        to="/invoicing"
-        onClick={() => handleToggleNavItem("invoicing")}
-        className={cn(
-          "text-gray-500 transition-colors hover:text-white",
-          activeTab === "invoicing" ? "text-white  " : ""
-        )}
-      >
-        Faturamento
-      </Link>
+      {isUserAdm && (
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            className={cn(
+              "text-left text-gray-500 transition-colors hover:text-white",
+              activeTab === "invoicing" ? "text-white " : ""
+            )}
+          >
+            <span className="flex items-center gap-2">
+              {" "}
+              Faturamento <ChevronDown />
+            </span>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem>
+              <Link
+                to="/invoicing-dashboard"
+                onClick={() => handleToggleNavItem("invoicing")}
+              >
+                Faturamento Geral
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              {" "}
+              <Link
+                to="/invoicing-rig-dashboard"
+                onClick={() => handleToggleNavItem("invoicing")}
+              >
+                Faturamento por Sonda
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
 
       <Link
         to="/form/menu"
@@ -89,38 +118,42 @@ const NavigationLinks = () => {
         Ocorrências
       </Link>
 
-      <Link
-        to="/list-rigs"
-        onClick={() => handleToggleNavItem("list-rigs")}
-        className={cn(
-          "text-gray-500 transition-colors hover:text-white",
-          activeTab === "list-rigs" ? "text-white " : ""
-        )}
-      >
-        Sondas
-      </Link>
+      {isUserAdm && (
+        <>
+          <Link
+            to="/list-rigs"
+            onClick={() => handleToggleNavItem("list-rigs")}
+            className={cn(
+              "text-gray-500 transition-colors hover:text-white",
+              activeTab === "list-rigs" ? "text-white " : ""
+            )}
+          >
+            Sondas
+          </Link>
 
-      <Link
-        to="/contracts"
-        onClick={() => handleToggleNavItem("contracts")}
-        className={cn(
-          "text-gray-500 transition-colors hover:text-white",
-          activeTab === "contracts" ? "text-white " : ""
-        )}
-      >
-        Contratos
-      </Link>
+          <Link
+            to="/contracts"
+            onClick={() => handleToggleNavItem("contracts")}
+            className={cn(
+              "text-gray-500 transition-colors hover:text-white",
+              activeTab === "contracts" ? "text-white " : ""
+            )}
+          >
+            Contratos
+          </Link>
 
-      <Link
-        to="/users"
-        onClick={() => handleToggleNavItem("users")}
-        className={cn(
-          "text-gray-500 transition-colors hover:text-white",
-          activeTab === "users" ? "text-white " : ""
-        )}
-      >
-        Usuários
-      </Link>
+          <Link
+            to="/users"
+            onClick={() => handleToggleNavItem("users")}
+            className={cn(
+              "text-gray-500 transition-colors hover:text-white",
+              activeTab === "users" ? "text-white " : ""
+            )}
+          >
+            Usuários
+          </Link>
+        </>
+      )}
 
       <Link
         to="/reports"
@@ -138,7 +171,7 @@ const NavigationLinks = () => {
 
 export function Navbar() {
   const navigate = useNavigate();
-  const {signout} = useAuth();
+  const {signout, isUserAdm} = useAuth();
   return (
     <header className="sticky top-0 flex h-24 z-10 items-center gap-4 border-b bg-primary px-4 md:px-6">
       <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6 ">
@@ -154,7 +187,7 @@ export function Navbar() {
         </div>
 
         <div className="ml-12 flex gap-8">
-          <NavigationLinks />
+          <NavigationLinks isUserAdm={isUserAdm} />
         </div>
       </nav>
       <Sheet>
@@ -166,7 +199,7 @@ export function Navbar() {
         </SheetTrigger>
         <SheetContent side="left">
           <nav className="grid gap-6 text-lg font-medium">
-            <NavigationLinks />
+            <NavigationLinks isUserAdm={isUserAdm} />
           </nav>
         </SheetContent>
       </Sheet>
@@ -179,19 +212,6 @@ export function Navbar() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Link to="/profile" className=" w-full">
-                Perfil
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link to="/profile/products" className=" w-full">
-                Meus Produtos
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => signout()}>
               Logout
             </DropdownMenuItem>

@@ -20,6 +20,35 @@ export const BillingDashboard = () => {
                 onApplyFilters={handleApplyFilters}
                 isLoading={isFetchingBillings}
               />
+
+              {/*  <Tabs defaultValue="all">
+                <TabsList>
+                  <TabsTrigger
+                    value="all"
+                    onClick={() => handleChangeDashboardView("ALL")}
+                  >
+                    Todos
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="active"
+                    onClick={() => handleChangeDashboardView("BA")}
+                  >
+                    BA
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="draft"
+                    onClick={() => handleChangeDashboardView("AL")}
+                  >
+                    AL
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="archived"
+                    onClick={() => handleChangeDashboardView("SE")}
+                  >
+                    SE
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs> */}
             </div>
 
             <div className="flex w-full flex-col">
