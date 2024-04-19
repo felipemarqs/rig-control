@@ -45,10 +45,15 @@ export const UpdateForm = () => {
               <div className="w-full h-full overflow-y-scroll lg:min-w-[1000px]">
                 {/* Cabeçalho */}
                 <Header
+                  displayRig={false}
+                  displayPeriodRange={false}
                   title=" Boletim Diário de Ocorrência"
-                  subtitle="Selecione a sonda em atividade e preencha suas configurações para
-            adicionar novos períodos"
-                />
+                >
+                  <div className="text-secondary-foreground">
+                    Selecione a sonda em atividade e preencha suas configurações
+                    para adicionar novos períodos.
+                  </div>
+                </Header>
 
                 {/* Exibição do estado do formulário */}
                 <div

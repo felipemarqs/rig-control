@@ -45,10 +45,15 @@ export const PendingForm = () => {
               <div className="w-full h-full overflow-y-scroll lg:min-w-[1000px]">
                 {/* Cabeçalho */}
                 <Header
-                  title="Temporário"
-                  subtitle="Selecione a sonda em atividade e preencha suas configurações para
-            adicionar novos períodos"
-                />
+                  displayRig={false}
+                  displayPeriodRange={false}
+                  title=" Boletim Diário de Ocorrência"
+                >
+                  <div className="text-secondary-foreground">
+                    Selecione a sonda em atividade e preencha suas configurações
+                    para adicionar novos períodos.
+                  </div>
+                </Header>
 
                 {/* Exibição do estado do formulário */}
                 <div

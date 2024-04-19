@@ -1,68 +1,72 @@
-import {PlusIcon} from "@radix-ui/react-icons";
 import {Header} from "../../components/Header";
 import {Spinner} from "../../components/Spinner";
 import {useContract} from "./useContract";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export const Contract = () => {
-  const {contracts, isFetchingContracts, navigate} = useContract();
+  const {contracts, isFetchingContracts} = useContract();
   return (
     <div className="w-full h-full overflow-y-scroll">
-      <Header
-        title="CADASTRO"
-        subtitle="Listagem de todos os contratos cadastrados no sistema"
-      />
+      <Header title="Contratos" displayRig={false} displayPeriodRange={false}>
+        <></>
+      </Header>
 
-      <div className="w-full h-full ">
-        <div className="border border-b-2">
+      <div className="w-full h-full  flex flex-col items-center">
+        <div className="border border-b-2 w-2/3">
           {isFetchingContracts && (
             <div className="flex justify-center items-center h-1/2">
               <Spinner />
             </div>
           )}
           {!isFetchingContracts && (
-            <div className="p-8 flex flex-col h-full gap-4 lg:items-center">
-              <div
-                onClick={() => navigate("/create-contract")}
-                className="p-4 bg-white rounded-2xl shadow-[0_1px_2px] flex  h-20 gap-4 justify-center items-center border-l-4  border-primary lg:w-3/4 cursor-pointer"
-              >
-                <div className="h-11 w-11 rounded-full border-2 border-dashed border-gray-600 flex justify-center items-center">
-                  <PlusIcon className="w-6 h-6 text-gray-600" />
-                </div>
-                <span className="font-medium tracking-[-0.5px] block text-center  text-gray-600">
-                  Adicionar Contrato
-                </span>
-              </div>
-              {contracts.map((contract) => (
-                <div
-                  key={contract.id}
-                  className="p-4 bg-white rounded-2xl shadow-[0_1px_2px] flex h-20 justify-between border-l-4  border-primary lg:w-3/4"
-                >
-                  <div className="flex flex-col ">
-                    <span className="text-gray-800 tracking-[-0.5] font-medium block">
-                      Nome
-                    </span>
-                    <span className="text-gray-600 tracking-[-0.5] font-medium block">
-                      {contract.name}
-                    </span>
-                  </div>
+            <div className="p-8 flex flex-col h-full gap-4 lg:items-center bg-card rounded-sm  shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
+              <Table className="">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="table-cell w-[100px] ">
+                      <span className=" ">Empresa</span>
+                    </TableHead>
 
-                  <div className="flex flex-col  w-1/2 ">
-                    <span className="text-gray-800 tracking-[-0.5] font-medium block">
+                    <TableHead className="table-cell text-center ">
+                      Total de Sondas
+                    </TableHead>
+                    <TableHead className="hidden md:table-cell text-center">
                       Sondas
-                    </span>
-                    <div className="flex gap-2">
-                      {contract.rigs.map((rig) => (
-                        <span
-                          key={rig.id}
-                          className="text-gray-600 tracking-[-0.5] font-medium block border-r-2 pr-2"
-                        >
-                          {rig.name}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {contracts.map(({id, logoImagePath, rigs}) => (
+                    <TableRow key={id}>
+                      <TableCell className="table-cell">
+                        <img
+                          alt="Product image"
+                          className="aspect-square rounded-md object-contain"
+                          height="64"
+                          src={logoImagePath}
+                          width="64"
+                        />
+                      </TableCell>
+
+                      <TableCell className="table-cell text-center">
+                        {rigs.length}
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell text-center gap-x-4">
+                        {rigs.map(({name}) => (
+                          <span className="ml-2">{name}</span>
+                        ))}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </div>
           )}
         </div>

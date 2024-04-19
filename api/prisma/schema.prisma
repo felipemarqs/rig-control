@@ -57,11 +57,12 @@ model Rig {
 }
 
 model Contract {
-  id    String         @id @default(uuid()) @db.Uuid
-  name  String         @unique
-  rigs  Rig[]
-  users UserContract[]
-  wells Well[]
+  id            String         @id @default(uuid()) @db.Uuid
+  name          String         @unique
+  logoImagePath String?        @map("logo_image_path")
+  rigs          Rig[]
+  users         UserContract[]
+  wells         Well[]
 
   @@map("contracts")
 }
