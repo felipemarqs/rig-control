@@ -10,7 +10,7 @@ import {Tabs, TabsList, TabsTrigger} from "@/components/ui/tabs";
 import {UnbilledPeriodsPieChartCard} from "./components/UnbilledPeriodsPieChartCard";
 import {PeriodsDetailsPieChartCard} from "./components/PeriodsDetailsPieChartCard";
 import {FilterSheet} from "@/view/components/FilterSheet";
-import {BagdeStatus} from "@/view/components/BagdeStatus";
+import {Header} from "@/view/components/Header";
 
 export const GlobalDashboard = () => {
   return (
@@ -25,13 +25,7 @@ export const GlobalDashboard = () => {
           selectedDashboardView,
         }) => (
           <div>
-            <div className="flex justify-between p-4">
-              <div className="flex flex-col gap-4">
-                <span className="text-gray-800 text-2xl font-semibold tracking-[-1px]">
-                  Dashboard por Sonda
-                </span>
-                <BagdeStatus displayRig />
-              </div>
+            <Header title="Dashboard Geral" displayRig={false}>
               <div className="flex flex-row-reverse gap-2  items-center">
                 <FilterSheet
                   onApplyFilters={handleApplyFilters}
@@ -66,7 +60,7 @@ export const GlobalDashboard = () => {
                   </TabsList>
                 </Tabs>
               </div>
-            </div>
+            </Header>
 
             <div className="flex w-full flex-col">
               <main className="flex flex-1 flex-col gap-4 px-4 py-2 md:gap-8 ">

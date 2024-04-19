@@ -22,12 +22,14 @@ interface ListDataGridProps {
   data: Efficiency[];
   isDashboard: boolean;
   windowWidth?: number;
+  limitPagination?: boolean;
 }
 
 export const ListEfficienciesDataGrid = ({
   data,
   isDashboard,
   windowWidth = 1920,
+  limitPagination = true,
 }: ListDataGridProps) => {
   const columns: GridColDef[] =
     windowWidth >= 768
@@ -283,11 +285,15 @@ export const ListEfficienciesDataGrid = ({
       pagination
       pageSizeOptions={isDashboard ? [5] : [5, 10, 25, 100]}
       paginationMode="client"
-      initialState={{
-        pagination: {
-          paginationModel: {pageSize: 5, page: 0},
-        },
-      }}
+      initialState={
+        limitPagination
+          ? {
+              pagination: {
+                paginationModel: {pageSize: 5, page: 0},
+              },
+            }
+          : undefined
+      }
       sx={{
         "& .MuiDataGrid-root": {
           border: "none !important",

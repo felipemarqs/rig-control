@@ -1,6 +1,8 @@
 // Importações necessárias - useDashboard e Efficiency
-import {useDashboard} from "../../../../DashboardContext/useDashboard";
-import {Efficiency} from "../../../../entities/Efficiency";
+import {useBillingRigDetailDashboard} from "@/view/pages/BillingRigDetailDashboard/BillingRigDetailDashboardContext/useBillingDashboard";
+import {Efficiency} from "@/view/pages/Dashboard/entities/Efficiency";
+
+//import {Efficiency} from "../../../../entities/Efficiency";
 
 // Definição da estrutura de saída para o gráfico de linha
 interface OutputData {
@@ -12,7 +14,7 @@ interface OutputData {
 // Hook responsável por formatar dados para o gráfico de linha
 export const useLineChart = () => {
   // Obtém as eficiências e o usuário do contexto do Dashboard
-  const {efficiencies} = useDashboard();
+  const {efficiencies} = useBillingRigDetailDashboard();
 
   // Inicializa a estrutura de dados para o gráfico de linha
   let data: [

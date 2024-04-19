@@ -9,26 +9,20 @@ import {DataGridCard} from "./components/DataGridCard";
 import {RepairDetailsPieChartCard} from "./components/RepairDetailsPieChartCard";
 import {GlossDetailsPieChartCard} from "./components/GlossDetailsPieChartCard";
 import {CustomFilterSheet} from "@/view/components/CustomFilterSheet";
-import {BagdeStatus} from "@/view/components/BagdeStatus";
+import {Header} from "@/view/components/Header";
 
 export const Dashboard = () => {
   return (
     <DashboardProvider>
       <DashboardContext.Consumer>
         {({handleApplyFilters, isFetchingEfficiencies}) => (
-          <div className="h-full ">
-            <div className="flex justify-between p-4 px-10">
-              <div className="flex flex-col gap-4">
-                <span className="hidden lg:inline text-gray-800 text-2xl font-semibold tracking-[-1px]">
-                  Dashboard por Sonda
-                </span>
-                <BagdeStatus displayRig />
-              </div>
+          <div>
+            <Header displayRig title="Dashboard por Sonda">
               <CustomFilterSheet
                 isLoading={isFetchingEfficiencies}
                 onApplyFilters={handleApplyFilters}
               />
-            </div>
+            </Header>
 
             <div className="flex w-full flex-col">
               <main className="flex flex-1 flex-col gap-4 px-4 py-2 md:gap-8 ">

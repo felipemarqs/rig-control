@@ -17,7 +17,7 @@ export const LineChartCard = () => {
   return (
     <Card
       className={cn(
-        "col-span-12 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
+        "row-span-2 lg:col-span-7 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
       )}
     >
       <CardHeader className="pb-0">

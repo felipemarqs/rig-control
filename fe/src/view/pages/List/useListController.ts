@@ -20,21 +20,7 @@ export const useListController = () => {
       };
     }) || [];
 
-  const {
-    filters,
-    selectedEndDate,
-    selectedPeriod,
-    selectedRig,
-    selectedStartDate,
-    selectedYear,
-    selectedFilterType,
-    handleChangePeriod,
-    handleChangeRig,
-    handleEndDateChange,
-    handleStartDateChange,
-    handleToggleFilterType,
-    handleYearChange,
-  } = useFiltersContext();
+  const {filters} = useFiltersContext();
 
   const {efficiencies, isFetchingEfficiencies, refetchEffciencies} =
     useEfficiencies(filters);
@@ -46,12 +32,6 @@ export const useListController = () => {
   };
 
   return {
-    selectedRig,
-    handleChangeRig,
-    selectedStartDate,
-    selectedEndDate,
-    handleStartDateChange,
-    handleEndDateChange,
     handleApplyFilters,
     efficiencies,
     isFetchingEfficiencies,
@@ -59,13 +39,7 @@ export const useListController = () => {
     rigs: isUserAdm ? rigs : userRig,
     signout,
     isEmpty,
-    selectedFilterType,
-    selectedPeriod,
     filterOptions,
-    handleChangePeriod,
-    handleToggleFilterType,
-    handleYearChange,
-    selectedYear,
     years,
   };
 };

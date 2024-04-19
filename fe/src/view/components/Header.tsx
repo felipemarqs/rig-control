@@ -1,12 +1,26 @@
+import {BagdeStatus} from "./BagdeStatus";
+
 interface HeaderProps {
+  displayRig: boolean;
+  displayPeriodRange?: boolean;
   title: string;
-  subtitle?: string;
+  children?: React.ReactNode;
 }
-export const Header = ({title, subtitle}: HeaderProps) => {
+export const Header = ({
+  title,
+  displayRig,
+  children,
+  displayPeriodRange = true,
+}: HeaderProps) => {
   return (
-    <div className="m-4">
-      <h1 className="text-xl font-bold text-primary">{title}</h1>
-      <h2 className="text-lg text-secondary">{subtitle}</h2>
+    <div className="flex justify-between p-4">
+      <div className="flex flex-col gap-4">
+        <span className="text-gray-800 text-2xl font-semibold tracking-[-1px]">
+          {title}
+        </span>
+        {displayPeriodRange && <BagdeStatus displayRig={displayRig} />}
+      </div>
+      <>{children}</>
     </div>
   );
 };
