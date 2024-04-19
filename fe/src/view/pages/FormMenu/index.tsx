@@ -21,10 +21,7 @@ export const FormMenu = () => {
 
   return (
     <div className="w-full h-full overflow-y-scroll">
-      <Header
-        title="BOLETIMS"
-        subtitle="Listagem de boletins de ocorrência salvos pelo usuário cadastrados no sistema"
-      />
+      <Header title="Boletims" displayRig={false} displayPeriodRange={false} />
 
       <div className="w-full h-full ">
         <div className="border border-b-2">

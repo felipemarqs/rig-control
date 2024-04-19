@@ -1,19 +1,7 @@
 import {useDashboard} from "../../DashboardContext/useDashboard";
-import {translateClassification} from "../../../../../app/utils/translateClassification";
 import {getDiffInMinutes} from "../../../../../app/utils/getDiffInMinutes";
 import {parse} from "date-fns";
 import {formatNumberWithFixedDecimals} from "../../../../../app/utils/formatNumberWithFixedDecimals";
-
-interface EquipmentData {
-  equipment: string;
-  qty: number;
-  totalHours: number;
-}
-
-interface GrouppedEquipmentData {
-  totalRepairHours: number;
-  groupedData: EquipmentData[];
-}
 
 interface GlossData {
   id: string;
@@ -28,8 +16,7 @@ interface GrouppedGlossData {
 }
 
 export const useGrouppedGlosses = () => {
-  const {glossPeriods, isEfficiencyArrayLarge, handleSelectGloss} =
-    useDashboard();
+  const {glossPeriods, handleSelectGloss} = useDashboard();
 
   const glossGroupedData: GrouppedGlossData = glossPeriods.reduce(
     (acc: GrouppedGlossData, current) => {
@@ -83,7 +70,6 @@ export const useGrouppedGlosses = () => {
   return {
     data: convertedResult,
     glossGroupedData,
-    isEfficiencyArrayLarge,
     handleSelectGloss,
   };
 };

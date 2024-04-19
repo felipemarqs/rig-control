@@ -9,14 +9,10 @@ export const ListUsers = () => {
 
   return (
     <div className="w-full h-full overflow-y-scroll">
-      <Header
-        title="USUÁRIOS"
-        subtitle="Listagem de todos os usuários cadastrados no sistema"
-      />
+      <Header title="Usuários" displayRig={false} displayPeriodRange={false} />
 
       <div className="w-full h-full ">
         <div className="border border-b-2">
-          <h1 className="text-xl text-primary pl-8">Usuários Cadastrados:</h1>
           {isFetchingUsers && (
             <div className="flex justify-center items-center h-1/2">
               <Spinner />

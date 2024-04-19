@@ -21,7 +21,11 @@ export const UpdateUserRigs = () => {
 
   return (
     <div className="w-full h-full overflow-y-scroll">
-      <Header title="SONDAS" subtitle="Editar sondas dos usuários" />
+      <Header
+        title="Editar Sondas dos usuário"
+        displayRig={false}
+        displayPeriodRange={false}
+      />
 
       <div className="lg:min-w-[1200px]  mx-auto max-w-[715px]  bg-gray-400 p-4 gap-2 rounded-md flex flex-col lg:flex-row lg:justify-center ">
         {isLoading && (

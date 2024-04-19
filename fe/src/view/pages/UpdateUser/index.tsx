@@ -1,14 +1,18 @@
-import { Button } from "../../components/Button";
-import { Header } from "../../components/Header";
-import { Input } from "../../components/Input";
-import { useUpdateUser } from "./useUpdateUser";
+import {Button} from "../../components/Button";
+import {Header} from "../../components/Header";
+import {Input} from "../../components/Input";
+import {useUpdateUser} from "./useUpdateUser";
 
 export const UpdateUser = () => {
-  const { errors, register, handleSubmit, isLoading } = useUpdateUser();
+  const {errors, register, handleSubmit, isLoading} = useUpdateUser();
 
   return (
     <div className="w-full h-full overflow-y-scroll">
-      <Header title="USUÁRIO" subtitle="Editar Dados" />
+      <Header
+        title="Atualizar usuário"
+        displayRig={false}
+        displayPeriodRange={false}
+      />
 
       <div className="w-full h-full ">
         <form className="p-4" onSubmit={handleSubmit}>

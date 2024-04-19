@@ -5,17 +5,13 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import {DollarSign, FileClock, TimerOff, Wrench} from "lucide-react";
+import {DollarSign, TimerOff, Wrench} from "lucide-react";
 import {useStatboxContainer} from "./useStatboxContainer";
 import {formatCurrency} from "@/app/utils/formatCurrency";
 
 export const StatboxContainer = () => {
-  const {
-    totalAmount,
-    totalGlossAmount,
-    totalRepairAmount,
-    totalUnbilledAmount,
-  } = useStatboxContainer();
+  const {totalAmount, totalRepairAmount, totalUnbilledAmount} =
+    useStatboxContainer();
 
   return (
     <>

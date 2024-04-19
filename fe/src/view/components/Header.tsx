@@ -20,7 +20,7 @@ export const Header = ({
         </span>
         {displayPeriodRange && <BagdeStatus displayRig={displayRig} />}
       </div>
-      <>{children}</>
+      {children && children}
     </div>
   );
 };

@@ -37,7 +37,6 @@ export const Report = () => {
           handleStartDateChange,
           selectedEndDate,
           selectedStartDate,
-          windowWidth,
           periodTypeOptions,
           selectedPeriodType,
           periodClassificationOptions,
@@ -58,7 +57,11 @@ export const Report = () => {
           selectedPeriodClassification,
         }) => (
           <div className="w-full h-full overflow-y-scroll">
-            <Header title="RELATÓRIO" subtitle="Relatório por Períodos" />
+            <Header
+              title="Relatórios"
+              displayRig={false}
+              displayPeriodRange={false}
+            />
 
             <div className="flex justify-center flex-col items-center">
               <div className="p-4 flex justify-between items-center gap-4 w-10/12 text-black border border-gray-500  border-b-0">
@@ -230,14 +233,14 @@ export const Report = () => {
                     className="h-[32px]"
                     onClick={handleClearFilters}
                   >
-                    {windowWidth <= 1024 ? <X /> : "Limpar Campos"}
+                    <X />
                   </Button>
                   <Button
                     disabled={!isFiltersValid}
                     className="h-[32px]"
                     onClick={handleApplyFilters}
                   >
-                    {windowWidth <= 1024 ? <FilterIcon /> : "Aplicar Filtro"}
+                    <FilterIcon />
                   </Button>
                 </div>
               </div>

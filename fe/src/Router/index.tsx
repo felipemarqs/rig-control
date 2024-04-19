@@ -8,7 +8,6 @@ import {AuthLayout} from "../view/Layouts/AuthLayout";
 import {Form} from "../view/pages/Form";
 import {List} from "../view/pages/List";
 import {BillingDashboard} from "../view/pages/BillingDashboard";
-import {ListBilling} from "../view/pages/BillingList";
 import {Details} from "../view/pages/Details";
 import {CreateRig} from "../view/pages/CreateRig";
 import {CreateContract} from "../view/pages/CreateContract";
@@ -17,7 +16,6 @@ import {ListUsers} from "../view/pages/ListUsers";
 import {CreateUser} from "../view/pages/CreateUser";
 import {UpdateUser} from "../view/pages/UpdateUser";
 import {UpdateUserRigs} from "../view/pages/UpdateUserRigs";
-import {DeletionRequests} from "../view/pages/DeletionRequests";
 import {ListRigs} from "../view/pages/ListRigs";
 import {BillingRigDetailDashboard} from "../view/pages/BillingRigDetailDashboard";
 //import { InDevelopmentPage } from "../view/pages/InDevelopmentPage";
@@ -72,7 +70,6 @@ export const Router = () => {
               path="/invoicing-rig-dashboard"
               element={<BillingRigDetailDashboard />}
             />
-            <Route path="/invoicing-list" element={<ListBilling />} />
             <Route path="/invoicing" element={<InvoicingMenu />} />
 
             <Route path="/details/:efficiencyId" element={<Details />} />
@@ -84,7 +81,6 @@ export const Router = () => {
             <Route path="/create-user" element={<CreateUser />} />
             <Route path="/users/:id" element={<UpdateUser />} />
             <Route path="/users/update-rigs/:id" element={<UpdateUserRigs />} />
-            <Route path="/deletion-requests" element={<DeletionRequests />} />
             <Route path="/reports" element={<Report />} />
           </Route>
         </Route>

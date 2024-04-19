@@ -38,6 +38,7 @@ interface DashboardContextValue {
   handleSelectEquipment: (equipment: string) => void;
   handleRemoveSelectedEquipment: () => void;
   windowWidth: number;
+  selectedRig: string;
 }
 
 // Criação do contexto
@@ -51,7 +52,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   const windowWidth = useWindowWidth();
 
   // Estados iniciais para as datas (primeiro e último dia do mês atual)
-  const {filters} = useFiltersContext();
+  const {filters, selectedRig} = useFiltersContext();
 
   // Utilização dos hooks para eficiências e médias de eficiência
   const {efficiencies, isFetchingEfficiencies, refetchEffciencies} =
@@ -145,6 +146,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         isAlertSeen,
         handleIsAlertSeen,
         handleSelectGloss,
+        selectedRig,
         selectedGloss,
         rigsAverage,
         isFetchingRigsAverage,

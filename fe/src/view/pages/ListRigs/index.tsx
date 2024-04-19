@@ -23,8 +23,9 @@ export const ListRigs = () => {
         {({isFetchingRigs, rigs, rigBeingEdited}) => (
           <div className="w-full h-full overflow-y-scroll">
             <Header
-              title="SONDAS"
-              subtitle="Listagem de todas as sondas cadastradas no sistema"
+              title="Sondas"
+              displayRig={false}
+              displayPeriodRange={false}
             />
 
             <div className="w-full h-full ">

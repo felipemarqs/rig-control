@@ -36,7 +36,11 @@ export const Details = () => {
           isDeletionRequestModalOpen,
         }) => (
           <div className="w-full h-full overflow-y-scroll">
-            <Header title="DETALHES" subtitle={`Detalhes da  Operação`} />
+            <Header
+              title="Detalhes da Operação"
+              displayRig={false}
+              displayPeriodRange={false}
+            />
             <div className="m-4">
               {!isFetchingEfficiency &&
                 efficiency &&
