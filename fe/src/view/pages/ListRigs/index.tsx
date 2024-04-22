@@ -13,7 +13,6 @@ import {
 import {EditRigModal} from "./modals/EditRigModal";
 import {ListRigsContext, ListRigsProvider} from "./ListRigsContext";
 import {Button} from "@/components/ui/button";
-import logo from "@/assets/images/bahia-flag.png";
 import {Badge} from "@/components/ui/badge";
 
 export const ListRigs = () => {
