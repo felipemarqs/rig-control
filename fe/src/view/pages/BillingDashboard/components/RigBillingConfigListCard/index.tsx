@@ -24,9 +24,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {Button} from "@/components/ui/button";
+import {Spinner} from "@/view/components/Spinner";
 
 export const RigBillingConfigListCard = () => {
-  const {configs, handleOpenEditConfigModal} = useRigBillingConfigListCard();
+  const {configs, handleOpenEditConfigModal, isFetching} =
+    useRigBillingConfigListCard();
 
   return (
     <Card
@@ -41,58 +43,70 @@ export const RigBillingConfigListCard = () => {
           Lista dos reparos de equipamentos durante o período selecionado.
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Sonda</TableHead>
-              <TableHead>Hora Disp.</TableHead>
-              <TableHead className="hidden sm:table-cell">
-                Hora Indisp.
-              </TableHead>
-              <TableHead>Ações</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {configs.map((config) => (
-              <TableRow key={config.id}>
-                <TableCell>
-                  <div className="font-medium">{config.rig.name}</div>
-                </TableCell>
-                <TableCell>
-                  <div className="font-medium">
-                    {formatCurrency(config.availableHourTax)}
-                  </div>
-                </TableCell>
-                <TableCell className="hidden sm:table-cell">
-                  {formatCurrency(config.glossHourTax)}
-                </TableCell>
-                <TableCell className="flex justify-center items-center cursor-pointer ">
-                  {" "}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button aria-haspopup="true" size="icon" variant="ghost">
-                        <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">Toggle menu</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem>
-                        <Button
-                          variant="ghost"
-                          onClick={() => handleOpenEditConfigModal(config)}
-                        >
-                          Editar Métricas
-                        </Button>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
+
+      {isFetching && (
+        <CardContent className="h-[80%] flex items-center justify-center">
+          <Spinner />
+        </CardContent>
+      )}
+      {!isFetching && (
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Sonda</TableHead>
+                <TableHead>Hora Disp.</TableHead>
+                <TableHead className="hidden sm:table-cell">
+                  Hora Indisp.
+                </TableHead>
+                <TableHead>Ações</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </CardContent>
+            </TableHeader>
+            <TableBody>
+              {configs.map((config) => (
+                <TableRow key={config.id}>
+                  <TableCell>
+                    <div className="font-medium">{config.rig.name}</div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="font-medium">
+                      {formatCurrency(config.availableHourTax)}
+                    </div>
+                  </TableCell>
+                  <TableCell className="hidden sm:table-cell">
+                    {formatCurrency(config.glossHourTax)}
+                  </TableCell>
+                  <TableCell className="flex justify-center items-center cursor-pointer ">
+                    {" "}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          aria-haspopup="true"
+                          size="icon"
+                          variant="ghost"
+                        >
+                          <MoreHorizontal className="h-4 w-4" />
+                          <span className="sr-only">Toggle menu</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem>
+                          <Button
+                            variant="ghost"
+                            onClick={() => handleOpenEditConfigModal(config)}
+                          >
+                            Editar Métricas
+                          </Button>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      )}
     </Card>
   );
 };

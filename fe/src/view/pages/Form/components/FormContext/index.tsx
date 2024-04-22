@@ -183,8 +183,6 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     },
   ]);
 
-  console.log("Errors: ", errors);
-
   const [periodsState, setPeriodsState] = useState([
     {
       periodId: periods[0].id,

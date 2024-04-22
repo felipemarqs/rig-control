@@ -39,9 +39,6 @@ export const BillingRigDetailDashboardProvider = ({
 
   const totals = getTotals(efficiencies);
 
-  console.log("totals", totals);
-  console.log("billing", billing);
-
   const isEmpty: boolean = billing.length === 0;
 
   const totalAmount: number = isEmpty ? 0 : billing[0].total;

@@ -294,7 +294,6 @@ export const PendingFormProvider = ({
   >([]);
 
   const [errors, setErrors] = useState<Array<ErrorArgs>>([]);
-  console.log("errors", errors);
 
   const setError = ({fieldName, message}: ErrorArgs) => {
     const errorAlreadyExists = errors.find(

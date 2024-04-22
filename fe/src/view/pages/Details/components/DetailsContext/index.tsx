@@ -48,8 +48,6 @@ export const DetailsContextProvider = ({
 
   const {efficiency, isFetchingEfficiency} = useEfficiencyById(efficiencyId!);
 
-  console.log("Is Editable", efficiency);
-
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const {isUserAdm, user} = useAuth();

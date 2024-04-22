@@ -165,7 +165,6 @@ export const BillingDashboardProvider = ({
   const {configs, isFetchingConfig} = useConfigBillings();
 
   const isEmpty: boolean = billings.length === 0;
-  console.log("Billings", billings);
 
   /*  const filteredRigsAverage = useMemo(() => {
     if (selectedDashboardView === "ALL") {

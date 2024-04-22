@@ -8,10 +8,18 @@ import {
 import {Progress} from "@/components/ui/progress";
 import {FileClock, TimerIcon, TimerOff, Wrench} from "lucide-react";
 import {useStatboxContainer} from "./useStatboxContainer";
+import {Spinner} from "@/view/components/Spinner";
 
 export const StatboxContainer = () => {
-  const {averageHours, averageHoursPercentage, glossHours, repairHours} =
-    useStatboxContainer();
+  const {
+    averageHours,
+    averageHoursPercentage,
+    glossHours,
+    repairHours,
+    averageUnavailableHours,
+    isFetchingRigsAverage,
+    selectedDashboardView,
+  } = useStatboxContainer();
   return (
     <div className="grid gap-4  md:grid-cols-2 md:gap-8 lg:grid-cols-4">
       <Card
@@ -22,15 +30,25 @@ export const StatboxContainer = () => {
           <CardTitle className="text-sm font-medium">Disp. Diária</CardTitle>
           <TimerIcon className="h-8 w-8 text-muted-foreground" />
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{`${averageHours} Horas`}</div>
-          <p className="text-xs text-muted-foreground">
-            Média de disponibilidade diária
-          </p>
-        </CardContent>
-        <CardFooter>
-          <Progress value={averageHoursPercentage} />
-        </CardFooter>
+        {isFetchingRigsAverage && (
+          <CardContent className="w-full  flex justify-center items-center">
+            <Spinner />
+          </CardContent>
+        )}
+        {!isFetchingRigsAverage && (
+          <>
+            {" "}
+            <CardContent>
+              <div className="text-2xl font-bold">{`${averageHours} Horas`}</div>
+              <p className="text-xs text-muted-foreground">
+                Média de disponibilidade diária
+              </p>
+            </CardContent>
+            <CardFooter>
+              <Progress value={averageHoursPercentage} />
+            </CardFooter>
+          </>
+        )}
       </Card>
       <Card
         x-chunk="dashboard-01-chunk-0"
@@ -42,21 +60,32 @@ export const StatboxContainer = () => {
           </CardTitle>
           <TimerOff className="h-8 w-8 text-muted-foreground text-redAccent-500" />
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-redAccent-500">{`${(
-            24 - averageHours
-          ).toFixed(2)} Horas`}</div>
-          <p className="text-xs text-muted-foreground text-redAccent-500">
-            Média de indisponibilidade diária
-          </p>
-        </CardContent>
-        <CardFooter>
-          <Progress
-            value={100 - averageHoursPercentage}
-            indicatorColor="bg-redAccent-500"
-            className="bg-redAccent-500/20"
-          />
-        </CardFooter>
+
+        {isFetchingRigsAverage && (
+          <CardContent className="w-full  flex justify-center items-center">
+            <Spinner />
+          </CardContent>
+        )}
+        {!isFetchingRigsAverage && (
+          <>
+            {" "}
+            <CardContent>
+              <div className="text-2xl font-bold text-redAccent-500">{`${averageUnavailableHours.toFixed(
+                2
+              )} Horas`}</div>
+              <p className="text-xs text-muted-foreground text-redAccent-500">
+                Média de indisponibilidade diária
+              </p>
+            </CardContent>
+            <CardFooter>
+              <Progress
+                value={100 - averageHoursPercentage}
+                indicatorColor="bg-redAccent-500"
+                className="bg-redAccent-500/20"
+              />
+            </CardFooter>
+          </>
+        )}
       </Card>
       <Card
         x-chunk="dashboard-01-chunk-2"
@@ -68,14 +97,30 @@ export const StatboxContainer = () => {
           </CardTitle>
           <Wrench className="h-8 w-8 text-muted-foreground text-redAccent-500" />
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-redAccent-500">
-            {`${repairHours.toFixed(2)} Horas`}
-          </div>
-          <p className="text-xs text-muted-foreground text-redAccent-500">
-            Horas não faturadas por reparo de equipamento
-          </p>
-        </CardContent>
+
+        {isFetchingRigsAverage && (
+          <CardContent className="w-full  flex justify-center items-center">
+            <Spinner />
+          </CardContent>
+        )}
+        {selectedDashboardView === "ALL" && !isFetchingRigsAverage && (
+          <CardContent>
+            <div className="text-2xl font-bold text-redAccent-500">
+              {`${repairHours.toFixed(2)} Horas`}
+            </div>
+            <p className="text-xs text-muted-foreground text-redAccent-500">
+              Horas não faturadas por reparo de equipamento
+            </p>
+          </CardContent>
+        )}
+
+        {selectedDashboardView !== "ALL" && !isFetchingRigsAverage && (
+          <CardContent>
+            <p className="text-xs text-muted-foreground text-redAccent-500">
+              Informação disponível somente para o filtro "Todos"
+            </p>
+          </CardContent>
+        )}
       </Card>
       <Card
         x-chunk="dashboard-01-chunk-2"
@@ -87,14 +132,25 @@ export const StatboxContainer = () => {
           </CardTitle>
           <FileClock className="h-8 w-8 text-muted-foreground text-redAccent-500" />
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-redAccent-500">
-            {`${glossHours.toFixed(2)} Horas`}
-          </div>
-          <p className="text-xs text-muted-foreground text-redAccent-500">
-            Horas não faturadas
-          </p>
-        </CardContent>
+
+        {selectedDashboardView === "ALL" && (
+          <CardContent>
+            <div className="text-2xl font-bold text-redAccent-500">
+              {`${glossHours.toFixed(2)} Horas`}
+            </div>
+            <p className="text-xs text-muted-foreground text-redAccent-500">
+              Horas não faturadas
+            </p>
+          </CardContent>
+        )}
+
+        {selectedDashboardView !== "ALL" && (
+          <CardContent>
+            <p className="text-xs text-muted-foreground text-redAccent-500">
+              Informação disponível somente para o filtro "Todos"
+            </p>
+          </CardContent>
+        )}
       </Card>
     </div>
   );

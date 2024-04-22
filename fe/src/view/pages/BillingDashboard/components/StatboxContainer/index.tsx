@@ -7,12 +7,14 @@ import {
 } from "@/components/ui/card";
 import {DollarSign, FileClock, TimerOff, Wrench} from "lucide-react";
 import {useStatboxContainer} from "./useStatboxContainer";
+import {Spinner} from "@/view/components/Spinner";
 
 export const StatboxContainer = () => {
   const {
     totalAmount,
     totalGlossAmount,
     totalRepairAmount,
+    isFetchingBillings,
     totalUnbilledAmount,
   } = useStatboxContainer();
 
@@ -29,10 +31,19 @@ export const StatboxContainer = () => {
           <DollarSign className="h-8 w-8 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{totalAmount}</div>
-          <p className="text-xs text-muted-foreground">
-            Faturamento total no período selecionado
-          </p>
+          {!isFetchingBillings && (
+            <>
+              <div className="text-2xl font-bold">{totalAmount}</div>
+              <p className="text-xs text-muted-foreground">
+                Faturamento total no período selecionado
+              </p>
+            </>
+          )}
+          {isFetchingBillings && (
+            <div className="flex justify-center w-full h-full">
+              <Spinner />
+            </div>
+          )}
         </CardContent>
         <CardFooter></CardFooter>
       </Card>
@@ -47,12 +58,21 @@ export const StatboxContainer = () => {
           <TimerOff className="h-8 w-8 text-muted-foreground text-redAccent-500" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-redAccent-500">
-            {totalUnbilledAmount}
-          </div>
-          <p className="text-xs text-muted-foreground text-redAccent-500">
-            Total não faturado no período selecionado
-          </p>
+          {!isFetchingBillings && (
+            <>
+              <div className="text-2xl font-bold text-redAccent-500">
+                {totalUnbilledAmount}
+              </div>
+              <p className="text-xs text-muted-foreground text-redAccent-500">
+                Total não faturado no período selecionado
+              </p>
+            </>
+          )}
+          {isFetchingBillings && (
+            <div className="flex justify-center w-full h-full">
+              <Spinner />
+            </div>
+          )}
         </CardContent>
         <CardFooter></CardFooter>
       </Card>
@@ -67,12 +87,21 @@ export const StatboxContainer = () => {
           <Wrench className="h-8 w-8 text-muted-foreground text-redAccent-500" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-redAccent-500">
-            {totalRepairAmount}
-          </div>
-          <p className="text-xs text-muted-foreground text-redAccent-500">
-            Total não faturado por reparo de equipamento
-          </p>
+          {!isFetchingBillings && (
+            <>
+              <div className="text-2xl font-bold text-redAccent-500">
+                {totalRepairAmount}
+              </div>
+              <p className="text-xs text-muted-foreground text-redAccent-500">
+                Total não faturado por reparo de equipamento
+              </p>
+            </>
+          )}
+          {isFetchingBillings && (
+            <div className="flex justify-center w-full h-full">
+              <Spinner />
+            </div>
+          )}
         </CardContent>
       </Card>
       <Card
@@ -86,12 +115,21 @@ export const StatboxContainer = () => {
           <FileClock className="h-8 w-8 text-muted-foreground text-redAccent-500" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-redAccent-500">
-            {totalGlossAmount}
-          </div>
-          <p className="text-xs text-muted-foreground text-redAccent-500">
-            Total não faturado por glosa
-          </p>
+          {!isFetchingBillings && (
+            <>
+              <div className="text-2xl font-bold text-redAccent-500">
+                {totalGlossAmount}
+              </div>
+              <p className="text-xs text-muted-foreground text-redAccent-500">
+                Total não faturado por glosa
+              </p>
+            </>
+          )}
+          {isFetchingBillings && (
+            <div className="flex justify-center w-full h-full">
+              <Spinner />
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

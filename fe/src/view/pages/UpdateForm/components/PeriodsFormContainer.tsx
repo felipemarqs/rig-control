@@ -41,8 +41,6 @@ export const PeriodsFormContainer = () => {
     hasRemainingMinutes,
   } = useForm();
 
-  console.log("periods no periodsForm", periods);
-
   const format = "HH:mm";
   return (
     <div className=" max-h-[90vh]  flex-1  ">

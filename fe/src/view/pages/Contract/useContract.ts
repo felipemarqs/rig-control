@@ -10,8 +10,6 @@ export const useContract = () => {
 
   const {contracts, isFetchingContracts} = useContracts(isUserAdm);
 
-  console.log("contracts", contracts);
-
   return {
     contracts,
     isFetchingContracts,

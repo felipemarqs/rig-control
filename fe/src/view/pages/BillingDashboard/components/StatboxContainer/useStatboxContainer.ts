@@ -6,12 +6,14 @@ export const useStatboxContainer = () => {
     totalGlossAmount,
     totalRepairAmount,
     totalUnbilledAmount,
+    isFetchingBillings,
   } = useBillingDashboard();
 
   return {
     totalAmount,
     totalGlossAmount,
     totalRepairAmount,
+    isFetchingBillings,
     totalUnbilledAmount,
   };
 };

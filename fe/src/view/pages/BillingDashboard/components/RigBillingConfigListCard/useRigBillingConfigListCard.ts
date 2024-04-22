@@ -1,7 +1,14 @@
 import {useBillingDashboard} from "../../BillingDashboardContext/useBillingDashboard";
 
 export const useRigBillingConfigListCard = () => {
-  const {configs, handleOpenEditConfigModal} = useBillingDashboard();
+  const {
+    configs,
+    handleOpenEditConfigModal,
+    isFetchingConfig,
+    isFetchingBillings,
+  } = useBillingDashboard();
 
-  return {configs, handleOpenEditConfigModal};
+  const isFetching = isFetchingConfig || isFetchingBillings;
+
+  return {configs, handleOpenEditConfigModal, isFetching};
 };

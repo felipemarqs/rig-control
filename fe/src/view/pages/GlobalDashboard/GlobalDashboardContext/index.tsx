@@ -42,6 +42,7 @@ interface GlobalDashboardContextValue {
   statBox: {
     averageHours: number;
     averageHoursPercentage: number;
+    averageUnavailableHours: number;
   };
   handleChangeDashboardView: (view: DashboardView) => void;
   selectedDashboardView: DashboardView;
@@ -116,12 +117,24 @@ export const GlobalDashboardProvider = ({
       endDate: filters.endDate,
     });
 
+  console.log(
+    formatNumberWithFixedDecimals(
+      rigsAverageTotalHours / filteredRigsAverage.length,
+      2
+    )
+  );
+
+  const averageHours = formatNumberWithFixedDecimals(
+    rigsAverageTotalHours / filteredRigsAverage.length,
+    2
+  );
+
+  const isAverageHoursNaN = isNaN(averageHours);
+  console.log("Is Average Hours NaN? ", isAverageHoursNaN);
+
   const statBox = {
-    averageHours:
-      formatNumberWithFixedDecimals(
-        rigsAverageTotalHours / filteredRigsAverage.length,
-        2
-      ) ?? 0,
+    averageHours: isAverageHoursNaN ? 0 : averageHours,
+    averageUnavailableHours: isAverageHoursNaN ? 0 : 24 - averageHours,
     averageHoursPercentage:
       formatNumberWithFixedDecimals(
         ((rigsAverageTotalHours / filteredRigsAverage.length) * 100) / 24,

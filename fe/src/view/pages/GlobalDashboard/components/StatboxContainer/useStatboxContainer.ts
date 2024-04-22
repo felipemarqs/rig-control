@@ -2,8 +2,10 @@ import {useGlobalDashboard} from "../../GlobalDashboardContext/useDashboard";
 
 export const useStatboxContainer = () => {
   const {
-    statBox: {averageHours, averageHoursPercentage},
+    statBox: {averageHours, averageHoursPercentage, averageUnavailableHours},
     chartData,
+    isFetchingRigsAverage,
+    selectedDashboardView,
   } = useGlobalDashboard();
 
   let glossHours = 0;
@@ -23,6 +25,9 @@ export const useStatboxContainer = () => {
     glossHours,
     repairHours,
     averageHours,
+    isFetchingRigsAverage,
     averageHoursPercentage,
+    selectedDashboardView,
+    averageUnavailableHours,
   };
 };
