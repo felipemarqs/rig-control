@@ -20,7 +20,7 @@ export const ListRigs = () => {
   return (
     <ListRigsProvider>
       <ListRigsContext.Consumer>
-        {({isFetchingRigs, rigs, rigBeingEdited}) => (
+        {({isFetchingRigs, rigs, rigBeingEdited, handleSetRigBeingEdited}) => (
           <div className="w-full h-full overflow-y-scroll">
             <Header
               title="Sondas"
@@ -61,42 +61,53 @@ export const ListRigs = () => {
                         </div>
                       </CardContent>
                     </Card>
-                    {rigs.map(({id, name, state, isActive}) => (
-                      <Card
-                        className=" col-span-12 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] flex flex-col justify-around"
-                        key={id}
-                      >
-                        <CardHeader className="flex flex-row gap-6  items-center">
-                          <div className=" ">
-                            <img
-                              className="h-8 rounded-md shadow-[0px_3px_15px_#718096]"
-                              src={logo}
-                            />
-                          </div>
-                          <div className="flex-1 flex justify-between items-center">
-                            <div className="flex flex-col gap-2">
-                              <CardTitle>{name}</CardTitle>
-                              <CardDescription>{state}</CardDescription>
+                    {rigs.map(
+                      ({id, name, state, isActive, stateFlagImagePath}) => (
+                        <Card
+                          className=" col-span-12 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] flex flex-col justify-around"
+                          key={id}
+                        >
+                          <CardHeader className="flex flex-row gap-6  items-center">
+                            <div className=" ">
+                              <img
+                                className="h-8 rounded-md shadow-[0px_3px_15px_#718096]"
+                                src={stateFlagImagePath}
+                              />
                             </div>
-                            {isActive && (
-                              <div>
-                                <Badge className="bg-emerald-500">Ativa</Badge>
+                            <div className="flex-1 flex justify-between items-center">
+                              <div className="flex flex-col gap-2">
+                                <CardTitle>{name}</CardTitle>
+                                <CardDescription>{state}</CardDescription>
                               </div>
-                            )}
+                              {isActive && (
+                                <div>
+                                  <Badge className="bg-emerald-500">
+                                    Ativa
+                                  </Badge>
+                                </div>
+                              )}
 
-                            {!isActive && (
-                              <div>
-                                <Badge variant="destructive">Desativada</Badge>
-                              </div>
-                            )}
-                          </div>
-                        </CardHeader>
+                              {!isActive && (
+                                <div>
+                                  <Badge variant="destructive">
+                                    Desativada
+                                  </Badge>
+                                </div>
+                              )}
+                            </div>
+                          </CardHeader>
 
-                        <CardFooter className="flex justify-between ">
-                          <Button className="w-full">Editar</Button>
-                        </CardFooter>
-                      </Card>
-                    ))}
+                          <CardFooter className="flex justify-between ">
+                            <Button
+                              className="w-full"
+                              onClick={() => handleSetRigBeingEdited(id)}
+                            >
+                              Editar
+                            </Button>
+                          </CardFooter>
+                        </Card>
+                      )
+                    )}
                   </div>
                 )}
               </div>

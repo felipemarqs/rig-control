@@ -46,6 +46,7 @@ model Rig {
   isActive              Boolean                @default(true)
   contractId            String                 @map("contract_id") @db.Uuid
   state                 UF
+  stateFlagImagePath    String?                @map("state_flag_image_path")
   users                 UserRig[]
   efficiencies          Efficiency[]
   temporaryEfficiencies TemporaryEfficiency[]

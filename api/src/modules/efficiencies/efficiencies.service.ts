@@ -656,7 +656,7 @@ export class EfficienciesService {
         dtmHours: true,
         hasTruckTank: true,
         user: { select: { name: true } },
-        rig: { select: { name: true, state: true } },
+        rig: { select: { name: true, state: true ,stateFlagImagePath:true} },
         fluidRatio: {
           select: {
             ratio: true,

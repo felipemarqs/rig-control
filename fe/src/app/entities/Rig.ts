@@ -4,6 +4,7 @@ export interface Rig {
   isActive: boolean;
   state: UF;
   contractId?: string;
+  stateFlagImagePath?: string;
 }
 
 export enum UF {
