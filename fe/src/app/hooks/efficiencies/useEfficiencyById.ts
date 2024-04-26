@@ -8,8 +8,10 @@ export const useEfficiencyById = (efficiencyId: string) => {
     queryFn: () => efficienciesService.getById(efficiencyId),
   });
 
+  console.log("Efficiency Data", data);
+
   return {
-    efficiency: data ?? [],
+    efficiency: data ?? null,
     isFetchingEfficiency: isFetching,
     refetchEffciency: refetch,
   };

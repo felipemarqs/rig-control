@@ -9,10 +9,11 @@ import {efficienciesService} from "../../../../../app/services/efficienciesServi
 import {AxiosError} from "axios";
 import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
 import {QueryKeys} from "../../../../../app/config/QueryKeys";
+import {useWindowWidth} from "@/app/hooks/useWindowWidth";
 
 interface DetailsContextValues {
   isFetchingEfficiency: boolean;
-  efficiency: never[] | PersistanceEfficiency;
+  efficiency: null | PersistanceEfficiency;
   isDetailModalOpen: boolean;
   closeDetailModal: () => void;
   openDetailModal: (description: string) => void;
@@ -23,13 +24,11 @@ interface DetailsContextValues {
   isLoadingRemoveEfficiency: boolean;
   handleDeleteEfficiency: () => Promise<void>;
   isUserAdm: boolean;
-  closeDeletionRequestModal: () => void;
-  openDeletionRequestModal: () => void;
-  isDeletionRequestModalOpen: boolean;
   efficiencyId: string;
   canUserEdit: boolean;
   handleUpdateEfficiency: () => void;
   isLoadingUpdateEfficiency: boolean;
+  windowWidth: number;
 }
 export const DetailsContext = createContext({} as DetailsContextValues);
 
@@ -48,6 +47,8 @@ export const DetailsContextProvider = ({
 
   const {efficiency, isFetchingEfficiency} = useEfficiencyById(efficiencyId!);
 
+  const windowWidth = useWindowWidth();
+
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const {isUserAdm, user} = useAuth();
@@ -58,8 +59,6 @@ export const DetailsContextProvider = ({
 
   const [isDetailModalOpen, setIsDetailModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-  const [isDeletionRequestModalOpen, setIsDeletionRequestModalOpen] =
-    useState<boolean>(false);
 
   const [modalDescription, setModalDescription] = useState<string>("");
 
@@ -107,14 +106,6 @@ export const DetailsContextProvider = ({
     setIsDetailModalOpen(true);
   };
 
-  const closeDeletionRequestModal = () => {
-    setIsDeletionRequestModalOpen(false);
-  };
-
-  const openDeletionRequestModal = () => {
-    setIsDeletionRequestModalOpen(true);
-  };
-
   const closeDeleteModal = () => {
     setModalDescription("");
     setIsDeleteModalOpen(false);
@@ -127,6 +118,7 @@ export const DetailsContextProvider = ({
   return (
     <DetailsContext.Provider
       value={{
+        windowWidth,
         isFetchingEfficiency,
         efficiency,
         isDetailModalOpen,
@@ -142,9 +134,7 @@ export const DetailsContextProvider = ({
         canUserEdit,
         isLoadingUpdateEfficiency,
         efficiencyId,
-        closeDeletionRequestModal,
-        openDeletionRequestModal,
-        isDeletionRequestModalOpen,
+
         handleUpdateEfficiency,
       }}
     >

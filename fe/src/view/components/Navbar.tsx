@@ -9,6 +9,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+
 import {Sheet, SheetContent, SheetTrigger} from "@/components/ui/sheet";
 import {useNavigate, Link} from "react-router-dom";
 
@@ -23,77 +29,80 @@ interface NavigationLinksProps {
 
 const NavigationLinks = ({isUserAdm}: NavigationLinksProps) => {
   const {activeTab, handleToggleNavItem} = useSidebarContext();
+
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          className={cn(
-            "text-left text-gray-500 transition-colors hover:text-white",
-            activeTab === "dashboard" ? "text-white " : ""
-          )}
-        >
-          <span className="flex items-center gap-2">
+      <HoverCard openDelay={0}>
+        <HoverCardTrigger>
+          {" "}
+          <span
+            className={cn(
+              "text-left text-gray-500 transition-colors flex items-center gap-2 hover:text-white",
+              activeTab === "dashboard" ? "text-white " : ""
+            )}
+          >
             {" "}
             Dashboard <ChevronDown />
           </span>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          {isUserAdm && (
-            <DropdownMenuItem>
-              <Link
-                to="/global-dashboard"
-                onClick={() => handleToggleNavItem("dashboard")}
-              >
-                Dashboard Geral
-              </Link>
-            </DropdownMenuItem>
-          )}
+        </HoverCardTrigger>
+        <HoverCardContent>
+          <Link
+            className={cn(
+              "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+            )}
+            to="/dashboard"
+            onClick={() => handleToggleNavItem("dashboard")}
+          >
+            Dashboard por Sonda
+          </Link>
 
-          <DropdownMenuItem>
-            {" "}
-            <Link
-              to="/dashboard"
-              onClick={() => handleToggleNavItem("dashboard")}
-            >
-              Dashboard por Sonda
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+          <Link
+            className={cn(
+              "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+            )}
+            to="/global-dashboard"
+            onClick={() => handleToggleNavItem("dashboard")}
+          >
+            Dashboard Geral
+          </Link>
+        </HoverCardContent>
+      </HoverCard>
 
       {isUserAdm && (
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            className={cn(
-              "text-left text-gray-500 transition-colors hover:text-white",
-              activeTab === "invoicing" ? "text-white " : ""
-            )}
-          >
-            <span className="flex items-center gap-2">
+        <HoverCard openDelay={0}>
+          <HoverCardTrigger>
+            {" "}
+            <span
+              className={cn(
+                "text-left text-gray-500 transition-colors flex items-center gap-2 hover:text-white",
+                activeTab === "invoicing" ? "text-white " : ""
+              )}
+            >
               {" "}
               Faturamento <ChevronDown />
             </span>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem>
-              <Link
-                to="/invoicing-dashboard"
-                onClick={() => handleToggleNavItem("invoicing")}
-              >
-                Faturamento Geral
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              {" "}
-              <Link
-                to="/invoicing-rig-dashboard"
-                onClick={() => handleToggleNavItem("invoicing")}
-              >
-                Faturamento por Sonda
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          </HoverCardTrigger>
+          <HoverCardContent>
+            <Link
+              className={cn(
+                "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+              )}
+              to="/invoicing-dashboard"
+              onClick={() => handleToggleNavItem("invoicing")}
+            >
+              Faturamento Geral
+            </Link>{" "}
+            <Link
+              className={cn(
+                "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+              )}
+              to="/invoicing-rig-dashboard"
+              onClick={() => handleToggleNavItem("invoicing")}
+            >
+              Faturamento por Sonda
+            </Link>
+          </HoverCardContent>
+        </HoverCard>
       )}
 
       <Link

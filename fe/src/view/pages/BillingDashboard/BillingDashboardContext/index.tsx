@@ -13,6 +13,7 @@ import {Rig} from "../../../../app/entities/Rig";
 import {months} from "../../../../app/utils/months";
 import {years} from "../../../../app/utils/years";
 import {useFiltersContext} from "../../../../app/hooks/useFiltersContext";
+import {formatCurrencyStringToNegativeNumber} from "@/app/utils/formatCurrencyStringToNegativeNumber";
 
 interface BillingDashboardContextValue {
   handleStartDateChange(date: Date): void;
@@ -196,8 +197,13 @@ export const BillingDashboardProvider = ({
     });
 
     const totalAmount = formatCurrency(totalBillings);
-    const totalRepairAmount = formatCurrency(totalRepairUnbilled);
-    const totalGlossAmount = formatCurrency(totalGlossUnbilled);
+
+    const totalRepairAmount = formatCurrencyStringToNegativeNumber(
+      formatCurrency(totalRepairUnbilled)
+    );
+    const totalGlossAmount = formatCurrencyStringToNegativeNumber(
+      formatCurrency(totalGlossUnbilled)
+    );
     const totalUnbilledAmount = formatCurrency(
       totalRepairUnbilled + totalGlossUnbilled
     );

@@ -34,8 +34,12 @@ export const BillingRigDetailDashboardProvider = ({
 
   const {billing, refetchBilling, isFetchingBilling} =
     useBillingByRigId(filters);
+
+  console.log("Billing", billing);
   const {efficiencies, refetchEffciencies, isFetchingEfficiencies} =
     useEfficiencies(filters);
+
+  console.log("efficiencies", efficiencies);
 
   const totals = getTotals(efficiencies);
 

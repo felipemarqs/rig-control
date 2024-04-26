@@ -533,7 +533,7 @@ export class EfficienciesService {
       dtmLt20TotalHours + dtmGt50TotalHours + dtmBt20And50TotalHours;
 
     const efficiency = await this.efficiencyRepo.create({
-      data: efficiencyData,
+      data: { ...efficiencyData, repairHours: totalRepairHours },
     });
 
     await this.billingRepo.create({
@@ -655,8 +655,9 @@ export class EfficienciesService {
         truckKmHours: true,
         dtmHours: true,
         hasTruckTank: true,
+        repairHours: true,
         user: { select: { name: true } },
-        rig: { select: { name: true, state: true ,stateFlagImagePath:true} },
+        rig: { select: { name: true, state: true, stateFlagImagePath: true } },
         fluidRatio: {
           select: {
             ratio: true,
@@ -703,6 +704,7 @@ export class EfficienciesService {
         truckKmHours: true,
         well: true,
         hasTruckTank: true,
+        repairHours: true,
         isEditable: true,
         rig: true,
         user: {

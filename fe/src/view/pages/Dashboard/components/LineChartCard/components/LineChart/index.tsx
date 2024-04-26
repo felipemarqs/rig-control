@@ -5,6 +5,7 @@ import {useNavigate} from "react-router-dom";
 export const LineChart = () => {
   const {data} = useLineChart();
   const navigate = useNavigate();
+  console.log("Data Line CHart", data);
   return (
     <div className="w-full h-full">
       <ResponsiveLine
@@ -18,6 +19,7 @@ export const LineChart = () => {
           min: 0,
           max: 100,
         }}
+        enablePointLabel={data[0].data.length > 31 ? false : true}
         pointLabel={(e) => {
           //if (e.y === 100) return "";
           return e.y + "%";
@@ -27,7 +29,6 @@ export const LineChart = () => {
         onClick={(e) => navigate(`/details/${e.points[0].data.id}`)}
         lineWidth={3}
         curve="cardinal"
-        enablePointLabel={false}
         colors={["#1c7b7b", "#774dd7"]}
         enableGridX={true}
         enableGridY={false}

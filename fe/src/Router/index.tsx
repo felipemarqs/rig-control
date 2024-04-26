@@ -28,7 +28,6 @@ import {useAuth} from "../app/hooks/useAuth";
 import {FormMenu} from "../view/pages/FormMenu";
 import {PendingForm} from "../view/pages/PendingForm";
 import {AppLayout} from "@/view/Layouts/AppLayout";
-import Test from "@/view/pages/List/Test";
 
 export const Router = () => {
   const {isUserAdm} = useAuth();
@@ -47,8 +46,7 @@ export const Router = () => {
         <Route element={<AuthGuard isPrivate={true} />}>
           {/* Define o layout baseado na largura da janela */}
           <Route element={<AppLayout />}>
-            <Route path="/" element={<DashboardMenu />} />
-            <Route path="/test" element={<Test />} />
+            <Route path="/" element={<Dashboard />} />
 
             <Route path="/dashboard" element={<Dashboard />} />
             <Route

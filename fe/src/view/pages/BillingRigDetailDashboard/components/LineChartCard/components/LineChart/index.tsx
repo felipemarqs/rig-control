@@ -27,7 +27,7 @@ export const LineChart = () => {
         onClick={(e) => navigate(`/details/${e.points[0].data.id}`)}
         lineWidth={3}
         curve="cardinal"
-        enablePointLabel={false}
+        enablePointLabel={true}
         colors={["#1c7b7b", "#774dd7"]}
         enableGridX={true}
         enableGridY={false}

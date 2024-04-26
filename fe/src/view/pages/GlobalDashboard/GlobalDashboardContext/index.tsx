@@ -83,10 +83,13 @@ export const GlobalDashboardProvider = ({
   // Utilização dos hooks para eficiências e médias de eficiência
 
   const {rigsAverage, refetchRigsAverage, isFetchingRigsAverage} =
-    useEfficienciesRigsAverage({
-      startDate: filters.startDate,
-      endDate: filters.endDate,
-    });
+    useEfficienciesRigsAverage(
+      {
+        startDate: filters.startDate,
+        endDate: filters.endDate,
+      },
+      true
+    );
 
   const [selectedDashboardView, setSelectedDashboardView] =
     useState<DashboardView>("ALL");
@@ -112,10 +115,13 @@ export const GlobalDashboardProvider = ({
   });
 
   const {unbilledPeriods, refetchUnbilledPeriods, isFetchingUnbilledPeriods} =
-    useGetUnbilledPeriods({
-      startDate: filters.startDate,
-      endDate: filters.endDate,
-    });
+    useGetUnbilledPeriods(
+      {
+        startDate: filters.startDate,
+        endDate: filters.endDate,
+      },
+      true
+    );
 
   console.log(
     formatNumberWithFixedDecimals(

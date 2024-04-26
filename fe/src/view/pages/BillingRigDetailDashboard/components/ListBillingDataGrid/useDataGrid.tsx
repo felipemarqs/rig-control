@@ -7,6 +7,7 @@ import {
   taxSuffix,
   taxTranslation,
 } from "../../../../../app/utils/taxLabels";
+import {formatCurrencyStringToNegativeNumber} from "@/app/utils/formatCurrencyStringToNegativeNumber";
 
 export const useDataGrid = () => {
   const {billing, totals} = useBillingRigDetailDashboard();
@@ -47,7 +48,7 @@ export const useDataGrid = () => {
         return (
           <div className="w-full flex justify-center items-center">
             <div className="text-gray-800 font-medium tracking-tighter">
-              {`${params.value.toFixed(2)} ${suffix}`}
+              {`${params.value?.toFixed(2)} ${suffix}`}
             </div>
           </div>
         );
@@ -63,6 +64,29 @@ export const useDataGrid = () => {
       headerAlign: "center",
       align: "center",
       renderCell(params: GridRenderCellParams) {
+        console.log("params", params.value);
+
+        if (
+          params.row.id === "repairhouramount-total" ||
+          params.row.id === "glosshouramount-total"
+        ) {
+          return (
+            <div className="w-full flex justify-center items-center">
+              {params.value > 0 && (
+                <div className="text-redAccent-500 font-semibold ">
+                  {formatCurrencyStringToNegativeNumber(
+                    formatCurrency(params.value)
+                  )}
+                </div>
+              )}
+              {params.value === 0 && (
+                <div className="text-gray-800 font-semibold ">
+                  {formatCurrency(params.value)}
+                </div>
+              )}
+            </div>
+          );
+        }
         return (
           <div className="w-full flex justify-center items-center">
             <div className="text-gray-800 font-semibold ">
@@ -87,6 +111,7 @@ export const useDataGrid = () => {
     rigNames.forEach((rigname) => {
       const rigData: any = billing.find((item) => item.rigname === rigname);
 
+      console.log("Row Data", rowData);
       rowData[rigname] = rigData ? rigData[taxa] : 0;
       rowData["qtd"] = totals[taxa as keyof totalsInterface];
     });

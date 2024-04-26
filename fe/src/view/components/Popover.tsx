@@ -34,8 +34,13 @@ const PopoverContent = ({children, className}: PopoverContentProps) => {
   );
 };
 
+const PopoverClose = ({children}: {children: React.ReactNode}) => {
+  return <RadixPopover.Close>{children}</RadixPopover.Close>;
+};
+
 export const Popover = {
   Root: PopoverRoot,
   Trigger: PopoverTrigger,
   Content: PopoverContent,
+  Close: PopoverClose,
 };

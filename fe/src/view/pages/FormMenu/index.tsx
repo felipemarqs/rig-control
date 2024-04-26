@@ -21,7 +21,11 @@ export const FormMenu = () => {
 
   return (
     <div className="w-full h-full overflow-y-scroll">
-      <Header title="Boletims" displayRig={false} displayPeriodRange={false} />
+      <Header
+        title="Formulário"
+        displayRig={false}
+        displayPeriodRange={false}
+      />
 
       <div className="w-full h-full ">
         <div className="border border-b-2">

@@ -120,6 +120,7 @@ model Efficiency {
   date                          DateTime
   well                          String
   availableHours                Float             @map("available_hours")
+  repairHours                   Float?            @map("repair_hours")
   dtmHours                      Float             @map("dtm_hours")
   isEditable                    Boolean?          @default(false) @map("is_editable")
   hasDemobilization             Boolean           @map("has_demobilization")

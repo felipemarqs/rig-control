@@ -48,10 +48,8 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   // Utilização dos hooks para autenticação e contexto da barra lateral
   const {user, signout, isAlertSeen, handleIsAlertSeen} = useAuth();
 
-  // Verificação se o usuário é administrador para exibir as rigs corretas
   const windowWidth = useWindowWidth();
 
-  // Estados iniciais para as datas (primeiro e último dia do mês atual)
   const {filters, selectedRig} = useFiltersContext();
 
   // Utilização dos hooks para eficiências e médias de eficiência

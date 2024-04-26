@@ -33,14 +33,14 @@ export const RigBillingConfigListCard = () => {
   return (
     <Card
       className={cn(
-        "col-span-12 lg:col-span-5  row-span-3 col-start-1 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]",
+        "col-span-12 lg:col-span-12  row-span-3 col-start-1 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]",
         configs.length >= 4 ? "overflow-y-scroll" : ""
       )}
     >
       <CardHeader className="px-7">
         <CardTitle>Métricas para cálculo de faturamento das sondas</CardTitle>
         <CardDescription>
-          Lista dos reparos de equipamentos durante o período selecionado.
+          Valores utilizados para os cálculos do faturamento
         </CardDescription>
       </CardHeader>
 
