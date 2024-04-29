@@ -365,7 +365,7 @@ export const PeriodsFormContainer = () => {
                     )}
 
                     <Button
-                      className="bg-secondary w-1/3 lg:w-1/4 text-sm"
+                      className="bg-primary w-1/3 lg:w-1/4 text-sm"
                       onClick={() => addPeriod()}
                     >
                       Adicionar período
@@ -382,7 +382,7 @@ export const PeriodsFormContainer = () => {
       <div className="lg:flex lg:justify-center pb-6 lg:my-6 ">
         <Button
           disabled={!isFormValid || isLoading}
-          className="bg-secondary w-2/3 "
+          className="bg-primary w-2/3 "
           onClick={() =>
             hasRemainingMinutes ? handleSave() : handleSubmit(periods)
           }
