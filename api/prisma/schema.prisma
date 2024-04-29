@@ -119,6 +119,7 @@ model Efficiency {
   id                            String            @id @default(uuid()) @db.Uuid
   date                          DateTime
   well                          String
+  createdAt                     DateTime?         @map("created_at")
   availableHours                Float             @map("available_hours")
   repairHours                   Float?            @map("repair_hours")
   dtmHours                      Float             @map("dtm_hours")
