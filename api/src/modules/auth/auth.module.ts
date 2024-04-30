@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { env } from 'src/shared/config/env';
+import { UserLogService } from '../user-log/user-log.service';
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { env } from 'src/shared/config/env';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, UserLogService],
 })
 export class AuthModule {}

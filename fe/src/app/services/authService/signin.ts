@@ -3,6 +3,7 @@ import {httpClient} from "../httpClient";
 export interface SigninParams {
   email: string;
   password: string;
+  loginTime: string | Date;
 }
 
 interface SigninResponse {

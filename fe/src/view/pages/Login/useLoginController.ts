@@ -8,16 +8,14 @@ import {customColorToast} from "../../../app/utils/customColorToast";
 import {AxiosError} from "axios";
 import {treatAxiosError} from "../../../app/utils/treatAxiosError";
 import {useAuth} from "../../../app/hooks/useAuth";
+import {getCurrentISOString} from "@/app/utils/getCurrentISOString";
 
 const schema = z.object({
-  email: z
-    .string()
-    .nonempty("E-mail é obrigatório.")
-    .email("Informe um E-mail válido."),
+  email: z.string().min(1).email("Informe um E-mail válido."),
   password: z
     .string()
-    .nonempty("Senha é obrigatória.")
-    .min(3, "A senha deve conter pelo menos 3 dígitos"),
+
+    .min(1, "A senha deve conter pelo menos 3 dígitos"),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -47,7 +45,10 @@ export const useLoginController = () => {
   const handleSubmit = hookFormHandleSubmit(async (data) => {
     //API Call
     try {
-      const {accessToken} = await mutateAsync(data);
+      const {accessToken} = await mutateAsync({
+        ...data,
+        loginTime: getCurrentISOString(),
+      });
       signin(accessToken);
 
       customColorToast("Logado com sucesso!", "#1c7b7b", "success");
