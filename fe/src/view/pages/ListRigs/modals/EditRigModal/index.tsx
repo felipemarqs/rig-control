@@ -1,10 +1,10 @@
-import { Controller } from "react-hook-form";
-import { Modal } from "../../../../components/Modal";
-import { useEditRigModal } from "./useEditRigModal";
-import { Input } from "../../../../components/Input";
-import { UF } from "../../../../../app/entities/Rig";
-import { Select } from "../../../../components/Select";
-import { Button } from "../../../../components/Button";
+import {Controller} from "react-hook-form";
+import {Modal} from "../../../../components/Modal";
+import {useEditRigModal} from "./useEditRigModal";
+import {Input} from "../../../../components/Input";
+import {UF} from "../../../../../app/entities/Rig";
+import {Select} from "../../../../components/Select";
+import {Button} from "../../../../components/Button";
 
 export const EditRigModal = () => {
   const {
@@ -43,7 +43,7 @@ export const EditRigModal = () => {
                 control={control}
                 defaultValue={rigBeingEdited?.state!}
                 name="state"
-                render={({ field: { onChange, value } }) => (
+                render={({field: {onChange, value}}) => (
                   <Select
                     value={value}
                     placeholder="Estado"
@@ -60,7 +60,7 @@ export const EditRigModal = () => {
               <Controller
                 control={control}
                 name="isActive"
-                render={({ field: { onChange, value } }) => (
+                render={({field: {onChange, value}}) => (
                   <Select
                     value={value}
                     placeholder="Estado"

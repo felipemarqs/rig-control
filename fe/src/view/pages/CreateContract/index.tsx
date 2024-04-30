@@ -9,9 +9,12 @@ export const CreateContract = () => {
   return (
     <div className="w-full h-full overflow-y-scroll">
       <Header
-        title="CADASTRO"
-        subtitle="Cadastro de sondas e suas configurações"
-      />
+        title="Cadastar Contrato"
+        displayRig={false}
+        displayPeriodRange={false}
+      >
+        <></>
+      </Header>
 
       <div className="w-full h-full ">
         <form className="p-4" onSubmit={handleSubmit}>

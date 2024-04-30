@@ -1,26 +1,30 @@
 import {PlusIcon} from "@radix-ui/react-icons";
 import {Header} from "../../components/Header";
 import {Spinner} from "../../components/Spinner";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardTitle,
+} from "@/components/ui/card";
 
-import {cn} from "../../../app/utils/cn";
 import {EditRigModal} from "./modals/EditRigModal";
 import {ListRigsContext, ListRigsProvider} from "./ListRigsContext";
+import {Button} from "@/components/ui/button";
+import {Badge} from "@/components/ui/badge";
 
 export const ListRigs = () => {
   return (
     <ListRigsProvider>
       <ListRigsContext.Consumer>
-        {({
-          isFetchingRigs,
-          rigs,
-          navigate,
-          handleSetRigBeingEdited,
-          rigBeingEdited,
-        }) => (
+        {({isFetchingRigs, rigs, rigBeingEdited, handleSetRigBeingEdited}) => (
           <div className="w-full h-full overflow-y-scroll">
             <Header
-              title="SONDAS"
-              subtitle="Listagem de todas as sondas cadastradas no sistema"
+              title="Sondas"
+              displayRig={false}
+              displayPeriodRange={false}
             />
 
             <div className="w-full h-full ">
@@ -31,10 +35,10 @@ export const ListRigs = () => {
                   </div>
                 )}
                 {!isFetchingRigs && (
-                  <div className="p-8 flex flex-col h-full gap-4 lg:items-center">
-                    <div
+                  <div className=" grid grid-cols-12 auto-rows-[200px] p-4 justify-center  gap-4 ">
+                    {/*  <div
                       onClick={() => navigate("/create-rig")}
-                      className="p-4 bg-white rounded-2xl shadow-[0_1px_2px] flex  h-20 gap-4 justify-center items-center border-l-4  border-primary-500 lg:w-2/5 cursor-pointer"
+                      className="p-4 bg-white rounded-2xl shadow-[0_1px_2px] flex  h-20 gap-4 justify-center items-center border-l-4  border-primary lg:w-2/5 cursor-pointer"
                     >
                       <div className="h-11 w-11 rounded-full border-2 border-dashed border-gray-600 flex justify-center items-center">
                         <PlusIcon className="w-6 h-6 text-gray-600" />
@@ -42,54 +46,67 @@ export const ListRigs = () => {
                       <span className="font-medium tracking-[-0.5px] block text-center  text-gray-600">
                         Adicionar Sonda
                       </span>
-                    </div>
-                    {rigs.map(({id, name, state, isActive}) => (
-                      <div
-                        key={id}
-                        className="p-4 bg-white rounded-2xl shadow-[0_1px_2px] flex flex-col gap-2 justify-between border-l-4  border-primary-500 lg:w-2/5"
-                      >
-                        <div className="w-full flex justify-between">
-                          <div className="flex flex-col ">
-                            <span className="text-gray-800 tracking-[-0.5] font-medium block">
-                              Nome
-                            </span>
-                            <span className="text-gray-600 tracking-[-0.5] font-medium block">
-                              {name}
-                            </span>
-                          </div>
-
-                          <div className="flex flex-col ">
-                            <span className="text-gray-800 tracking-[-0.5] font-medium block">
-                              Estado
-                            </span>
-                            <span className="text-gray-600 tracking-[-0.5] font-medium block">
-                              {state}
-                            </span>
-                          </div>
+                    </div> */}
+                    <Card className="cursor-pointer col-span-12 lg:col-span-3">
+                      <CardHeader>
+                        <CardTitle className="flex justify-center">
+                          Criar uma nova Sonda
+                        </CardTitle>
+                        <CardDescription> </CardDescription>
+                      </CardHeader>
+                      <CardContent className=" h-[60%] flex justify-center items-center">
+                        <div className="h-28 w-28 rounded-full border-2 border-dashed border-gray-600 flex justify-center items-center">
+                          <PlusIcon className="w-6 h-6 text-gray-600" />
                         </div>
-
-                        <div className="w-full flex justify-between">
-                          <div className="flex flex-col ">
-                            <span className="text-gray-800 tracking-[-0.5] font-medium block">
-                              {isActive ? "Ativa" : "Desativada"}
-                            </span>
-                            <span
-                              className={cn(
-                                "w-5 h-5 bg-secondary-500 rounded-full",
-                                isActive === false && "bg-redAccent-500"
+                      </CardContent>
+                    </Card>
+                    {rigs.map(
+                      ({id, name, state, isActive, stateFlagImagePath}) => (
+                        <Card
+                          className=" col-span-12 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] flex flex-col justify-around"
+                          key={id}
+                        >
+                          <CardHeader className="flex flex-row gap-6  items-center">
+                            <div className=" ">
+                              <img
+                                className="h-8 rounded-md shadow-[0px_3px_15px_#718096]"
+                                src={stateFlagImagePath}
+                              />
+                            </div>
+                            <div className="flex-1 flex justify-between items-center">
+                              <div className="flex flex-col gap-2">
+                                <CardTitle>{name}</CardTitle>
+                                <CardDescription>{state}</CardDescription>
+                              </div>
+                              {isActive && (
+                                <div>
+                                  <Badge className="bg-emerald-500">
+                                    Ativa
+                                  </Badge>
+                                </div>
                               )}
-                            ></span>
-                          </div>
 
-                          <span
-                            className="text-primary-500 tracking-[-0.5] underline font-semibold cursor-pointer"
-                            onClick={() => handleSetRigBeingEdited(id)}
-                          >
-                            Editar Sonda
-                          </span>
-                        </div>
-                      </div>
-                    ))}
+                              {!isActive && (
+                                <div>
+                                  <Badge variant="destructive">
+                                    Desativada
+                                  </Badge>
+                                </div>
+                              )}
+                            </div>
+                          </CardHeader>
+
+                          <CardFooter className="flex justify-between ">
+                            <Button
+                              className="w-full"
+                              onClick={() => handleSetRigBeingEdited(id)}
+                            >
+                              Editar
+                            </Button>
+                          </CardFooter>
+                        </Card>
+                      )
+                    )}
                   </div>
                 )}
               </div>

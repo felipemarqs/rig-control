@@ -4,6 +4,7 @@ import {parse} from "date-fns";
 import {ToPersistanceEfficiency} from "../../../entities/PersistanceEfficiency";
 import {getTotalHoursFromTimeString} from "../../../utils/getTotalHoursFromTimeString";
 import {getDiffInMinutes} from "../../../utils/getDiffInMinutes";
+import {getCurrentISOString} from "@/app/utils/getCurrentISOString";
 
 export const toPersistence = (domainEfficiency: DomainEfficiency) => {
   let totalAvailableHours = 0;
@@ -74,6 +75,7 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
 
   const toPersistenceObj: ToPersistanceEfficiency = {
     date: domainEfficiency.date,
+    createdAt: getCurrentISOString(),
     well: domainEfficiency.periods[0].well,
     availableHours: Number(totalAvailableHours.toFixed(2)),
     rigId: domainEfficiency.rigId!,

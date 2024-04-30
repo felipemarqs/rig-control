@@ -12,8 +12,8 @@ import {useRigs} from "../../../../app/hooks/rigs/useRigs";
 import {Rig} from "../../../../app/entities/Rig";
 import {months} from "../../../../app/utils/months";
 import {years} from "../../../../app/utils/years";
-import {useSidebarContext} from "../../../../app/contexts/SidebarContext";
 import {useFiltersContext} from "../../../../app/hooks/useFiltersContext";
+import {formatCurrencyStringToNegativeNumber} from "@/app/utils/formatCurrencyStringToNegativeNumber";
 
 interface BillingDashboardContextValue {
   handleStartDateChange(date: Date): void;
@@ -29,6 +29,7 @@ interface BillingDashboardContextValue {
   totalAmount: number | string;
   totalGlossAmount: number | string;
   totalRepairAmount: number | string;
+  totalUnbilledAmount: number | string;
   setSliderState({
     isBeginning,
     isEnd,
@@ -75,8 +76,6 @@ interface BillingDashboardContextValue {
   months: SelectOptions;
   years: SelectOptions;
   selectedYear: string;
-  windowWidth: number;
-
   handleToggleFilterType(filterType: FilterType): void;
 }
 
@@ -105,7 +104,6 @@ export const BillingDashboardProvider = ({
     selectedFilterType,
   } = useFiltersContext();
   // Obtenha a data atual
-  const {windowWidth} = useSidebarContext();
 
   const {rigs} = useRigs(true);
 
@@ -169,7 +167,22 @@ export const BillingDashboardProvider = ({
 
   const isEmpty: boolean = billings.length === 0;
 
-  const {totalAmount, totalGlossAmount, totalRepairAmount} = useMemo(() => {
+  /*  const filteredRigsAverage = useMemo(() => {
+    if (selectedDashboardView === "ALL") {
+      return billings;
+    }
+
+    return billings.filter(
+      ({state}) => (state as string) === selectedDashboardView
+    );
+  }, [selectedDashboardView, billings]);
+ */
+  const {
+    totalAmount,
+    totalGlossAmount,
+    totalRepairAmount,
+    totalUnbilledAmount,
+  } = useMemo(() => {
     let totalBillings = 0;
     let totalRepairUnbilled = 0;
     let totalGlossUnbilled = 0;
@@ -184,13 +197,24 @@ export const BillingDashboardProvider = ({
     });
 
     const totalAmount = formatCurrency(totalBillings);
-    const totalRepairAmount = formatCurrency(totalRepairUnbilled);
-    const totalGlossAmount = formatCurrency(totalGlossUnbilled);
 
-    return {totalAmount, totalRepairAmount, totalGlossAmount};
+    const totalRepairAmount = formatCurrencyStringToNegativeNumber(
+      formatCurrency(totalRepairUnbilled)
+    );
+    const totalGlossAmount = formatCurrencyStringToNegativeNumber(
+      formatCurrency(totalGlossUnbilled)
+    );
+    const totalUnbilledAmount = formatCurrency(
+      totalRepairUnbilled + totalGlossUnbilled
+    );
+
+    return {
+      totalAmount,
+      totalRepairAmount,
+      totalGlossAmount,
+      totalUnbilledAmount,
+    };
   }, [billings]);
-
-  console.log({totalAmount, totalGlossAmount, totalRepairAmount});
 
   const handleApplyFilters = () => {
     refetchBillings();
@@ -200,7 +224,7 @@ export const BillingDashboardProvider = ({
     <BillingDashboardContext.Provider
       value={{
         years,
-        windowWidth,
+        totalUnbilledAmount,
         selectedYear,
         handleYearChange,
         months,

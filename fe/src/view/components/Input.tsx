@@ -19,9 +19,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           name={name}
           placeholder=" "
-          // className="bg-primary-500 w-full rounded-lg border-2 text-white border-white px-3 h-10"
+          // className="bg-primary w-full rounded-lg border-2 text-white border-white px-3 h-10"
           className={cn(
-            `appearance-none bg-primary-500 w-full rounded-lg border-2 text-white border-white px-3 pt-2 h-[52px] placeholder-shown:pt-0 focus:border-white peer transition-all outline-none hover:bg-primary-600 hover:border-3`,
+            `appearance-none bg-primary w-full rounded-lg border-2 text-white border-white px-3 pt-2 h-[52px] placeholder-shown:pt-0 focus:border-white peer transition-all outline-none hover:bg-primary hover:border-3`,
             error && "!border-redAccent-500",
             className
           )}

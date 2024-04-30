@@ -4,6 +4,7 @@ import {formatDate} from "../../app/utils/formatDate";
 import {Popover} from "./Popover";
 import {DatePicker} from "./DatePicker";
 import {ErrorContainer} from "./ErrorContainer";
+import {Button} from "@/components/ui/button";
 
 interface DatePickerInputProps {
   error?: string;
@@ -47,8 +48,13 @@ export const DatePickerInput = ({
           </button>
         </Popover.Trigger>
 
-        <Popover.Content>
+        <Popover.Content className="">
           <DatePicker value={selectedDate} onChange={handleChangeDate} />
+          <div className="w-full flex justify-end">
+            <Popover.Close>
+              <Button size="sm">Ok</Button>
+            </Popover.Close>
+          </div>
         </Popover.Content>
       </Popover.Root>
       {error && <ErrorContainer error={error} />}

@@ -14,9 +14,12 @@ export const CreateRig = () => {
   return (
     <div className="w-full h-full overflow-y-scroll">
       <Header
-        title="CADASTRO"
-        subtitle="Cadastro de sondas e suas configurações"
-      />
+        title="Cadastrar Sonda"
+        displayRig={false}
+        displayPeriodRange={false}
+      >
+        <></>
+      </Header>
 
       <div className="w-full h-full ">
         <div className="grid grid-cols-12 auto-rows-[120px] gap-3"></div>

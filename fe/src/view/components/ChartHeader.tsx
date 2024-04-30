@@ -8,7 +8,7 @@ interface ChartHeaderProps {
 
 export const ChartHeader = ({children, onClose}: ChartHeaderProps) => {
   return (
-    <header className="bg-primary-500 text-white p-2 rounded-t-lg justify-center flex">
+    <header className="bg-primary text-white p-2 rounded-t-lg justify-center flex">
       <span className="text-white flex-1 text-center font-semibold">
         {children}
       </span>

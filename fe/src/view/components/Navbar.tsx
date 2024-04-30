@@ -1,89 +1,232 @@
-import {useEffect, useRef, useState} from "react";
-import whiteLogo from "../../assets/images/white-logo.png";
-import {Link} from "react-router-dom";
+import {ChevronDown, CircleUser, Menu} from "lucide-react";
 
-export const Navbar = ({children}: {children: React.ReactNode}) => {
-  const [state, setState] = useState(false);
-  const navRef = useRef<HTMLDivElement>(null);
+import {Button} from "@/components/ui/button";
 
-  useEffect(() => {
-    const body = document.body;
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-    const customBodyStyle = ["overflow-hidden", "lg:overflow-visible"];
-    if (state) body.classList.add(...customBodyStyle);
-    else body.classList.remove(...customBodyStyle);
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
-    const customStyle = ["sticky-nav", "fixed", "border-b"];
-    const handleScroll = () => {
-      if (window.scrollY > 80 && navRef.current) {
-        navRef.current.classList.add(...customStyle);
-      } else if (navRef.current) {
-        navRef.current.classList.remove(...customStyle);
-      }
-    };
+import {Sheet, SheetContent, SheetTrigger} from "@/components/ui/sheet";
+import {useNavigate, Link} from "react-router-dom";
 
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [state]);
+import logo from "@/assets/images/white-logo.png";
+import {useAuth} from "@/app/hooks/useAuth";
+import {useSidebarContext} from "@/app/contexts/SidebarContext";
+import {cn} from "@/lib/utils";
+
+interface NavigationLinksProps {
+  isUserAdm: boolean;
+}
+
+const NavigationLinks = ({isUserAdm}: NavigationLinksProps) => {
+  const {activeTab, handleToggleNavItem} = useSidebarContext();
 
   return (
-    <nav ref={navRef} className="bg-primary-500 w-full top-0 z-20">
-      <div className="items-center px-4 max-w-screen-xl mx-auto md:px-8 lg:flex">
-        <div className="flex items-center justify-between py-3 lg:py-4 lg:block">
-          <Link to="/dashboard">
-            <img src={whiteLogo} className="w-16" alt="Float UI logo" />
+    <>
+      <HoverCard openDelay={0}>
+        <HoverCardTrigger>
+          {" "}
+          <span
+            className={cn(
+              "text-left text-gray-500 transition-colors flex items-center gap-2 hover:text-white",
+              activeTab === "dashboard" ? "text-white " : ""
+            )}
+          >
+            {" "}
+            Dashboard <ChevronDown />
+          </span>
+        </HoverCardTrigger>
+        <HoverCardContent>
+          <Link
+            className={cn(
+              "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+            )}
+            to="/dashboard"
+            onClick={() => handleToggleNavItem("dashboard")}
+          >
+            Dashboard por Sonda
           </Link>
-          <div className="lg:hidden">
-            <button
-              className="text-gray-700 outline-none p-2 rounded-md focus:border-gray-400 focus:border"
-              onClick={() => setState(!state)}
-            >
-              {state ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="white"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 8h16M4 16h16"
-                  />
-                </svg>
+
+          <Link
+            className={cn(
+              "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+            )}
+            to="/global-dashboard"
+            onClick={() => handleToggleNavItem("dashboard")}
+          >
+            Dashboard Geral
+          </Link>
+        </HoverCardContent>
+      </HoverCard>
+
+      {isUserAdm && (
+        <HoverCard openDelay={0}>
+          <HoverCardTrigger>
+            {" "}
+            <span
+              className={cn(
+                "text-left text-gray-500 transition-colors flex items-center gap-2 hover:text-white",
+                activeTab === "invoicing" ? "text-white " : ""
               )}
-            </button>
-          </div>
-        </div>
-        <div
-          className={`flex-1 justify-between flex-row-reverse lg:overflow-visible lg:flex lg:pb-0 lg:pr-0 lg:h-auto ${
-            state ? "h-screen pb-20 overflow-auto pr-4" : "hidden"
-          }`}
-        >
-          <div className="flex-1">
-            <ul className="justify-center items-center space-y-8 bg-primary-500 lg:flex lg:space-x-6 lg:space-y-0">
-              {children}
-            </ul>
-          </div>
-        </div>
-      </div>
-    </nav>
+            >
+              {" "}
+              Faturamento <ChevronDown />
+            </span>
+          </HoverCardTrigger>
+          <HoverCardContent>
+            <Link
+              className={cn(
+                "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+              )}
+              to="/invoicing-dashboard"
+              onClick={() => handleToggleNavItem("invoicing")}
+            >
+              Faturamento Geral
+            </Link>{" "}
+            <Link
+              className={cn(
+                "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+              )}
+              to="/invoicing-rig-dashboard"
+              onClick={() => handleToggleNavItem("invoicing")}
+            >
+              Faturamento por Sonda
+            </Link>
+          </HoverCardContent>
+        </HoverCard>
+      )}
+
+      <Link
+        to="/form/menu"
+        onClick={() => handleToggleNavItem("form/menu")}
+        className={cn(
+          "text-gray-500 transition-colors hover:text-white",
+          activeTab === "form/menu" ? "text-white " : ""
+        )}
+      >
+        Formulário
+      </Link>
+
+      <Link
+        to="/list"
+        onClick={() => handleToggleNavItem("list")}
+        className={cn(
+          "text-gray-500 transition-colors hover:text-white",
+          activeTab === "list" ? "text-white " : ""
+        )}
+      >
+        Ocorrências
+      </Link>
+
+      {isUserAdm && (
+        <>
+          <Link
+            to="/list-rigs"
+            onClick={() => handleToggleNavItem("list-rigs")}
+            className={cn(
+              "text-gray-500 transition-colors hover:text-white",
+              activeTab === "list-rigs" ? "text-white " : ""
+            )}
+          >
+            Sondas
+          </Link>
+
+          <Link
+            to="/contracts"
+            onClick={() => handleToggleNavItem("contracts")}
+            className={cn(
+              "text-gray-500 transition-colors hover:text-white",
+              activeTab === "contracts" ? "text-white " : ""
+            )}
+          >
+            Contratos
+          </Link>
+
+          <Link
+            to="/users"
+            onClick={() => handleToggleNavItem("users")}
+            className={cn(
+              "text-gray-500 transition-colors hover:text-white",
+              activeTab === "users" ? "text-white " : ""
+            )}
+          >
+            Usuários
+          </Link>
+        </>
+      )}
+
+      <Link
+        to="/reports"
+        onClick={() => handleToggleNavItem("reports")}
+        className={cn(
+          "text-gray-500 transition-colors hover:text-white",
+          activeTab === "reports" ? "text-white " : ""
+        )}
+      >
+        Relatórios
+      </Link>
+    </>
   );
 };
+
+export function Navbar() {
+  const navigate = useNavigate();
+  const {signout, isUserAdm} = useAuth();
+  return (
+    <header className="sticky top-0 flex h-24 z-10 items-center gap-4 border-b bg-primary px-4 md:px-6">
+      <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6 ">
+        <div>
+          <img
+            onClick={() => navigate("/")}
+            src={logo}
+            width={70}
+            height={50}
+            alt="logo"
+            className="rounded-full cursor-pointer"
+          />
+        </div>
+
+        <div className="ml-12 flex gap-8">
+          <NavigationLinks isUserAdm={isUserAdm} />
+        </div>
+      </nav>
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant="outline" size="icon" className="shrink-0 md:hidden">
+            <Menu className="h-5 w-5" />
+            <span className="sr-only">Toggle navigation menu</span>
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left">
+          <nav className="grid gap-6 text-lg font-medium">
+            <NavigationLinks isUserAdm={isUserAdm} />
+          </nav>
+        </SheetContent>
+      </Sheet>
+      <div className="flex  items-center gap-4 md:ml-auto md:gap-2 lg:gap-4 ">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="secondary" size="icon" className="rounded-full">
+              <CircleUser className="h-5 w-5" />
+              <span className="sr-only">Toggle user menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => signout()}>
+              Logout
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </header>
+  );
+}

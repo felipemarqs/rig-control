@@ -1,4 +1,10 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import {
+  IsDateString,
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  MinLength,
+} from 'class-validator';
 
 export class SigninDto {
   @IsString({ message: 'O Email precisa ser uma String!' })
@@ -10,4 +16,8 @@ export class SigninDto {
   @IsNotEmpty()
   @MinLength(3)
   password: string;
+
+  @IsNotEmpty()
+  @IsDateString()
+  loginTime: string;
 }

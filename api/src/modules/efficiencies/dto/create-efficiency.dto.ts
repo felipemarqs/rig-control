@@ -27,6 +27,10 @@ export class CreateEfficiencyDto {
   @IsNotEmpty()
   well: string;
 
+  @IsNotEmpty()
+  @IsDateString()
+  createdAt: string;
+
   @IsUUID()
   @IsNotEmpty()
   @IsString()

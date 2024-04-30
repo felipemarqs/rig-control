@@ -85,41 +85,58 @@ export const ListBillingDataGrid = () => {
         toolbar: GridToolbar,
         noRowsOverlay: NotFoundDataGrid,
       }}
+      initialState={{
+        sorting: {
+          sortModel: [{field: "qtd", sort: "desc"}],
+        },
+      }}
       //getRowId={(row) => row.rigid}
       className="border-none"
       sx={{
         "& .MuiDataGrid-root": {
-          border: "none",
+          border: "none !important",
         },
         "& .MuiDataGrid-cell": {
-          borderBottomColor: "#1c7b7b",
-          borderWidth: "1px",
+          color: "hsl(var(--muted-foreground))",
         },
         "& .MuiDataGrid-columnHeaders": {
-          fontWeight: "bold",
-          backgroundColor: "#1c7b7b",
-          color: "#fff",
-          // borderBottom: "#1c7b7b",
-          borderBottomColor: "#1c7b7b",
-          borderWidth: "1px",
+          fontWeight: 400,
+          color: "hsl(var(--muted-foreground))",
+          borderRadius: "var(--none, 0px)",
+          borderBottom: "1px solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderLeft:
+            "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderRight:
+            "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderTop:
+            "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          //background: "var(--primary-selected, rgba(33, 150, 243, 0.08))",
+          alignItems: "space-between !important",
         },
         "& .MuiDataGrid-columnHeaderTitle": {
           fontWeight: "bold",
         },
         "& .MuiTablePagination-root": {
-          color: "#1c7b7b",
+          color: "hsl(var(--muted-foreground))",
         },
         "& .MuiDataGrid-virtualScroller": {
-          backgroundColor: "#E9ECEF",
+          backgroundColor: "hsl(var(--card))",
           padding: 0,
         },
         "& .MuiDataGrid-footerContainer": {
-          backgroundColor: "#E9ECEF",
-          color: "#fff",
+          backgroundColor: "hsl(var(--card))",
+          color: "hsl(var(--muted-foreground))",
           borderTop: "none",
         },
         "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-          color: "#1c7b7b !important",
+          color: "hsl(var(--muted-foreground)) !important",
+        },
+        "& .MuiDataGrid-columnSeparator": {
+          display: "none",
+          color: "hsl(var(--muted-foreground)) !important",
+        },
+        "& .MuiDataGrid-withBorderColor": {
+          border: "none",
         },
       }}
     />

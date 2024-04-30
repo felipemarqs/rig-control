@@ -5,7 +5,7 @@ import {Button} from "../../components/Button";
 export const Register = () => {
   return (
     //Container
-    <div className="bg-secondary-500 h-[95%] w-[90%]  max-w-[1000px] min-h-full mb-12 rounded-2xl lg:w-[40%] lg:h-4/5 text-center">
+    <div className="bg-secondary h-[95%] w-[90%]  max-w-[1000px] min-h-full mb-12 rounded-2xl lg:w-[40%] lg:h-4/5 text-center">
       {/* Image Container */}
       <div
         className="w-full h-[300px] flex flex-col justify-between bg-cover bg-center bg-sonda-mar rounded-2xl"
@@ -14,7 +14,7 @@ export const Register = () => {
         }}
       >
         <div className="h-24 w-24 bg-no-repeat bg-contain bg-center bg-logo "></div>
-        <div className="h-8 w-full bg-primary-500"></div>
+        <div className="h-8 w-full bg-primary"></div>
       </div>
 
       {/* End Image Container */}

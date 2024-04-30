@@ -26,6 +26,7 @@ export interface totalsInterface {
   mobilizationamount: number;
   munckamount: number;
   powerswivelamount: number;
+  repairhouramount: number;
   suckingtruckamount: number;
   transportationamount: number;
   truckcartrentamount: number;
@@ -94,6 +95,7 @@ export const getTotals = (efficiencies: EfficienciesResponse) => {
       acc.extratraileramount += Number(efficiency.hasExtraTrailer);
       acc.generatorfuelamount += Number(efficiency.hasGeneratorFuel);
       acc.glosshouramount += 24 - efficiency.availableHours;
+      acc.repairhouramount += Number(efficiency.repairHours);
       acc.mixtankdemobilizationamount += Number(
         efficiency.hasMixTankDemobilization
       );
@@ -142,6 +144,7 @@ export const getTotals = (efficiencies: EfficienciesResponse) => {
       mobilizationamount: 0,
       munckamount: 0,
       powerswivelamount: 0,
+      repairhouramount: 0,
       suckingtruckamount: 0,
       transportationamount: 0,
       truckcartrentamount: 0,

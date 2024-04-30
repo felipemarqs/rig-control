@@ -20,7 +20,13 @@ export const CreateUser = () => {
 
   return (
     <div className="w-full h-full overflow-y-scroll">
-      <Header title="CADASTRO" subtitle="Cadastro de usuários" />
+      <Header
+        title="Cadastrar Usuário"
+        displayRig={false}
+        displayPeriodRange={false}
+      >
+        <></>
+      </Header>
 
       <div className="w-full h-full ">
         <form className="p-4" onSubmit={handleSubmit}>

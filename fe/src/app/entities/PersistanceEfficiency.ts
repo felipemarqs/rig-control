@@ -51,6 +51,7 @@ export type PersistanceEfficiency = {
   hasTruckCartRent: boolean;
   truckKmHours: number;
   hasTruckTank: boolean;
+  repairHours?: number;
   Billing: {
     availableHourAmount: number;
     mobilizationAmount: number;
@@ -72,6 +73,7 @@ export type PersistanceEfficiency = {
 
 export type ToPersistanceEfficiency = {
   availableHours: number;
+  createdAt: string | Date;
   date: string | Date;
   rigId: string;
   well: string;

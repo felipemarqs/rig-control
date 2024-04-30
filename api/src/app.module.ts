@@ -14,6 +14,7 @@ import { DeletionRequestsModule } from './modules/deletion-requests/deletion-req
 import { WellsModule } from './modules/wells/wells.module';
 import { PeriodsModule } from './modules/periods/periods.module';
 import { TemporaryEfficienciesModule } from './modules/temporary-efficiencies/temporary-efficiencies.module';
+import { UserLogModule } from './modules/user-log/user-log.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { TemporaryEfficienciesModule } from './modules/temporary-efficiencies/te
     DeletionRequestsModule,
     WellsModule,
     PeriodsModule,
+    UserLogModule,
   ],
   controllers: [],
   providers: [

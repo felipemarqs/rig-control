@@ -5,114 +5,211 @@ import {
   GridToolbar,
   GridValueGetterParams,
 } from "@mui/x-data-grid";
-import {Button} from "./Button";
 import {Link} from "react-router-dom";
 import {formatDate} from "../../app/utils/formatDate";
 import {Efficiency} from "../pages/Dashboard/entities/Efficiency";
 import {NotFound} from "./NotFound";
+import {Button} from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {MoreHorizontal} from "lucide-react";
 
 interface ListDataGridProps {
   data: Efficiency[];
   isDashboard: boolean;
+  windowWidth?: number;
+  limitPagination?: boolean;
 }
 
 export const ListEfficienciesDataGrid = ({
   data,
   isDashboard,
+  windowWidth = 1920,
+  limitPagination = true,
 }: ListDataGridProps) => {
-  const columns: GridColDef[] = [
-    {
-      field: "user",
-      headerName: "Usuário",
-      headerAlign: "center",
-      flex: 0.5,
-      renderCell(params: GridRenderCellParams) {
-        return (
-          <div className="w-full flex justify-center items-center">
-            <div className="text-primary-500 font-semibold">
-              {params.value.name}
-            </div>
-          </div>
-        );
-      },
-    },
-    {
-      field: "date",
-      headerName: "Data",
-      headerAlign: "center",
-      type: "date",
-      flex: 0.2,
-      valueGetter: (params: GridValueGetterParams) => {
-        // Supondo que o valor de data seja uma string no formato ISO8601
-        return new Date(params.value);
-      },
-      renderCell(params: GridRenderCellParams) {
-        return (
-          <div className="w-full flex justify-center items-center">
-            <div className="text-primary-500 font-semibold">
-              {" "}
-              {formatDate(new Date(params.value)).slice(0, 5)}
-            </div>
-          </div>
-        );
-      },
-    },
-    {
-      field: "well",
-      headerName: "Poço",
-      headerAlign: "center",
-      flex: 0.5,
-      renderCell(params: GridRenderCellParams) {
-        return (
-          <div className="w-full flex justify-center items-center">
-            <div className="text-primary-500 font-semibold">{params.value}</div>
-          </div>
-        );
-      },
-    },
-    {
-      field: "availableHours",
-      headerName: "Hrs Disp.",
-      headerAlign: "center",
-      flex: 0.2,
-      renderCell(params: GridRenderCellParams) {
-        return (
-          <div className="w-full flex justify-center items-center">
-            <div className="text-primary-500 font-semibold ">
-              {params.value}Hrs
-            </div>
-          </div>
-        );
-      },
-    },
-    {
-      field: "id",
-      headerAlign: "center",
-      headerName: "Ver Detalhes",
-      flex: 0.5,
-      filterable: false,
-      sortable: false,
-      renderCell(params: GridRenderCellParams) {
-        return (
-          <div className="w-full flex justify-center items-center">
-            <Link
-              to={`/details/${params.value}`}
-              className="w-full flex justify-center items-center"
-            >
-              <Button className="bg-primary-500 rounded-md h-[25px]">
-                Ver Mais
-              </Button>
-            </Link>
-          </div>
-        );
-      },
-    },
-  ];
+  const columns: GridColDef[] =
+    windowWidth >= 768
+      ? [
+          {
+            field: "user",
+            headerName: "Usuário",
+            headerAlign: "center",
+            flex: 0.3,
+            renderCell(params: GridRenderCellParams) {
+              return (
+                <div className="w-full flex justify-center items-center">
+                  <div className="text-gray-800 font-medium tracking-tighter">
+                    {params.value.name}
+                  </div>
+                </div>
+              );
+            },
+          },
+          {
+            field: "date",
+            headerName: "Data",
+            headerAlign: "center",
+            type: "date",
+            flex: 0.2,
+            valueGetter: (params: GridValueGetterParams) => {
+              // Supondo que o valor de data seja uma string no formato ISO8601
+              return new Date(params.value);
+            },
+            renderCell(params: GridRenderCellParams) {
+              return (
+                <div className="w-full flex justify-center items-center">
+                  <div className="text-gray-800 font-medium tracking-tighter">
+                    {" "}
+                    {formatDate(new Date(params.value)).slice(0, 5)}
+                  </div>
+                </div>
+              );
+            },
+          },
+          {
+            field: "well",
+            headerName: "Poço",
+            headerAlign: "center",
+
+            renderCell(params: GridRenderCellParams) {
+              return (
+                <div className="w-full flex justify-center items-center">
+                  <div className="text-gray-800 font-medium tracking-tighter">
+                    {params.value}
+                  </div>
+                </div>
+              );
+            },
+          },
+          {
+            field: "availableHours",
+            headerName: "Hrs Disp.",
+            headerAlign: "center",
+            flex: 0.2,
+            renderCell(params: GridRenderCellParams) {
+              return (
+                <div className="w-full flex justify-center items-center">
+                  <div className="text-gray-800 font-medium tracking-tighter ">
+                    {params.value}Hrs
+                  </div>
+                </div>
+              );
+            },
+          },
+          {
+            field: "id",
+            headerAlign: "center",
+            headerName: "Açoes",
+
+            filterable: false,
+            sortable: false,
+            renderCell(params: GridRenderCellParams) {
+              return (
+                <div className="w-full flex justify-center items-center">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button aria-haspopup="true" size="icon" variant="ghost">
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Toggle menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem>
+                        {" "}
+                        <Link
+                          to={`/details/${params.value}`}
+                          className="w-full flex justify-center items-center"
+                        >
+                          <Button variant="ghost">Ver Mais</Button>
+                        </Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              );
+            },
+          },
+        ]
+      : [
+          {
+            field: "date",
+            headerName: "Data",
+            headerAlign: "center",
+            type: "date",
+            flex: 0.2,
+            valueGetter: (params: GridValueGetterParams) => {
+              // Supondo que o valor de data seja uma string no formato ISO8601
+              return new Date(params.value);
+            },
+            renderCell(params: GridRenderCellParams) {
+              return (
+                <div className="w-full flex justify-center items-center">
+                  <div className="text-gray-800 font-medium tracking-tighter">
+                    {" "}
+                    {formatDate(new Date(params.value)).slice(0, 5)}
+                  </div>
+                </div>
+              );
+            },
+          },
+          {
+            field: "availableHours",
+            headerName: "Hrs Disp.",
+            headerAlign: "center",
+            flex: 0.2,
+            renderCell(params: GridRenderCellParams) {
+              return (
+                <div className="w-full flex justify-center items-center">
+                  <div className="text-gray-800 font-medium tracking-tighter ">
+                    {params.value}Hrs
+                  </div>
+                </div>
+              );
+            },
+          },
+          {
+            field: "id",
+            headerAlign: "center",
+            headerName: "Açoes",
+
+            filterable: false,
+            sortable: false,
+            renderCell(params: GridRenderCellParams) {
+              return (
+                <div className="w-full flex justify-center items-center">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button aria-haspopup="true" size="icon" variant="ghost">
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Toggle menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem>
+                        {" "}
+                        <Link
+                          to={`/details/${params.value}`}
+                          className="w-full flex justify-center items-center"
+                        >
+                          <Button variant="ghost">Ver Mais</Button>
+                        </Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              );
+            },
+          },
+        ];
 
   const NotFoundDataGrid = () => {
     return (
       <NotFound>
-        <span className="text-primary-500">
+        <span className="text-gray-800">
           <strong>Não</strong> existem dados para a <strong>sonda</strong> no{" "}
           <strong>período</strong> selecionado!
         </span>
@@ -150,7 +247,6 @@ export const ListEfficienciesDataGrid = ({
         "headerFilterOperator>=": "Maior ou igual a",
         "headerFilterOperator<": "Menor que",
         "headerFilterOperator<=": "Menor ou igual a",
-
         filterPanelAddFilter: "Add filter",
         filterPanelRemoveAll: "Remove all",
         filterPanelDeleteIconLabel: "Delete",
@@ -161,7 +257,6 @@ export const ListEfficienciesDataGrid = ({
         filterPanelColumns: "Colunas",
         filterPanelInputLabel: "Valor",
         filterPanelInputPlaceholder: "Valor de filtro",
-
         filterOperatorContains: "contém",
         filterOperatorEquals: "igual",
         filterOperatorStartsWith: "começa com",
@@ -187,40 +282,63 @@ export const ListEfficienciesDataGrid = ({
         toolbar: isDashboard ? undefined : GridToolbar,
         noRowsOverlay: NotFoundDataGrid,
       }}
-      className="border-none"
+      pagination
+      pageSizeOptions={isDashboard ? [5] : [5, 10, 25, 100]}
+      paginationMode="client"
+      initialState={
+        limitPagination
+          ? {
+              pagination: {
+                paginationModel: {pageSize: 5, page: 0},
+              },
+            }
+          : undefined
+      }
       sx={{
         "& .MuiDataGrid-root": {
-          border: "none",
+          border: "none !important",
         },
         "& .MuiDataGrid-cell": {
-          borderBottomColor: "#1c7b7b",
-          borderWidth: "1px",
+          color: "hsl(var(--muted-foreground))",
         },
         "& .MuiDataGrid-columnHeaders": {
-          fontWeight: "bold",
-          backgroundColor: "#1c7b7b",
-          color: "#fff",
-          // borderBottom: "#1c7b7b",
-          borderBottomColor: "#1c7b7b",
-          borderWidth: "1px",
+          fontWeight: 400,
+          color: "hsl(var(--muted-foreground))",
+          borderRadius: "var(--none, 0px)",
+          borderBottom: "1px solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderLeft:
+            "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderRight:
+            "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderTop:
+            "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          //background: "var(--primary-selected, rgba(33, 150, 243, 0.08))",
+          alignItems: "space-between !important",
         },
         "& .MuiDataGrid-columnHeaderTitle": {
           fontWeight: "bold",
         },
         "& .MuiTablePagination-root": {
-          color: "#1c7b7b",
+          color: "hsl(var(--muted-foreground))",
         },
         "& .MuiDataGrid-virtualScroller": {
-          backgroundColor: "#E9ECEF",
+          backgroundColor: "hsl(var(--card))",
           padding: 0,
         },
         "& .MuiDataGrid-footerContainer": {
-          backgroundColor: "#E9ECEF",
-          color: "#fff",
+          backgroundColor: "hsl(var(--card))",
+          color: "hsl(var(--muted-foreground))",
           borderTop: "none",
         },
         "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-          color: "#1c7b7b !important",
+          color: "hsl(var(--muted-foreground)) !important",
+        },
+        "& .MuiDataGrid-columnSeparator": {
+          display: "none",
+          color: "hsl(var(--muted-foreground)) !important",
+        },
+        "& .MuiDataGrid-withBorderColor": {
+          border: "none",
         },
       }}
     />

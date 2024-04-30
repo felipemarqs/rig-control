@@ -5,11 +5,9 @@ import {Login} from "../view/pages/Login";
 import {Dashboard} from "../view/pages/Dashboard";
 import {Register} from "../view/pages/Register";
 import {AuthLayout} from "../view/Layouts/AuthLayout";
-import {DesktopLayout} from "../view/Layouts/DesktopLayout/index";
 import {Form} from "../view/pages/Form";
 import {List} from "../view/pages/List";
 import {BillingDashboard} from "../view/pages/BillingDashboard";
-import {ListBilling} from "../view/pages/BillingList";
 import {Details} from "../view/pages/Details";
 import {CreateRig} from "../view/pages/CreateRig";
 import {CreateContract} from "../view/pages/CreateContract";
@@ -18,9 +16,6 @@ import {ListUsers} from "../view/pages/ListUsers";
 import {CreateUser} from "../view/pages/CreateUser";
 import {UpdateUser} from "../view/pages/UpdateUser";
 import {UpdateUserRigs} from "../view/pages/UpdateUserRigs";
-import {DeletionRequests} from "../view/pages/DeletionRequests";
-import {MobileLayout} from "../view/Layouts/MobileLayout";
-import {useSidebarContext} from "../app/contexts/SidebarContext";
 import {ListRigs} from "../view/pages/ListRigs";
 import {BillingRigDetailDashboard} from "../view/pages/BillingRigDetailDashboard";
 //import { InDevelopmentPage } from "../view/pages/InDevelopmentPage";
@@ -32,9 +27,9 @@ import {DashboardMenu} from "../view/pages/DashboardMenu";
 import {useAuth} from "../app/hooks/useAuth";
 import {FormMenu} from "../view/pages/FormMenu";
 import {PendingForm} from "../view/pages/PendingForm";
+import {AppLayout} from "@/view/Layouts/AppLayout";
 
 export const Router = () => {
-  const {windowWidth} = useSidebarContext();
   const {isUserAdm} = useAuth();
   return (
     <BrowserRouter>
@@ -50,10 +45,8 @@ export const Router = () => {
         {/* Rota para páginas autenticadas */}
         <Route element={<AuthGuard isPrivate={true} />}>
           {/* Define o layout baseado na largura da janela */}
-          <Route
-            element={windowWidth <= 1024 ? <MobileLayout /> : <DesktopLayout />}
-          >
-            <Route path="/" element={<DashboardMenu />} />
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<Dashboard />} />
 
             <Route path="/dashboard" element={<Dashboard />} />
             <Route
@@ -75,7 +68,6 @@ export const Router = () => {
               path="/invoicing-rig-dashboard"
               element={<BillingRigDetailDashboard />}
             />
-            <Route path="/invoicing-list" element={<ListBilling />} />
             <Route path="/invoicing" element={<InvoicingMenu />} />
 
             <Route path="/details/:efficiencyId" element={<Details />} />
@@ -87,7 +79,6 @@ export const Router = () => {
             <Route path="/create-user" element={<CreateUser />} />
             <Route path="/users/:id" element={<UpdateUser />} />
             <Route path="/users/update-rigs/:id" element={<UpdateUserRigs />} />
-            <Route path="/deletion-requests" element={<DeletionRequests />} />
             <Route path="/reports" element={<Report />} />
           </Route>
         </Route>

@@ -12,6 +12,7 @@ import { JwtService } from '@nestjs/jwt';
 import { RigsRepository } from 'src/shared/database/repositories/rigs.repositories';
 import { UsersContractRepository } from 'src/shared/database/repositories/usersContract.repositories';
 import { AccessLevel } from './entities/AccessLevel';
+import { UserLogService } from '../user-log/user-log.service';
 
 @Injectable()
 export class AuthService {
@@ -21,10 +22,11 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly rigsRepo: RigsRepository,
     private readonly usersContractRepo: UsersContractRepository,
+    private readonly userLogService: UserLogService,
   ) {}
 
   async signin(signinDto: SigninDto) {
-    const { email, password } = signinDto;
+    const { email, password, loginTime } = signinDto;
 
     const user = await this.usersRepo.findUnique({
       where: { email },
@@ -39,6 +41,8 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException('Credenciais inválidas!');
     }
+
+    await this.userLogService.create(loginTime, user.id);
 
     const accessToken = await this.generateAccessToken(
       user.id,

@@ -1,7 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { WellsService } from './wells.service';
 import { CreateWellDto } from './dto/create-well.dto';
 import { UpdateWellDto } from './dto/update-well.dto';
+import { IsPublic } from 'src/shared/decorators/IsPublic';
 
 @Controller('wells')
 export class WellsController {
@@ -10,6 +19,12 @@ export class WellsController {
   @Post()
   create(@Body() createWellDto: CreateWellDto) {
     return this.wellsService.create(createWellDto);
+  }
+
+  @IsPublic()
+  @Get('/upload')
+  uploadSheet() {
+    return this.wellsService.uploadSheet();
   }
 
   @Get()
