@@ -19,7 +19,7 @@ export const TresRFormContainer = () => {
   } = usePendingForm();
 
   return (
-    <div className=" max-h-[90vh] overflow-y-scroll flex-1 max-w-[800px]  bg-primary-500 p-4 rounded-xl">
+    <div className=" max-h-[90vh] overflow-y-scroll flex-1 max-w-[800px]  bg-primary p-4 rounded-xl">
       <div className="border p-4 rounded-xl flex flex-col gap-2">
         <div className="border-b py-2 ">
           <div className="w-1/2 flex gap-4 items-center justify-between">

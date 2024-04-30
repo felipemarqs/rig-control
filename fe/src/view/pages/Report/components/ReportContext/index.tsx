@@ -13,7 +13,6 @@ import {getPeriodRange} from "../../../../../app/utils/getPeriodRange";
 import {FilterType} from "../../../../../app/entities/FilterType";
 import {months} from "../../../../../app/utils/months";
 import {years} from "../../../../../app/utils/years";
-import {useSidebarContext} from "../../../../../app/contexts/SidebarContext";
 import {periodTypes} from "../../../../../app/utils/periodTypes";
 import {Period} from "../../../../../app/entities/Period";
 import {PeriodClassification} from "../../../../../app/entities/PeriodClassification";
@@ -57,7 +56,6 @@ interface ReportContextValues {
   selectedPeriodClassification: string;
   selectedEndDate: string;
   selectedStartDate: string;
-  windowWidth: number;
   isFilterContainerVisible: boolean;
   selectedPeriodType: PeriodType;
   isEmpty: boolean;
@@ -84,7 +82,6 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
     "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
   );
   const {isUserAdm} = useAuth();
-  const {windowWidth} = useSidebarContext();
 
   // Mapeamento das rigs do usuário para exibir apenas as autorizadas
   const {rigs} = useRigs(isUserAdm);
@@ -363,7 +360,6 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
         handleStartDateChange,
         handleEndDateChange,
         handleTogglePeriodType,
-        windowWidth,
         periodTypeOptions,
         selectedPeriodType,
         isEmpty,

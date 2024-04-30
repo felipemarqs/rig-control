@@ -183,8 +183,6 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     },
   ]);
 
-  console.log("Errors: ", errors);
-
   const [periodsState, setPeriodsState] = useState([
     {
       periodId: periods[0].id,
@@ -266,7 +264,8 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
       isSuckingTruckSelected,
     });
 
-    console.log(JSON.stringify(toPersistenceObj));
+    console.log("To Persistance Obj :", toPersistenceObj);
+
     try {
       await mutateAsync(toPersistenceObj);
       customColorToast("Dados Enviados com Sucesso!", "#1c7b7b", "success");
@@ -324,7 +323,6 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
       isSuckingTruckSelected,
     });
 
-    console.log(JSON.stringify(toPersistenceObj));
     try {
       await mutateAsyncTemporaryEfficiency(toPersistenceObj);
       customColorToast("Dados Enviados com Sucesso!", "#1c7b7b", "success");
@@ -571,8 +569,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleDateChange = (date: Date) => {
     setDate(date);
-    console.log("Data selecionada: ", getTotalDaysByDate(new Date(date)));
-    console.log("Data de hoje pelo New Date()", getTotalDaysByDate(new Date()));
+
     if (getTotalDaysByDate(new Date(date)) >= getTotalDaysByDate(new Date())) {
       setError({fieldName: "date", message: "Data Inválida!"});
     } else {

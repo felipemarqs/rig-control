@@ -36,7 +36,7 @@ export class BillingRepository {
     const billings = await this.prisma.$queryRaw`
       SELECT
       b.rig_id AS rigId,
-      r.name AS rigName, 
+      r.name AS rigName,
       SUM(b.available_hour_amount) AS availableHourAmount,
       SUM(b.gloss_hour_amount) AS glossHourAmount,
       SUM(b.repair_hour_amount) AS repairHourAmount,
@@ -81,6 +81,7 @@ export class BillingRepository {
     r.name AS rigName, 
     SUM(b.available_hour_amount) AS availableHourAmount,
     SUM(b.gloss_hour_amount) AS glossHourAmount,
+    SUM(b.repair_hour_amount) AS repairHourAmount,
     SUM(b.dtm_hour_amount) AS dtmHourAmount,
     SUM(b.dtm_lt_20_amount) AS dtmLt20Amount,
     SUM(b.dtm_bt_20_and_50_amount) AS dtmBt20And50Amount,

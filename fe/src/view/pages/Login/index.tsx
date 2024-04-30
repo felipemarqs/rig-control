@@ -6,7 +6,7 @@ export const Login = () => {
   const {handleSubmit, register, errors, isLoading} = useLoginController();
   return (
     //Container
-    <div className="bg-secondary-500  w-[90%]  max-w-[1000px] h-full mb-12  rounded-2xl lg:w-[40%] text-center">
+    <div className="bg-secondaryAccent-500  w-[90%]  max-w-[1000px] h-full mb-12  rounded-2xl lg:w-[40%] text-center">
       {/* Image Container */}
       <div
         className="w-full h-[300px] flex flex-col justify-between bg-cover bg-center bg-sonda-mar rounded-2xl"
@@ -15,7 +15,7 @@ export const Login = () => {
         }}
       >
         <div className="h-24 w-24 bg-no-repeat bg-contain bg-center bg-logo "></div>
-        <div className="h-8 w-full bg-primary-500"></div>
+        <div className="h-8 w-full bg-primary"></div>
       </div>
 
       {/* End Image Container */}
@@ -26,7 +26,7 @@ export const Login = () => {
 
       {/* Form Container */}
       <form
-        className="mt-12 flex flex-col justify-around  h-1/2 gap-6 px-3 lg:px-12"
+        className="mt-8 flex flex-col justify-around  gap-6 px-3 lg:px-12"
         onSubmit={handleSubmit}
       >
         <div className="flex flex-col gap-6">

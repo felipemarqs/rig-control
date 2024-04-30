@@ -21,7 +21,11 @@ export const UpdateUserRigs = () => {
 
   return (
     <div className="w-full h-full overflow-y-scroll">
-      <Header title="SONDAS" subtitle="Editar sondas dos usuários" />
+      <Header
+        title="Editar Sondas dos usuário"
+        displayRig={false}
+        displayPeriodRange={false}
+      />
 
       <div className="lg:min-w-[1200px]  mx-auto max-w-[715px]  bg-gray-400 p-4 gap-2 rounded-md flex flex-col lg:flex-row lg:justify-center ">
         {isLoading && (
@@ -33,7 +37,7 @@ export const UpdateUserRigs = () => {
         {!isLoading && (
           <>
             {" "}
-            <div className="bg-primary-500 min-h-[380px] rounded-md p-4 lg:w-1/2">
+            <div className="bg-primary min-h-[380px] rounded-md p-4 lg:w-1/2">
               <span className="text-white tracking-[-0.5] mb-14 font-medium block">
                 Sondas vinculadas à: {userBeingEdited?.name}
               </span>
@@ -41,7 +45,7 @@ export const UpdateUserRigs = () => {
                 {userRigs.length === 0 && (
                   <div className="w-full h-full flex justify-center items-center flex-col">
                     <img src={emptyState} />
-                    <h2 className="text-primary-500 mt-1 flex-1">
+                    <h2 className="text-primary mt-1 flex-1">
                       <span className="text-white tracking-[-0.5] mb-14 font-medium block">
                         O usuário deve estar vinculado a, no mínimo, uma sonda.
                       </span>
@@ -54,12 +58,12 @@ export const UpdateUserRigs = () => {
                       <div
                         key={id}
                         onClick={() => handleUnlinkRig(id)}
-                        className="p-4 bg-white cursor-pointer rounded-2xl shadow-[0_1px_2px] flex w-1/4 justify-between items-center border-l-4  border-secondary-500 "
+                        className="p-4 bg-white cursor-pointer rounded-2xl shadow-[0_1px_2px] flex w-1/4 justify-between items-center border-l-4  border-secondary "
                       >
                         <span className="text-gray-800">{name}</span>
                         <span
                           className={cn(
-                            "w-5 h-5 bg-secondary-500 rounded-full",
+                            "w-5 h-5 bg-secondary rounded-full",
                             isActive === false && "bg-redAccent-500"
                           )}
                         ></span>
@@ -69,7 +73,7 @@ export const UpdateUserRigs = () => {
                 )}
               </div>
             </div>
-            <div className="bg-primary-500 min-h-[380px] rounded-md p-4 lg:w-1/2">
+            <div className="bg-primary min-h-[380px] rounded-md p-4 lg:w-1/2">
               <span className="text-white tracking-[-0.5] mb-14 font-medium block">
                 Sondas cadastradas no sistema
               </span>
@@ -77,7 +81,7 @@ export const UpdateUserRigs = () => {
                 {availableRigs.length === 0 && (
                   <div className="w-full h-full flex justify-center items-center flex-col">
                     <img src={emptyState} />
-                    <h2 className="text-primary-500 mt-1 flex-1">
+                    <h2 className="text-primary mt-1 flex-1">
                       <span className="text-white tracking-[-0.5] mb-14 font-medium block">
                         O usuário está cadastrado em todas as sondas associadas
                         ao contrato.
@@ -91,13 +95,11 @@ export const UpdateUserRigs = () => {
                       <div
                         key={id}
                         onClick={() => handleLinkRig(id)}
-                        className="p-4 bg-white cursor-pointer rounded-2xl shadow-[0_1px_2px] flex w-1/4 justify-between items-center border-l-4  border-secondary-500 "
+                        className="p-4 bg-white cursor-pointer rounded-2xl shadow-[0_1px_2px] flex w-1/4 justify-between items-center border-l-4  border-secondary "
                       >
                         <span className="text-gray-800">{name}</span>
                         <span
-                          className={cn(
-                            "w-5 h-5 bg-secondary-500 rounded-full"
-                          )}
+                          className={cn("w-5 h-5 bg-secondary rounded-full")}
                         ></span>
                       </div>
                     ))}

@@ -1,15 +1,14 @@
-import React, {createContext, useState} from "react";
+import React, {createContext, useMemo, useState} from "react";
 import {useAuth} from "../../../../app/hooks/useAuth";
 import {User} from "../../../../app/entities/User";
 import {differenceInDays, parse} from "date-fns";
-import {useSidebarContext} from "../../../../app/contexts/SidebarContext";
 import {useEfficienciesRigsAverage} from "../../../../app/hooks/efficiencies/useEfficienciesRigsAverage";
 import {RigsAverageResponse} from "../../../../app/services/efficienciesService/getRigsAverage";
 import {useGetUnbilledPeriods} from "../../../../app/hooks/periods/useGetUnbilledPeriods";
 import {GetUnbilledPeriodsResponse} from "../../../../app/services/periodsService/getUnbilledPeriods";
 import {PeriodType} from "../../../../app/entities/PeriodType";
 import {UF} from "../../../../app/entities/Rig";
-import {PieChartData} from "../components/UnbilledPeriodsPieChart/useUnbilledPeriodsPieChart";
+import {PieChartData} from "../components/UnbilledPeriodsPieChartCard/UnbilledPeriodsPieChart/useUnbilledPeriodsPieChart";
 import {getDiffInMinutes} from "../../../../app/utils/getDiffInMinutes";
 import {formatNumberWithFixedDecimals} from "../../../../app/utils/formatNumberWithFixedDecimals";
 import {useFiltersContext} from "../../../../app/hooks/useFiltersContext";
@@ -18,18 +17,14 @@ import {useFiltersContext} from "../../../../app/hooks/useFiltersContext";
 interface GlobalDashboardContextValue {
   selectedPieChartView: PeriodType;
   isEmpty: boolean;
-  handleStartDateChange(date: Date): void;
-  handleEndDateChange(date: Date): void;
   isAlertSeen: boolean;
   handleSelectedPieChartViewChange(type: PeriodType): void;
   handleIsAlertSeen(): void;
-  selectedEndDate: string;
-  selectedStartDate: string;
   handleApplyFilters(): void;
   user: User | undefined;
   signout(): void;
-  windowWidth: number;
   rigsAverage: RigsAverageResponse;
+  filteredRigsAverage: RigsAverageResponse;
   isFetchingRigsAverage: boolean;
   totalDaysSelected: number;
   unbilledPeriods: GetUnbilledPeriodsResponse;
@@ -47,8 +42,13 @@ interface GlobalDashboardContextValue {
   statBox: {
     averageHours: number;
     averageHoursPercentage: number;
+    averageUnavailableHours: number;
   };
+  handleChangeDashboardView: (view: DashboardView) => void;
+  selectedDashboardView: DashboardView;
 }
+
+type DashboardView = "ALL" | "BA" | "SE" | "AL";
 
 // Criação do contexto
 export const GlobalDashboardContext = createContext(
@@ -62,16 +62,9 @@ export const GlobalDashboardProvider = ({
 }) => {
   // Utilização dos hooks para autenticação e contexto da barra lateral
   const {user, signout, isAlertSeen, handleIsAlertSeen} = useAuth();
-  const {windowWidth} = useSidebarContext();
 
   // Estados iniciais para as datas (primeiro e último dia do mês atual)
-  const {
-    filters,
-    selectedEndDate,
-    selectedStartDate,
-    handleStartDateChange,
-    handleEndDateChange,
-  } = useFiltersContext();
+  const {filters} = useFiltersContext();
 
   const [isDetailsGraphVisible, setIsDetailsGraphVisible] = useState(false);
   const [selectedPieChartView, setSelectedPieChartView] = useState(
@@ -90,43 +83,78 @@ export const GlobalDashboardProvider = ({
   // Utilização dos hooks para eficiências e médias de eficiência
 
   const {rigsAverage, refetchRigsAverage, isFetchingRigsAverage} =
-    useEfficienciesRigsAverage({
-      startDate: filters.startDate,
-      endDate: filters.endDate,
-    });
+    useEfficienciesRigsAverage(
+      {
+        startDate: filters.startDate,
+        endDate: filters.endDate,
+      },
+      true
+    );
+
+  const [selectedDashboardView, setSelectedDashboardView] =
+    useState<DashboardView>("ALL");
+
+  const filteredRigsAverage = useMemo(() => {
+    if (selectedDashboardView === "ALL") {
+      return rigsAverage;
+    }
+
+    return rigsAverage.filter(
+      ({state}) => (state as string) === selectedDashboardView
+    );
+  }, [selectedDashboardView, rigsAverage]);
+
+  const handleChangeDashboardView = (view: DashboardView) => {
+    setSelectedDashboardView(view);
+  };
 
   let rigsAverageTotalHours = 0;
 
-  rigsAverage.forEach((rigAverage) => {
+  filteredRigsAverage.forEach((rigAverage) => {
     rigsAverageTotalHours += Math.round(rigAverage.avg);
   });
 
   const {unbilledPeriods, refetchUnbilledPeriods, isFetchingUnbilledPeriods} =
-    useGetUnbilledPeriods({
-      startDate: filters.startDate,
-      endDate: filters.endDate,
-    });
+    useGetUnbilledPeriods(
+      {
+        startDate: filters.startDate,
+        endDate: filters.endDate,
+      },
+      true
+    );
+
+  console.log(
+    formatNumberWithFixedDecimals(
+      rigsAverageTotalHours / filteredRigsAverage.length,
+      2
+    )
+  );
+
+  const averageHours = formatNumberWithFixedDecimals(
+    rigsAverageTotalHours / filteredRigsAverage.length,
+    2
+  );
+
+  const isAverageHoursNaN = isNaN(averageHours);
+  console.log("Is Average Hours NaN? ", isAverageHoursNaN);
 
   const statBox = {
-    averageHours:
-      formatNumberWithFixedDecimals(
-        rigsAverageTotalHours / rigsAverage.length,
-        2
-      ) ?? 0,
+    averageHours: isAverageHoursNaN ? 0 : averageHours,
+    averageUnavailableHours: isAverageHoursNaN ? 0 : 24 - averageHours,
     averageHoursPercentage:
       formatNumberWithFixedDecimals(
-        ((rigsAverageTotalHours / rigsAverage.length) * 100) / 24,
+        ((rigsAverageTotalHours / filteredRigsAverage.length) * 100) / 24,
         2
       ) ?? 0,
   };
 
-  const isEmpty: boolean = rigsAverage.length === 0;
+  const isEmpty: boolean = filteredRigsAverage.length === 0;
 
   const [totalDaysSelected, setTotalDaysSelected] = useState(
     differenceInDays(filters.endDate, filters.startDate) + 1
   );
 
-  const mappedRigsAverage = rigsAverage
+  const mappedRigsAverage = filteredRigsAverage
     .map(({count, rig, rigId, state}) => {
       return {
         rig,
@@ -196,7 +224,10 @@ export const GlobalDashboardProvider = ({
   return (
     <GlobalDashboardContext.Provider
       value={{
+        handleChangeDashboardView,
+        selectedDashboardView,
         statBox,
+        filteredRigsAverage,
         chartData,
         isChartDataEmpty,
         unbilledPeriods,
@@ -204,16 +235,11 @@ export const GlobalDashboardProvider = ({
         selectedPieChartView,
         isFetchingUnbilledPeriods,
         isDetailsGraphVisible,
-        selectedStartDate,
-        selectedEndDate,
-        handleStartDateChange,
-        handleEndDateChange,
         handleSelectedPieChartViewChange,
         handleApplyFilters,
         user,
         handleCloseDetailsGraph,
         signout,
-        windowWidth,
         isAlertSeen,
         handleIsAlertSeen,
         totalDaysSelected,

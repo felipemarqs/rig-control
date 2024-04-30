@@ -19,7 +19,7 @@ type FormData = z.infer<typeof schema>;
 
 const isActiveOptions = [
   {
-    value: "",
+    value: " ",
     label: "Desativada",
   },
   {

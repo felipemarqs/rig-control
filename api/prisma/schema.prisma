@@ -46,6 +46,7 @@ model Rig {
   isActive              Boolean                @default(true)
   contractId            String                 @map("contract_id") @db.Uuid
   state                 UF
+  stateFlagImagePath    String?                @map("state_flag_image_path")
   users                 UserRig[]
   efficiencies          Efficiency[]
   temporaryEfficiencies TemporaryEfficiency[]
@@ -57,10 +58,12 @@ model Rig {
 }
 
 model Contract {
-  id    String         @id @default(uuid()) @db.Uuid
-  name  String         @unique
-  rigs  Rig[]
-  users UserContract[]
+  id            String         @id @default(uuid()) @db.Uuid
+  name          String         @unique
+  logoImagePath String?        @map("logo_image_path")
+  rigs          Rig[]
+  users         UserContract[]
+  wells         Well[]
 
   @@map("contracts")
 }
@@ -86,6 +89,7 @@ model User {
   efficiencies        Efficiency[]
   DeletionRequest     DeletionRequest[]
   TemporaryEfficiency TemporaryEfficiency[]
+  UserLog             UserLog[]
 
   @@map("users")
 }
@@ -113,13 +117,14 @@ model UserContract {
 }
 
 model Efficiency {
-  id             String   @id @default(uuid()) @db.Uuid
-  date           DateTime
-  well           String
-  availableHours Float    @map("available_hours")
-  dtmHours       Float    @map("dtm_hours")
-  isEditable     Boolean? @default(false) @map("is_editable")
-
+  id                            String            @id @default(uuid()) @db.Uuid
+  date                          DateTime
+  well                          String
+  createdAt                     DateTime?         @map("created_at")
+  availableHours                Float             @map("available_hours")
+  repairHours                   Float?            @map("repair_hours")
+  dtmHours                      Float             @map("dtm_hours")
+  isEditable                    Boolean?          @default(false) @map("is_editable")
   hasDemobilization             Boolean           @map("has_demobilization")
   hasMobilization               Boolean?          @map("has_mobilization")
   hasExtraTrailer               Boolean           @map("has_extra_trailer")
@@ -312,6 +317,8 @@ model Period {
 model Well {
   id               String            @id @default(uuid()) @db.Uuid
   name             String            @unique
+  contractId       String?           @map("contract_id") @db.Uuid
+  contract         Contract?         @relation(fields: [contractId], references: [id], onDelete: Cascade)
   periods          Period[]
   temporaryPeriods TemporaryPeriod[]
 }
@@ -529,4 +536,12 @@ model TemporaryPeriod {
   TemporaryEfficiency TemporaryEfficiency? @relation(fields: [temporaryEfficiencyId], references: [id], onDelete: Cascade)
 
   @@map("temporary_periods")
+}
+
+model UserLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  loginTime DateTime @map("login_time")
+
+  userId String @map("user_id") @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

@@ -1,35 +1,31 @@
 import {CircleDollarSignIcon, Receipt} from "lucide-react";
 import {Header} from "../../components/Header";
-import {useInvoicingMenu} from "./useInvoicingMenu";
+import {MenuCard} from "@/view/components/MenuCard";
 
 export const InvoicingMenu = () => {
-  const {navigate} = useInvoicingMenu();
-
   return (
     <div className="w-full h-full overflow-y-scroll">
-      <Header title="FATURAMENTO" subtitle="Menu de Faturamento" />
+      <Header
+        title="Faturamento"
+        displayRig={false}
+        displayPeriodRange={false}
+      />
 
-      <div className="w-full h-4/5 flex justify-center items-center">
-        <div className="w-10/12 grid grid-cols-12 auto-rows-[120px] gap-3 bg-gray-400 p-8 rounded-md">
-          <div
-            className="col-start-3 col-span-3 row-span-2 p-4 bg-white rounded-2xl h-full flex flex-col justify-around items-center border-b-4  border-teal-950 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
-            style={{borderColor: "#81c460"}}
-            role="button"
-            onClick={() => navigate("/invoicing-rig-dashboard")}
-          >
-            <CircleDollarSignIcon size={100} />
-            <span className="text-center">Visão de faturamento por Sonda</span>
-          </div>
+      <div className="w-full flex justify-center items-center">
+        <div className=" w-full mt-12 flex flex-col justify-start items-center gap-4 lg:pl-8 lg:flex-row">
+          <MenuCard
+            title=" Visão de faturamento por Sonda"
+            Icon={CircleDollarSignIcon}
+            description="Explore detalhes específicos de faturamento por sonda para uma análise mais granular e precisa."
+            navigateTo="invoicing-rig-dashboard"
+          />
 
-          <div
-            className="col-start-8 col-span-3 row-span-2 p-4 bg-white rounded-2xl h-full flex flex-col justify-around items-center border-b-4  border-teal-950 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
-            style={{borderColor: "#81c460"}}
-            role="button"
-            onClick={() => navigate("/invoicing-dashboard")}
-          >
-            <Receipt size={100} />
-            <span className="text-center">Visão de faturamento Total</span>
-          </div>
+          <MenuCard
+            title=" Visão de faturamento Total"
+            Icon={Receipt}
+            description="Acesse uma visão abrangente do faturamento total, oferecendo insights sobre o desempenho financeiro global da aplicação."
+            navigateTo="invoicing-dashboard"
+          />
         </div>
       </div>
     </div>

@@ -28,7 +28,7 @@ export const BraskemFormContainer = () => {
   const format = "HH:mm";
 
   return (
-    <div className="  bg-primary-500 py-4  my-4  rounded-xl ">
+    <div className="  bg-primary py-4  my-4  rounded-xl ">
       <div className="p-4 rounded-xl flex flex-col gap-2">
         <div className="border-b py-2 flex flex-col gap-2 items-start justify-between ">
           <div className="flex gap-2 items-center justify-between  w-full">

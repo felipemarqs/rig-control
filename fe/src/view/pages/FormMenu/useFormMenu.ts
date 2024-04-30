@@ -21,8 +21,6 @@ export const useFormMenu = () => {
   const {temporaryEfficiency, isFetchingTemporaryEfficiencies} =
     useTemporaryEfficiencyByUserId(user?.id!);
 
-  console.log("Temporary Efficiencies", temporaryEfficiency);
-
   const hasData = !Array.isArray(temporaryEfficiency);
 
   const closeDeleteModal = () => {

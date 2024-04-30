@@ -21,6 +21,7 @@ export interface BillingByRigIdResponse {
   fluidbt20and50amount: number;
   fluidgt50amount: number;
   fluidlt20amount: number;
+  repairhouramount: number;
   generatorfuelamount: number;
   glosshouramount: number;
   mixtankdemobilizationamount: number;

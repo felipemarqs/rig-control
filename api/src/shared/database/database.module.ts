@@ -13,6 +13,7 @@ import { DeletionRequestRepository } from './repositories/deletionRequests.repos
 import { WellsRepository } from './repositories/well.repositories';
 import { PeriodsRepository } from './repositories/period.repositories';
 import { TemporaryEfficienciesRepository } from './repositories/temporaryEfficienciesRepositories';
+import { UserLogsRepository } from './repositories/userLog.repositories';
 
 @Global()
 @Module({
@@ -31,6 +32,7 @@ import { TemporaryEfficienciesRepository } from './repositories/temporaryEfficie
     WellsRepository,
     PeriodsRepository,
     TemporaryEfficienciesRepository,
+    UserLogsRepository,
   ],
   exports: [
     PrismaService,
@@ -46,6 +48,7 @@ import { TemporaryEfficienciesRepository } from './repositories/temporaryEfficie
     WellsRepository,
     PeriodsRepository,
     TemporaryEfficienciesRepository,
+    UserLogsRepository,
   ],
 })
 export class DatabaseModule {}
