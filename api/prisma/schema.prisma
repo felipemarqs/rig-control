@@ -89,6 +89,7 @@ model User {
   efficiencies        Efficiency[]
   DeletionRequest     DeletionRequest[]
   TemporaryEfficiency TemporaryEfficiency[]
+  UserLog             UserLog[]
 
   @@map("users")
 }
@@ -535,4 +536,12 @@ model TemporaryPeriod {
   TemporaryEfficiency TemporaryEfficiency? @relation(fields: [temporaryEfficiencyId], references: [id], onDelete: Cascade)
 
   @@map("temporary_periods")
+}
+
+model UserLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  loginTime DateTime @map("login_time")
+
+  userId String @map("user_id") @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
