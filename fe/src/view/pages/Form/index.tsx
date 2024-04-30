@@ -151,7 +151,7 @@ export const Form = () => {
                 <div className="flex justify-end w-full py-4 px-8">
                   <Button
                     disabled={!(selectedRig && !isDateValid)}
-                    className="bg-primary  w-1/2 lg:w-1/5 "
+                    className="bg-primary  w-1/2 lg:w-1/5"
                     onClick={() => handleConfirmButton()}
                   >
                     Confirmar

@@ -564,13 +564,13 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const isDateValid = date
-    ? getTotalDaysByDate(new Date(date)) >= getTotalDaysByDate(new Date())
+    ? getTotalDaysByDate(new Date(date)) > getTotalDaysByDate(new Date())
     : false;
 
   const handleDateChange = (date: Date) => {
     setDate(date);
 
-    if (getTotalDaysByDate(new Date(date)) >= getTotalDaysByDate(new Date())) {
+    if (getTotalDaysByDate(new Date(date)) > getTotalDaysByDate(new Date())) {
       setError({fieldName: "date", message: "Data Inválida!"});
     } else {
       removeError("date");
