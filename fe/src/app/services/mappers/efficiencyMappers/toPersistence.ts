@@ -74,6 +74,7 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
 
   const toPersistenceObj: ToPersistanceEfficiency = {
     date: domainEfficiency.date,
+    createdAt: new Date(Number(new Date()) - 1000 * 60 * 60 * 3).toISOString(),
     well: domainEfficiency.periods[0].well,
     availableHours: Number(totalAvailableHours.toFixed(2)),
     rigId: domainEfficiency.rigId!,

@@ -73,6 +73,7 @@ export type PersistanceEfficiency = {
 
 export type ToPersistanceEfficiency = {
   availableHours: number;
+  createdAt: string | Date;
   date: string | Date;
   rigId: string;
   well: string;

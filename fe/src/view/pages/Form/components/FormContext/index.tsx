@@ -264,6 +264,8 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
       isSuckingTruckSelected,
     });
 
+    console.log("To Persistance Obj :", toPersistenceObj);
+
     try {
       await mutateAsync(toPersistenceObj);
       customColorToast("Dados Enviados com Sucesso!", "#1c7b7b", "success");

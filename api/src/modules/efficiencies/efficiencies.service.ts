@@ -91,6 +91,7 @@ export class EfficienciesService {
       isPowerSwivelSelected,
       mobilizationPlace,
       isSuckingTruckSelected,
+      createdAt,
     } = createEfficiencyDto;
 
     /**
@@ -174,6 +175,7 @@ export class EfficienciesService {
       availableHours,
       dtmHours: 0,
       rigId,
+      createdAt,
       userId,
       christmasTreeDisassemblyHours: christmasTreeDisassemblyHours,
       bobRentHours: bobRentHours,
