@@ -10,6 +10,7 @@ import {RepairDetailsPieChartCard} from "./components/RepairDetailsPieChartCard"
 import {GlossDetailsPieChartCard} from "./components/GlossDetailsPieChartCard";
 import {CustomFilterSheet} from "@/view/components/CustomFilterSheet";
 import {Header} from "@/view/components/Header";
+import {CalendarChartCard} from "./components/CalendarChartCard";
 
 export const Dashboard = () => {
   return (
@@ -17,7 +18,7 @@ export const Dashboard = () => {
       <DashboardContext.Consumer>
         {({handleApplyFilters, isFetchingEfficiencies}) => (
           <div>
-            <Header displayRig title="Dashboard por Sonda">
+            <Header displayRig title="Dashboard powr Sonda">
               <CustomFilterSheet
                 isLoading={isFetchingEfficiencies}
                 onApplyFilters={handleApplyFilters}
@@ -30,6 +31,8 @@ export const Dashboard = () => {
 
                 <div className="grid gap-4 md:gap-8 grid-cols-12 auto-rows-[150px]">
                   <LineChartCard />
+
+                  <CalendarChartCard />
 
                   <AverageBarChartCard />
 
