@@ -22,8 +22,6 @@ export const GrouppedRepairsCard = () => {
   const {repairGroupedData, handleSelectEquipment, hasRepairData} =
     useGrouppedRepairs();
 
-  console.log("Repair Groupped Data", repairGroupedData.groupedData);
-
   return (
     <Card
       className={cn(

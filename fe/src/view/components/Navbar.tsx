@@ -19,9 +19,12 @@ import {Sheet, SheetContent, SheetTrigger} from "@/components/ui/sheet";
 import {useNavigate, Link} from "react-router-dom";
 
 import logo from "@/assets/images/white-logo.png";
+import avatarIcon from "@/assets/icons/avatar.svg";
+
 import {useAuth} from "@/app/hooks/useAuth";
 import {useSidebarContext} from "@/app/contexts/SidebarContext";
 import {cn} from "@/lib/utils";
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 
 interface NavigationLinksProps {
   isUserAdm: boolean;
@@ -180,20 +183,18 @@ const NavigationLinks = ({isUserAdm}: NavigationLinksProps) => {
 
 export function Navbar() {
   const navigate = useNavigate();
-  const {signout, isUserAdm} = useAuth();
+  const {signout, isUserAdm, user} = useAuth();
   return (
     <header className="sticky top-0 flex h-24 z-10 items-center gap-4 border-b bg-primary px-4 md:px-6">
       <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6 ">
-        <div>
-          <img
-            onClick={() => navigate("/")}
-            src={logo}
-            width={70}
-            height={50}
-            alt="logo"
-            className="rounded-full cursor-pointer"
-          />
-        </div>
+        <img
+          onClick={() => navigate("/")}
+          src={logo}
+          width={70}
+          height={50}
+          alt="logo"
+          className="rounded-full cursor-pointer"
+        />
 
         <div className="ml-12 flex gap-8">
           <NavigationLinks isUserAdm={isUserAdm} />
@@ -212,20 +213,28 @@ export function Navbar() {
           </nav>
         </SheetContent>
       </Sheet>
-      <div className="flex  items-center gap-4 md:ml-auto md:gap-2 lg:gap-4 ">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="secondary" size="icon" className="rounded-full">
-              <CircleUser className="h-5 w-5" />
-              <span className="sr-only">Toggle user menu</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => signout()}>
-              Logout
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+      <div className="flex  items-center gap-4 w-full md:justify-end md:gap-2 lg:gap-4 ">
+        <div className="flex items-center gap-4">
+          {user && (
+            <span className="hidden md:inline text-white"> {user?.name}</span>
+          )}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="secondary" size="icon" className="rounded-full">
+                <Avatar>
+                  <AvatarImage src={avatarIcon} />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <span className="sr-only">Toggle user menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => signout()}>
+                Sair
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
     </header>
   );
