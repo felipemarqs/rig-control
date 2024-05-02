@@ -2,6 +2,7 @@ import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {useRepairDetailsPieChartCard} from "./useRepairDetailsPieChartCard";
 import {PieChart, X} from "lucide-react";
 import {RepairDetailsPieChart} from "./components/RepairDetailsPieChart";
+import {cn} from "@/lib/utils";
 
 export const RepairDetailsPieChartCard = () => {
   const {
@@ -11,7 +12,12 @@ export const RepairDetailsPieChartCard = () => {
     repairPeriods,
   } = useRepairDetailsPieChartCard();
   return (
-    <Card className="col-span-12 lg:col-span-3 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] ">
+    <Card
+      className={cn(
+        "col-span-12 lg:col-span-3 row-span-2",
+        !selectedEquipment && "hidden"
+      )}
+    >
       <CardHeader className="pl-7 ">
         <div
           className="flex gap-2 items-center justify-between cursor-pointer"

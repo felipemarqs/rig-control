@@ -18,7 +18,7 @@ export const Dashboard = () => {
       <DashboardContext.Consumer>
         {({handleApplyFilters, isFetchingEfficiencies}) => (
           <div>
-            <Header displayRig title="Dashboard powr Sonda">
+            <Header displayRig title="Dashboard por Sonda">
               <CustomFilterSheet
                 isLoading={isFetchingEfficiencies}
                 onApplyFilters={handleApplyFilters}

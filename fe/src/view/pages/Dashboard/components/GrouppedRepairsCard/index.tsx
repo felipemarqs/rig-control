@@ -16,9 +16,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {cn} from "@/lib/utils";
+import {NotFound} from "@/view/components/NotFound";
 
 export const GrouppedRepairsCard = () => {
-  const {repairGroupedData, handleSelectEquipment} = useGrouppedRepairs();
+  const {repairGroupedData, handleSelectEquipment, hasRepairData} =
+    useGrouppedRepairs();
+
+  console.log("Repair Groupped Data", repairGroupedData.groupedData);
 
   return (
     <Card
@@ -34,37 +38,42 @@ export const GrouppedRepairsCard = () => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Equipamento</TableHead>
-              <TableHead className="hidden sm:table-cell">Tempo</TableHead>
-              <TableHead className="flex justify-center items-center ">
-                <PieChart />
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {repairGroupedData.groupedData.map(
-              ({id, equipment, totalHours}) => (
-                <TableRow key={id}>
-                  <TableCell>
-                    <div className="font-medium">{equipment}</div>
-                  </TableCell>
-                  <TableCell className="hidden sm:table-cell">
-                    {totalHours} Hrs
-                  </TableCell>
-                  <TableCell
-                    className="flex justify-center items-center cursor-pointer "
-                    onClick={() => handleSelectEquipment(id)}
-                  >
-                    <ExternalLink />
-                  </TableCell>
-                </TableRow>
-              )
-            )}
-          </TableBody>
-        </Table>
+        {!hasRepairData && (
+          <NotFound>Não possui reparos no período selecionado</NotFound>
+        )}
+        {hasRepairData && (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Equipamento</TableHead>
+                <TableHead className="hidden sm:table-cell">Tempo</TableHead>
+                <TableHead className="flex justify-center items-center ">
+                  <PieChart />
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {repairGroupedData.groupedData.map(
+                ({id, equipment, totalHours}) => (
+                  <TableRow key={id}>
+                    <TableCell>
+                      <div className="font-medium">{equipment}</div>
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      {totalHours} Hrs
+                    </TableCell>
+                    <TableCell
+                      className="flex justify-center items-center cursor-pointer "
+                      onClick={() => handleSelectEquipment(id)}
+                    >
+                      <ExternalLink />
+                    </TableCell>
+                  </TableRow>
+                )
+              )}
+            </TableBody>
+          </Table>
+        )}
       </CardContent>
     </Card>
   );
