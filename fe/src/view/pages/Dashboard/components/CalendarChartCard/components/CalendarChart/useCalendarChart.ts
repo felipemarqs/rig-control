@@ -23,7 +23,9 @@ export const useCalendarChart = () => {
 
   const data = efficiencies.map(({id, availableHours, date}) => ({
     id,
-    value: availableHours,
+    value: availableHours === 24 ? 1 : 0,
+    availableHours,
+    efficiency: ((availableHours / 24) * 100).toFixed(2) + "%",
     day: date.toString().split("T")[0],
   }));
 
