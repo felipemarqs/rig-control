@@ -23,7 +23,6 @@ import {UpdateForm} from "../view/pages/UpdateForm";
 import {Report} from "../view/pages/Report";
 import {InvoicingMenu} from "../view/pages/InvoicingMenu";
 import {GlobalDashboard} from "../view/pages/GlobalDashboard";
-import {DashboardMenu} from "../view/pages/DashboardMenu";
 import {useAuth} from "../app/hooks/useAuth";
 import {FormMenu} from "../view/pages/FormMenu";
 import {PendingForm} from "../view/pages/PendingForm";

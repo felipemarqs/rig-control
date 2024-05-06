@@ -18,7 +18,6 @@ export const RequestDeleteModal = ({
 }: RequestDeleteModalProps) => {
   const {
     isLoadingDeletionRequest,
-
     errors,
     control,
     handleSubmitDeletionRequest,

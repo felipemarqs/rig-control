@@ -7,7 +7,6 @@ import {deletionRequestsServices} from "../../../../../app/services/deletionRequ
 import {customColorToast} from "../../../../../app/utils/customColorToast";
 import {AxiosError} from "axios";
 import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
-import {useDetails} from "../DetailsContext/useDetailsContext";
 
 const schema = z.object({
   reason: z.string().nonempty("Motivo é obrigatório"),
@@ -16,8 +15,6 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export const useRequestDeleteModal = (efficiencyId: string) => {
-  const {closeDeletionRequestModal} = useDetails();
-
   const {
     handleSubmit: hookFormHandleSubmit,
     register,
@@ -42,7 +39,7 @@ export const useRequestDeleteModal = (efficiencyId: string) => {
         efficiencyId,
         ...data,
       });
-      closeDeletionRequestModal();
+
       reset();
       customColorToast("Pedido feito com sucesso!", "#1c7b7b", "success");
     } catch (error: any | typeof AxiosError) {

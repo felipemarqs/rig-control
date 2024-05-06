@@ -65,13 +65,11 @@ export const useGrouppedRepairs = () => {
     {totalRepairHours: 0, groupedData: []}
   );
 
-  const convertedResult = repairGroupedData.groupedData.sort(
-    (a, b) => b.totalHours - a.totalHours
-  );
+  const hasRepairData = repairGroupedData.groupedData.length > 0;
 
   return {
-    data: convertedResult,
     repairGroupedData,
     handleSelectEquipment,
+    hasRepairData,
   };
 };

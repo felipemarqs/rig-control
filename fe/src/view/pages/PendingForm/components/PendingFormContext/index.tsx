@@ -675,7 +675,7 @@ export const PendingFormProvider = ({
   };
 
   const isDateValid = date
-    ? getTotalDaysByDate(new Date(date)) >= getTotalDaysByDate(new Date())
+    ? getTotalDaysByDate(new Date(date)) > getTotalDaysByDate(new Date())
     : false;
 
   const handleDateChange = (date: Date) => {

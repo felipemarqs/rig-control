@@ -1,6 +1,6 @@
-import {ComponentProps, forwardRef} from "react";
-import {ErrorContainer} from "./ErrorContainer";
-import {cn} from "../../app/utils/cn";
+import { ComponentProps, forwardRef } from "react";
+import { ErrorContainer } from "./ErrorContainer";
+import { cn } from "../../app/utils/cn";
 
 interface InputProps extends ComponentProps<"input"> {
   name: string;
@@ -9,7 +9,7 @@ interface InputProps extends ComponentProps<"input"> {
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({placeholder, className, name, id, error, labelStyles, ...props}, ref) => {
+  ({ placeholder, className, name, id, error, labelStyles, ...props }, ref) => {
     const inputId = id ?? name;
     return (
       <div className="relative">
@@ -18,7 +18,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           id={inputId}
           ref={ref}
           name={name}
-          placeholder=" "
+          placeholder=""
           // className="bg-primary w-full rounded-lg border-2 text-white border-white px-3 h-10"
           className={cn(
             `appearance-none bg-primary w-full rounded-lg border-2 text-white border-white px-3 pt-2 h-[52px] placeholder-shown:pt-0 focus:border-white peer transition-all outline-none hover:bg-primary hover:border-3`,

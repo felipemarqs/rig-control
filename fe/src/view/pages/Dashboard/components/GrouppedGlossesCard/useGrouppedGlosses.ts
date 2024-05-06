@@ -63,12 +63,10 @@ export const useGrouppedGlosses = () => {
     {totalRepairHours: 0, groupedData: []}
   );
 
-  const convertedResult = glossGroupedData.groupedData.sort(
-    (a, b) => b.totalHours - a.totalHours
-  );
+  const hasGlossData = glossGroupedData.groupedData.length > 0;
 
   return {
-    data: convertedResult,
+    hasGlossData,
     glossGroupedData,
     handleSelectGloss,
   };
