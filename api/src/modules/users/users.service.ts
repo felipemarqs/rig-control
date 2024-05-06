@@ -112,6 +112,7 @@ export class UsersService {
         accessLevel: true,
         email: true,
       },
+      orderBy: { name: 'asc' },
       where: whereClause,
     });
 

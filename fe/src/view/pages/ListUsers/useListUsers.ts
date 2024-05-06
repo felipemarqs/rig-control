@@ -1,6 +1,6 @@
 import {useNavigate} from "react-router-dom";
 import {useUsers} from "../../../app/hooks/users/useUsers";
-import {ChangeEvent, useMemo, useRef, useState} from "react";
+import {ChangeEvent, useMemo, useState} from "react";
 import {useAuth} from "../../../app/hooks/useAuth";
 
 export const useListUsers = () => {
@@ -15,10 +15,14 @@ export const useListUsers = () => {
 
   const {users, isFetchingUsers} = useUsers(filters, isUserAdm);
 
-  console.log("Users", JSON.stringify(users));
+  console.log(
+    "users",
+    users.forEach((user) =>
+      console.log(Number(new Date(user.userLog[0].loginTime)))
+    )
+  );
 
   const handleChangeSearchTerm = (event: ChangeEvent<HTMLInputElement>) => {
-    console.log("event", event);
     setSearchTerm(event.target.value);
   };
 
@@ -27,23 +31,26 @@ export const useListUsers = () => {
   };
 
   const filteredUsers = useMemo(() => {
-    const filteredUsers = users
-      .filter((user) =>
-        user.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
-      )
-      .sort((a, b) => {
-        if (a.name > b.name) {
-          return 1;
-        }
-        if (a.name < b.name) {
-          return -1;
-        }
-        // a must be equal to b
-        return 0;
-      });
+    const filteredUsers = users.filter((user) =>
+      user.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
+    );
 
-    return filteredUsers;
-  }, [searchTerm, users]);
+    const sort = filteredUsers.sort((userA, userB) => {
+      if (orderByLastLogin === "ASC") {
+        return (
+          Number(new Date(userA.userLog[0].loginTime)) -
+          Number(new Date(userB.userLog[0].loginTime))
+        );
+      }
+
+      return (
+        Number(new Date(userB.userLog[0].loginTime)) -
+        Number(new Date(userA.userLog[0].loginTime))
+      );
+    });
+
+    return sort;
+  }, [searchTerm, users, orderByLastLogin]);
 
   const hasUsers = filteredUsers.length > 0;
 

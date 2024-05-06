@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
-import {ArrowUp, AtSign, ListFilter, MonitorCheck} from "lucide-react";
+import {Info, ListFilter} from "lucide-react";
 import {formatLastlogin} from "@/app/utils/formatLastLogin";
 import {Input} from "@/view/components/Input";
 import {
@@ -24,13 +24,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {Button} from "@/components/ui/button";
 import {NotFound} from "@/view/components/NotFound";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 export const ListUsers = () => {
   const {
     filteredUsers,
-    users,
     isFetchingUsers,
-    navigate,
     orderByLastLogin,
     hasUsers,
     searchTerm,
@@ -78,10 +81,9 @@ export const ListUsers = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
-                      disabled
                       variant="outline"
                       size="sm"
-                      className="h-7 gap-1 text-sm cursor-not-allowed "
+                      className="h-7 gap-1 text-sm"
                     >
                       <ListFilter className="h-3.5 w-3.5" />
                       <span className="sr-only sm:not-sr-only">Ordernar</span>
@@ -109,52 +111,64 @@ export const ListUsers = () => {
 
               {hasUsers && (
                 <div className=" grid grid-cols-12 auto-rows-[200px]  p-4 justify-center  gap-4 ">
-                  {filteredUsers.map(
-                    ({name, id, accessLevel, email, userLog}) => (
-                      <Card
-                        className=" col-span-12 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] flex flex-col justify-around"
-                        key={id}
-                      >
-                        <CardHeader className="flex">
-                          <CardTitle className="flex justify-between flex-col gap-2 items-center ">
-                            <Avatar>
-                              <AvatarImage src={avatarIcon} />
-                              <AvatarFallback>CN</AvatarFallback>
-                            </Avatar>
-                            <div className=" flex-1 flex flex-col justify-center items-center">
-                              {" "}
-                              <span className="text-xs text-gray-600">
-                                {accessLevel}
-                              </span>
-                              <span>{name}</span>
-                            </div>
-                          </CardTitle>
-                          <CardDescription className="">
-                            <div className="flex justify-center gap-2">
-                              <AtSign /> <span>{email}</span>
-                            </div>
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent className=" flex justify-center items-center">
-                          {userLog && userLog.length > 0 && (
-                            <div className="flex justify-around">
-                              <span className="text-sm">
-                                Útimo login:{" "}
-                                {formatLastlogin(userLog[0].loginTime)}
-                              </span>
-                            </div>
-                          )}
+                  {filteredUsers.map(({name, id, email, userLog}) => (
+                    <Card
+                      className=" col-span-12 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] flex flex-col justify-around"
+                      key={id}
+                    >
+                      <CardHeader className="flex">
+                        <CardTitle className="flex justify-between flex-col gap-2 items-center ">
+                          <Avatar>
+                            <AvatarImage src={avatarIcon} />
+                            <AvatarFallback>CN</AvatarFallback>
+                          </Avatar>
+                          <div className=" flex-1 flex flex-col justify-center items-center">
+                            <span>{name}</span>
+                          </div>
+                        </CardTitle>
+                        <CardDescription className="">
+                          <div className="flex justify-center gap-2">
+                            <span>{email}</span>
+                          </div>
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className=" flex justify-center items-center">
+                        {Number(new Date(userLog[0].loginTime)) > 0 && (
+                          <div className="flex justify-around">
+                            <span className="text-sm">
+                              Útimo login:{" "}
+                              {formatLastlogin(userLog[0].loginTime)}
+                            </span>
+                          </div>
+                        )}
 
-                          {!userLog ||
-                            (userLog.length === 0 && (
-                              <div className="flex justify-around">
-                                <span>Útimo login: Não registrado</span>
-                              </div>
-                            ))}
-                        </CardContent>
-                      </Card>
-                    )
-                  )}
+                        {Number(new Date(userLog[0].loginTime)) === 0 && (
+                          <div className="flex justify-around items-center">
+                            <HoverCard>
+                              <HoverCardTrigger asChild>
+                                <Button variant="link">
+                                  <Info className="text-redAccent-500" />
+                                </Button>
+                              </HoverCardTrigger>
+                              <HoverCardContent className="w-80">
+                                <div className="flex justify-between space-x-4">
+                                  <div className="space-y-1">
+                                    <p className="text-sm">
+                                      O usuário ainda não fez login no sistema
+                                      após a atualização de 28/04/2024
+                                    </p>
+                                  </div>
+                                </div>
+                              </HoverCardContent>
+                            </HoverCard>
+                            <span className="text-sm text-redAccent-500">
+                              Útimo login: Não registrado
+                            </span>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
               )}
 
