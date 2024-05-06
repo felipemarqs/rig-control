@@ -39,6 +39,7 @@ interface DashboardContextValue {
   handleRemoveSelectedEquipment: () => void;
   windowWidth: number;
   selectedRig: string;
+  exceedsEfficiencyThreshold: boolean;
 }
 
 // Criação do contexto
@@ -56,6 +57,8 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   const {efficiencies, isFetchingEfficiencies, refetchEffciencies} =
     useEfficiencies(filters);
 
+  console.log("Efficiency Length", efficiencies.length);
+
   const {rigsAverage, refetchRigsAverage, isFetchingRigsAverage} =
     useEfficienciesRigsAverage({
       startDate: filters.startDate,
@@ -63,6 +66,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     });
 
   const isEmpty: boolean = efficiencies.length === 0;
+  const exceedsEfficiencyThreshold: boolean = efficiencies.length >= 35;
 
   // Funções para manipulação das datas e filtros
   const handleApplyFilters = () => {
@@ -148,6 +152,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         selectedGloss,
         rigsAverage,
         isFetchingRigsAverage,
+        exceedsEfficiencyThreshold,
       }}
     >
       {children}

@@ -5,7 +5,6 @@ import {useNavigate} from "react-router-dom";
 export const LineChart = () => {
   const {data} = useLineChart();
   const navigate = useNavigate();
-  console.log("Data Line CHart", data);
   return (
     <div className="w-full h-full">
       <ResponsiveLine

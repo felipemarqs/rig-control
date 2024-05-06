@@ -7,6 +7,11 @@ export interface User {
   email: string;
   accessLevel: AccessLevel;
   contract?: Array<Contract>;
+  userLog:
+    | {
+        loginTime: string;
+      }[]
+    | [];
   rigs: {
     rig: {
       id: string;

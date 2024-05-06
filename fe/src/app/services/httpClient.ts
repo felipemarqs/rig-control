@@ -1,5 +1,5 @@
 import axios from "axios";
-import {localStorageKeys} from "../config/localStorageKeys";
+import { localStorageKeys } from "../config/localStorageKeys";
 //import {localStorageKeys} from "../config/localStorageKeys";
 //import { timeout } from "../utils/timeout";
 

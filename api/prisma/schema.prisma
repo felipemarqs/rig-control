@@ -89,7 +89,7 @@ model User {
   efficiencies        Efficiency[]
   DeletionRequest     DeletionRequest[]
   TemporaryEfficiency TemporaryEfficiency[]
-  UserLog             UserLog[]
+  userLog             UserLog[]
 
   @@map("users")
 }
