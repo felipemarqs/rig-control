@@ -1,5 +1,5 @@
-import {AccessLevel} from "./AccessLevel";
-import {Contract} from "./Contract";
+import { AccessLevel } from "./AccessLevel";
+import { Contract } from "./Contract";
 
 export interface User {
   id: string;
@@ -7,6 +7,11 @@ export interface User {
   email: string;
   accessLevel: AccessLevel;
   contract?: Array<Contract>;
+  userLog?:
+    | {
+        loginTime: string;
+      }[]
+    | [];
   rigs: {
     rig: {
       id: string;

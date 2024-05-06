@@ -23,6 +23,12 @@ export class UsersService {
         name: true,
         email: true,
         accessLevel: true,
+        userLog: {
+          select: {
+            loginTime: true,
+          },
+          take: 1,
+        },
         rigs: {
           select: {
             rig: {
@@ -71,6 +77,15 @@ export class UsersService {
       select: {
         id: true,
         name: true,
+        userLog: {
+          select: {
+            loginTime: true,
+          },
+          take: 1,
+          orderBy: {
+            loginTime: 'desc',
+          },
+        },
         contracts: {
           select: {
             contract: {

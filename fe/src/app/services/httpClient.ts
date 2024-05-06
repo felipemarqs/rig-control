@@ -1,5 +1,5 @@
 import axios from "axios";
-import {localStorageKeys} from "../config/localStorageKeys";
+import { localStorageKeys } from "../config/localStorageKeys";
 //import {localStorageKeys} from "../config/localStorageKeys";
 //import { timeout } from "../utils/timeout";
 
@@ -8,7 +8,7 @@ enum URLPath {
   PROD = "https://rig-control-backendv6-1.onrender.com",
 }
 export const httpClient = axios.create({
-  baseURL: URLPath.PROD,
+  baseURL: URLPath.DEV,
 });
 
 httpClient.interceptors.request.use(async (config) => {
