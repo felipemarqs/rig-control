@@ -1,4 +1,4 @@
-import React, {createContext, useState} from "react";
+import React, {createContext, useEffect, useState} from "react";
 import {useEfficiencies} from "../../../../app/hooks/efficiencies/useEfficiencies";
 import {useAuth} from "../../../../app/hooks/useAuth";
 import {User} from "../../../../app/entities/User";
@@ -11,6 +11,11 @@ import {RigsAverageResponse} from "../../../../app/services/efficienciesService/
 import {useFiltersContext} from "../../../../app/hooks/useFiltersContext";
 import {getGlossPeriods} from "../../../../app/utils/getGlossPeriods";
 import {useWindowWidth} from "@/app/hooks/useWindowWidth";
+import {useMutation} from "@tanstack/react-query";
+import {MutationKeys} from "@/app/config/MutationKeys";
+import {userLogCreateParams} from "@/app/services/userLogsService/create";
+import {userLogsService} from "@/app/services/userLogsService";
+import {getCurrentISOString} from "@/app/utils/getCurrentISOString";
 
 // Definição do tipo do contexto
 interface DashboardContextValue {
@@ -95,6 +100,17 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   const handleRemoveSelectedEquipment = () => {
     setSelectedEquipment(null);
   };
+
+  const {isPending: isLoading, mutateAsync: mutateAsyncUserLog} = useMutation({
+    mutationKey: [MutationKeys.USER_LOG],
+    mutationFn: async (data: userLogCreateParams) => {
+      return await userLogsService.create(data);
+    },
+  });
+
+  useEffect(() => {
+    mutateAsyncUserLog({loginTime: getCurrentISOString()});
+  }, []);
 
   // Cálculos para estatísticas das eficiências
   let totalAvailableHours: number = 0;
