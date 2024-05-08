@@ -15,6 +15,7 @@ import { WellsModule } from './modules/wells/wells.module';
 import { PeriodsModule } from './modules/periods/periods.module';
 import { TemporaryEfficienciesModule } from './modules/temporary-efficiencies/temporary-efficiencies.module';
 import { UserLogModule } from './modules/user-log/user-log.module';
+import { SystemVersionModule } from './modules/system-version/system-version.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { UserLogModule } from './modules/user-log/user-log.module';
     WellsModule,
     PeriodsModule,
     UserLogModule,
+    SystemVersionModule,
   ],
   controllers: [],
   providers: [
