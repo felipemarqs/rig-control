@@ -6,11 +6,9 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import {cn} from "@/lib/utils";
-
 import {DatePickerInput} from "@/view/components/DatePickerInput";
 import {FilterType} from "@/app/entities/FilterType";
 import {Select} from "@/view/components/Select";
-
 import {FilterIcon} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {useFiltersContext} from "@/app/hooks/useFiltersContext";
@@ -45,6 +43,8 @@ export const CustomFilterSheet = ({
     handleYearChange,
   } = useFiltersContext();
 
+  console.log("selected Rig", selectedRig);
+
   // Mapeamento das rigs do usuário para exibir apenas as autorizadas
   const userRigs = user?.rigs.map(({rig: {id, name}}) => ({id, name})) || [];
 
@@ -64,7 +64,6 @@ export const CustomFilterSheet = ({
           <SheetDescription>
             <div className="grid gap-4">
               <Select
-                error={""}
                 placeholder="Tipo de Filtro"
                 value={selectedFilterType}
                 onChange={(value) =>
@@ -74,7 +73,7 @@ export const CustomFilterSheet = ({
               />
 
               <Select
-                error={""}
+                error={selectedRig ? "" : "Selecione uma sonda!"}
                 placeholder="Sonda"
                 value={selectedRig}
                 onChange={(value) => handleChangeRig(value)}
@@ -128,7 +127,7 @@ export const CustomFilterSheet = ({
 
               <Button
                 onClick={onApplyFilters}
-                disabled={isLoading}
+                disabled={isLoading || !selectedRig}
                 className={cn("", isLoading ? "cursor-not-allowed" : "")}
               >
                 Aplicar Filtros
