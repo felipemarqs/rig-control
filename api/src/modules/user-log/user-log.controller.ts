@@ -10,6 +10,8 @@ import {
 import { UserLogService } from './user-log.service';
 import { UpdateUserLogDto } from './dto/update-user-log.dto';
 import { IsPublic } from 'src/shared/decorators/IsPublic';
+import { CreateUserLogDto } from './dto/create-user-log.dto';
+import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
 
 @IsPublic()
 @Controller('user-log')
@@ -19,6 +21,14 @@ export class UserLogController {
   @Get()
   findAll() {
     return this.userLogService.findAll();
+  }
+
+  @Post()
+  async create(
+    @Body() createUserLogDto: CreateUserLogDto,
+    @ActiveUserId() userId: string,
+  ) {
+    await this.userLogService.create(createUserLogDto.loginTime, userId);
   }
 
   @Get('/user/:userId')
