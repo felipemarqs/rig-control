@@ -14,7 +14,6 @@ export const getAll = async (filters: EfficienciesFilters) => {
     params: filters,
   });
 
-  console.log("Data Efficiencies", data);
   return data;
 };
 

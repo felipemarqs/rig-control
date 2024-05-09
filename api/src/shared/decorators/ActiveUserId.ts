@@ -10,10 +10,6 @@ export const ActiveUserId = createParamDecorator<undefined>(
     const userId = request.userId;
     const path = request.path;
 
-    console.log({
-      userId,
-      path,
-    });
     if (!userId) {
       throw new UnauthorizedException('Credenciais inválidas!');
     }
