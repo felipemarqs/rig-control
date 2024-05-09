@@ -9,9 +9,10 @@ import {
 } from '@nestjs/common';
 import { UserLogService } from './user-log.service';
 import { UpdateUserLogDto } from './dto/update-user-log.dto';
-import { IsPublic } from 'src/shared/decorators/IsPublic';
+import { CreateUserLogDto } from './dto/create-user-log.dto';
+import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
 
-@IsPublic()
+//@IsPublic()
 @Controller('user-log')
 export class UserLogController {
   constructor(private readonly userLogService: UserLogService) {}
@@ -19,6 +20,14 @@ export class UserLogController {
   @Get()
   findAll() {
     return this.userLogService.findAll();
+  }
+
+  @Post()
+  async create(
+    @ActiveUserId() userId: string,
+    @Body() createUserLogDto: CreateUserLogDto,
+  ) {
+    await this.userLogService.create(createUserLogDto.loginTime, userId);
   }
 
   @Get('/user/:userId')

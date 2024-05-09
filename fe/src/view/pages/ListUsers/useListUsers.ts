@@ -15,13 +15,6 @@ export const useListUsers = () => {
 
   const {users, isFetchingUsers} = useUsers(filters, isUserAdm);
 
-  console.log(
-    "users",
-    users.forEach((user) =>
-      console.log(Number(new Date(user.userLog[0].loginTime)))
-    )
-  );
-
   const handleChangeSearchTerm = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };

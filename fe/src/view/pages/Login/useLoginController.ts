@@ -9,6 +9,7 @@ import {AxiosError} from "axios";
 import {treatAxiosError} from "../../../app/utils/treatAxiosError";
 import {useAuth} from "../../../app/hooks/useAuth";
 import {getCurrentISOString} from "@/app/utils/getCurrentISOString";
+import {MutationKeys} from "@/app/config/MutationKeys";
 
 const schema = z.object({
   email: z.string().min(1).email("Informe um E-mail válido."),
@@ -35,7 +36,7 @@ export const useLoginController = () => {
   });
 
   const {isPending: isLoading, mutateAsync} = useMutation({
-    mutationKey: ["signin"],
+    mutationKey: [MutationKeys.SIGNIN],
     mutationFn: async (data: SigninParams) => {
       return await authService.signin(data);
     },

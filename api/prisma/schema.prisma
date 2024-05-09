@@ -545,3 +545,10 @@ model UserLog {
   userId String @map("user_id") @db.Uuid
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model SystemVersion {
+  id        String   @id @default(uuid()) @db.Uuid
+  version   String
+  createdAt DateTime @default(now())
+  // Outros campos conforme necessário
+}

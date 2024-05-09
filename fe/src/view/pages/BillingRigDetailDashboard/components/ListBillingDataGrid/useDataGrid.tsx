@@ -64,8 +64,6 @@ export const useDataGrid = () => {
       headerAlign: "center",
       align: "center",
       renderCell(params: GridRenderCellParams) {
-        console.log("params", params.value);
-
         if (
           params.row.id === "repairhouramount-total" ||
           params.row.id === "glosshouramount-total"
@@ -110,8 +108,6 @@ export const useDataGrid = () => {
 
     rigNames.forEach((rigname) => {
       const rigData: any = billing.find((item) => item.rigname === rigname);
-
-      console.log("Row Data", rowData);
       rowData[rigname] = rigData ? rigData[taxa] : 0;
       rowData["qtd"] = totals[taxa as keyof totalsInterface];
     });
