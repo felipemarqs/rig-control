@@ -19,8 +19,6 @@ import {getCurrentISOString} from "@/app/utils/getCurrentISOString";
 
 // Definição do tipo do contexto
 interface DashboardContextValue {
-  isAlertSeen: boolean;
-  handleIsAlertSeen(): void;
   isFetchingEfficiencies: boolean;
   handleApplyFilters(): void;
   user: User | undefined;
@@ -45,6 +43,7 @@ interface DashboardContextValue {
   windowWidth: number;
   selectedRig: string;
   exceedsEfficiencyThreshold: boolean;
+  isWrongVersion: boolean;
 }
 
 // Criação do contexto
@@ -52,7 +51,7 @@ export const DashboardContext = createContext({} as DashboardContextValue);
 
 export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   // Utilização dos hooks para autenticação e contexto da barra lateral
-  const {user, signout, isAlertSeen, handleIsAlertSeen} = useAuth();
+  const {user, signout, isWrongVersion} = useAuth();
 
   const windowWidth = useWindowWidth();
 
@@ -61,8 +60,6 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   // Utilização dos hooks para eficiências e médias de eficiência
   const {efficiencies, isFetchingEfficiencies, refetchEffciencies} =
     useEfficiencies(filters);
-
-  console.log("Efficiency Length", efficiencies.length);
 
   const {rigsAverage, refetchRigsAverage, isFetchingRigsAverage} =
     useEfficienciesRigsAverage({
@@ -101,7 +98,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     setSelectedEquipment(null);
   };
 
-  const {isPending: isLoading, mutateAsync: mutateAsyncUserLog} = useMutation({
+  const {mutateAsync: mutateAsyncUserLog} = useMutation({
     mutationKey: [MutationKeys.USER_LOG],
     mutationFn: async (data: userLogCreateParams) => {
       return await userLogsService.create(data);
@@ -161,14 +158,13 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         unavailableHoursPercentage,
         totalDtms,
         totalMovimentations,
-        isAlertSeen,
-        handleIsAlertSeen,
         handleSelectGloss,
         selectedRig,
         selectedGloss,
         rigsAverage,
         isFetchingRigsAverage,
         exceedsEfficiencyThreshold,
+        isWrongVersion,
       }}
     >
       {children}

@@ -9,6 +9,7 @@ export enum QueryKeys {
   BILLINGS = "billings",
   CONTRACT_RIGS = "contract-rigs",
   CONFIG_BILLINGS = "config-billings",
+  SYSTEM_VERSION = "system-version",
   UNBILLED_PERIODS = "unbilled-periods",
   DELETION_REQUESTS = "deletion-requests",
   TEMPORARY_EFFICIENCY = "temporary-efficiency",

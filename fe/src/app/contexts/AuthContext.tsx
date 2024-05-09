@@ -8,16 +8,17 @@ import {AxiosError} from "axios";
 import {PageLoader} from "../../view/components/PageLoader";
 import {AccessLevel} from "../entities/AccessLevel";
 import {QueryKeys} from "../config/QueryKeys";
+import {useSystemVersion} from "../hooks/useSystemVersion";
+import {currentVersion} from "../config/CurrentVersion";
 
 interface AuthContextValue {
   signedIn: boolean;
   isUserAdm: boolean;
-  isAlertSeen: boolean;
   userAccessLevel: AccessLevel;
   user: User | undefined;
   signin(accessToken: string): void;
   signout(): void;
-  handleIsAlertSeen(): void;
+  isWrongVersion: boolean;
 }
 
 export const AuthContext = createContext({} as AuthContextValue);
@@ -33,8 +34,6 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
 
   const queryClient = useQueryClient();
 
-  const [isAlertSeen, setIsAlertSeen] = useState(false);
-
   const signin = useCallback((accessToken: string) => {
     localStorage.setItem(localStorageKeys.ACCESS_TOKEN, accessToken);
 
@@ -46,8 +45,6 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     setSignedIn(false);
     queryClient.invalidateQueries({queryKey: [QueryKeys.ME]});
   }, []);
-
-  const handleIsAlertSeen = () => [setIsAlertSeen(true)];
 
   const {data, isError, error, isFetching, isSuccess} = useQuery({
     queryKey: [QueryKeys.ME],
@@ -67,6 +64,20 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     }
   }, [isError, signout]);
 
+  const {systemVersion, refetchSystemVersion} = useSystemVersion();
+
+  useEffect(() => {
+    refetchSystemVersion();
+  }, [signedIn]);
+
+  let isWrongVersion = false;
+
+  isWrongVersion = systemVersion?.version !== currentVersion.version;
+
+  console.log("System Version ⚠", systemVersion);
+  console.log("Current Version ✨", currentVersion);
+  console.log("Is Wrong version? 👏", isWrongVersion);
+
   return (
     <AuthContext.Provider
       value={{
@@ -76,11 +87,11 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
         user: data,
         isUserAdm,
         userAccessLevel,
-        isAlertSeen,
-        handleIsAlertSeen,
+        isWrongVersion,
       }}
     >
-      {true && <PageLoader isLoading={isFetching} />}
+      {isFetching && <PageLoader isLoading={isFetching} />}
+
       {!isFetching && children}
     </AuthContext.Provider>
   );

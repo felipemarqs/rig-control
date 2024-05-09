@@ -11,6 +11,7 @@ import {GlossDetailsPieChartCard} from "./components/GlossDetailsPieChartCard";
 import {CustomFilterSheet} from "@/view/components/CustomFilterSheet";
 import {Header} from "@/view/components/Header";
 import {CalendarChartCard} from "./components/CalendarChartCard";
+import {WrongVersionAlertModal} from "./components/WrongVersionAlertModal";
 
 export const Dashboard = () => {
   return (
@@ -20,6 +21,7 @@ export const Dashboard = () => {
           handleApplyFilters,
           isFetchingEfficiencies,
           exceedsEfficiencyThreshold,
+          isWrongVersion,
         }) => (
           <div>
             <Header displayRig title="Dashboard por Sonda">
@@ -49,6 +51,8 @@ export const Dashboard = () => {
                   <GrouppedGlossesCard />
 
                   <GlossDetailsPieChartCard />
+
+                  {isWrongVersion && <WrongVersionAlertModal />}
                 </div>
               </main>
             </div>

@@ -43,8 +43,6 @@ export const CustomFilterSheet = ({
     handleYearChange,
   } = useFiltersContext();
 
-  console.log("selected Rig", selectedRig);
-
   // Mapeamento das rigs do usuário para exibir apenas as autorizadas
   const userRigs = user?.rigs.map(({rig: {id, name}}) => ({id, name})) || [];
 

@@ -5,8 +5,7 @@ export interface userLogCreateParams {
 }
 
 export const create = async (params: userLogCreateParams) => {
-  const response = await httpClient.post("/user-log", params);
+  const {data} = await httpClient.post("/user-log", params);
 
-  console.log(response);
-  return response.data;
+  return data;
 };
