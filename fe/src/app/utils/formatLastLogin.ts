@@ -14,7 +14,7 @@ export const formatLastlogin = (dateString: string): string => {
   const day = date.getDate().toString().padStart(2, "0"); // Adding leading zero if necessary
   const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Adding leading zero if necessary
   const year = date.getFullYear();
-  const hours = date.getHours();
+  const hours = date.getHours() + 3;
   const minutes = date.getMinutes().toString().padStart(2, "0"); // Adding leading zero if necessary
 
   // Format the date and time

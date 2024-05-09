@@ -449,7 +449,6 @@ export const PendingFormProvider = ({
       isSuckingTruckSelected,
     });
 
-    console.log(JSON.stringify(toPersistenceObj));
     try {
       await mutateAsyncTemporaryEfficiency(toPersistenceObj);
       customColorToast("Dados Enviados com Sucesso!", "#1c7b7b", "success");

@@ -14,6 +14,7 @@ import { WellsRepository } from './repositories/well.repositories';
 import { PeriodsRepository } from './repositories/period.repositories';
 import { TemporaryEfficienciesRepository } from './repositories/temporaryEfficienciesRepositories';
 import { UserLogsRepository } from './repositories/userLog.repositories';
+import { SystemVersionRepository } from './repositories/systemVersion.repositories';
 
 @Global()
 @Module({
@@ -33,6 +34,7 @@ import { UserLogsRepository } from './repositories/userLog.repositories';
     PeriodsRepository,
     TemporaryEfficienciesRepository,
     UserLogsRepository,
+    SystemVersionRepository,
   ],
   exports: [
     PrismaService,
@@ -49,6 +51,7 @@ import { UserLogsRepository } from './repositories/userLog.repositories';
     PeriodsRepository,
     TemporaryEfficienciesRepository,
     UserLogsRepository,
+    SystemVersionRepository,
   ],
 })
 export class DatabaseModule {}
