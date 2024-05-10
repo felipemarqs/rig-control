@@ -5,7 +5,7 @@ import {
   CardContent,
   CardDescription,
 } from "@/components/ui/card";
-import {AverageBarChart} from "../AverageBarChart";
+import {AverageBarChart} from "./components/AverageBarChart";
 
 export const AverageBarChartCard = () => {
   return (

@@ -1,5 +1,5 @@
 import {BarDatum} from "@nivo/bar";
-import {useDashboard} from "../../DashboardContext/useDashboard";
+import {useDashboard} from "../../../../DashboardContext/useDashboard";
 
 export const useAverageBarChart = () => {
   const {rigsAverage, selectedRig} = useDashboard();
