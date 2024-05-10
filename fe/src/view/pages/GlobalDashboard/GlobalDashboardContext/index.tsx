@@ -134,7 +134,6 @@ export const GlobalDashboardProvider = ({
   );
 
   const isAverageHoursNaN = isNaN(averageHours);
-  console.log("Is Average Hours NaN? ", isAverageHoursNaN);
 
   const statBox = {
     averageHours: isAverageHoursNaN ? 0 : averageHours,
