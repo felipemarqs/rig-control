@@ -8,7 +8,7 @@ export const AverageBarChart = () => {
     <ResponsiveBar
       data={data}
       keys={["avg"]}
-      indexBy="rig"
+      indexBy="month"
       layout="vertical"
       margin={{top: 0, right: 10, bottom: 150, left: 10}}
       padding={0.3}

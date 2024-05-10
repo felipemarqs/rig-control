@@ -6,8 +6,6 @@ import {Efficiency} from "../entities/Efficiency";
 import {EfficienciesResponse} from "../../../../app/services/efficienciesService/getAll";
 import {getRepairPeriods} from "../../../../app/utils/getRepairPeriods";
 import {Period} from "../../../../app/entities/Period";
-import {useEfficienciesRigsAverage} from "../../../../app/hooks/efficiencies/useEfficienciesRigsAverage";
-import {RigsAverageResponse} from "../../../../app/services/efficienciesService/getRigsAverage";
 import {useFiltersContext} from "../../../../app/hooks/useFiltersContext";
 import {getGlossPeriods} from "../../../../app/utils/getGlossPeriods";
 import {useWindowWidth} from "@/app/hooks/useWindowWidth";
@@ -16,6 +14,8 @@ import {MutationKeys} from "@/app/config/MutationKeys";
 import {userLogCreateParams} from "@/app/services/userLogsService/create";
 import {userLogsService} from "@/app/services/userLogsService";
 import {getCurrentISOString} from "@/app/utils/getCurrentISOString";
+import {AverageResponse} from "@/app/services/efficienciesService/getAverage";
+import {useEfficiencyAverage} from "@/app/hooks/efficiencies/useEfficiencyAverage";
 
 // Definição do tipo do contexto
 interface DashboardContextValue {
@@ -33,17 +33,16 @@ interface DashboardContextValue {
   unavailableHoursPercentage: number;
   totalDtms: number;
   totalMovimentations: number;
-  rigsAverage: RigsAverageResponse;
   selectedGloss: string | null;
   handleSelectGloss: (gloss: string) => void;
   selectedEquipment: string | null;
-  isFetchingRigsAverage: boolean;
   handleSelectEquipment: (equipment: string) => void;
   handleRemoveSelectedEquipment: () => void;
   windowWidth: number;
   selectedRig: string;
   exceedsEfficiencyThreshold: boolean;
   isWrongVersion: boolean;
+  average: AverageResponse;
 }
 
 // Criação do contexto
@@ -61,11 +60,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   const {efficiencies, isFetchingEfficiencies, refetchEffciencies} =
     useEfficiencies(filters);
 
-  const {rigsAverage, refetchRigsAverage, isFetchingRigsAverage} =
-    useEfficienciesRigsAverage({
-      startDate: filters.startDate,
-      endDate: filters.endDate,
-    });
+  const {average, refetchAverage} = useEfficiencyAverage(filters.rigId);
 
   const isEmpty: boolean = efficiencies.length === 0;
   const exceedsEfficiencyThreshold: boolean = efficiencies.length >= 35;
@@ -73,7 +68,8 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   // Funções para manipulação das datas e filtros
   const handleApplyFilters = () => {
     refetchEffciencies();
-    refetchRigsAverage();
+
+    refetchAverage();
   };
 
   const repairPeriods = getRepairPeriods(efficiencies);
@@ -140,6 +136,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   return (
     <DashboardContext.Provider
       value={{
+        average,
         windowWidth,
         handleRemoveSelectedEquipment,
         handleSelectEquipment,
@@ -161,8 +158,6 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         handleSelectGloss,
         selectedRig,
         selectedGloss,
-        rigsAverage,
-        isFetchingRigsAverage,
         exceedsEfficiencyThreshold,
         isWrongVersion,
       }}

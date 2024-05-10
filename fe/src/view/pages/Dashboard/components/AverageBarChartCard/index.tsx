@@ -5,7 +5,7 @@ import {
   CardContent,
   CardDescription,
 } from "@/components/ui/card";
-import {AverageBarChart} from "../AverageBarChart";
+import {AverageBarChart} from "./components/AverageBarChart";
 
 export const AverageBarChartCard = () => {
   return (
@@ -13,7 +13,7 @@ export const AverageBarChartCard = () => {
       <CardHeader className="px-7">
         <CardTitle>Média </CardTitle>
         <CardDescription>
-          Gráfico com a média de todas as sondas durante o período selecionado.
+          Gráfico com a média mensal da sonda no ano selecionado.
         </CardDescription>
       </CardHeader>
       <CardContent className="w-full h-full">

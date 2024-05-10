@@ -17,9 +17,7 @@ import {useFiltersContext} from "../../../../app/hooks/useFiltersContext";
 interface GlobalDashboardContextValue {
   selectedPieChartView: PeriodType;
   isEmpty: boolean;
-  isAlertSeen: boolean;
   handleSelectedPieChartViewChange(type: PeriodType): void;
-  handleIsAlertSeen(): void;
   handleApplyFilters(): void;
   user: User | undefined;
   signout(): void;
@@ -61,7 +59,7 @@ export const GlobalDashboardProvider = ({
   children: React.ReactNode;
 }) => {
   // Utilização dos hooks para autenticação e contexto da barra lateral
-  const {user, signout, isAlertSeen, handleIsAlertSeen} = useAuth();
+  const {user, signout} = useAuth();
 
   // Estados iniciais para as datas (primeiro e último dia do mês atual)
   const {filters} = useFiltersContext();
@@ -136,7 +134,6 @@ export const GlobalDashboardProvider = ({
   );
 
   const isAverageHoursNaN = isNaN(averageHours);
-  console.log("Is Average Hours NaN? ", isAverageHoursNaN);
 
   const statBox = {
     averageHours: isAverageHoursNaN ? 0 : averageHours,
@@ -240,8 +237,6 @@ export const GlobalDashboardProvider = ({
         user,
         handleCloseDetailsGraph,
         signout,
-        isAlertSeen,
-        handleIsAlertSeen,
         totalDaysSelected,
         rigsAverage,
         isFetchingRigsAverage,
